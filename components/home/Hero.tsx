@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import ServicesCarousel from "./Services";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -122,7 +123,7 @@ export default function BlogCarousel() {
         heroRef.current = el as HTMLDivElement | null;
         sectionRef.current = el as HTMLDivElement | null;
       }}
-      className="relative w-full py-24 bg-gray-100 overflow-hidden h-screen"
+      className="relative w-full py-10 bg-gray-100 overflow-hidden h-screen"
     >
       <div className="hero-content relative max-w-6xl mx-auto flex items-center justify-center">
 

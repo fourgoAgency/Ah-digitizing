@@ -1,0 +1,42 @@
+{
+  "whyChooseUs": "AH Digitizing sets the standard in professional embroidery digitizing and vector conversion. Our designs are 100% manually crafted by skilled experts to ensure unmatched accuracy, smooth stitching, and flawless results. With fast turnaround, competitive pricing, and consistent quality, we help your designs run perfectly on any machine and elevate your brand worldwide.",
+
+  "faqs": [
+    {
+      "id": 1,
+      "question": "How Can I Place an Order?",
+      "answer": "Placing your order with AH Digitizing is simple and convenient.",
+      "steps": [
+        "Register on our website",
+        "Upload your artwork or design directly through our website",
+        "Send your artwork via email"
+      ],
+      "cta": "REGISTER NOW"
+    },
+    {
+      "id": 2,
+      "question": "Do you use auto digitizing?",
+      "answer": "No. All designs at AH Digitizing are manually digitized to ensure premium quality and precision."
+    },
+    {
+      "id": 3,
+      "question": "How Much Do Your Services Cost?",
+      "answer": "At AH Digitizing, our pricing starts at $9 for embroidery digitizing and $5 for vector conversion. Final costs may vary depending on design complexity, size, and stitch details."
+    },
+    {
+      "id": 4,
+      "question": "What’s your turnaround time?",
+      "answer": "Our standard turnaround time is 4–12 hours. For urgent requests, we can deliver your digitized design within 1–4 hours. Complex designs may take longer."
+    },
+    {
+      "id": 5,
+      "question": "Do you offer discounts for bulk or regular clients?",
+      "answer": "Absolutely! We offer exclusive discounts for returning clients, bulk orders, and embroidery or screen printing businesses. Contact sales for custom pricing."
+    },
+    {
+      "id": 6,
+      "question": "What payment methods do you accept?",
+      "answer": "Credit/Debit cards, PayPal, and bank transfers are accepted."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "embroidery": [
+    { "id": 1, "src": "/home page/portfoilo embroidery/1st.jpg", "alt": "Embroidered cap with bird logo" },
+    { "id": 2, "src": "/home page/portfoilo embroidery/2nd.jpg", "alt": "Person in orange outfit" },
+    { "id": 3, "src": "/home page/portfoilo embroidery/3rd.jpg", "alt": "Circular embroidered patch" },
+    { "id": 4, "src": "/home page/portfoilo embroidery/4th.jpg", "alt": "Coffee cup illustration" },
+    { "id": 5, "src": "/home page/portfoilo embroidery/5th.jpg", "alt": "Embroidered cap detail" }
+  ],
+  "vector": [
+    { "id": 1, "src": "/home page/portfolio vector/1st.jpg", "alt": "Vector design 1" },
+    { "id": 2, "src": "/home page/portfolio vector/2nd.jpg", "alt": "Vector design 2" },
+    { "id": 3, "src": "/home page/portfolio vector/3rd.jpg", "alt": "Vector design 3" },
+    { "id": 4, "src": "/home page/portfolio vector/4th.jpg", "alt": "Vector design 4" }
+  ]
+}

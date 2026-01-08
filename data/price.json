@@ -1,0 +1,84 @@
+{
+  "embroidery": [
+    {
+      "id": "basic",
+      "title": "Basic",
+      "price": 8,
+      "suffix": "",
+      "features": [
+        "1-2 day turnaround",
+        "DST/PES output",
+        "1 revision",
+        "Basic digitizing"
+      ],
+      "popular": false
+    },
+    {
+      "id": "standard",
+      "title": "Standard",
+      "price": 14,
+      "suffix": "",
+      "features": [
+        "48h turnaround",
+        "Color optimization",
+        "2 revisions",
+        "Standard digitizing"
+      ],
+      "popular": true
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced",
+      "price": 20,
+      "suffix": "",
+      "features": [
+        "24h priority",
+        "Complex fills & trims",
+        "Unlimited revisions",
+        "Advanced digitizing"
+      ],
+      "popular": false
+    }
+  ],
+  "vector": [
+    {
+      "id": "start",
+      "title": "Start",
+      "price": 6,
+      "suffix": "",
+      "features": [
+        "PNG → SVG",
+        "Simple cleanup",
+        "1 revision",
+        "Starter vector conversion"
+      ],
+      "popular": false
+    },
+    {
+      "id": "simple",
+      "title": "Simple",
+      "price": 8,
+      "suffix": "",
+      "features": [
+        "Color separations",
+        "EPS/AI output",
+        "2 revisions",
+        "Simple vector conversion"
+      ],
+      "popular": false
+    },
+    {
+      "id": "standard-v",
+      "title": "Standard",
+      "price": 15,
+      "suffix": "",
+      "features": [
+        "Priority turnaround",
+        "Advanced cleanup",
+        "Multiple formats (AI, EPS, SVG)",
+        "Standard vector conversion"
+      ],
+      "popular": true
+    }
+  ]
+}
