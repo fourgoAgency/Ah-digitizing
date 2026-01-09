@@ -1,4 +1,5 @@
 import Hero from "@/components/home/Hero";
+import Banner from "@/components/home/Banner";
 import Pricing from "@/components/home/Pricing";
 import Services from "@/components/home/Services";
 import Portfolio from "@/components/home/Portfolio";
@@ -8,6 +9,7 @@ import CTABanner from "@/components/home/CTA";
 export default function Page() {
   return (
     <main>
+      <Banner />
       <Hero />
       <Services />
       <Pricing />

@@ -62,7 +62,8 @@ function DesktopMenu() {
 
       {/* SERVICES */}
       <div className="relative group">
-        <span className="cursor-pointer flex">Services<ChevronDown className="text-accent text-sm" /></span>
+        <Link href="/services">
+        <span className="cursor-pointer flex">Services<ChevronDown className="text-accent text-sm" /></span></Link>
 
         {/* Main dropdown */}
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
@@ -73,7 +74,7 @@ function DesktopMenu() {
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <span>Embroidery Digitizing</span>
+                <Link href="/services/embroidery" className="flex-1">Embroidery Digitizing</Link>
                 <span>›</span>
 
                 {/* RIGHT PANEL */}
@@ -91,7 +92,7 @@ function DesktopMenu() {
               </li>
 
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <span>Raster to Vector Services</span>
+                <Link href="/services/raster-to-vector" className="flex-1">Raster to Vector Services</Link>
                 <span>›</span>
 
                 {/* RIGHT PANEL */}

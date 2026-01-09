@@ -84,7 +84,7 @@ export default function BlogCarousel() {
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "+=120%",
+          end: "+=100%",
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -125,10 +125,10 @@ export default function BlogCarousel() {
       }}
       className="relative w-full py-10 bg-gray-100 overflow-hidden h-screen"
     >
-      <div className="hero-content relative max-w-6xl mx-auto flex items-center justify-center">
+      <div className="  relative max-w-6xl mx-auto flex items-center justify-center">
 
         {/* Left preview */}
-        <div className="hidden lg:block absolute left-0 opacity-30 scale-90 transition-all duration-500 ease-in-out">
+        <div className="hidden lg:block absolute left-0 opacity-30 scale-90 transition-all duration-500 ease-initial">
           <PreviewCard blog={blogs[(index - 1 + blogs.length) % blogs.length]} />
         </div>
 
