@@ -12,9 +12,9 @@ import CTASection from "@/components/about/CTASection";
    DATA (AKA BRAIN 🧠)
    ======================= */
 
-import values from "../data/about-values.json";
-import timeline from "../data/about-timeline.json";
-import testimonials from "../data/about-testimonials.json";
+import values from "@/data/about-values.json";
+import timeline from "@/data/about-timeline.json";
+import testimonials from "@/data/about-testimonials.json";
 
 type Value = {
   title: string;
@@ -47,3 +47,4 @@ export default function DigitizingLandingPage() {
   );
 
 }
+
