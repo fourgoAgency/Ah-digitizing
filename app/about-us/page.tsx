@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import HeroSection from "../components/about/HeroSection";
-import OurStorySection from "../components/about/OurStorySection";
-import MissionValuesSection from "../components/about/MissionValuesSection";
-import ServicesSection from "../components/about/ServicesSection";
-import JourneySection from "../components/about/JourneySection";
-import TestimonialsSection from "../components/about/TestimonialsSection";
-import CTASection from "../components/about/CTASection";
+import HeroSection from "@/components/about/HeroSection";
+import OurStorySection from "@/components/about/OurStorySection";
+import MissionValuesSection from "@/components/about/MissionValuesSection";
+import ServicesSection from "@/components/about/ServicesSection";
+import JourneySection from "@/components/about/JourneySection";
+import TestimonialsSection from "@/components/about/TestimonialsSection";
+import CTASection from "@/components/about/CTASection";
 
 /* =======================
    DATA (AKA BRAIN 🧠)
@@ -45,4 +45,5 @@ export default function DigitizingLandingPage() {
       <CTASection />
     </div>
   );
+
 }
