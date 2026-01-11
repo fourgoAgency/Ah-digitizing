@@ -184,71 +184,79 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
 export default function FAQPage() {
   const navRef = useRef<HTMLDivElement>(null);
   return (
-    
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
-<motion.nav
-  initial={{ y: -100 }}
-  animate={{ y: 0 }}
-  transition={{ duration: 0.5 }}
-  className="bg-blue-600 text-white sticky top-0 z-2 shadow-lg"
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-blue-600 text-white sticky top-0 z-50 shadow-lg overflow-x-hidden ">
+        <div className="max-w-7xl mx-auto px-4 relative">
+          {/* LEFT ARROW — ONLY ≤ 440px */}
+          <button
+            onClick={() =>
+              navRef.current?.scrollBy({ left: -150, behavior: "smooth" })
+            }
+            className="
+        absolute left-0 top-1/2 -translate-y-1/2
+        bg-blue-700/80 p-1.5 rounded-full z-20
+        max-[440px]:flex hidden
+      ">
+            <ChevronLeft className="w-5 h-5 text-white" />
+          </button>
+
+          {/* MENU */}
+          <div
+  ref={navRef}
+  className="
+    flex items-center gap-4 lg:gap-8 py-4
+    overflow-x-auto scroll-smooth
+    justify-center
+    max-[440px]:justify-start
+    px-10
+    mx-auto
+
+    [-ms-overflow-style:none]
+    [scrollbar-width:none]
+    [&::-webkit-scrollbar]:hidden
+  "
 >
-  <div className="max-w-7xl mx-auto px-4">
-    <div className="flex items-center gap-2">
 
-      {/* LEFT BUTTON */}
-      <button
-        onClick={() =>
-          navRef.current?.scrollBy({ left: -150, behavior: "smooth" })
-        }
-        className="lg:hidden bg-blue-700/80 p-1.5 rounded-full shrink-0 [@media(min-width:490px)]:hidden"
-      >
-        <ChevronLeft className="w-5 h-5 text-white" />
-      </button>
+            {faqData.map((section, index) => (
+              <motion.a
+                key={section.id}
+                href={`#${section.id}`}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+                className="text-sm sm:text-base lg:text-lg font-medium whitespace-nowrap hover:text-blue-200 transition-colors">
+                {section.title}
+              </motion.a>
+            ))}
+          </div>
 
-      {/* MENU */}
-      <div
-        ref={navRef}
-        className="flex-1 flex items-center gap-4 lg:gap-8 py-4 overflow-x-auto scrollbar-hide scroll-smooth justify-start lg:justify-center"
-      >
-        {faqData.map((section, index) => (
-          <motion.a
-            key={section.id}
-            href={`#${section.id}`}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.2 }}
-            className="text-sm lg:text-base font-medium whitespace-nowrap hover:text-blue-200 transition-colors"
-          >
-            {section.title}
-          </motion.a>
-        ))}
-      </div>
-
-      {/* RIGHT BUTTON */}
-      <button
-        onClick={() =>
-          navRef.current?.scrollBy({ left: 150, behavior: "smooth" })
-        }
-        className="lg:hidden bg-blue-700/80 p-1.5 rounded-full shrink-0 [@media(min-width:490px)]:hidden"
-      >
-        <ChevronRight className="w-5 h-5 text-white" />
-      </button>
-
-    </div>
-  </div>
-</motion.nav>
-
-
+          {/* RIGHT ARROW — ONLY ≤ 440px */}
+          <button
+            onClick={() =>
+              navRef.current?.scrollBy({ left: 150, behavior: "smooth" })
+            }
+            className="
+        absolute right-0 top-1/2 -translate-y-1/2
+        bg-blue-700/80 p-1.5 rounded-full z-20
+        max-[440px]:flex hidden
+      ">
+            <ChevronRight className="w-5 h-5 text-white" />
+          </button>
+        </div>
+      </motion.nav>
 
       {/* FAQ Content */}
       <div className="max-w-5xl mx-auto px-4 py-12 lg:py-16">
         {faqData.map((section) => (
-          <div 
-          className="scroll-mt-24 lg:scroll-mt-32"
-          key={section.id}
-          id={section.id}
-          >
+          <div
+            className="scroll-mt-24 lg:scroll-mt-32"
+            key={section.id}
+            id={section.id}>
             <FAQSection section={section} />
           </div>
         ))}
@@ -259,8 +267,8 @@ export default function FAQPage() {
         viewport={{ once: true }}
         transition={{ duration: 0.3 }}
         className="bg-[#0A21C0] w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
-          <div className="flex flex-col lg:flex-row items-center justify-around gap-6 sm:gap-8 lg:gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 sm:py-16 sm:pt-19">
+          <div className="flex flex-col lg:flex-row items-center justify-around gap-6 sm:gap-9 lg:gap-10">
             {/* Left */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
               <motion.div
@@ -280,7 +288,9 @@ export default function FAQPage() {
               </motion.div>
 
               <div className="text-white">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
+                <h2
+                  className=" text-3xl sm:text-4xl lg:text-4xl font-bold mb-2 sm:mb-3"
+                  >
                   Get In Touch With Us!
                 </h2>
                 <p className="text-blue-100 text-sm sm:text-base max-w-md">
@@ -312,4 +322,3 @@ export default function FAQPage() {
     </div>
   );
 }
-
