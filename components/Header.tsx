@@ -15,7 +15,27 @@ import {
 } from "react-icons/fa6";
 import { ChevronDown, Menu } from "lucide-react";
 
-/* ================= DATA ================= */
+/* ================= TOP NAVBAR ================= */
+function TopNavbar() {
+  return (
+    <nav className="border-b border-gray-100 flex justify-between items-center px-16 py-2">
+      <ul className="flex gap-4">
+        <li><FaFacebook className="text-blue-800" /></li>
+        <li><FaInstagram className="text-blue-800" /></li>
+        <li><FaXTwitter className="text-blue-800" /></li>
+        <li><FaPinterest className="text-blue-800" /></li>
+        <li><FaYoutube className="text-blue-800" /></li>
+      </ul>
+
+      <Link href="/account" className="flex items-center gap-2 text-blue-800 text-sm">
+        <FaUser /> My Account
+      </Link>
+    </nav>
+  );
+}
+
+/* ================= DESKTOP MENU ================= */
+
 const embroideryItems = [
   { label: "Logo Embroidery Digitizing", href: "/services/embroidery/logo" },
   { label: "Left Chest Embroidery Digitizing", href: "/services/embroidery/left-chest" },
@@ -34,39 +54,20 @@ const rasterToVectorItems = [
   { label: "Color Separation", href: "/services/raster-to-vector/color-separation" },
 ];
 
-/* ================= TOP NAVBAR ================= */
-function TopNavbar() {
-  return (
-    <nav className="border-b border-gray-100 flex flex-wrap justify-between items-center px-4 sm:px-6 md:px-16 py-2">
-      <ul className="flex gap-4">
-        <li><FaFacebook className="text-blue-800" /></li>
-        <li><FaInstagram className="text-blue-800" /></li>
-        <li><FaXTwitter className="text-blue-800" /></li>
-        <li><FaPinterest className="text-blue-800" /></li>
-        <li><FaYoutube className="text-blue-800" /></li>
-      </ul>
-
-      <Link href="/account" className="flex items-center gap-2 text-blue-800 text-sm mt-2 md:mt-0">
-        <FaUser /> My Account
-      </Link>
-    </nav>
-  );
-}
-
-/* ================= DESKTOP MENU ================= */
 function DesktopMenu() {
   return (
-    <nav className="hidden md:flex flex-wrap items-center gap-8 text-sm font-medium text-accent pt-4">
+    <nav className="hidden md:flex items-center gap-8 text-sm font-medium pt-18 text-accent">
+
       <Link href="/">Home</Link>
 
       {/* SERVICES */}
       <div className="relative group">
         <Link href="/services">
-          <span className="cursor-pointer flex">Services<ChevronDown className="text-accent text-sm" /></span>
-        </Link>
+        <span className="cursor-pointer flex">Services<ChevronDown className="text-accent text-sm" /></span></Link>
 
+        {/* Main dropdown */}
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
-                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[90vh] overflow-auto">
+                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
           <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
 
@@ -120,18 +121,20 @@ function DesktopMenu() {
       <div className="relative group">
         <span className="cursor-pointer flex">Pricing <ChevronDown className="text-accent text-sm" /></span>
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
-                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[90vh] overflow-auto">
+                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
           <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
+
+            {/* LEFT PANEL */}
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
                 <Link href="/pricing/embroidery-digitizing">
-                  <span>Embroidery Digitizing Pricing</span>
+                <span>Embroidery Digitizing Pricing</span>
                 </Link>
               </li>
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
                 <Link href="/pricing/raster-to-vector">
-                  <span>Raster to Vector Pricing</span>
+                <span>Raster to Vector Pricing</span>
                 </Link>
               </li>
             </ul>
@@ -145,10 +148,12 @@ function DesktopMenu() {
       {/* ABOUT */}
       <div className="relative group">
         <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span>
-        <div className="absolute left-0 top-full mt-3 opacity-0 invisible
-                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[90vh] overflow-auto">
+               <div className="absolute left-0 top-full mt-3 opacity-0 invisible
+                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
           <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
+
+            {/* LEFT PANEL */}
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
                 <Link href="/about/write-a-review">Write a Review</Link>
@@ -168,6 +173,7 @@ function DesktopMenu() {
   );
 }
 
+
 /* ================= MOBILE MENU ================= */
 function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -184,58 +190,101 @@ function MobileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-full sm:w-64 bg-[#083f7c] shadow-xl rounded-lg z-50">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-[#083f7c] shadow-xl rounded-lg z-50">
           <div className="py-2">
             {/* ADDITIONAL LINKS */}
             <div className="px-6 py-4 space-y-2 border-t border-[#0a4d99]">
-              <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">Home</Link>
-              <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">Portfolio</Link>
-              <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">Blogs</Link>
+              <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+                Home
+              </Link>
+              <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+                Portfolio
+              </Link>
+              <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+                Blogs
+              </Link>
             </div>
-
             {/* SERVICES ACCORDION */}
             <div className="border-b border-[#0a4d99]">
-              <button onClick={() => toggleAccordion('services')} className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors">
+              <button
+                onClick={() => toggleAccordion('services')}
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+              >
                 <span className="font-semibold text-white">Services</span>
-                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'services' ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${
+                    activeAccordion === 'services' ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
               {activeAccordion === 'services' && (
                 <div className="px-6 pb-4 space-y-2">
-                  <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Embroidery Digitizing</Link>
-                  <Link href="/services/raster-to-vector/silhouette" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Raster to Vector</Link>
-                  <Link href="/services/custom-patches" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Custom Patches</Link>
+                  <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Embroidery Digitizing
+                  </Link>
+                  <Link href="/services/raster-to-vector/silhouette" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Raster to Vector
+                  </Link>
+                  <Link href="/services/custom-patches" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Custom Patches
+                  </Link>
                 </div>
               )}
             </div>
 
             {/* PRICING ACCORDION */}
             <div className="border-b border-[#0a4d99]">
-              <button onClick={() => toggleAccordion('pricing')} className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors">
+              <button
+                onClick={() => toggleAccordion('pricing')}
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+              >
                 <span className="font-semibold text-white">Pricing</span>
-                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'pricing' ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${
+                    activeAccordion === 'pricing' ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
               {activeAccordion === 'pricing' && (
                 <div className="px-6 pb-4 space-y-2">
-                  <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Embroidery Pricing</Link>
-                  <Link href="/pricing/raster-to-vector" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Raster Pricing</Link>
+                  <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Embroidery Pricing
+                  </Link>
+                  <Link href="/pricing/raster-to-vector" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Raster Pricing
+                  </Link>
                 </div>
               )}
             </div>
 
             {/* ABOUT ACCORDION */}
             <div>
-              <button onClick={() => toggleAccordion('about')} className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors">
+              <button
+                onClick={() => toggleAccordion('about')}
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+              >
                 <span className="font-semibold text-white">About</span>
-                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'about' ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${
+                    activeAccordion === 'about' ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
               {activeAccordion === 'about' && (
                 <div className="px-6 pb-4 space-y-2">
-                  <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Write a Review</Link>
-                  <Link href="/about/contact" className="block py-2 text-sm text-white hover:text-[#0d5db8]">Contact</Link>
-                  <Link href="/about/faqs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">FAQs</Link>
+                  <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Write a Review
+                  </Link>
+                  <Link href="/about/contact" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    Contact
+                  </Link>
+                  <Link href="/about/faqs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                    FAQs
+                  </Link>
                 </div>
               )}
             </div>
+
 
           </div>
         </div>
@@ -251,12 +300,11 @@ export default function Header() {
   return (
     <>
       <TopNavbar />
-      <header className="flex flex-wrap justify-between items-center px-4 sm:px-6 md:px-16 py-4">
-        <div className="flex-shrink-0">
-          <Image src={logo} alt="Logo" width={150} height={50} style={{ objectFit: "contain" }} />
-        </div>
+      <header className="flex justify-between items-center px-6">
+        
+        <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
-        <div className="flex gap-4 flex-wrap items-center mt-2 md:mt-0">
+        <div className="flex gap-4">
           <Button
             className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 bg-transparent ${
               hoveredButton === 'shop'
@@ -283,7 +331,8 @@ export default function Header() {
           >
             Get Quote
           </Button>
-          <MobileMenu />
+        <MobileMenu />
+
         </div>
       </header>
     </>
