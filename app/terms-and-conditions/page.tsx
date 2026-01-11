@@ -78,16 +78,24 @@ export default function DisclaimersPage() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.01 }}
               className={section.title ? "mb-10" : "mb-6"}
             >
               {section.title && (
-                <h2 className="text-2xl lg:text-3xl font-bold text-blue-600 mb-4">
-                  {section.title}
-                </h2>
+<h2
+  className={`font-bold text-blue-600 mb-4 ${
+    section.id === "website-disclaimers"
+      ? "text-3xl sm:text-4xl lg:text-5xl"
+      : "text-2xl sm:text-3xl lg:text-3xl"
+  }`}
+>
+  {section.title}
+</h2>
+
               )}
 
-              <div className="text-gray-700 leading-relaxed text-sm lg:text-base whitespace-pre-line">
+              <div className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line">
+
                 {section.content}
               </div>
             </motion.div>
@@ -129,7 +137,7 @@ export default function DisclaimersPage() {
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
                 Get In Touch With Us!
               </h2>
-              <p className="text-blue-100 text-sm sm:text-base max-w-md">
+              <p className="text-blue-100 text-base sm:text-lg max-w-md">
                 Let us be the game-changing partner to make your business fly high.
               </p>
             </div>
