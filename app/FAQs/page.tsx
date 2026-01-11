@@ -191,7 +191,7 @@ export default function FAQPage() {
   initial={{ y: -100 }}
   animate={{ y: 0 }}
   transition={{ duration: 0.5 }}
-  className="bg-blue-600 text-white sticky top-0 z-50 shadow-lg"
+  className="bg-blue-600 text-white sticky top-0 z-2 shadow-lg"
 >
   <div className="max-w-7xl mx-auto px-4">
     <div className="flex items-center gap-2">
@@ -312,3 +312,4 @@ export default function FAQPage() {
     </div>
   );
 }
+
