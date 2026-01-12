@@ -9,7 +9,7 @@ import TestimonialsSection from "@/components/about/TestimonialsSection";
 import CTASection from "@/components/about/CTASection";
 
 /* =======================
-   DATA (AKA BRAIN 🧠)
+   DATA
    ======================= */
 
 import values from "@/data/about-values.json";
@@ -47,3 +47,4 @@ export default function DigitizingLandingPage() {
   );
 
 }
+
