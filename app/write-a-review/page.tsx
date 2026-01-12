@@ -148,7 +148,7 @@ export default function WriteReviewPage() {
                 }}
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&h=800&fit=crop"
+                  src="write_a_review.jpeg"
                   alt="Colorful embroidery threads"
                   fill
                   className="object-cover shadow-2xl"
@@ -171,4 +171,5 @@ export default function WriteReviewPage() {
       </div>
     </div>
   );
+
 }
