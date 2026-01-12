@@ -271,7 +271,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'about' && (
-                <div className="px-6 pb-4 space-y-2">
+                <div className="px-6 pb-4 space-y-2 z-9">
                   <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Write a Review
                   </Link>
