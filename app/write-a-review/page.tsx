@@ -148,7 +148,7 @@ export default function WriteReviewPage() {
                 }}
               >
                 <Image
-                  src="write_a_review.jpeg"
+                  src="write-a-review.jpeg"
                   alt="Colorful embroidery threads"
                   fill
                   className="object-cover shadow-2xl"
@@ -173,3 +173,4 @@ export default function WriteReviewPage() {
   );
 
 }
+
