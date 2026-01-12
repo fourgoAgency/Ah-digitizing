@@ -10,7 +10,7 @@ export default function OurStorySection() {
             <Image
               width={500}
               height={500}
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=600&fit=crop"
+              src="about_one.jpeg"
               alt="Modern office workspace"
               className="rounded-lg shadow-lg w-full h-auto"
             />
@@ -32,4 +32,5 @@ export default function OurStorySection() {
       </div>
     </section>
   );
+
 }
