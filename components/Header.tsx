@@ -156,13 +156,13 @@ function DesktopMenu() {
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/write-a-review">Write a Review</Link>
+                <Link href="/write-a-review">Write a Review</Link>
               </li>
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/contact">Contact</Link>
+                <Link href="/contact-us">Contact</Link>
               </li>
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/faqs">FAQs</Link>
+                <Link href="/FAQs">FAQs</Link>
               </li>
             </ul>
           </div>
@@ -275,10 +275,10 @@ function MobileMenu() {
                   <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Write a Review
                   </Link>
-                  <Link href="/about/contact" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/contact-us" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Contact
                   </Link>
-                  <Link href="/about/faqs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/FAQs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     FAQs
                   </Link>
                 </div>
