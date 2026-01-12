@@ -300,7 +300,7 @@ export default function Header() {
   return (
     <>
       <TopNavbar />
-      <header className="flex justify-between items-center px-6">
+      <header className="flex justify-between items-center px-6 relative z-[100]">
         
         <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
