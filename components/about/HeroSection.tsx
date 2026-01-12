@@ -23,7 +23,7 @@ export default function HeroSection() {
             <Image
               width={500}
               height={500}
-              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=600&fit=crop"
+              src="/about_two.jpeg"
               alt="Professional working at desk"
               className="rounded-lg shadow-lg w-full h-auto"
             />
@@ -32,4 +32,5 @@ export default function HeroSection() {
       </div>
     </section>
   );
+
 }
