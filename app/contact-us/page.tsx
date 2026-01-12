@@ -109,7 +109,7 @@ const ContactFormBlue: React.FC = () => {
   className="bg-white rounded-3xl shadow-2xl w-[420px] h-[420px] ml-auto bg-cover bg-center bg-no-repeat relative"
   style={{
     backgroundImage:
-      "url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=450&fit=crop')"
+      "url('/contact_us')"
   }}
 >
   <div className="absolute -right-[-90%] top-20 z-50">
@@ -202,4 +202,5 @@ export default function ContactPage() {
       {/* <Footer /> */}
     </div>
   );
+
 }
