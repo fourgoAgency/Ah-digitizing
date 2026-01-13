@@ -136,6 +136,7 @@
 /* Prevent overscroll jump when pinning sections with GSAP */
 html, body {
   overscroll-behavior: none;
+  scroll-behavior: smooth;
 }
 
 /* Ensure sections are positioned for pinning/scroll triggers */

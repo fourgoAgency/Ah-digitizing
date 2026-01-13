@@ -36,9 +36,9 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold mb-4">About</h4>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li><Link href="/about">About Us</Link></li>
+            <li><Link href="/about-us">About Us</Link></li>
             <li><Link href="/blog">Blog</Link></li>
-            <li><Link href="/about/write-a-review">Write a Review</Link></li>
+            <li><Link href="/write-a-review">Write a Review</Link></li>
           </ul>
         </div>
 
@@ -57,10 +57,10 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold mb-4">Support</h4>
           <ul className="space-y-2 text-sm text-gray-600 mb-6">
-            <li><Link href="/contact">Contact Us</Link></li>
-            <li><Link href="/faq">FAQ</Link></li>
+            <li><Link href="/contact-us">Contact Us</Link></li>
+            <li><Link href="/FAQs">FAQ</Link></li>
             <li><Link href="/privacy-policy">Privacy Policy</Link></li>
-            <li><Link href="/terms">Terms of Service</Link></li>
+            <li><Link href="/terms-and-conditions">Terms of Service</Link></li>
           </ul>
 
           <div className="flex gap-3">

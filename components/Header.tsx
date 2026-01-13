@@ -147,8 +147,9 @@ function DesktopMenu() {
 
       {/* ABOUT */}
       <div className="relative group">
-        <Link href="/about">
-        <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span></Link>
+        <Link href="/about-us">
+        <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span>
+        </Link>
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
@@ -157,13 +158,13 @@ function DesktopMenu() {
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/write-a-review">Write a Review</Link>
+                <Link href="/write-a-review">Write a Review</Link>
               </li>
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/contact">Contact</Link>
+                <Link href="/contact-us">Contact</Link>
               </li>
               <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
-                <Link href="/about/faqs">FAQs</Link>
+                <Link href="/FAQs">FAQs</Link>
               </li>
             </ul>
           </div>
@@ -228,7 +229,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'services' && (
-                <div className="px-6 pb-4 space-y-2">
+                <div className="px-6 pb-4 space-y-2 z-[9999]">
                   <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Embroidery Digitizing
                   </Link>
@@ -256,7 +257,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'pricing' && (
-                <div className="px-6 pb-4 space-y-2">
+                <div className="px-6 pb-4 space-y-2 z-[9999]">
                   <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Embroidery Pricing
                   </Link>
@@ -273,7 +274,8 @@ function MobileMenu() {
                 onClick={() => toggleAccordion('about')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
               >
-                <span className="font-semibold text-white">About</span>
+                    <span className="font-semibold text-white">About</span>
+
                 <ChevronDown
                   className={`w-4 h-4 text-white transition-transform duration-200 ${
                     activeAccordion === 'about' ? 'rotate-180' : ''
@@ -281,14 +283,14 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'about' && (
-                <div className="px-6 pb-4 space-y-2">
+                <div className="px-6 pb-4 space-y-2 z-[9999]">
                   <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Write a Review
                   </Link>
-                  <Link href="/about/contact" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/contact-us" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     Contact
                   </Link>
-                  <Link href="/about/faqs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/FAQs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
                     FAQs
                   </Link>
                 </div>
@@ -310,7 +312,7 @@ export default function Header() {
   return (
     <>
       <TopNavbar />
-      <header className="flex justify-between items-center px-6">
+      <header className="flex justify-between items-center px-6 relative z-[100]">
         
         <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
@@ -347,4 +349,3 @@ export default function Header() {
     </>
   );
 }
-
