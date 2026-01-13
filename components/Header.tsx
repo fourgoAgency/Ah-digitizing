@@ -147,7 +147,9 @@ function DesktopMenu() {
 
       {/* ABOUT */}
       <div className="relative group">
+        <Link href="/about-us">
         <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span>
+        </Link>
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
@@ -263,9 +265,8 @@ function MobileMenu() {
                 onClick={() => toggleAccordion('about')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
               >
-                {/* <Link href="/about-us"> */}
-                    <Link  href="/about-us" className="font-semibold text-white">About</Link>
-                {/* </Link> */}
+                    <span  href="/about-us" className="font-semibold text-white">About</span>
+
                 <ChevronDown
                   className={`w-4 h-4 text-white transition-transform duration-200 ${
                     activeAccordion === 'about' ? 'rotate-180' : ''
