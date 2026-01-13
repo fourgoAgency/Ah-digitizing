@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import TextType from "@/components/TextType";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,6 +12,8 @@ export default function Banner() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
+    const [currentTextIndex, setCurrentTextIndex] = useState(0);
+    const [textStyle, setTextStyle] = useState({});
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -44,10 +47,24 @@ export default function Banner() {
         return () => ctx.revert();
     }, []);
 
+    useEffect(() => {
+        if (imageRef.current) {
+            gsap.fromTo(imageRef.current, {
+                y: -50,
+                opacity: 0
+            }, {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        }
+    }, [currentTextIndex]);
+
     return (
         <section
             ref={sectionRef}
-            className="relative bg-[#2B5F7F] overflow-hidden pt-16 pb-32"
+            className="relative bg-primary overflow-hidden pt-16 pb-32"
         >
             <svg
                 className="absolute bottom-0 left-0 right-0 w-full h-20"
@@ -66,11 +83,17 @@ export default function Banner() {
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                            Experience Ultimate <br />
-                            <span className="text-secondary">Luxury and Wellness</span>
-                            <br />
-                            with{" "}
-                            <span className="text-secondary">AH Digitizing</span>
+                            Experience Ultimate Luxury and Wellness with&nbsp;
+                            <span className="text-secondary" style={{ WebkitTextStroke: '0.4px white' }}>
+                                <TextType
+                                    text={["AH Digitizing", "AH Vector"]}
+                                    typingSpeed={75}
+                                    pauseDuration={4000}
+                                    showCursor={true}
+                                    cursorCharacter="|"
+                                    onSentenceComplete={(sentence, index) => setCurrentTextIndex(index)}
+                                />
+                            </span>
                         </h1>
 
                         <p className="text-white/90 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
@@ -78,14 +101,24 @@ export default function Banner() {
                         </p>
 
                         {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                            <button className="px-8 py-3 bg-secondary hover:bg-secondary-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 uppercase text-sm tracking-wider">
+                        <div className="group flex flex-col sm:flex-row gap-4 mb-8">
+
+                            <button
+                                className="px-8 py-3 bg-secondary text-white
+      group-hover:bg-white group-hover:text-primary
+      font-bold rounded-lg transition-all duration-300 transform hover:scale-105 uppercase text-sm tracking-wider">
                                 Shop Now
                             </button>
-                            <button className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-[#2B5F7F] font-bold rounded-lg transition-all duration-300 transform hover:scale-105 uppercase text-sm tracking-wider">
+
+                            <button
+                                className="px-8 py-3 border-2 border-white text-white
+      group-hover:bg-secondary group-hover:text-white
+      font-bold rounded-lg transition-all duration-300 group-hover:border-transparent transform hover:scale-105 uppercase text-sm tracking-wider">
                                 Order Today
                             </button>
+
                         </div>
+
                     </div>
 
                     {/* Right Image */}
@@ -95,11 +128,11 @@ export default function Banner() {
                     >
                         <div className="relative w-64 h-96 md:w-125 md:h-125 drop-shadow-2xl">
                             <Image
-                                src="/home page/portfoilo embroidery/1st.jpg"
+                                src={currentTextIndex === 0 ? "/home-page/portfolio-vector/1st.jpg" : "/home-page/portfolio-embroidery/1st.jpg"}
                                 alt="Premium Digitizing Product"
                                 width={900}
                                 height={500}
-                                className="w-full h-full object-cover rounded-2xl"
+                                className="w-full h-full object-fill rounded-2xl "
                             />
                         </div>
                     </div>

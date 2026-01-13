@@ -147,7 +147,8 @@ function DesktopMenu() {
 
       {/* ABOUT */}
       <div className="relative group">
-        <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span>
+        <Link href="/about">
+        <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span></Link>
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
@@ -192,6 +193,15 @@ function MobileMenu() {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-64 bg-[#083f7c] shadow-xl rounded-lg z-50">
           <div className="py-2">
+            {/* BUTTONS */}
+            <div className="px-6 py-4 space-y-2 border-b border-[#0a4d99]">
+              <Button className="w-full bg-white text-[#083f7c] border border-[#083f7c] rounded-3xl px-10 py-2">
+                Shop Now
+              </Button>
+              <Button className="w-full bg-[#083f7c] text-white border border-white rounded-3xl px-10 py-2">
+                Get Quote
+              </Button>
+            </div>
             {/* ADDITIONAL LINKS */}
             <div className="px-6 py-4 space-y-2 border-t border-[#0a4d99]">
               <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
@@ -304,7 +314,7 @@ export default function Header() {
         
         <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
-        <div className="flex gap-4">
+        <div className="hidden md:flex gap-4">
           <Button
             className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 bg-transparent ${
               hoveredButton === 'shop'
@@ -331,9 +341,8 @@ export default function Header() {
           >
             Get Quote
           </Button>
-        <MobileMenu />
-
         </div>
+        <MobileMenu />
       </header>
     </>
   );

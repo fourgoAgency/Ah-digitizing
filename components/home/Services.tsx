@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useInView } from "framer-motion";
 
 const services = [
   {
@@ -34,6 +35,8 @@ const services = [
 
 export default function ServicesCarousel() {
   const [index, setIndex] = useState(1);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   const prev = () =>
     setIndex((index - 1 + services.length) % services.length);
@@ -41,23 +44,29 @@ export default function ServicesCarousel() {
     setIndex((index + 1) % services.length);
 
   return (
-    <section className="py-20 bg-white">
+    <motion.section
+      ref={ref}
+      className="py-20 bg-white"
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <h2 className="text-center text-2xl font-semibold mb-10">
         Services we Offered
       </h2>
 
-      <div className="relative max-w-6xl mx-auto flex items-center justify-center">
+      <div className="relative max-w-7xl mx-auto px-4">
 
         {/* Left Arrow */}
         <button
           onClick={prev}
-          className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100"
+          className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100 transition-all duration-200"
         >
           <ChevronLeft />
         </button>
 
         {/* Slider */}
-        <div className="flex items-center gap-3 overflow-hidden">
+        <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 overflow-hidden py-8">
           {Array.from({ length: 5 }, (_, offset) => {
             const i = (index - 2 + offset + services.length) % services.length;
             const service = services[i];
@@ -65,22 +74,42 @@ export default function ServicesCarousel() {
               Math.abs(i - index),
               services.length - Math.abs(i - index)
             );
-            const scaleClass =
-              distance === 0 ? "scale-100" : distance === 1 ? "scale-75" : "scale-50";
-            const opacityClass =
-              distance === 0 ? "opacity-100" : distance === 1 ? "opacity-75" : "opacity-50";
+
+            // scale
+            const scale =
+              distance === 0 ? 1 :
+                distance === 1 ? 0.85 :
+                  0.7;
+
+            // opacity
+            const opacity =
+              distance === 0 ? 1 :
+                distance === 1 ? 0.75 :
+                  0.5;
+
+            // 👇 NEW: pull far cards closer
+            const translateX =
+              distance === 0 ? 0 :
+                distance === 1 ? 0 :
+                  distance === 2 ? -20 : 0;
+
             return (
               <div
                 key={`${service.id}-${offset}`}
-                className={`transition-all duration-500 ease-in-out ${scaleClass} ${opacityClass}`}
+                style={{
+                  transform: `scale(${scale}) translateX(${translateX}px)`,
+                  opacity: opacity,
+                }}
+                className="transition-all duration-500 ease-in-out shrink-0"
               >
-                <div className="w-52 h-60 rounded-xl overflow-hidden shadow-md border border-accent bg-white">
+
+                <div className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white">
                   <Image
                     src={service.image}
                     alt={service.title}
-                    width={192}
-                    height={192}
-                    className="object-cover"
+                    width={256}
+                    height={320}
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </div>
@@ -91,7 +120,7 @@ export default function ServicesCarousel() {
         {/* Right Arrow */}
         <button
           onClick={next}
-          className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100"
+          className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100 transition-all duration-200"
         >
           <ChevronRight />
         </button>
@@ -102,12 +131,11 @@ export default function ServicesCarousel() {
         {services.map((_, i) => (
           <span
             key={i}
-            className={`w-2 h-2 rounded-full transition ${
-              i === index ? "bg-blue-600" : "bg-gray-300"
-            }`}
+            className={`w-2 h-2 rounded-full transition ${i === index ? "bg-blue-600" : "bg-gray-300"
+              }`}
           />
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

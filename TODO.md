@@ -1,0 +1,2 @@
+- [x] Hide the "Shop Now" and "Get Quote" buttons on mobile by adding "hidden md:flex" to their container div.
+- [x] Add the buttons inside the MobileMenu dropdown at the top, with mobile-appropriate styles.

@@ -10,7 +10,6 @@ export default function Page() {
   return (
     <main>
       <Banner />
-      <Hero />
       <Services />
       <Pricing />
       <Portfolio />

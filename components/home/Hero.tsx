@@ -1,13 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import ServicesCarousel from "./Services";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion, useInView } from "framer-motion";
 
 interface Blog {
   id: number;
@@ -44,183 +39,50 @@ const blogs: Blog[] = [
   },
 ];
 
-export default function BlogCarousel() {
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const heroRef = useRef<HTMLDivElement | null>(null);
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  
-
-  const prev = () => {
-    if (isAnimating) return;
-    setDirection('left');
-    setIsAnimating(true);
-    setIndex((index - 1 + blogs.length) % blogs.length);
-  };
-
-  const next = () => {
-    if (isAnimating) return;
-    setDirection('right');
-    setIsAnimating(true);
-    setIndex((index + 1) % blogs.length);
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAnimating(false);
-      setDirection(null);
-    }, 500); // Match the animation duration
-
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  useEffect(() => {
-    // GSAP ScrollTrigger: pin hero and animate .hero-content as user scrolls
-    if (!heroRef.current) return;
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "+=100%",
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
-
-      tl.to(".hero-content", {
-        opacity: 0,
-        y: -120,
-        ease: "none",
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Optional: reveal animation when the carousel comes into view
-  useEffect(() => {
-    if (!sectionRef.current) return;
-
-    gsap.from(sectionRef.current, {
-      y: 120,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-      },
-    });
-  }, []);
+export default function Hero() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   return (
-    <section
-      ref={(el) => {
-        heroRef.current = el as HTMLDivElement | null;
-        sectionRef.current = el as HTMLDivElement | null;
-      }}
-      className="relative w-full py-10 bg-gray-100 overflow-hidden h-screen"
-    >
-      <div className="  relative max-w-6xl mx-auto flex items-center justify-center">
-
-        {/* Left preview */}
-        <div className="hidden lg:block absolute left-0 opacity-30 scale-90 transition-all duration-500 ease-initial">
-          <PreviewCard blog={blogs[(index - 1 + blogs.length) % blogs.length]} />
-        </div>
-
-        {/* Main card */}
-          <div className="relative z-10">
-            <MainCard
-              blog={blogs[index]}
-              direction={direction}
-              isAnimating={isAnimating}
-            />
-          </div>
-
-        {/* Right preview */}
-        <div className="hidden lg:block absolute right-0 opacity-30 scale-90 transition-all duration-500 ease-in-out">
-          <PreviewCard blog={blogs[(index + 1) % blogs.length]} />
-        </div>
-
-        {/* Controls */}
-        <button
-          onClick={prev}
-          className="absolute left-4 lg:left-32 w-10 h-10 flex items-center justify-center rounded-full border bg-white shadow hover:bg-gray-100 transition-all duration-300 hover:scale-105"
-        >
-          <ChevronLeft />
-        </button>
-
-        <button
-          onClick={next}
-          className="absolute right-4 lg:right-32 w-10 h-10 flex items-center justify-center rounded-full border bg-white shadow hover:bg-gray-100 transition-all duration-300 hover:scale-105"
-        >
-          <ChevronRight />
-        </button>
+    <section ref={ref} className="relative w-full py-10 bg-gray-100 overflow-hidden h-screen">
+      <div className="max-w-6xl mx-auto flex justify-center gap-6">
+        {blogs.map((blog, index) => (
+          <Card key={blog.id} blog={blog} isCenter={index === 1} isInView={isInView} />
+        ))}
       </div>
     </section>
   );
 }
 
-/* ---------------- Components ---------------- */
-
-interface CardProps {
-  blog: Blog;
-  direction?: 'left' | 'right' | null;
-  isAnimating?: boolean;
-}
-
-function MainCard({ blog, direction, isAnimating }: CardProps) {
+const Card = ({ blog, isCenter, isInView }: { blog: Blog; isCenter: boolean; isInView: boolean }) => {
   return (
-    <div
-      className={`
-        relative w-180 h-105 rounded-2xl overflow-hidden shadow-xl border
-        transition-all duration-500 ease-in-out
-        ${isAnimating
-          ? direction === 'right'
-            ? 'animate-fade-in-right'
-            : 'animate-fade-in-left'
-          : 'hover:scale-105 hover:shadow-2xl transition-transform duration-300'
-        }
-        transform-gpu
-      `}
+    <motion.div
+      className="relative w-96 h-96 rounded-2xl overflow-hidden shadow-xl border hover:scale-105 hover:shadow-2xl transition-transform duration-300 transform-gpu"
+      initial={isCenter ? { scale: 1.2 } : { scale: 0.5 }}
+      animate={isInView ? { scale: 1 } : (isCenter ? { scale: 1.2 } : { scale: 0.5 })}
+      transition={{ duration: 1.5, ease: "easeInOut" }}
     >
       <Image
         src={blog.image}
         alt={blog.title}
-        fill
+        width={500}
+        height={1200}
         className="object-cover transition-transform duration-500 hover:scale-110"
       />
 
-      <div className="absolute inset-0 bg-linear-to-t from-white/90 via-white/60 to-transparent p-8 flex flex-col justify-end transition-opacity duration-300">
-        <span className="inline-block mb-3 px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded-full w-fit animate-fade-in-up">
+      <div className="absolute inset-0 bg-linear-to-t from-white/90 via-white/60 to-transparent p-6 flex flex-col justify-end transition-opacity duration-300">
+        <span className="inline-block mb-2 px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded-full w-fit">
           {blog.category}
         </span>
 
-        <h3 className="text-2xl font-semibold mb-2 animate-fade-in-up">
+        <h3 className="text-lg font-semibold mb-2">
           {blog.title}
         </h3>
 
-        <p className="text-gray-600 text-sm max-w-xl animate-fade-in-up">
+        <p className="text-gray-600 text-sm">
           {blog.excerpt}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
-}
-
-function PreviewCard({ blog }: { blog: Blog }) {
-  return (
-    <div className="relative w-90 h-75 rounded-xl overflow-hidden border transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
-      <Image
-        src={blog.image}
-        alt={blog.title}
-        fill
-        className="object-cover transition-transform duration-500 hover:scale-110"
-      />
-    </div>
-  );
-}
+};
