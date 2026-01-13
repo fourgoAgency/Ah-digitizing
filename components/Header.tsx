@@ -263,9 +263,9 @@ function MobileMenu() {
                 onClick={() => toggleAccordion('about')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
               >
-                <Link href="/about-us">
-                    <span className="font-semibold text-white">About</span>
-                </Link>
+                {/* <Link href="/about-us"> */}
+                    <Link className="font-semibold text-white">About</Link>
+                {/* </Link> */}
                 <ChevronDown
                   className={`w-4 h-4 text-white transition-transform duration-200 ${
                     activeAccordion === 'about' ? 'rotate-180' : ''
