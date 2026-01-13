@@ -38,7 +38,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-gray-600">
             <li><Link href="/about-us">About Us</Link></li>
             <li><Link href="/blog">Blog</Link></li>
-            <li><Link href="/about/write-a-review">Write a Review</Link></li>
+            <li><Link href="/write-a-review">Write a Review</Link></li>
           </ul>
         </div>
 
