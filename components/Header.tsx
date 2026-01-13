@@ -265,7 +265,7 @@ function MobileMenu() {
                 onClick={() => toggleAccordion('about')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
               >
-                    <span  href="/about-us" className="font-semibold text-white">About</span>
+                    <span className="font-semibold text-white">About</span>
 
                 <ChevronDown
                   className={`w-4 h-4 text-white transition-transform duration-200 ${
