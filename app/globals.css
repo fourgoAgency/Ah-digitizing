@@ -1,0 +1,368 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+  
+  /* Custom fonts */
+  --font-abril: 'Abril Fatface', serif;
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  /* Your design colors */
+  --background: #ffffff;
+  --foreground: #141619;
+  
+  --primary: #0A21C0;
+  --primary-foreground: #ffffff;
+  
+  --secondary: #050A44;
+  --secondary-foreground: #ffffff;
+  
+  --accent: #2C2E3A;
+  --accent-foreground: #ffffff;
+  
+  --muted: #B3B4BD;
+  --muted-foreground: #141619;
+  
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  
+  --border: rgba(0, 0, 0, 0.12);
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #141619;
+  
+  --primary: #0A21C0;
+  --primary-foreground: #ffffff;
+  
+  --secondary: #1a1d29;
+  --secondary-foreground: #ffffff;
+  
+  --accent: #2C2E3A;
+  --accent-foreground: #ffffff;
+  
+  --muted: #B3B4BD;
+  --muted-foreground: #141619;
+  
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  
+  --border: rgba(0, 0, 0, 0.12);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  
+  --accent: #334155;
+  --accent-foreground: #f8fafc;
+  
+  --muted: #64748b;
+  --muted-foreground: #cbd5e1;
+  
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter);
+  }
+  
+  /* Typography utilities */
+  .font-abril {
+    font-family: var(--font-abril);
+  }
+  
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+}
+
+/* Prevent overscroll jump when pinning sections with GSAP */
+html, body {
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+
+/* Ensure sections are positioned for pinning/scroll triggers */
+section {
+  position: relative;
+}
+
+/* ============================================
+   HERO SHUTTER ANIMATION
+   ============================================ */
+.hero-shutter-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-shutter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.shutter-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(90deg, rgba(20,22,25,0.98), rgba(20,22,25,0.9));
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: transform 700ms cubic-bezier(.2,.9,.2,1);
+}
+
+.shutter-panel.right {
+  right: 0;
+  left: auto;
+  transform-origin: right;
+  transition-delay: 90ms;
+}
+
+.shutter-panel.left {
+  left: 0;
+}
+
+.shutter-open .shutter-panel.left {
+  transform: scaleX(0);
+}
+
+.shutter-open .shutter-panel.right {
+  transform: scaleX(0);
+}
+
+/* Gentle reveal for inner content when shutter opens */
+.hero-shutter-container .hero-content {
+  transition: opacity 400ms ease 100ms, transform 500ms cubic-bezier(.2,.9,.2,1) 100ms;
+  opacity: 0;
+  transform: translateY(6px) scale(0.99);
+}
+
+.shutter-open .hero-content {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ============================================
+   SERVICES SHUTTER ANIMATION
+   ============================================ */
+.services-shutter-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.services-shutter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.services-shutter .shutter-panel {
+  background: linear-gradient(90deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+  transition: transform 600ms cubic-bezier(.2,.9,.2,1);
+}
+
+.services-shutter .shutter-panel.right {
+  transition-delay: 80ms;
+}
+
+.services-open .shutter-panel.left {
+  transform: scaleX(0);
+}
+
+.services-open .shutter-panel.right {
+  transform: scaleX(0);
+}
+
+/* Gentle reveal for inner content when shutter opens */
+.services-shutter-container .services-content {
+  transition: opacity 400ms ease 120ms, transform 500ms cubic-bezier(.2,.9,.2,1) 100ms;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+.services-open .services-content {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ============================================
+   PRICING COMPONENT STYLES
+   ============================================ */
+.pricing-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+}
+
+.pricing-badge-popular {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-balance {
+  text-wrap: balance;
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Stagger animation delays */
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animate-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* ============================================
+   FOCUS STYLES
+   ============================================ */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   TRANSITIONS
+   ============================================ */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-bounce {
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ============================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================ */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+}
