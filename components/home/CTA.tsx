@@ -11,10 +11,10 @@ export default function CTABanner() {
               {/* Replace with your actual logo/icon */}
               <div className="relative w-24 h-24 md:w-28 md:h-28">
                 <Image 
-                  src="/logo.jpeg" 
+                  src="/logo.png" 
                   alt="Company Logo" 
-                  width={500}
-                    height={500}
+                  width={800}
+                    height={800}
                   className="w-full h-full object-contain"
                 />
               </div>

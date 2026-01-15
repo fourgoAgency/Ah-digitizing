@@ -53,16 +53,16 @@ export default function ServicesCarousel() {
         <div className="flex gap-8 items-start">
           {/* Left Sidebar */}
           <div className="hidden lg:block w-80 shrink-0">
-            <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h3 className="text-3xl font-bold text-primary mb-4">
+            <div className="bg-primary rounded-2xl p-8 shadow-sm">
+              <h3 className="text-3xl font-bold text-white mb-4">
                 Shop By<br />Category
               </h3>
-              <p className="text-gray-600 text-sm mb-6">
+              <p className="text-gray-100 text-sm mb-6">
                 Explore our wide range of services tailored to meet your design and digitizing needs. Click on any category to discover more!
               </p>
               <Link
                 href="/shop"
-                className="inline-block px-8 py-3 border-2 bg-primary text-white rounded-full font-medium hover:border-primary hover:text-primary transition-colors"
+                className="inline-block px-8 py-3 border-2 bg-white text-primary rounded-full font-medium hover:border-white hover:text-white hover:bg-transparent transition-colors"
               >
                 Shop now
               </Link>
