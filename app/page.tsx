@@ -1,21 +1,9 @@
-import Hero from "@/components/home/Hero";
-import Banner from "@/components/home/Banner";
-import Pricing from "@/components/home/Pricing";
-import Services from "@/components/home/Services";
-import Portfolio from "@/components/home/Portfolio";
-import Category from '@/components/home/Category'
-import WhyChooseAndFAQ from "@/components/home/WhyChooseUs";
-import CTABanner from "@/components/home/CTA";
-export default function Page() {
+import Home from '@/components/home/Home'
+import React from 'react'
+export default function page() {
   return (
-    <main>
-      <Banner />
-      <Services />
-      <Pricing />
-      <Portfolio />
-      <Category />
-      <WhyChooseAndFAQ/>
-      <CTABanner/>
-    </main>
-  );
+    <div className="">
+      <Home />
+    </div>
+  )
 }

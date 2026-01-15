@@ -1,37 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import Background from "@/components/Background";
+import PageWrapper from "@/components/Pagewrapper";
 import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "AhDigitizing",
-  description: "A digital art portfolio showcasing stunning creations.",
+export const metadata = {
+  title: "Fourgo — Digital Agency",
+  description: "Professional web development, design, and marketing services.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header />
-        {children}
-        <Footer />
+      <body className={`${inter.className} bg-white text-[#0a1f44] relative`}>
+        <Background />
+        <Navbar />
+        <main className="relative z-10">
+          <PageWrapper>{children}</PageWrapper>
+        </main>
+        <Footer/>
       </body>
     </html>
   );
