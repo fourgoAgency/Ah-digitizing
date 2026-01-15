@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import TextType from "@/components/TextType";
+import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,9 @@ export default function Banner() {
     const imageRef = useRef<HTMLDivElement>(null);
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [textStyle, setTextStyle] = useState({});
+    const h2Ref = useRef<HTMLHeadingElement>(null);
+    const [h2Text, setH2Text] = useState("Raster to Vector");
+    const [hoveredButton, setHoveredButton] = useState<'shop' | 'quote' | null>(null);
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -61,6 +65,18 @@ export default function Banner() {
         }
     }, [currentTextIndex]);
 
+    useEffect(() => {
+        if (h2Ref.current) {
+            const tl = gsap.timeline();
+            tl.to(h2Ref.current, { y: -30, opacity: 0, duration: 0.3, ease: "power2.out" })
+              .call(() => {
+                  setH2Text(currentTextIndex === 0 ? "Raster to Vector" : "Embroidery digitizing");
+              })
+              .set(h2Ref.current, { y: 30 })
+              .to(h2Ref.current, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
+        }
+    }, [currentTextIndex]);
+
     return (
         <section
             ref={sectionRef}
@@ -79,14 +95,14 @@ export default function Banner() {
             </svg>
 
             <div className="max-w-7xl mx-auto px-4 lg:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-125">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center min-h-125">
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
                             Experience Ultimate Luxury and Wellness with&nbsp;
                             <span className="text-secondary" style={{ WebkitTextStroke: '0.4px white' }}>
                                 <TextType
-                                    text={["AH Digitizing", "AH Vector"]}
+                                    text={["Ah Digitizing", "Ah Digitizing"]}
                                     typingSpeed={75}
                                     pauseDuration={4000}
                                     showCursor={true}
@@ -101,22 +117,33 @@ export default function Banner() {
                         </p>
 
                         {/* CTA Buttons */}
-                        <div className="group flex flex-col sm:flex-row gap-4 mb-8">
-
-                            <button
-                                className="px-8 py-3 bg-secondary text-white
-      group-hover:bg-white group-hover:text-primary
-      font-bold rounded-lg transition-all duration-300 transform hover:scale-105 uppercase text-sm tracking-wider">
+                        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                            <Button
+                                className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 bg-transparent ${
+                                    hoveredButton === 'shop'
+                                        ? 'bg-secondary text-white border-secondary'
+                                        : hoveredButton === 'quote'
+                                        ? 'bg-white text-secondary border-white'
+                                        : 'border-white text-white'
+                                }`}
+                                onMouseEnter={() => setHoveredButton('shop')}
+                                onMouseLeave={() => setHoveredButton(null)}
+                            >
                                 Shop Now
-                            </button>
-
-                            <button
-                                className="px-8 py-3 border-2 border-white text-white
-      group-hover:bg-secondary group-hover:text-white
-      font-bold rounded-lg transition-all duration-300 group-hover:border-transparent transform hover:scale-105 uppercase text-sm tracking-wider">
-                                Order Today
-                            </button>
-
+                            </Button>
+                            <Button
+                                className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 ${
+                                    hoveredButton === 'quote'
+                                        ? 'bg-secondary text-white border-white'
+                                        : hoveredButton === 'shop'
+                                        ? 'bg-white text-secondary border-white'
+                                        : 'bg-secondary text-white border-white'
+                                }`}
+                                onMouseEnter={() => setHoveredButton('quote')}
+                                onMouseLeave={() => setHoveredButton(null)}
+                            >
+                                Get Quote
+                            </Button>
                         </div>
 
                     </div>
@@ -124,13 +151,14 @@ export default function Banner() {
                     {/* Right Image */}
                     <div
                         ref={imageRef}
-                        className="flex justify-center lg:justify-end relative"
+                        className="flex flex-col justify-center lg:justify-end relative m-24"
                     >
-                        <div className="relative w-64 h-96 md:w-125 md:h-125 drop-shadow-2xl">
+                        <h2 ref={h2Ref} className="text-white font-bold text-center text-4xl mb-6">{h2Text}</h2>
+                        <div className="relative w-64 h-64 md:w-96 md:h-96 drop-shadow-2xl">
                             <Image
                                 src={currentTextIndex === 0 ? "/home-page/portfolio-vector/1st.jpg" : "/home-page/portfolio-embroidery/1st.jpg"}
                                 alt="Premium Digitizing Product"
-                                width={900}
+                                width={600}
                                 height={500}
                                 className="w-full h-full object-fill rounded-2xl "
                             />

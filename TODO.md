@@ -1,2 +1,7 @@
-- [x] Hide the "Shop Now" and "Get Quote" buttons on mobile by adding "hidden md:flex" to their container div.
-- [x] Add the buttons inside the MobileMenu dropdown at the top, with mobile-appropriate styles.
+# TODO for Pricing.tsx Animation
+
+- [x] Replace GSAP with framer-motion in Pricing.tsx
+- [x] Create overlay animation that slowly comes up from bottom
+- [x] Increase z-index for overlay effect
+- [x] Add color changes for text and buttons when overlay animates up
+- [x] Test animation on scroll to ensure smooth transition and color changes

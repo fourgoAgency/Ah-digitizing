@@ -2,14 +2,15 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const categories = [
-  { id: 1, name: "Embroidery Digitizing", slug: "embroidery-digitizing", image: "/services/embroidery.jpg" },
-  { id: 2, name: "Vector Conversion", slug: "vector-conversion", image: "/services/vector.jpg" },
-  { id: 3, name: "Custom Patches", slug: "custom-patches", image: "/services/patches.jpg" },
-  { id: 4, name: "Logo Design", slug: "logo-design", image: "/services/logo.jpg" },
-  { id: 5, name: "3D Puff", slug: "3d-puff", image: "/services/3d-puff.jpg" },
-  { id: 6, name: "Applique", slug: "applique", image: "/services/applique.jpg" },
+  { id: 1, name: "Embroidery Digitizing", slug: "embroidery-digitizing", image: "/home-page/products picture/1.png" },
+  { id: 2, name: "Vector Conversion", slug: "vector-conversion", image: "/home-page/products picture/2.png" },
+  { id: 3, name: "Custom Patches", slug: "custom-patches", image: "/home-page/products picture/3.png" },
+  { id: 4, name: "Logo Design", slug: "logo-design", image: "/home-page/products picture/4.png" },
+  { id: 5, name: "3D Puff", slug: "3d-puff", image: "/home-page/products picture/5.png" },
+  { id: 6, name: "Applique", slug: "applique", image: "/home-page/products picture/6.png" },
 ];
 
 export default function ServicesCarousel() {
@@ -57,7 +58,7 @@ export default function ServicesCarousel() {
                 Shop By<br />Category
               </h3>
               <p className="text-gray-600 text-sm mb-6">
-                Duis Lorem laborum quis esse officia ea commodo commodo anim est et nulla
+                Explore our wide range of services tailored to meet your design and digitizing needs. Click on any category to discover more!
               </p>
               <Link
                 href="/shop"
@@ -102,18 +103,14 @@ export default function ServicesCarousel() {
                     {/* Image */}
                     <div className="aspect-4/3 bg-gray-200 overflow-hidden">
                       <div className="w-full h-full flex items-center justify-center text-gray-400 group-hover:scale-110 transition-transform duration-500">
-                        {/* Replace with actual image */}
-                        <svg className="w-20 h-20 opacity-30" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                        </svg>
-                        {/* Uncomment when you have images:
-                        <img 
+                        <Image 
                           src={category.image} 
                           alt={category.name}
+                          width={5000}
+                          height={5000}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           draggable={false}
                         />
-                        */}
                       </div>
                     </div>
 

@@ -9,27 +9,27 @@ const services = [
   {
     id: 1,
     title: "Embroidery Digitizing",
-    image: "/logo.jpeg",
+    image: "/embriodery.png",
   },
   {
     id: 2,
     title: "Vector Art",
-    image: "/logo.jpeg",
+    image: "/vector.png",
   },
   {
     id: 3,
     title: "Custom Design",
-    image: "/logo.jpeg",
+    image: "/Custom.png",
   },
   {
     id: 4,
     title: "Raster to Vector",
-    image: "/logo.jpeg",
+    image: "/vector.png",
   },
   {
     id: 5,
     title: "Raster to Vector",
-    image: "/logo.jpeg",
+    image: "/vector.png",
   },
 ];
 
@@ -105,11 +105,11 @@ export default function ServicesCarousel() {
 
                 <div className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white">
                   <Image
-                    src={service.image}
+                    src={`/home-page${service.image}`}
                     alt={service.title}
                     width={256}
                     height={320}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-fill"
                   />
                 </div>
               </div>

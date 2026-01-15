@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import pricesData from "../../data/price.json";
 
 type Plan = {
@@ -13,7 +14,7 @@ type Plan = {
   subtitle?: string;
 };
 
-function PriceCard({ plan }: { plan: Plan }) {
+function PriceCard({ plan, isInView }: { plan: Plan; isInView: boolean }) {
   const isOrganization = plan.title === "Advanced";
   
   return (
@@ -90,11 +91,22 @@ function PriceCard({ plan }: { plan: Plan }) {
 export default function Pricing() {
   const [type, setType] = useState<"embroidery" | "vector">("embroidery");
   const plans: Plan[] = (pricesData as any)[type] || [];
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: false, margin: "-20% 0px -20% 0px" });
 
   return (
-    <section className="py-16 bg-gray-50 relative overflow-hidden">
+    <section ref={sectionRef} className="py-16 bg-gray-50 relative overflow-hidden">
+      {/* Primary Color Overlay Animation */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 bg-primary"
+        style={{ height: '60%', zIndex: 15 }}
+        initial={{ y: "100%", opacity: 0 }}
+        animate={isInView ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
+        transition={{ duration: 2, ease: "easeOut" }}
+      ></motion.div>
+
       {/* Promo Badge - positioned in top right */}
-<div className="absolute top-16 right-36 rotate-20">
+<div className="absolute top-16 right-36 rotate-20 z-20">
   <div className="text-center leading-none">
     <div className="font-abril text-5xl text-gray-800 font-extrabold">Get</div>
     <div className="font-abril text-5xl text-primary -mt-2 font-extrabold">50% off</div>
@@ -102,38 +114,65 @@ export default function Pricing() {
   </div>
 </div>
 
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-center text-5xl font-bold mb-4">Pricing</h2>
-        <p className="text-center text-gray-600 mb-10">
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <motion.h2
+          className="text-center text-5xl font-bold mb-4"
+          animate={isInView ? { color: "#ffffff" } : { color: "#000000" }}
+          transition={{ duration: 1 }}
+        >
+          Pricing
+        </motion.h2>
+        <motion.p
+          className="text-center mb-10"
+          animate={isInView ? { color: "#ffffff" } : { color: "#6b7280" }}
+          transition={{ duration: 1 }}
+        >
           Officia exercitation quis voluptate elit consequat nostrud
-        </p>
+        </motion.p>
 
         <div className="flex items-center justify-center gap-0 mb-12">
-          <button
+          <motion.button
             onClick={() => setType("embroidery")}
             className={`px-8 py-3 rounded-l-full border-2 border-primary font-medium transition-colors ${
               type === "embroidery"
                 ? "bg-primary text-white"
                 : "bg-white text-primary"
             }`}
+            animate={isInView ? {
+              backgroundColor: type === "embroidery" ? "#ffffff" : "#ffffff",
+              color: type === "embroidery" ? "#000000" : "#000000"
+            } : {}}
+            transition={{ duration: 1 }}
           >
             Embroidery Digitizing
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={() => setType("vector")}
             className={`px-8 py-3 rounded-r-full border-2 border-l-0 border-primary font-medium transition-colors ${
               type === "vector"
                 ? "bg-primary text-white"
                 : "bg-white text-primary"
             }`}
+            animate={isInView ? {
+              backgroundColor: type === "vector" ? "#ffffff" : "#ffffff",
+              color: type === "vector" ? "#000000" : "#000000"
+            } : {}}
+            transition={{ duration: 1 }}
           >
             Vector Conversion
-          </button>
+          </motion.button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((p) => (
-            <PriceCard key={p.id} plan={p} />
+          {plans.map((p, index) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
+            >
+              <PriceCard plan={p} isInView={isInView} />
+            </motion.div>
           ))}
         </div>
       </div>

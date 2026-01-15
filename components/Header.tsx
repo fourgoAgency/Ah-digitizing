@@ -69,7 +69,7 @@ function DesktopMenu() {
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
+          <div className="flex rounded-lg shadow-xl bg-primary text-white">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
@@ -123,7 +123,7 @@ function DesktopMenu() {
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
+          <div className="flex rounded-lg shadow-xl bg-primary text-white">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
@@ -153,7 +153,7 @@ function DesktopMenu() {
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-[#083f7c] text-white">
+          <div className="flex rounded-lg shadow-xl bg-primary text-white">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
@@ -192,31 +192,31 @@ function MobileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-[#083f7c] shadow-xl rounded-lg z-50">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-primary shadow-xl rounded-lg z-50">
           <div className="py-2">
             {/* BUTTONS */}
-            <div className="px-6 py-4 space-y-2 border-b border-[#0a4d99]">
-              <Button className="w-full bg-white text-[#083f7c] border border-[#083f7c] rounded-3xl px-10 py-2">
+            <div className="px-6 py-4 space-y-2 border-b border-blue-700">
+              <Button className="w-full bg-white text-primary border border-primary rounded-3xl px-10 py-2">
                 Shop Now
               </Button>
-              <Button className="w-full bg-[#083f7c] text-white border border-white rounded-3xl px-10 py-2">
+              <Button className="w-full bg-primary text-white border border-white rounded-3xl px-10 py-2">
                 Get Quote
               </Button>
             </div>
             {/* ADDITIONAL LINKS */}
-            <div className="px-6 py-4 space-y-2 border-t border-[#0a4d99]">
-              <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+            <div className="px-6 py-4 space-y-2 border-t border-blue-700">
+              <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Home
               </Link>
-              <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+              <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Portfolio
               </Link>
-              <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-[#0d5db8]">
+              <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Blogs
               </Link>
             </div>
             {/* SERVICES ACCORDION */}
-            <div className="border-b border-[#0a4d99]">
+            <div className="border-b border-blue-700">
               <button
                 onClick={() => toggleAccordion('services')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
@@ -230,13 +230,13 @@ function MobileMenu() {
               </button>
               {activeAccordion === 'services' && (
                 <div className="px-6 pb-4 space-y-2 z-[9999]">
-                  <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Digitizing
                   </Link>
-                  <Link href="/services/raster-to-vector/silhouette" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/services/raster-to-vector/silhouette" className="block py-2 text-sm text-white hover:text-muted">
                     Raster to Vector
                   </Link>
-                  <Link href="/services/custom-patches" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/services/custom-patches" className="block py-2 text-sm text-white hover:text-muted">
                     Custom Patches
                   </Link>
                 </div>
@@ -257,11 +257,11 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'pricing' && (
-                <div className="px-6 pb-4 space-y-2 z-[9999]">
-                  <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                <div className="px-6 pb-4 space-y-2 z-9999">
+                  <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Pricing
                   </Link>
-                  <Link href="/pricing/raster-to-vector" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/pricing/raster-to-vector" className="block py-2 text-sm text-white hover:text-muted">
                     Raster Pricing
                   </Link>
                 </div>
@@ -283,14 +283,14 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'about' && (
-                <div className="px-6 pb-4 space-y-2 z-[9999]">
-                  <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                <div className="px-6 pb-4 space-y-2 z-9999">
+                  <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-muted">
                     Write a Review
                   </Link>
-                  <Link href="/contact-us" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/contact-us" className="block py-2 text-sm text-white hover:text-muted">
                     Contact
                   </Link>
-                  <Link href="/FAQs" className="block py-2 text-sm text-white hover:text-[#0d5db8]">
+                  <Link href="/FAQs" className="block py-2 text-sm text-white hover:text-muted">
                     FAQs
                   </Link>
                 </div>
@@ -312,7 +312,7 @@ export default function Header() {
   return (
     <>
       <TopNavbar />
-      <header className="flex justify-between items-center px-6 relative z-[100]">
+      <header className="flex justify-between items-center px-6 relative z-100">
         
         <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
