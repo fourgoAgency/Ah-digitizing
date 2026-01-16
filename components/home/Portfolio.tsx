@@ -24,21 +24,22 @@ export default function ShowcaseGallery() {
         </div>
 
         {/* Full-width Tab Toggle (Links) */}
-        <div className="flex w-full mb-12 border-2 border-primary rounded-full overflow-hidden">
+        <div className="flex w-full mb-12 gap-4">
           <Link
             href=""
-            className="w-1/2 text-center py-1 font-medium bg-primary text-white"
+            className="w-1/2 text-center py-2 font-medium bg-primary text-white rounded-full border-2 border-primary transition hover:bg-primary/90"
           >
             Embroidery
           </Link>
 
           <Link
             href=""
-            className="w-1/2 text-center py-1 font-medium text-primary"
+            className="w-1/2 text-center py-2 font-medium text-primary bg-white rounded-full border-2 border-primary transition hover:bg-primary hover:text-white"
           >
             Vector
           </Link>
         </div>
+
 
         {/* Split Gallery Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -48,7 +49,7 @@ export default function ShowcaseGallery() {
             {embroideryImages.map((image) => (
               <div
                 key={image.id}
-                className="relative aspect-square rounded-2xl overflow-hidden"
+                className="relative aspect-square rounded-2xl overflow-hidden border-primary border"
               >
                 <Image
                   src={image.src}
@@ -66,7 +67,7 @@ export default function ShowcaseGallery() {
             {vectorImages.map((image) => (
               <div
                 key={image.id}
-                className="relative aspect-square rounded-2xl overflow-hidden"
+                className="relative aspect-square rounded-2xl border border-primary overflow-hidden"
               >
                 <Image
                   src={image.src}
@@ -79,18 +80,18 @@ export default function ShowcaseGallery() {
           </div>
 
         </div>
-          <div className="flex justify-center m-9">
+        <div className="flex justify-center m-9">
 
-            <Button
-              variant="outline"
-              className="text-primary border-primary w-36 hover:bg-primary hover:text-white"
-              size='sm'
-            >
-              <Link href="/portfolio">
-                View Full Portfolio
-              </Link>
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            className="text-primary border-primary w-36 hover:bg-primary hover:text-white"
+            size='sm'
+          >
+            <Link href="/portfolio">
+              View Full Portfolio
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

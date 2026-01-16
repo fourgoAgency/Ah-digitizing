@@ -43,6 +43,20 @@ export default function ServicesCarousel() {
   const next = () =>
     setIndex((index + 1) % services.length);
 
+  const swipeThreshold = 100;
+
+  const handleDragEnd = (_: any, info: any) => {
+    const { offset, velocity } = info;
+
+    if (offset.x < -swipeThreshold || velocity.x < -500) {
+      next();   // swipe left
+    }
+    else if (offset.x > swipeThreshold || velocity.x > 500) {
+      prev();   // swipe right
+    }
+  };
+
+
   return (
     <motion.section
       ref={ref}
@@ -51,7 +65,7 @@ export default function ServicesCarousel() {
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <h2 className="text-center text-2xl font-semibold mb-10">
+      <h2 className="text-center text-5xl font-bold mb-10">
         Services we Offered
       </h2>
 
@@ -66,7 +80,15 @@ export default function ServicesCarousel() {
         </button>
 
         {/* Slider */}
-        <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 overflow-hidden py-8">
+        <motion.div
+          className="flex items-center justify-center gap-0 sm:gap-1 md:gap-2 overflow-hidden py-8 cursor-grab active:cursor-grabbing"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.25}
+          onDragEnd={handleDragEnd}
+        >
+
+
           {Array.from({ length: 5 }, (_, offset) => {
             const i = (index - 2 + offset + services.length) % services.length;
             const service = services[i];
@@ -78,8 +100,8 @@ export default function ServicesCarousel() {
             // scale
             const scale =
               distance === 0 ? 1 :
-                distance === 1 ? 0.85 :
-                  0.7;
+                distance === 1 ? 0.88 :
+                  0.8;
 
             // opacity
             const opacity =
@@ -91,31 +113,37 @@ export default function ServicesCarousel() {
             const translateX =
               distance === 0 ? 0 :
                 distance === 1 ? 0 :
-                  distance === 2 ? -20 : 0;
+                  distance === 2 ? (offset < 2 ? 35 : -35) : 0;
 
             return (
-              <div
+              <motion.div
                 key={`${service.id}-${offset}`}
                 style={{
                   transform: `scale(${scale}) translateX(${translateX}px)`,
                   opacity: opacity,
                 }}
-                className="transition-all duration-500 ease-in-out shrink-0"
+                className="transition-all duration-500 ease-in-out shrink-0 cursor-grab active:cursor-grabbing"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragMomentum={false}   // 🔒 no elastic / no throw
+                onDragEnd={handleDragEnd}
               >
 
-                <div className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white">
+
+
+                <div className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 pointer-events-none rounded-xl overflow-hidden shadow-md border border-accent bg-white">
                   <Image
                     src={`/home-page${service.image}`}
                     alt={service.title}
                     width={256}
                     height={320}
-                    className="w-full h-full object-fill"
+                    className="w-full h-full object-fill pointer-events-none"
                   />
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Right Arrow */}
         <button
@@ -136,6 +164,6 @@ export default function ServicesCarousel() {
           />
         ))}
       </div>
-    </motion.section>
+    </motion.section >
   );
 }

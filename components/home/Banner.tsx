@@ -79,23 +79,14 @@ export default function Banner() {
 
     return (
         <section
-            ref={sectionRef}
-            className="relative bg-primary overflow-hidden pt-16 pb-32"
+        ref={sectionRef}
+        className="relative bg-primary overflow-hidden justify-center items-center pt-8 pb-2 px-5"
         >
-            <svg
-                className="absolute bottom-0 left-0 right-0 w-full h-20"
-                viewBox="0 0 1440 120"
-                preserveAspectRatio="none"
-            >
-                <path
-                    d="M0,40 Q360,0 720,40 T1440,40 L1440,120 L0,120 Z"
-                    fill="white"
-                    opacity="1"
-                />
-            </svg>
 
-            <div className="max-w-7xl mx-auto px-4 lg:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center min-h-125">
+
+            <div className="max-w-full pl-9 ">
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 justify-center items-center min-h-125">
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
@@ -134,10 +125,10 @@ export default function Banner() {
                             <Button
                                 className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 ${
                                     hoveredButton === 'quote'
-                                        ? 'bg-secondary text-white border-white'
+                                        ? 'bg-white text-white border-white'
                                         : hoveredButton === 'shop'
                                         ? 'bg-white text-secondary border-white'
-                                        : 'bg-secondary text-white border-white'
+                                        : 'bg-white text-primary border-white'
                                 }`}
                                 onMouseEnter={() => setHoveredButton('quote')}
                                 onMouseLeave={() => setHoveredButton(null)}
@@ -151,10 +142,11 @@ export default function Banner() {
                     {/* Right Image */}
                     <div
                         ref={imageRef}
-                        className="flex flex-col justify-center lg:justify-end relative m-24"
+                        className="flex flex-col justify-center items-center mt-4 md:mt-0"
                     >
-                        <h2 ref={h2Ref} className="text-white font-bold text-center text-4xl mb-6">{h2Text}</h2>
-                        <div className="relative w-64 h-64 md:w-96 md:h-96 drop-shadow-2xl">
+                        <h2 ref={h2Ref} className="text-white font-bold text-4xl mb-6">{h2Text}</h2>
+                        <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">
+
                             <Image
                                 src={currentTextIndex === 0 ? "/home-page/portfolio-vector/1st.jpg" : "/home-page/portfolio-embroidery/1st.jpg"}
                                 alt="Premium Digitizing Product"
