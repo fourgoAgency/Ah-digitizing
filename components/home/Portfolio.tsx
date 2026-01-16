@@ -25,24 +25,22 @@ export default function ShowcaseGallery() {
 
         {/* Full-width Tab Toggle (Links) */}
         <div className="flex w-full mb-12 gap-4">
-          <Link
-            href=""
+          <span
             className="w-1/2 text-center py-2 font-medium bg-primary text-white rounded-full border-2 border-primary transition hover:bg-primary/90"
           >
             Embroidery
-          </Link>
+          </span>
 
-          <Link
-            href=""
-            className="w-1/2 text-center py-2 font-medium text-primary bg-white rounded-full border-2 border-primary transition hover:bg-primary hover:text-white"
+          <span
+            className="w-1/2 text-center py-2 font-medium text-white bg-primary rounded-full border-2 border-primary transition hover:bg-primary hover:text-white"
           >
             Vector
-          </Link>
+          </span>
         </div>
 
 
         {/* Split Gallery Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 ">
 
           {/* Embroidery Column */}
           <div className="grid grid-cols-2 gap-6">
@@ -84,8 +82,7 @@ export default function ShowcaseGallery() {
 
           <Button
             variant="outline"
-            className="text-primary border-primary w-36 hover:bg-primary hover:text-white"
-            size='sm'
+            className="hover:text-primary rounded-full bg-primary hover:border-primary hover:bg-transparent text-white px-6"
           >
             <Link href="/portfolio">
               View Full Portfolio

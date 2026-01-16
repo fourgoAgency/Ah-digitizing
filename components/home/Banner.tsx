@@ -90,7 +90,7 @@ export default function Banner() {
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                            Experience Ultimate Luxury and Wellness with&nbsp;
+                            Experience Ultimate Luxury and Wellness with&nbsp; <br/>
                             <span className="text-secondary" style={{ WebkitTextStroke: '0.4px white' }}>
                                 <TextType
                                     text={["Ah Digitizing", "Ah Digitizing"]}
@@ -110,7 +110,7 @@ export default function Banner() {
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <Button
-                                className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 bg-transparent ${
+                                className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
                                     hoveredButton === 'shop'
                                         ? 'bg-secondary text-white border-secondary'
                                         : hoveredButton === 'quote'
@@ -123,7 +123,7 @@ export default function Banner() {
                                 Shop Now
                             </Button>
                             <Button
-                                className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 ${
+                                className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
                                     hoveredButton === 'quote'
                                         ? 'bg-white text-white border-white'
                                         : hoveredButton === 'shop'
@@ -142,7 +142,7 @@ export default function Banner() {
                     {/* Right Image */}
                     <div
                         ref={imageRef}
-                        className="flex flex-col justify-center items-center mt-4 md:mt-0"
+                        className="flex flex-col justify-center items-center xl:py-16 md:mt-0"
                     >
                         <h2 ref={h2Ref} className="text-white font-bold text-4xl mb-6">{h2Text}</h2>
                         <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">

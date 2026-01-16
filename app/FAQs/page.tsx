@@ -141,7 +141,7 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.2, delay: index * 0.1 }}
-              className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer ">
+              className="bg-white border border-gray-200 rounded-full overflow-hidden hover:shadow-md transition-shadow cursor-pointer ">
               <button
                 onClick={() => toggleItem(item.id)}
                 className=" group w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors cursor-pointer ">

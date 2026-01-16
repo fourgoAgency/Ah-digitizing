@@ -196,10 +196,10 @@ function MobileMenu() {
           <div className="py-2">
             {/* BUTTONS */}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
-              <Button className="w-full bg-white text-primary border border-primary rounded-3xl px-10 py-2">
+              <Button className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
                 Shop Now
               </Button>
-              <Button className="w-full bg-primary text-white border border-white rounded-3xl px-10 py-2">
+              <Button className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
                 Get Quote
               </Button>
             </div>
@@ -316,9 +316,9 @@ export default function Header() {
         
         <Image src={logo} alt="Logo" width={150} />
         <DesktopMenu />
-        <div className="hidden md:flex gap-4">
+        <div className="hidden lg:flex gap-4">
           <Button
-            className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 bg-transparent ${
+            className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
               hoveredButton === 'shop'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'quote'
@@ -331,7 +331,7 @@ export default function Header() {
             Shop Now
           </Button>
           <Button
-            className={`border shadow-xl rounded-3xl px-10 transition-all duration-200 ${
+            className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
               hoveredButton === 'quote'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'shop'

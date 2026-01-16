@@ -121,7 +121,7 @@ export default function WriteReviewPage() {
                   onClick={handleSubmit}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                  className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 flex items-center gap-2"
                 >
                   Submit
                   <ArrowRight className="w-5 h-5" />

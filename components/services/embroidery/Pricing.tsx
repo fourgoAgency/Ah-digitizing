@@ -80,7 +80,7 @@ export default function Pricing() {
               {/* CTA Button */}
               <Link
                 href="/account?quote=embroidery"
-                className={`w-full py-3 px-6 rounded-lg font-semibold text-center transition-colors ${
+                className={`w-full py-3 px-6 rounded-full font-semibold text-center transition-colors ${
                   plan.ctaVariant === "primary"
                     ? "bg-blue-600 text-white hover:bg-blue-700"
                     : "border border-blue-600 text-blue-600 hover:bg-blue-50"

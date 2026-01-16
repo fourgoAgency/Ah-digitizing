@@ -19,7 +19,7 @@ export default function ServicesSection() {
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
               Transform your designs into high-quality embroidery files with precision and detail, tailored for all fabric types.
             </p>
-            <button className="text-[#0A21C0] font-semibold text-sm hover:text-blue-700">
+            <button className="text-[#0A21C0] rounded-full font-semibold text-sm hover:text-blue-700">
               Learn More
             </button>
           </div>
@@ -37,7 +37,7 @@ export default function ServicesSection() {
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
               Convert any low-resolution image into a crisp, scalable vector format, perfect for printing and branding.
             </p>
-            <button className="text-[#0A21C0] font-semibold text-sm hover:text-blue-700">
+            <button className="text-[#0A21C0] rounded-full font-semibold text-sm hover:text-blue-700">
               Learn More
             </button>
           </div>
@@ -55,7 +55,7 @@ export default function ServicesSection() {
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
               Bring your unique ideas to life with bespoke design solutions tailored to your brand and creative requirements.
             </p>
-            <button className="text-[#0A21C0] font-semibold text-sm hover:text-blue-700">
+            <button className="text-[#0A21C0] rounded-full font-semibold text-sm hover:text-blue-700">
               Learn More
             </button>
           </div>

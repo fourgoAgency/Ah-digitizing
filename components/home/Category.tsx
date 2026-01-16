@@ -58,25 +58,25 @@ export default function ServicesCarousel() {
   };
 
   return (
-    <section className="py-12 md:py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="pb-8 bg-gray-50">
+      <div className="max-w-full pr-4">
 
         <div className="flex flex-col lg:flex-row gap-8 items-stretch">
 
           {/* Left Sidebar */}
-          <div className="hidden lg:flex w-80 shrink-0">
-            <div className="bg-primary rounded-2xl p-8 shadow-sm flex flex-col justify-between h-full w-full">
+          <div className="hidden lg:flex xl:flex w-80 shrink-0">
+            <div className="bg-primary p-8 shadow-sm flex flex-col justify-between h-full w-full">
               <div>
-                <h3 className="text-3xl font-bold text-white mb-4">
+                <h3 className="text-5xl font-bold text-white mb-4">
                   Shop By<br />Category
                 </h3>
-                <p className="text-gray-100 text-sm mb-6">
+                <p className="text-gray-100 text-xl mb-6">
                   Explore our wide range of services tailored to meet your design and digitizing needs.
                 </p>
               </div>
               <Link
                 href="/shop"
-                className="inline-block px-8 py-3 border-2 bg-white text-primary rounded-full font-medium hover:border-white hover:text-white hover:bg-transparent transition-colors"
+                className="inline-block px-8 py-3 border-2 bg-white text-primary text-center rounded-full font-medium hover:border-white hover:text-white hover:bg-transparent transition-colors"
               >
                 Shop now
               </Link>
@@ -85,9 +85,10 @@ export default function ServicesCarousel() {
 
           {/* Carousel */}
           <div className="flex-1 overflow-hidden flex flex-col">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 text-center lg:text-left">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 mt-6 text-center ">
               Services we Offered
             </h2>
+
 
             <div
               ref={scrollContainerRef}
@@ -95,9 +96,8 @@ export default function ServicesCarousel() {
               onMouseMove={handleMouseMove}
               onMouseUp={stopDrag}
               onMouseLeave={stopDrag}
-              className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-4 ${
-                isDragging ? "cursor-grabbing" : "cursor-grab"
-              }`}
+              className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"
+                }`}
               style={{
                 scrollBehavior: isDragging ? "auto" : "smooth",
                 scrollbarWidth: "none",
@@ -108,14 +108,22 @@ export default function ServicesCarousel() {
                 <Link
                   key={category.id}
                   href={`/shop/${category.slug}`}
-                  className="group shrink-0 w-64 sm:w-72 md:w-80 lg:w-72"
+                  className="group shrink-0 
+                  w-64 
+                  sm:w-72 
+                  md:w-80 
+                  lg:w-72 
+                  xl:w-64 
+                  2xl:w-56 
+                  3xl:w-52"
+
                   draggable={false}
                   onClick={(e) => {
                     if (isDragging) e.preventDefault();
                   }}
                 >
                   <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:bg-primary transition-all h-full">
-                    <div className="aspect-[4/3] bg-gray-200 overflow-hidden">
+                    <div className="aspect-4/3 xl:aspect-auto   bg-gray-200 overflow-hidden">
                       <Image
                         src={category.image}
                         alt={category.name}
@@ -147,7 +155,7 @@ export default function ServicesCarousel() {
           </Link>
         </div>
       </div>
-
+      {/* <div className="w-full h-8 bg-gray-200"></div> */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -157,6 +165,7 @@ export default function ServicesCarousel() {
           scrollbar-width: none;
         }
       `}</style>
+
     </section>
   );
 }

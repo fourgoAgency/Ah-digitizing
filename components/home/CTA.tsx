@@ -35,13 +35,13 @@ export default function CTABanner() {
           <div className="flex flex-col sm:flex-row gap-4 shrink-0">
             <a
               href="tel:+1234567890"
-              className="px-8 py-3 bg-secondary hover:bg-secondary-800 text-white font-semibold rounded-lg transition-colors text-center"
+              className="px-8 py-3 bg-secondary hover:bg-secondary-800 text-white font-semibold rounded-full transition-colors text-center"
             >
               CALL NOW
             </a>
             <a
               href="/contact"
-              className="px-8 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-lg transition-colors text-center"
+              className="px-8 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-full transition-colors text-center"
             >
               LET'S TALK
             </a>

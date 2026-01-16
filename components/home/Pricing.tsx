@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import pricesData from "../../data/price.json";
+import { Button } from "../ui/button";
 
 type Plan = {
   id: string;
@@ -40,7 +41,7 @@ function PriceCard({ plan }: { plan: Plan }) {
       </div>
 
       <ul className="space-y-2">
-        {plan.features.slice(0, 2).map((feature, i) => {
+        {plan.features.map((feature, i) => {
           const hasFeature = !feature.startsWith("x:");
           const featureText = hasFeature ? feature : feature.substring(2);
           return (
@@ -53,6 +54,14 @@ function PriceCard({ plan }: { plan: Plan }) {
           );
         })}
       </ul>
+<Button
+  className={`mt-6 w-full py-3 rounded-full font-semibold transition bg-primary text-white hover:bg-transparent hover:text-primary border border-primary"
+  }`}
+  onClick={() => (window.location.href = "/pricing")}
+>
+  Upgrade
+</Button>
+
     </motion.div>
   );
 }
@@ -60,6 +69,8 @@ function PriceCard({ plan }: { plan: Plan }) {
 export default function Pricing() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: false, margin: "-20% 0px -20% 0px" });
+  const sectionRefe = useRef<HTMLElement>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   // Get first 2 plans for each service
   type PlanData = {
@@ -83,17 +94,23 @@ const vectorPlans: Plan[] = ((pricesData as { vector: PlanData[] }).vector.slice
   const allPlans = [...embroideryPlans, ...vectorPlans];
 
   return (
-    <section ref={sectionRef} className="relative py-16 overflow-hidden bg-gray-50">
+    <section ref={sectionRef} className="relative py-16  overflow-hidden bg-gray-50">
       {/* Primary color background overlay */}
       <motion.div
         className="absolute inset-0 bg-primary z-0"
         initial={{ y: "-100%" }}
         animate={isInView ? { y: 0 } : { y: "-100%" }}
         transition={{ duration: 2, ease: "easeOut" }}
-      ></motion.div>
+      >
+        <img
+          src="bg.png"
+          alt="Background Pattern"
+          className="w-full h-full object-cover opacity-8"
+        />
+      </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4">
-        <h2 className="text-5xl font-bold text-center text-white mb-12">Pricing</h2>
+        <h2 className="text-7xl font-bold text-center text-white mb-12">Pricing</h2>
 
         {/* 1 row, 4 cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -106,7 +123,7 @@ const vectorPlans: Plan[] = ((pricesData as { vector: PlanData[] }).vector.slice
         <div className="text-center mt-12">
           <a
             href="/pricing"
-            className="inline-block px-8 py-4 bg-white text-primary font-bold rounded-lg shadow-md hover:bg-gray-100 transition"
+            className="inline-block px-8 py-4 bg-white text-primary font-bold rounded-full shadow-md hover:bg-gray-100 transition"
           >
             Compare All Pricings
           </a>

@@ -92,7 +92,7 @@ const ContactFormBlue: React.FC = () => {
 
     <button
       onClick={handleSubmit}
-      className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-2.5 rounded-xl transition-colors duration-200 shadow-lg"
+      className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-2.5 rounded-full transition-colors duration-200 shadow-lg"
     >
       Send my message
     </button>
