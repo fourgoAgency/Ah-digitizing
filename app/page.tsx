@@ -6,6 +6,7 @@ import Portfolio from "@/components/home/Portfolio";
 import Category from '@/components/home/Category'
 import WhyChooseAndFAQ from "@/components/home/WhyChooseUs";
 import CTABanner from "@/components/home/CTA";
+import Testimonials from "@/components/home/Testimonials";
 export default function Page() {
   return (
     <main>
@@ -15,6 +16,7 @@ export default function Page() {
       <Portfolio />
       <Category />
       <WhyChooseAndFAQ/>
+      <Testimonials/>
       <CTABanner/>
     </main>
   );
