@@ -142,7 +142,7 @@ export default function Banner() {
                     {/* Right Image */}
                     <div
                         ref={imageRef}
-                        className="flex flex-col justify-center items-center xl:py-16 md:mt-0"
+                        className="hidden lg:flex flex-col justify-center items-center xl:py-16 md:mt-0"
                     >
                         <h2 ref={h2Ref} className="text-white font-bold text-4xl mb-6">{h2Text}</h2>
                         <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">

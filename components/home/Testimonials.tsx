@@ -3,24 +3,24 @@ import Image from "next/image";
 
 export function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="relative border-gray-200 border bg-white rounded-[28px] shadow-xl mt-20 p-6 pt-16">
+    <div className="relative border-gray-300 border bg-white rounded-[28px] shadow-2xl mt-20 p-6 pt-16">
 
       {/* ✅ OLD AVATAR (unchanged) */}
-      <div className="absolute -top-10 right-0 w-20 h-20 rounded-full bg-gray-100 shadow-xl border-white flex items-center justify-center">
+      <div className="absolute -top-10 right-0 w-20 h-20 rounded-full bg-gray-500 shadow-xl border-white flex items-center justify-center">
         {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" className="w-10 h-10 fill-gray-400" > <path d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/> </svg> */}
         <Image
           src={t.avatar}
           alt={t.name}
           width={80}
           height={80}
-          className="w-16 h-16 rounded-full object-cover"
+          className="w-18 h-18 rounded-full object-cover"
         />
       </div>
 
       {/* ✅ NEW NAME TAG */}
       <div className="absolute top-0 left-[-20px]">
         <div className="absolute top-[38px] left-0 w-5 h-10 bg-[#2a5492] rounded-bl-[20px]" />
-        <div className="relative bg-[#2f5fa7] px-12 py-3 pr-28 rounded-tr-[26px] rounded-tl-[26px] rounded-br-[26px] shadow-lg">
+        <div className="relative bg-[#2f5fa7] px-12 py-3 p-0 lg:pr-12 xl:pr-20 rounded-tr-[26px] rounded-tl-[26px] rounded-br-[26px] shadow-lg">
           <p className="text-sm font-semibold text-white">{t.name}</p>
           <p className="text-xs text-white/80">{t.role}</p>
         </div>
@@ -67,7 +67,7 @@ const testimonials: Testimonial[] = [
     role: "Designation",
     rating: 4,
     text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
   },
   {
@@ -76,7 +76,7 @@ const testimonials: Testimonial[] = [
     role: "Designation",
     rating: 5,
     text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
   },
   {
@@ -85,7 +85,7 @@ const testimonials: Testimonial[] = [
     role: "Designation",
     rating: 3,
     text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
   },
   {
@@ -94,7 +94,7 @@ const testimonials: Testimonial[] = [
     role: "Designation",
     rating: 5,
     text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
   },
   {
@@ -103,19 +103,19 @@ const testimonials: Testimonial[] = [
     role: "Designation",
     rating: 4,
     text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
   }
 ];
 export default function Testimonials() {
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className=" flex py-16 bg-white justify-center items-center">
+      <div className="max-w-full mx-7 lg:mx-20 px-4">
         <h2 className="text-5xl font-bold text-center">
           Testimonials
         </h2>
 
-        <div className="grid md:grid-cols-3 2xl:grid-cols-4 gap-10 w-5xl 2xl:w-7xl justify-center">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-10 justify-center">
           {testimonials.map((item) => (
             <TestimonialCard key={item.id} t={item} />
           ))}
