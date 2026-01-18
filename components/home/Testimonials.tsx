@@ -6,7 +6,7 @@ export function TestimonialCard({ t }: { t: Testimonial }) {
     <div className="relative border-gray-300 border bg-white rounded-[28px] shadow-2xl mt-20 p-6 pt-16">
 
       {/* ✅ OLD AVATAR (unchanged) */}
-      <div className="absolute -top-10 right-0 w-20 h-20 rounded-full bg-white shadow-xl border-4 border-gray-200 flex items-center justify-center">
+      <div className="absolute -top-10 right-0 w-20 h-20 rounded-full bg-white shadow-xl border-4 border-gray-300 flex items-center justify-center">
         {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" className="w-10 h-10 fill-gray-400" > <path d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/> </svg> */}
         <Image
           src={t.avatar}
