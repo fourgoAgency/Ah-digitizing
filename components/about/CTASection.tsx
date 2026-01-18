@@ -11,7 +11,7 @@ export default function CTASection() {
         <p className="text-blue-100 text-lg mb-8 leading-relaxed">
           Experience the Artdigitizing difference with unmatched quality and service.
         </p>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-4 rounded-full transition-colors duration-200 text-lg">
+        <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-4 rounded-md transition-colors duration-200 text-lg">
           Request Your Free Quote
         </button>
       </div>

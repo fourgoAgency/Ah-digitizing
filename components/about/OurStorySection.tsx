@@ -10,7 +10,7 @@ export default function OurStorySection() {
             <Image
               width={500}
               height={500}
-              src="about_one.jpeg"
+              src="/about_one.jpeg"
               alt="Modern office workspace"
               className="rounded-lg shadow-lg w-full h-auto"
             />

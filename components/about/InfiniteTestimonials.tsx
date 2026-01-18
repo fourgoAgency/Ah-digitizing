@@ -12,20 +12,20 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
   const [isDragging, setIsDragging] = useState(false);
   const x = useMotionValue(0);
 
-  // Triple kiya hai testimonials ko for seamless infinite loop
-  const tripleTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
-  // Smooth infinite animation
+  const tripleTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+
+
   useAnimationFrame(() => {
     if (!isDragging) {
       const currentX = x.get();
-      const cardWidth = 344; // 320px width + 24px gap
+      const cardWidth = 344; 
       const singleSetWidth = cardWidth * testimonials.length;
 
-      // Move left (speed adjust karna ho to ye number change karo)
+      
       let newX = currentX - 0.5;
 
-      // Jab ek complete set scroll ho jaye, seamlessly reset
+
       if (Math.abs(newX) >= singleSetWidth) {
         newX = newX + singleSetWidth;
       }
