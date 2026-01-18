@@ -19,7 +19,7 @@ const Card = ({ before, after }: CardProps) => {
             className="rounded-xl"
           />
         </div>
-        <span className="text-sm font-semibold italic text-black">
+        <span className="text-xl font-bold italic text-black">
           Before
         </span>
       </div>
@@ -28,7 +28,7 @@ const Card = ({ before, after }: CardProps) => {
       <div className="relative ml-auto">
 
         <div className="rounded-3xl p-6 shadow-2xl border border-gray-400 flex flex-col justify-center items-center gap-2">
-        <span className=" text-lg font-semibold italic text-black">
+        <span className=" text-2xl font-bold italic text-black">
           After
         </span>
         <div className="rounded-2xl p-2 shadow-2xl border border-gray-400 w-48 h-48 flex items-center justify-center">
