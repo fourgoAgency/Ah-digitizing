@@ -13,17 +13,17 @@ export default function TestimonialCard({ t }: { t: Testimonial }) {
         <p className="text-xs opacity-90">{t.role}</p>
       </div> */}
 
-        <div className="absolute top-0 left-[-20px]">
+        <div className="absolute top-0 left-[-20px] w-[calc(100%-100px)]">
 
 
   <div className="absolute top-[38px] left-0 w-5 h-10 bg-[#2a5492] rounded-bl-[20px] z-0"></div>
 
 
-  <div className="relative  z-1 bg-[#2f5fa7] px-6 py-3 pr-10 rounded-tr-[26px] rounded-tl-[26px] rounded-br-[26px]  shadow-lg">
-    <p className="text-sm font-semibold text-white leading-tight">
+  <div className="relative z-1 bg-[#2f5fa7] px-6 py-3 pr-10 rounded-tr-[26px] rounded-tl-[26px] rounded-br-[26px] shadow-lg w-full overflow-hidden">
+    <p className="text-sm font-semibold text-white leading-tight truncate">
       {t.name}
     </p>
-    <p className="text-xs text-white/80">
+    <p className="text-xs text-white/80 truncate">
       {t.role}
     </p>
   </div>
