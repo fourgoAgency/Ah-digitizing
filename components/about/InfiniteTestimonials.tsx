@@ -13,7 +13,7 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
   const x = useMotionValue(0);
 
 
-  const tripleTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+  const tripleTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials,...testimonials];
 
 
   useAnimationFrame(() => {
@@ -23,7 +23,7 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
       const singleSetWidth = cardWidth * testimonials.length;
 
       
-      let newX = currentX - 0.5;
+      let newX = currentX - 0.4;
 
 
       if (Math.abs(newX) >= singleSetWidth) {
@@ -54,4 +54,5 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
       </motion.div>
     </div>
   );
+
 }
