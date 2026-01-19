@@ -47,7 +47,7 @@ export default function ShowcaseGallery() {
             {embroideryImages.map((image) => (
               <div
                 key={image.id}
-                className="relative aspect-square rounded-2xl overflow-hidden border-primary border"
+                className="relative aspect-square rounded-2xl overflow-hidden border-primary shadow-2xl border"
               >
                 <Image
                   src={image.src}

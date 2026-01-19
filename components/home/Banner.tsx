@@ -80,7 +80,7 @@ export default function Banner() {
     return (
         <section
         ref={sectionRef}
-        className="relative bg-primary overflow-hidden justify-center items-center pt-8 pb-2 px-5"
+        className="relative bg-linear-to-b from-primary via-primary to-gray-800 overflow-hidden justify-center items-center pt-8 pb-2 px-5"
         >
 
 

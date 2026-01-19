@@ -31,7 +31,7 @@ const Card = ({ before, after }: CardProps) => {
         <span className=" text-2xl font-bold italic text-black">
           After
         </span>
-        <div className="rounded-2xl p-2 shadow-2xl border border-gray-400 w-48 h-48 flex items-center justify-center">
+        <div className="rounded-2xl shadow-2xl border border-gray-400 w-48 h-48 flex items-center justify-center">
 
           <Image
             src={after}

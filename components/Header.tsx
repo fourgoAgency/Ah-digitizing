@@ -56,14 +56,14 @@ const rasterToVectorItems = [
 
 function DesktopMenu() {
   return (
-    <nav className="hidden md:flex items-center gap-8 text-sm font-medium pt-18 text-accent">
+    <nav className="hidden p-1 rounded-full shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-sm font-medium text-center justify-center text-white">
 
       <Link href="/">Home</Link>
 
       {/* SERVICES */}
       <div className="relative group">
         <Link href="/services">
-        <span className="cursor-pointer flex">Services<ChevronDown className="text-accent text-sm" /></span></Link>
+        <span className="cursor-pointer flex">Services<ChevronDown className=" text-sm" /></span></Link>
 
         {/* Main dropdown */}
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
@@ -119,7 +119,7 @@ function DesktopMenu() {
 
       {/* PRICING */}
       <div className="relative group">
-        <span className="cursor-pointer flex">Pricing <ChevronDown className="text-accent text-sm" /></span>
+        <span className="cursor-pointer flex">Pricing <ChevronDown className=" text-sm" /></span>
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
@@ -148,7 +148,7 @@ function DesktopMenu() {
       {/* ABOUT */}
       <div className="relative group">
         <Link href="/about-us">
-        <span className="cursor-pointer flex">About <ChevronDown className="text-accent text-sm" /></span>
+        <span className="cursor-pointer flex">About <ChevronDown className="text-sm" /></span>
         </Link>
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -312,40 +312,51 @@ export default function Header() {
   return (
     <>
       <TopNavbar />
-      <header className="flex justify-between items-center px-6 relative z-100">
-        
-        <Image src={logo} alt="Logo" width={150} />
-        <DesktopMenu />
-        <div className="hidden lg:flex gap-4">
-          <Button
-            className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
-              hoveredButton === 'shop'
-                ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'quote'
-                  ? 'bg-white text-primary border-primary'
-                  : 'border-accent text-accent'
-            }`}
-            onMouseEnter={() => setHoveredButton('shop')}
-            onMouseLeave={() => setHoveredButton(null)}
-          >
-            Shop Now
-          </Button>
-          <Button
-            className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
-              hoveredButton === 'quote'
-                ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'shop'
-                  ? 'bg-white text-primary border-primary'
-                  : 'bg-primary text-white border-primary'
-            }`}
-            onMouseEnter={() => setHoveredButton('quote')}
-            onMouseLeave={() => setHoveredButton(null)}
-          >
-            Get Quote
-          </Button>
+
+      <header className="relative z-[100]">
+        {/* ===== TOP ROW (Logo + Buttons) ===== */}
+        <div className="flex justify-between items-center px-6">
+          <Image src={logo} alt="Logo" width={150} />
+
+          <div className="hidden lg:flex gap-4">
+            <Button
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
+                hoveredButton === 'shop'
+                  ? 'bg-primary text-white border-primary'
+                  : hoveredButton === 'quote'
+                    ? 'bg-white text-primary border-primary'
+                    : 'border-accent text-accent'
+              }`}
+              onMouseEnter={() => setHoveredButton('shop')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              Shop Now
+            </Button>
+
+            <Button
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
+                hoveredButton === 'quote'
+                  ? 'bg-primary text-white border-primary'
+                  : hoveredButton === 'shop'
+                    ? 'bg-white text-primary border-primary'
+                    : 'bg-primary text-white border-primary'
+              }`}
+              onMouseEnter={() => setHoveredButton('quote')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              Get Quote
+            </Button>
+          </div>
+
+          <MobileMenu />
         </div>
-        <MobileMenu />
+
+        {/* ===== SECOND ROW (DESKTOP MENU) ===== */}
+        <div className="hidden md:flex justify-center mb-5  items-center">
+          <DesktopMenu />
+        </div>
       </header>
     </>
   );
 }
+

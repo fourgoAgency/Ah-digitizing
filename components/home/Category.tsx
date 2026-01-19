@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 
 const categories = [
   { id: 1, name: "Embroidery Digitizing", slug: "embroidery-digitizing", image: "/home-page/products picture/1.png" },
@@ -57,6 +58,22 @@ export default function ServicesCarousel() {
     });
   };
 
+  // Scroll right function
+  const scrollRight = () => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const card = container.querySelector<HTMLDivElement>(".group");
+    if (!card) return;
+
+    const cardWidth = card.offsetWidth + parseInt(getComputedStyle(card).marginRight);
+    const currentScroll = container.scrollLeft;
+    const nextScroll = currentScroll + cardWidth;
+    container.scrollTo({
+      left: nextScroll,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="pb-8 bg-gray-50">
       <div className="max-w-full pr-4">
@@ -90,58 +107,64 @@ export default function ServicesCarousel() {
             </h2>
 
 
-            <div
-              ref={scrollContainerRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={stopDrag}
-              onMouseLeave={stopDrag}
-              className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"
-                }`}
-              style={{
-                scrollBehavior: isDragging ? "auto" : "smooth",
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/shop/${category.slug}`}
-                  className="group shrink-0 
-                  w-64 
-                  sm:w-72 
-                  md:w-80 
-                  lg:w-72 
-                  xl:w-64 
-                  2xl:w-56 
-                  3xl:w-52"
+            <div className="relative">
+  {/* SCROLLABLE CARDS */}
+  <div
+    ref={scrollContainerRef}
+    onMouseDown={handleMouseDown}
+    onMouseMove={handleMouseMove}
+    onMouseUp={stopDrag}
+    onMouseLeave={stopDrag}
+    className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-4 ${
+      isDragging ? "cursor-grabbing" : "cursor-grab"
+    }`}
+    style={{
+      scrollBehavior: isDragging ? "auto" : "smooth",
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+    }}
+  >
+    {categories.map((category) => (
+      <Link
+        key={category.id}
+        href={`/shop/${category.slug}`}
+        className="group shrink-0 w-64 sm:w-72 md:w-80 lg:w-72 xl:w-64"
+        draggable={false}
+        onClick={(e) => {
+          if (isDragging) e.preventDefault();
+        }}
+      >
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:bg-primary transition-all h-full">
+          <div className="aspect-4/3 bg-gray-200 overflow-hidden">
+            <Image
+              src={category.image}
+              alt={category.name}
+              width={800}
+              height={600}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              draggable={false}
+            />
+          </div>
+          <div className="p-4 md:p-6 text-center">
+            <h4 className="text-base md:text-lg lg:text-xl font-semibold text-primary group-hover:text-white">
+              {category.name}
+            </h4>
+          </div>
+        </div>
+      </Link>
+    ))}
+  </div>
 
-                  draggable={false}
-                  onClick={(e) => {
-                    if (isDragging) e.preventDefault();
-                  }}
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:bg-primary transition-all h-full">
-                    <div className="aspect-4/3 xl:aspect-auto   bg-gray-200 overflow-hidden">
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        width={800}
-                        height={600}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        draggable={false}
-                      />
-                    </div>
-                    <div className="p-4 md:p-6 text-center">
-                      <h4 className="text-base md:text-lg lg:text-xl font-semibold text-primary group-hover:text-white transition-colors">
-                        {category.name}
-                      </h4>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+  {/* FIXED RIGHT BUTTON */}
+  <button
+    onClick={scrollRight}
+    className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white rounded-full p-3 hover:bg-primary/90 transition-colors shadow-md z-20"
+    aria-label="Scroll right"
+  >
+    <ChevronRight size={20} />
+  </button>
+</div>
+
           </div>
         </div>
 

@@ -4,7 +4,7 @@
       "id": "basic",
       "title": "Basic",
       "price": 8,
-      "suffix": "",
+      "suffix": "only",
       "features": [
         "1-2 day turnaround",
         "DST/PES output",
@@ -17,7 +17,7 @@
       "id": "standard",
       "title": "Standard",
       "price": 14,
-      "suffix": "",
+      "suffix": "only",
       "features": [
         "48h turnaround",
         "Color optimization",
@@ -30,7 +30,7 @@
       "id": "advanced",
       "title": "Advanced",
       "price": 20,
-      "suffix": "",
+      "suffix": "only",
       "features": [
         "24h priority",
         "Complex fills & trims",
@@ -45,7 +45,7 @@
       "id": "start",
       "title": "Start",
       "price": 6,
-      "suffix": "",
+      "suffix": "only",
       "features": [
         "PNG → SVG",
         "Simple cleanup",
@@ -58,7 +58,7 @@
       "id": "simple",
       "title": "Simple",
       "price": 8,
-      "suffix": "",
+      "suffix": "only",
       "features": [
         "Color separations",
         "EPS/AI output",
