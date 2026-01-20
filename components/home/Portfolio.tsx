@@ -40,44 +40,48 @@ export default function ShowcaseGallery() {
 
 
         {/* Split Gallery Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 ">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
 
-          {/* Embroidery Column */}
-          <div className="grid grid-cols-2 gap-6">
-            {embroideryImages.map((image) => (
-              <div
-                key={image.id}
-                className="relative aspect-square rounded-2xl overflow-hidden border-primary shadow-2xl border"
-              >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className="object-fit"
-                />
-              </div>
-            ))}
-          </div>
+{/* Embroidery Column */}
+<div className="grid grid-cols-2 gap-6">
+  {embroideryImages.map((image) => (
+    <div
+      key={image.id}
+      className="relative aspect-square rounded-2xl overflow-hidden border border-primary shadow-xl shadow-black/60
+                 transition-transform duration-500 ease-out hover:scale-105"
+    >
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        className="object-fit filter drop-shadow-xl drop-shadow-black/70"
+      />
+    </div>
+  ))}
+</div>
 
-          {/* Vector Column */}
+{/* Vector Column */}
+<div className="grid grid-cols-2 gap-6">
+  {vectorImages.map((image) => (
+    <div
+      key={image.id}
+      className="relative aspect-square rounded-2xl overflow-hidden border border-primary shadow-xl shadow-black/60
+                 transition-transform duration-500 ease-out hover:scale-105"
+    >
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        className="object-fit filter drop-shadow-xl drop-shadow-black/70"
+      />
+    </div>
+  ))}
+</div>
 
-          <div className="grid grid-cols-2 gap-6">
-            {vectorImages.map((image) => (
-              <div
-                key={image.id}
-                className="relative aspect-square rounded-2xl border border-primary overflow-hidden"
-              >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className="object-fit"
-                />
-              </div>
-            ))}
-          </div>
 
-        </div>
+
+</div>
+
         <div className="flex justify-center m-9">
 
           <Button

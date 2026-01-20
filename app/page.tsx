@@ -13,10 +13,10 @@ export default function Page() {
     <main>
       <Banner />
       <Services />
+      <BeforeAfterGrid/>
       <Pricing />
       <Portfolio />
       <Category />
-      <BeforeAfterGrid/>
       <WhyChooseAndFAQ/>
       <Testimonials/>
       <CTABanner/>

@@ -18,7 +18,7 @@ type Plan = {
 export function PriceCard({ plan }: { plan: Plan }) {
   return (
     <motion.div
-      className="relative rounded-3xl bg-primary p-6 pl-0 shadow-xl"
+      className="relative rounded-3xl bg-primary bg-[url('/bg.svg')] bg-cover bg-no-repeat p-6 pl-0 shadow-xl shadow-gray-800/70"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -30,7 +30,7 @@ export function PriceCard({ plan }: { plan: Plan }) {
       </div>
 
       {/* INNER WHITE CARD */}
-      <div className="mt-10 bg-white rounded-3xl  rounded-bl-none rounded-tl-none p-6 flex flex-col justify-center items-center shadow-2xl shadow-gray-800">
+      <div className="mt-10 bg-white rounded-3xl  rounded-bl-none rounded-tl-none p-6 flex flex-col justify-center items-center shadow-xl shadow-gray-800/60">
         {/* Service Tag */}
         <span className="inline-block bg-primary/10 text-primary px-3 py-1 text-xs text-center rounded-full font-semibold mb-4">
           {plan.title}
@@ -47,11 +47,6 @@ export function PriceCard({ plan }: { plan: Plan }) {
           </span>
           <span className="text-gray-500 text-sm">
             {plan.suffix}
-          </span>
-        </div>
-        <div className="w-full mb-6">
-          <span className="block text-center text-sm mb-4">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam eligendi quidem doloribus sequi neque aperiam nisi.
           </span>
         </div>
 

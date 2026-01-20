@@ -101,7 +101,7 @@ export default function ServicesCarousel() {
 
                   {/* Bottom Name Bar (Only Center Card) */}
                   {distance === 0 && (
-                    <div className="absolute bottom-0 left-0 w-full bg-primary text-white text-center py-2 text-xl font-semibold">
+                    <div className="absolute bottom-0 left-0 rounded-t-lg w-full bg-primary text-white text-center py-2 text-xl font-semibold">
                       {service.title}
                     </div>
                   )}

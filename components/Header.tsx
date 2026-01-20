@@ -313,14 +313,14 @@ export default function Header() {
     <>
       <TopNavbar />
 
-      <header className="relative z-[100]">
+      <header className="relative z-[100">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
         <div className="flex justify-between items-center px-6">
           <Image src={logo} alt="Logo" width={150} />
 
           <div className="hidden lg:flex gap-4">
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent  ${
                 hoveredButton === 'shop'
                   ? 'bg-primary text-white border-primary'
                   : hoveredButton === 'quote'
