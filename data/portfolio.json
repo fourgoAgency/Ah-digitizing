@@ -3,8 +3,7 @@
     { "id": 1, "src": "/home-page/portfolio-embroidery/1st.png", "alt": "Embroidered cap with bird logo" },
     { "id": 2, "src": "/home-page/portfolio-embroidery/2nd.png", "alt": "Person in orange outfit" },
     { "id": 3, "src": "/home-page/portfolio-embroidery/3rd.png", "alt": "Circular embroidered patch" },
-    { "id": 4, "src": "/home-page/portfolio-embroidery/4th.jpg", "alt": "Coffee cup illustration" },
-    { "id": 5, "src": "/home-page/portfolio-embroidery/5th.png", "alt": "Embroidered cap detail" }
+    { "id": 4, "src": "/home-page/portfolio-embroidery/5th.png", "alt": "Embroidered cap detail" }
   ],
   "vector": [
     { "id": 1, "src": "/home-page/portfolio-vector/1st.jpg", "alt": "Vector design 1" },

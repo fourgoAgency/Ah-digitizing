@@ -86,7 +86,7 @@ export default function ServicesCarousel() {
 <div className="lg:flex hidden justify-center">
   <Button
     variant="outline"
-    className="my-8 px-6 py-3 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+    className="my-8 px-9 rounded-full text-md border-primary text-primary hover:bg-primary hover:text-white transition-colors"
   >
     View More
   </Button>
