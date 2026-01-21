@@ -36,7 +36,7 @@ const Card = ({ before, after }: CardProps) => {
           className="
             rounded-3xl
             p-3 md:p-4 xl:p-6
-            shadow-2xl drop-shadow-black/80 border border-gray-400
+            shadow-xl shadow-black/60 border border-gray-400
             flex flex-col justify-center items-center gap-2
           "
         >
@@ -84,7 +84,7 @@ const Card = ({ before, after }: CardProps) => {
             alt="After Full"
             width={900}
             height={900}
-            className="max-w-[90%] max-h-[90%] object-contain rounded-xl"
+            className="max-w-[60%] max-h-[90%] object-contain rounded-xl"
           />
         </div>
       )}
@@ -107,7 +107,7 @@ export default function BeforeAfterGrid() {
           <Card
             key={i}
             before="/home-page/tiger.png"
-            after="/home-page/tiger.png"
+            after="/home-page/after.jpeg"
           />
         ))}
       </div>
