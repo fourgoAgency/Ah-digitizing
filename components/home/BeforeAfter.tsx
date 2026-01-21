@@ -1,11 +1,13 @@
+"use client";
 import Image from "next/image";
-
+import { useState } from "react";
 type CardProps = {
   before: string;
   after: string;
 };
 
 const Card = ({ before, after }: CardProps) => {
+    const [open, setOpen] = useState(false);
   return (
     <div className="relative bg-muted rounded-3xl w-full h-full flex gap-4 sm:gap-6 shadow-xl p-4 sm:p-0">
 
@@ -49,18 +51,43 @@ const Card = ({ before, after }: CardProps) => {
               md:w-36 md:h-36
               xl:w-48 xl:h-48
               flex items-center justify-center p-2
+              hover:scale-110 transition-transform duration-300
             "
           >
-            <Image
-              src={after}
-              alt="After"
-              width={320}
-              height={320}
-              className="rounded-2xl w-full h-full object-cover"
-            />
+{/* Thumbnail */}
+      <Image
+        src={after}
+        alt="After"
+        width={320}
+        height={320}
+        onClick={() => setOpen(true)}
+        className="rounded-2xl w-full h-full object-cover cursor-pointer"
+      />
+
           </div>
         </div>
       </div>
+      {/* Full Screen Modal */}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+          onClick={() => setOpen(false)}
+        >
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute top-5 right-5 text-white text-3xl font-bold"
+          >
+            &times;
+          </button>
+          <Image
+            src={after}
+            alt="After Full"
+            width={900}
+            height={900}
+            className="max-w-[90%] max-h-[90%] object-contain rounded-xl"
+          />
+        </div>
+      )}
 
     </div>
   );

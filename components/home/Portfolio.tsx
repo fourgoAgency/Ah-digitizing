@@ -32,12 +32,12 @@ export default function ShowcaseGallery() {
         </div>
 
         {/* TABS (STATIC UI) */}
-        <div className="flex w-full mx-auto mb-10 gap-20">
-          <span className="w-1/2 text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-full border-2 border-primary transition hover:bg-primary/90">
+        <div className="flex w-full mx-auto mb-10 gap-16">
+          <span className="w-1/2 text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-2xl border-2 border-primary transition hover:bg-primary/90">
             Embroidery
           </span>
 
-          <span className="w-1/2 text-center py-2 sm:py-3 font-medium text-white bg-primary rounded-full border-2 border-primary transition hover:bg-primary/90">
+          <span className="w-1/2 text-center py-2 sm:py-3 font-medium text-white bg-primary rounded-2xl border-2 border-primary transition hover:bg-primary/90">
             Vector
           </span>
         </div>
