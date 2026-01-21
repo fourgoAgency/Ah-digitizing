@@ -56,14 +56,14 @@ const rasterToVectorItems = [
 
 function DesktopMenu() {
   return (
-    <nav className="hidden p-1 rounded-full shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-sm font-medium text-center justify-center text-white">
+    <nav className="hidden p-3 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-xl font-medium text-center justify-center text-white">
 
       <Link href="/">Home</Link>
 
       {/* SERVICES */}
       <div className="relative group">
         <Link href="/services">
-        <span className="cursor-pointer flex">Services<ChevronDown className=" text-sm" /></span></Link>
+        <span className="cursor-pointer flex">Services<ChevronDown className=" text-lg" /></span></Link>
 
         {/* Main dropdown */}
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
@@ -119,7 +119,7 @@ function DesktopMenu() {
 
       {/* PRICING */}
       <div className="relative group">
-        <span className="cursor-pointer flex">Pricing <ChevronDown className=" text-sm" /></span>
+        <span className="cursor-pointer flex">Pricing <ChevronDown className=" text-lg" /></span>
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
@@ -148,7 +148,7 @@ function DesktopMenu() {
       {/* ABOUT */}
       <div className="relative group">
         <Link href="/about-us">
-        <span className="cursor-pointer flex">About <ChevronDown className="text-sm" /></span>
+        <span className="cursor-pointer flex">About <ChevronDown className="text-lg" /></span>
         </Link>
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
