@@ -58,7 +58,7 @@ export default function WhyChooseAndFAQ() {
   };
 
   return (
-    <section className="py-20 bg-[#050A44] text-white relative pb-32">
+    <section className="py-20 bg-[#050A44] text-white relative pb-36">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Side - Why Choose Us */}

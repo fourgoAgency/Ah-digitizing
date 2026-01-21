@@ -35,7 +35,7 @@ const FeaturesSection = () => {
     <div className="bg-white py-10 shadow-xl rounded-3xl
                 max-w-6xl mx-auto
                 relative
-                -mt-20 z-20">
+                -mt-28 z-20">
 
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
         {features.map((feature, idx) => (
