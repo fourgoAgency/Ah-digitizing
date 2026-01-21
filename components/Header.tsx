@@ -56,7 +56,7 @@ const rasterToVectorItems = [
 
 function DesktopMenu() {
   return (
-    <nav className="hidden p-3 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-xl font-medium text-center justify-center text-white">
+    <nav className="hidden p-2 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-lg font-medium text-center justify-center text-white">
 
       <Link href="/">Home</Link>
 
