@@ -10,13 +10,13 @@ const Card = ({ before, after }: CardProps) => {
     <div className="relative bg-muted rounded-3xl w-full h-full flex gap-6 shadow-xl">
       {/* Left: Before */}
       <div className="flex flex-col items-center gap-2">
-        <div className=" rounded-2xl ml-9 mt-6 shadow-2xl bg-white shadow-black/80 border border-gray-400 w-32 flex items-center justify-center">
+        <div className=" rounded-2xl ml-9 mt-6 shadow-2xl bg-white shadow-black/80 border border-gray-400 w-36 p-2 flex items-center justify-center">
           <Image
             src={before}
             alt="Before"
             width={150}
             height={150}
-            className="rounded-xl w-full h-full object-cover"
+            className="rounded-xl w-full h-full object-fill"
           />
         </div>
         <span className="text-xl font-bold italic text-black">
@@ -31,14 +31,14 @@ const Card = ({ before, after }: CardProps) => {
         <span className=" text-2xl font-bold italic text-black">
           After
         </span>
-        <div className="rounded-2xl shadow-2xl shadow-black/70 bg-white border border-gray-400 w-48 h-48 flex items-center justify-center">
+        <div className="rounded-2xl shadow-2xl shadow-black/70 bg-white border border-gray-400 w-56 p-2 h-56 flex items-center justify-center">
 
           <Image
             src={after}
             alt="After"
             width={320}
             height={320}
-            className="rounded-2xl w-full h-full object-cover"
+            className="rounded-2xl w-full h-full object-fill"
             />
             </div>
         </div>
