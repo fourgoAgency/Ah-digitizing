@@ -115,7 +115,7 @@ export default function ServicesCarousel() {
         <div className="flex justify-center mt-6">
           <button
             onClick={prev}
-            className="w-20 h-10 flex items-center border-2 border-primary text-primary justify-center rounded-l-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
+            className="w-20 h-10 flex items-center border-2 border-primary justify-center rounded-l-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
           >
             <MoveLeft 
              width="50"
@@ -124,7 +124,7 @@ export default function ServicesCarousel() {
           </button>
           <button
             onClick={next}
-            className="w-20 h-10 flex items-center border-2 border-primary justify-center text-primary rounded-r-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
+            className="w-20 h-10 flex items-center border-2 border-primary justify-center rounded-r-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
           >
             <MoveRight
              width="50"

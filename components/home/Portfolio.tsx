@@ -32,7 +32,7 @@ export default function ShowcaseGallery() {
         </div>
 
         {/* TABS (STATIC UI) */}
-        <div className="flex w-full max-w-3xl mx-auto mb-10 gap-4">
+        <div className="flex w-full mx-auto mb-10 gap-20">
           <span className="w-1/2 text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-full border-2 border-primary transition hover:bg-primary/90">
             Embroidery
           </span>
@@ -70,7 +70,7 @@ export default function ShowcaseGallery() {
                   alt={image.alt}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-contain p-3 sm:p-4 4k:p-6"
+                  className="object-contain p-3 sm:p-4 4k:p-6 drop-shadow-xl drop-shadow-black/80"
                 />
               </div>
             ))}
