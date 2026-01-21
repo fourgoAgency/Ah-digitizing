@@ -34,7 +34,7 @@ const Card = ({ before, after }: CardProps) => {
           className="
             rounded-3xl
             p-3 md:p-4 xl:p-6
-            shadow-2xl border border-gray-400
+            shadow-2xl drop-shadow-black/80 border border-gray-400
             flex flex-col justify-center items-center gap-2
           "
         >

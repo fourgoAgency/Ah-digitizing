@@ -53,13 +53,13 @@ export default function ServicesCarousel() {
       href={`/shop/${category.slug}`}
       className="w-full"
     >
-      <div className="bg-white rounded-2xl hover:-translate-y-1 transition-all h-full flex flex-col">
+      <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
 
         {/* IMAGE WRAPPER */}
         <div className="
           w-full 
           h-48 sm:h-52 md:h-56 
-          flex items-center justify-center rounded-t-2xl drop-shadow-xl drop-shadow-black/70
+          flex items-center justify-center rounded-t-2xl  drop-shadow-xl drop-shadow-black/70
           shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)]
         ">
           <Image

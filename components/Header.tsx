@@ -69,21 +69,21 @@ function DesktopMenu() {
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-primary text-white">
+          <div className="flex rounded-lg shadow-xl bg-white text-primary ">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/services/embroidery" className="flex-1">Embroidery Digitizing</Link>
                 <span>›</span>
 
                 {/* RIGHT PANEL */}
-                <ul className="absolute left-full top-0 w-80 bg-[#0a4d99] py-3 
+                <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3 
                                opacity-0 invisible group-hover/emb:opacity-100 
                                group-hover/emb:visible transition-all duration-200 rounded-2xl">
 
                   {embroideryItems.map((item) => (
-                    <li key={item.href} className="px-5 py-2 hover:bg-[#0d5db8]">
+                    <li key={item.href} className="px-5 py-2 hover:bg-primary hover:text-white">
                       <Link href={item.href}>{item.label}</Link>
                     </li>
                   ))}
@@ -91,17 +91,17 @@ function DesktopMenu() {
                 </ul>
               </li>
 
-              <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/services/raster-to-vector" className="flex-1">Raster to Vector Services</Link>
                 <span>›</span>
 
                 {/* RIGHT PANEL */}
-                <ul className="absolute left-full top-0 w-80 bg-[#0a4d99] py-3
+                <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3
                                opacity-0 invisible group-hover/raster:opacity-100
                                group-hover/raster:visible transition-all duration-200 rounded-2xl">
 
                   {rasterToVectorItems.map((item) => (
-                    <li key={item.href} className="px-5 py-2 hover:bg-[#0d5db8]">
+                    <li key={item.href} className="px-5 py-2 hover:bg-primary hover:text-white">
                       <Link href={item.href}>{item.label}</Link>
                     </li>
                   ))}
@@ -109,7 +109,7 @@ function DesktopMenu() {
                 </ul>
               </li>
 
-              <li className="px-5 py-3 hover:bg-[#0a4d99] cursor-pointer">
+              <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
                 <Link href="/services/custom-patches">Custom Patches</Link>
               </li>
             </ul>
@@ -123,16 +123,16 @@ function DesktopMenu() {
         <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-primary text-white">
+          <div className="flex rounded-lg shadow-xl bg-white text-primary">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/pricing/embroidery-digitizing">
                 <span>Embroidery Digitizing Pricing</span>
                 </Link>
               </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/pricing/raster-to-vector">
                 <span>Raster to Vector Pricing</span>
                 </Link>
@@ -153,17 +153,17 @@ function DesktopMenu() {
                <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-primary text-white">
+          <div className="flex rounded-lg shadow-xl bg-white text-primary">
 
             {/* LEFT PANEL */}
             <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/write-a-review">Write a Review</Link>
               </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/contact-us">Contact</Link>
               </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-[#0a4d99] flex justify-between items-center cursor-pointer">
+              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/FAQs">FAQs</Link>
               </li>
             </ul>
@@ -219,7 +219,7 @@ function MobileMenu() {
             <div className="border-b border-blue-700">
               <button
                 onClick={() => toggleAccordion('services')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
                 <span className="font-semibold text-white">Services</span>
                 <ChevronDown
@@ -244,10 +244,10 @@ function MobileMenu() {
             </div>
 
             {/* PRICING ACCORDION */}
-            <div className="border-b border-[#0a4d99]">
+            <div className="border-b border-primary">
               <button
                 onClick={() => toggleAccordion('pricing')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
                 <span className="font-semibold text-white">Pricing</span>
                 <ChevronDown
@@ -272,7 +272,7 @@ function MobileMenu() {
             <div>
               <button
                 onClick={() => toggleAccordion('about')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#0a4d99] transition-colors"
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
                     <span className="font-semibold text-white">About</span>
 
