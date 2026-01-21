@@ -45,7 +45,7 @@ export default function ServicesCarousel() {
 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 mt-6 text-center">
               Services we Offered
             </h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-4 mr-7">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 px-2 md:px-4 mr-7">
   
   {categories.map((category) => (
     <Link

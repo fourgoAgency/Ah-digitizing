@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useInView } from "framer-motion";
 import pricesData from "@/data/price.json";
 import { useRef, useState } from "react";
+import Link from "next/link";
 type Plan = {
   id: string;
   title: string;
@@ -98,12 +99,15 @@ const vectorPlans: Plan[] = ((pricesData as { vector: PlanData[] }).vector.slice
 
         {/* Compare button */}
         <div className="text-center mt-12">
-          <a
-            href="/pricing"
-            className="inline-block px-8 py-4 bg-white text-primary font-bold rounded-full shadow-md hover:bg-gray-100 transition"
+          <Button
+            variant="outline"
+            className="px-6 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-colors"
           >
+          <Link
+            href="/pricing">
             Compare All Pricings
-          </a>
+          </Link>
+          </Button>
         </div>
       </div>
     </section>

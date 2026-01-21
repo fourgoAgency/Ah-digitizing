@@ -28,7 +28,18 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       }, 
+      screens: {
+        '4k': '2560px',
+      },
     }, 
   }, 
   plugins: [], 
 } satisfies Config; 
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+    },
+  },
+  plugins: [],
+};
