@@ -96,43 +96,6 @@ const testimonials: Testimonial[] = [
     text:
       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
     avatar: "/avatar.png",
-  },
-  {
-    id: 5,
-    name: "Sample Name",
-    role: "Designation",
-    rating: 4,
-    text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
-    avatar: "/avatar.png",
-  },
-  
-  {
-    id: 6,
-    name: "Sample Name",
-    role: "Designation",
-    rating: 5,
-    text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
-    avatar: "/avatar.png",
-  },  
-  {
-    id: 7,
-    name: "Sample Name",
-    role: "Designation",
-    rating: 4,
-    text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 8,
-    name: "Sample Name",
-    role: "Designation",
-    rating: 5,
-    text:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue",
-    avatar: "/avatar.png",
   }
 ];
 export default function Testimonials() {

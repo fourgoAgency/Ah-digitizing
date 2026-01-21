@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "../ui/button";
 
 const categories = [
   { id: 1, name: "Embroidery Digitizing", slug: "embroidery-digitizing", image: "/home-page/portfolio-embroidery/1st.png" },
@@ -14,12 +15,8 @@ const categories = [
 
 export default function ServicesCarousel() {
   return (
-    <section className="pb-12 bg-gray-50">
+    <section className=" bg-gray-50">
       <div className="max-w-full pr-4">
-
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 mt-6 text-center">
-              Services we Offered
-            </h2>
         <div className="flex flex-col lg:flex-row gap-8 items-stretch">
 
           {/* LEFT SIDEBAR */}
@@ -34,19 +31,22 @@ export default function ServicesCarousel() {
                 </p>
               </div>
 
-              <Link
+              {/* <Link
                 href="/shop"
                 className="inline-block px-8 py-3 bg-white text-primary text-center rounded-full font-medium hover:bg-transparent hover:text-white border-2 border-white transition-colors"
               >
                 Shop now
-              </Link>
+              </Link> */}
             </div>
           </div>
 
           {/* SERVICES GRID */}
           <div className="flex-1 flex flex-col">
-
+<h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 mt-6 text-center">
+              Services we Offered
+            </h2>
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-4 mr-7">
+  
   {categories.map((category) => (
     <Link
       key={category.id}
@@ -83,7 +83,14 @@ export default function ServicesCarousel() {
     </Link>
   ))}
 </div>
-
+<div className="lg:flex hidden justify-center">
+  <Button
+    variant="outline"
+    className="my-8 px-6 py-3 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+  >
+    View More
+  </Button>
+</div>
           </div>
         </div>
 
