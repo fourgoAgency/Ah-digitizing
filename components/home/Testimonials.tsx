@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="relative border-gray-300 border bg-white rounded-[28px] shadow-2xl mt-20 p-6 pt-16">
+    <div className="relative border-gray-300 border bg-white rounded-[28px] shadow-2xl mt-20 p-6 pt-16 hover:scale-105 transition-transform duration-300">
 
       {/* ✅ OLD AVATAR (unchanged) */}
       <div className="absolute -top-10 right-0 w-20 h-20 rounded-full bg-white shadow-xl border-4 border-gray-300 flex items-center justify-center">

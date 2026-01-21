@@ -19,7 +19,7 @@ type Plan = {
 export function PriceCard({ plan }: { plan: Plan }) {
   return (
     <motion.div
-      className="relative rounded-3xl bg-primary bg-[url('/bg.svg')] bg-cover bg-no-repeat p-6 pl-0 shadow-xl shadow-gray-800/70"
+      className="relative rounded-3xl bg-primary bg-[url('/home-page/bg.svg')] bg-cover bg-right bg-no-repeat p-8 pl-0 shadow-xl shadow-gray-800/70"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}

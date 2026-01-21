@@ -8,6 +8,7 @@ import WhyChooseAndFAQ from "@/components/home/WhyChooseUs";
 import CTABanner from "@/components/home/CTA";
 import Testimonials from "@/components/home/Testimonials";
 import BeforeAfterGrid from "@/components/home/BeforeAfter";
+import FeaturesSection from "@/components/home/FeaturedSection";
 export default function Page() {
   return (
     <main>
@@ -18,6 +19,7 @@ export default function Page() {
       <Portfolio />
       <Category />
       <WhyChooseAndFAQ/>
+    <FeaturesSection />
       <Testimonials/>
       <CTABanner/>
     </main>
