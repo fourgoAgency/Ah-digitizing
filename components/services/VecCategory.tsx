@@ -15,7 +15,7 @@ export default function VecCategory() {
       <div className="max-w-5xl mx-auto px-4">
         <h3 className="text-center text-2xl font-semibold mb-8">Vector Conversion Services</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {vectorCategories.map((category) => (
             <div key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="aspect-4/3 bg-gray-100 overflow-hidden">

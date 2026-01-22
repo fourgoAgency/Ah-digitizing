@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 const embroideryCategories = [
@@ -17,11 +18,11 @@ export default function EmbCategory() {
   return (
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
-        <h3 className="text-center text-2xl font-semibold mb-8">Embroidery Digitizing</h3>
+        <h3 className="text-center text-5xl font-bold mb-8">Embroidery Digitizing</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {embroideryCategories.map((category) => (
-            <div key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
               <div className="aspect-4/3 bg-gray-100 overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center">
                   <svg className="w-24 h-24 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -30,11 +31,11 @@ export default function EmbCategory() {
                 </div>
               </div>
 
-              <div className="p-6">
-                <h4 className="text-lg font-medium mb-2">{category.label}</h4>
-                <p className="text-sm text-gray-600 mb-6">Transform any image or logo into a high quality, scalable embroidery-ready file. Our digitizing service produces stitch-accurate files suitable for production on any machine.</p>
+              <div className="p-6 flex-1 flex flex-col justify-between gap-2">
+                <h4 className="text-lg font-semibold mb-2">{category.label}</h4>
+                <p className="text-sm text-gray-600">Transform any image or logo into a high quality, scalable embroidery-ready file. Our digitizing service produces stitch-accurate files suitable for production on any machine.</p>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center items-end mb-3 mt-auto">
                   <Link href={category.href} className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors">
                     Learn More
                   </Link>

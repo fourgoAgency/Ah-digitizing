@@ -26,7 +26,7 @@ export default function EmbHero() {
 
                 <div className="bg-white rounded-lg w-44 h-56 md:w-56 md:h-72 flex flex-col overflow-hidden shadow-md">
                   <div className="flex-1 bg-gray-100 flex items-center justify-center">
-                    <img src="/home%20page/portfoilo%20embroidery/2nd.jpg" alt="embroidery" className="object-contain p-4" />
+                    <img src="/home-page/portfolio-embroidery/2nd.png" alt="embroidery" className="object-contain p-4" />
                   </div>
                   <div className="p-3 border-t">
                     <div className="flex items-center justify-between text-sm">

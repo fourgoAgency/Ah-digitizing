@@ -75,9 +75,9 @@ function DesktopMenu() {
             <ul className="w-64 py-3">
               <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/services/embroidery" className="flex-1">Embroidery Digitizing</Link>
-                <span>›</span>
+                {/* <span>›</span> */}
 
-                {/* RIGHT PANEL */}
+                {/* RIGHT PANEL
                 <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3 
                                opacity-0 invisible group-hover/emb:opacity-100 
                                group-hover/emb:visible transition-all duration-200 rounded-2xl">
@@ -88,15 +88,14 @@ function DesktopMenu() {
                     </li>
                   ))}
 
-                </ul>
-              </li>
+                </ul>*/}
+              </li> 
 
               <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
                 <Link href="/services/raster-to-vector" className="flex-1">Raster to Vector Services</Link>
-                <span>›</span>
+                {/* <span>›</span> */}
 
-                {/* RIGHT PANEL */}
-                <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3
+                {/* <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3
                                opacity-0 invisible group-hover/raster:opacity-100
                                group-hover/raster:visible transition-all duration-200 rounded-2xl">
 
@@ -106,7 +105,7 @@ function DesktopMenu() {
                     </li>
                   ))}
 
-                </ul>
+                </ul> */}
               </li>
 
               <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
