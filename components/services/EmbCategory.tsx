@@ -9,9 +9,7 @@ const embroideryCategories = [
   { id: 3, label: "Cap Embroidery Digitizing", href: "/services/embroidery/cap" },
   { id: 4, label: "3D Puff Embroidery Digitizing", href: "/services/embroidery/3d-puff" },
   { id: 5, label: "Jacket Embroidery Digitizing", href: "/services/embroidery/jacket" },
-  { id: 6, label: "Applique Embroidery Digitizing", href: "/services/embroidery/applique" },
-  { id: 7, label: "Image Embroidery Digitizing", href: "/services/embroidery/image" },
-  { id: 8, label: "Towel Embroidery Digitizing", href: "/services/embroidery/towel" },
+  { id: 6, label: "Applique Embroidery Digitizing", href: "/services/embroidery/applique" }
 ];
 
 export default function EmbCategory() {
@@ -36,8 +34,8 @@ export default function EmbCategory() {
                 <p className="text-sm text-gray-600">Transform any image or logo into a high quality, scalable embroidery-ready file. Our digitizing service produces stitch-accurate files suitable for production on any machine.</p>
 
                 <div className="flex justify-center items-end mb-3 mt-auto">
-                  <Link href={category.href} className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors">
-                    Learn More
+                  <Link href="/get-qoute" className="inline-block px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-transparent hover:border-primary hover:text-primary hover:border transition-colors">
+                    Order Now
                   </Link>
                 </div>
               </div>

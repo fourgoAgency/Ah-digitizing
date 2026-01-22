@@ -108,9 +108,9 @@ function DesktopMenu() {
                 </ul> */}
               </li>
 
-              <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
+              {/* <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
                 <Link href="/services/custom-patches">Custom Patches</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

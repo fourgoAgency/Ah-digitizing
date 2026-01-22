@@ -8,14 +8,14 @@ const testimonials = [
     name: "Anna Fernandez",
     country: "USA",
     text: "The ring itself is stunning, with a beautiful design that catches the light and sparkles from every angle. The quality of the materials used is evident, as the ring feels substantial and durable. The gemstone is exquisite, with a vibrant color and exceptional clarity.",
-    image: "/home%20page/portfoilo%20embroidery/2nd.jpg",
+    image: "/home-page/portfolio-embroidery/2nd.jpg",
   },
   {
     id: 2,
     name: "Mark Johnson",
     country: "UK",
     text: "Outstanding service — fast turnaround and precise digitizing. Our embroidered logos look crisp across every garment.",
-    image: "/home%20page/portfoilo%20embroidery/1st.jpg",
+    image: "/home-page/portfolio-embroidery/1st.jpg",
   },
 ];
 
@@ -39,8 +39,8 @@ export default function Testimonials() {
 
         <div className="lg:col-span-2">
           <div className="relative flex items-center">
-            <div className="shrink-0 w-64 h-80 md:w-80 md:h-96 overflow-hidden shadow-xl rounded-l-xl">
-              <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
+            <div className="shrink-0 w-64 h-80 md:w-80 md:h-96 overflow-hidden shadow-xl rounded-l-xl bg-white">
+              <img src={t.image} alt={t.name} className="w-full h-full object-fill" />
             </div>
 
             <div className="flex-1 bg-blue-800 bg-opacity-90 rounded-r-xl p-8 shadow-inner h-80 md:h-96">

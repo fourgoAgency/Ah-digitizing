@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export default function TransformationExamples() {
   const examples = [
     {
@@ -76,6 +78,9 @@ export default function TransformationExamples() {
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.afterLabel}</p>
                 </div>
+              </div>
+              <div className="flex justify-center items-center mt-6">
+                <Button className="rounded-full px-9 hover:bg-transparent hover:border-primary hover:text-primary hover:border">Order Now</Button>
               </div>
             </div>
           ))}
