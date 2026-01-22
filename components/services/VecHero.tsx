@@ -13,7 +13,7 @@ export default function VecHero() {
             <p className="text-gray-600 mb-6">Transform your raster images into scalable vector graphics. Our expert team converts artwork, logos, and designs into clean, editable vector files suitable for any medium—print, web, or signage.</p>
 
             <div className="flex gap-3">
-              <Link href="/portfolio" className="inline-block px-5 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors">Portfolio</Link>
+              <Link href="/portfolio" className="inline-block px-5 py-2 bg-primary text-white rounded-md font-medium hover:bg-transparent hover:border-primary hover:border hover:text-primary transition-colors">Portfolio</Link>
               <Link href="/pricing/raster-to-vector" className="inline-block px-5 py-2 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors">Pricing</Link>
             </div>
           </div>
@@ -21,10 +21,10 @@ export default function VecHero() {
           {/* Right - Blue card with inner white card */}
           <div className="flex justify-center lg:justify-end">
             <div className="relative">
-              <div className="w-80 h-80 md:w-96 md:h-96 bg-blue-600 rounded-xl p-6 flex items-center justify-center shadow-lg">
+              <div className="w-80 h-80 md:w-96 md:h-96 bg-secondary rounded-xl p-6 flex items-center justify-center shadow-lg">
                 <div className="hidden md:block absolute -right-6 -top-6 w-20 h-20 bg-[url('/dots.svg')] bg-no-repeat" />
 
-                <div className="bg-white rounded-lg w-44 h-56 md:w-56 md:h-72 flex flex-col overflow-hidden shadow-md">
+                <div className="bg-white rounded-lg w-44 h-56 md:w-56 md:h-72 flex flex-col overflow-hidden shadow-md shadow-white/70">
                   <div className="flex-1 bg-gray-100 flex items-center justify-center">
                     <img src="/home-page/portfolio-vector/1st.jpg" alt="vector" className="object-contain p-4" />
                   </div>
