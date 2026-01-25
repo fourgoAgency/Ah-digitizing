@@ -3,6 +3,13 @@
 import { Button } from "@/components/ui/button";
 
 export default function TransformationExamples() {
+  const images: Record<number, { before: string; after: string }> = {
+    1: { before: "/services/2 Cap Before.png", after: "/services/OUTLINE.svg" },
+    2: { before: "/services/3D PUFF Before.png", after: "/services/3D PUFF after.svg" },
+    3: { before: "/services/outline.png", after: "/services/OUTLINE.svg" },
+    4: { before: "/services/2 Cap Before.png", after: "/services/Untitled design.svg" },
+  };
+
   const examples = [
     {
       id: 1,
@@ -62,9 +69,7 @@ export default function TransformationExamples() {
                 {/* Before */}
                 <div className="text-center">
                   <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden">
-                    <svg className="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                    </svg>
+                    <img src={images[example.id].before} className="w-full h-full object-contain" />
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.beforeLabel}</p>
                 </div>
@@ -72,9 +77,7 @@ export default function TransformationExamples() {
                 {/* After */}
                 <div className="text-center">
                   <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden">
-                    <svg className="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                    </svg>
+                    <img src={images[example.id].after} className="w-full h-full object-cover object-center" />
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.afterLabel}</p>
                 </div>
