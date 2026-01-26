@@ -77,7 +77,7 @@ export default function TransformationExamples() {
                 {/* After */}
                 <div className="text-center">
                   <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden">
-                    <img src={images[example.id].after} className="w-full h-full object-cover object-center" />
+                    <img src={images[example.id].after} className="w-full h-full object-contain" />
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.afterLabel}</p>
                 </div>
