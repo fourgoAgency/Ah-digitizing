@@ -68,7 +68,7 @@ export default function TransformationExamples() {
               <div className="grid grid-cols-2 gap-6">
                 {/* Before */}
                 <div className="text-center">
-                  <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden">
+                  <div className="bg-white rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
                     <img src={images[example.id].before} className="w-full h-full object-contain" />
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.beforeLabel}</p>
@@ -76,7 +76,7 @@ export default function TransformationExamples() {
 
                 {/* After */}
                 <div className="text-center">
-                  <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden">
+                  <div className="bg-white rounded-lg h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
                     <img src={images[example.id].after} className="w-full h-full object-contain" />
                   </div>
                   <p className="text-sm font-medium text-gray-700">{example.afterLabel}</p>
