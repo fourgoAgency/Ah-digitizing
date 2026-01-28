@@ -49,7 +49,7 @@ export default function TransformationExamples() {
   return (
 
     <section className="bg-gray-200 px-4 py-12 sm:px-6 md:px-10 lg:px-20">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -64,24 +64,27 @@ export default function TransformationExamples() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
           {examples.map((example) => (
             <div
-              className="bg-white p-6 sm:p-8 md:p-10 rounded-lg"
+              className="bg-white p-6 sm:p-8 md:p-10 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center"
               key={example.id}
             >
-              {/* Title and Description */}
-              <div className="mb-6 md:mb-8">
+              {/* Left: Title and Description */}
+              <div>
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                   {example.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 mb-6">
                   {example.description}
                 </p>
-              </div>
 
-              {/* Before/After Images */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* CTA */}
+                <div className="flex justify-start">
+                  <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
+                    Order Now
+                  </Button>
+                </div>
                 {/* Before */}
-                <div className="text-center">
-                  <div className="bg-white rounded-lg h-40 sm:h-48 md:h-52 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
+                <div className="text-center mt-4">
+                  <div className="bg-white rounded-lg h-40 sm:h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
                     <img
                       src={images[example.id].before}
                       className="w-full h-full object-contain"
@@ -92,15 +95,18 @@ export default function TransformationExamples() {
                     {example.beforeLabel}
                   </p>
                 </div>
+              </div>
 
+
+                {/* After */}
                 <div className="text-center">
                   <div
-                    className="bg-white rounded-lg h-48 sm:h-56 md:h-64 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700 cursor-pointer"
+                    className="bg-white rounded-lg h-full 2xl:h-96 xl:h-72 w-full 2xl:w-96 xl:w-72 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700 cursor-pointer"
                     onClick={() => setActiveImage(images[example.id].after)}
                   >
                     <img
                       src={images[example.id].after}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                       alt="After"
                     />
                   </div>
@@ -111,13 +117,8 @@ export default function TransformationExamples() {
 
               </div>
 
-              {/* CTA */}
-              <div className="flex justify-center items-center mt-6">
-                <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
-                  Order Now
-                </Button>
-              </div>
-            </div>
+              
+
           ))}
         </div>
       </div>
