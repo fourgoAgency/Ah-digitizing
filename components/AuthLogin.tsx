@@ -73,7 +73,7 @@ export default function AuthSlider() {
         <motion.div
           animate={{ x: isSignup ? "0%" : "100%" }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-1/2 h-full bg-linear-to-br from-primary via-primary to-black text-white flex items-center justify-center z-10"
+          className="absolute top-0 left-0 w-1/2 h-full rounded-4xl bg-linear-to-br from-primary via-primary to-black text-white flex items-center justify-center z-10"
         >
           <div className="text-center space-y-8 px-10">
             {isSignup ? (
