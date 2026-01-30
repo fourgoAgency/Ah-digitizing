@@ -27,7 +27,7 @@ function TopNavbar() {
         <li><FaYoutube className="text-blue-800" /></li>
       </ul>
 
-      <Link href="/account" className="flex items-center gap-2 text-blue-800 text-sm">
+      <Link href="/login" className="flex items-center gap-2 text-blue-800 text-sm">
         <FaUser /> My Account
       </Link>
     </nav>
