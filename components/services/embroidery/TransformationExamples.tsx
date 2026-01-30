@@ -48,7 +48,7 @@ export default function TransformationExamples() {
 
   return (
 
-    <section className="bg-gray-200 px-4 py-12 sm:px-6 md:px-10 lg:px-20">
+    <section className="bg-gray-200 px-4 py-12 flex justify-between items-center">
       <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
@@ -64,7 +64,7 @@ export default function TransformationExamples() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
           {examples.map((example) => (
             <div
-              className="bg-white p-6 sm:p-8 md:p-10 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center"
+              className="bg-white pl-4 py-3 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center justify-between "
               key={example.id}
             >
               {/* Left: Title and Description */}
@@ -75,13 +75,7 @@ export default function TransformationExamples() {
                 <p className="text-sm sm:text-base text-gray-600 mb-6">
                   {example.description}
                 </p>
-
-                {/* CTA */}
-                <div className="flex justify-start">
-                  <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
-                    Order Now
-                  </Button>
-                </div>
+                
                 {/* Before */}
                 <div className="text-center mt-4">
                   <div className="bg-white rounded-lg h-40 sm:h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
@@ -91,28 +85,28 @@ export default function TransformationExamples() {
                       alt="Before"
                     />
                   </div>
-                  <p className="text-sm font-medium text-gray-700">
-                    {example.beforeLabel}
-                  </p>
                 </div>
+
+                <div className="flex justify-center mt-6">
+                  <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
+                    Order Now
+                  </Button>
+                  </div>
               </div>
 
 
                 {/* After */}
                 <div className="text-center">
                   <div
-                    className="bg-white rounded-lg h-full 2xl:h-96 xl:h-72 w-full 2xl:w-96 xl:w-72 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700 cursor-pointer"
+                    className="bg-white rounded-lg h-full 2xl:h-96 xl:h-72 w-full 2xl:w-96 xl:w-64 flex mb-3 items-center justify-around lg:justify-end xl:justify-center overflow-hidden shadow-md shadow-gray-700 cursor-pointer"
                     onClick={() => setActiveImage(images[example.id].after)}
                   >
                     <img
                       src={images[example.id].after}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover xl:object-contain"
                       alt="After"
                     />
                   </div>
-                  <p className="text-sm font-medium text-gray-700">
-                    {example.afterLabel}
-                  </p>
                 </div>
 
               </div>
@@ -137,7 +131,6 @@ export default function TransformationExamples() {
             className="relative rounded-lg w-[95%] sm:w-[80%] lg:w-[70%] h-auto lg:h-[90%] p-4 flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
 
             {/* Image */}
             <img
