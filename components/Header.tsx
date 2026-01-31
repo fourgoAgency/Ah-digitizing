@@ -14,6 +14,8 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { ChevronDown, Menu } from "lucide-react";
+import { PiCarThin } from "react-icons/pi";
+import { BiCart } from "react-icons/bi";
 
 /* ================= TOP NAVBAR ================= */
 function TopNavbar() {
@@ -27,9 +29,7 @@ function TopNavbar() {
         <li><FaYoutube className="text-blue-800" /></li>
       </ul>
 
-      <Link href="/login" className="flex items-center gap-2 text-blue-800 text-sm">
-        <FaUser /> My Account
-      </Link>
+
     </nav>
   );
 }
@@ -56,28 +56,33 @@ const rasterToVectorItems = [
 
 function DesktopMenu() {
   return (
-    <nav className="hidden p-2 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex items-center gap-8 text-lg font-medium text-center justify-center text-white">
+    <nav className="hidden p-2 px-18 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex  justify-items-center gap-8 text-lg font-medium text-left justify-between text-white">
+      <Link href="/" className="flex items-center gap-1 text-3xl">
+        <p className="font-bold text-black text-4xl">AH </p>
+        {/* <span className="font-bold bg-linear-to-br from-primary to-black bg-clip-text text-transparent">Digitizing</span> */}
+        <p className="font-bold" style={{ WebkitTextStroke: '0.4px black' }}>Digitizing</p>
+      </Link>
+      <div className="flex items-center justify-between gap-8">
+        <Link href="/">Home</Link>
 
-      <Link href="/">Home</Link>
+        {/* SERVICES */}
+        <div className="relative group">
+          <Link href="/services">
+            <span className="cursor-pointer flex">Services<ChevronDown className=" text-lg" /></span></Link>
 
-      {/* SERVICES */}
-      <div className="relative group">
-        <Link href="/services">
-        <span className="cursor-pointer flex">Services<ChevronDown className=" text-lg" /></span></Link>
-
-        {/* Main dropdown */}
-        <div className="absolute left-0 top-full mt-3 opacity-0 invisible
+          {/* Main dropdown */}
+          <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-white text-primary ">
+            <div className="flex rounded-lg shadow-xl bg-white text-primary ">
 
-            {/* LEFT PANEL */}
-            <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/services/embroidery" className="flex-1">Embroidery Digitizing</Link>
-                {/* <span>›</span> */}
+              {/* LEFT PANEL */}
+              <ul className="w-64 py-3">
+                <li className="relative group/emb px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/services/embroidery" className="flex-1">Embroidery Digitizing</Link>
+                  {/* <span>›</span> */}
 
-                {/* RIGHT PANEL
+                  {/* RIGHT PANEL
                 <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3 
                                opacity-0 invisible group-hover/emb:opacity-100 
                                group-hover/emb:visible transition-all duration-200 rounded-2xl">
@@ -89,13 +94,13 @@ function DesktopMenu() {
                   ))}
 
                 </ul>*/}
-              </li> 
+                </li>
 
-              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/services/raster-to-vector" className="flex-1">Raster to Vector Services</Link>
-                {/* <span>›</span> */}
+                <li className="relative group/raster px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/services/raster-to-vector" className="flex-1">Raster to Vector Services</Link>
+                  {/* <span>›</span> */}
 
-                {/* <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3
+                  {/* <ul className="absolute left-full top-0 w-80 bg-white text-primary py-3
                                opacity-0 invisible group-hover/raster:opacity-100
                                group-hover/raster:visible transition-all duration-200 rounded-2xl">
 
@@ -106,70 +111,78 @@ function DesktopMenu() {
                   ))}
 
                 </ul> */}
-              </li>
+                </li>
 
-              {/* <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
+                {/* <li className="px-5 py-3 hover:bg-primary hover:text-white cursor-pointer">
                 <Link href="/services/custom-patches">Custom Patches</Link>
               </li> */}
-            </ul>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* PRICING */}
-      <div className="relative group">
-        <span className="cursor-pointer flex">Pricing <ChevronDown className=" text-lg" /></span>
-        <div className="absolute left-0 top-full mt-3 opacity-0 invisible
+        {/* PRICING */}
+        <div className="relative group">
+          <span className="cursor-pointer flex">Pricing <ChevronDown className=" text-lg" /></span>
+          <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
-          <div className="flex rounded-lg shadow-xl bg-white text-primary">
+            <div className="flex rounded-lg shadow-xl bg-white text-primary">
 
-            {/* LEFT PANEL */}
-            <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/pricing/embroidery-digitizing">
-                <span>Embroidery Digitizing Pricing</span>
-                </Link>
-              </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/pricing/raster-to-vector">
-                <span>Raster to Vector Pricing</span>
-                </Link>
-              </li>
-            </ul>
+              {/* LEFT PANEL */}
+              <ul className="w-72 py-3">
+                <li className="relative group/emb px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/pricing/embroidery-digitizing">
+                    <span>Embroidery Digitizing Pricing</span>
+                  </Link>
+                </li>
+                <li className="relative group/raster px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/pricing/raster-to-vector">
+                    <span>Raster to Vector Pricing</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <Link href="/portfolio">Portfolio</Link>
+        <Link href="/blogs">Blogs</Link>
+
+        {/* ABOUT */}
+        <div className="relative group">
+          <Link href="/about-us">
+            <span className="cursor-pointer flex">About <ChevronDown className="text-lg" /></span>
+          </Link>
+          <div className="absolute left-0 top-full mt-3 opacity-0 invisible
+                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+
+            <div className="flex rounded-lg shadow-xl bg-white text-primary">
+
+              {/* LEFT PANEL */}
+              <ul className="w-64 py-3">
+                <li className="relative group/emb px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/write-a-review">Write a Review</Link>
+                </li>
+                <li className="relative group/raster px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/contact-us">Contact</Link>
+                </li>
+                <li className="relative group/raster px-5 py-3 hover:bg-linear-to-br from-primary via-primary to-black/70 hover:text-white flex justify-between items-center cursor-pointer">
+                  <Link href="/FAQs">FAQs</Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-
-      <Link href="/portfolio">Portfolio</Link>
-      <Link href="/blogs">Blogs</Link>
-
-      {/* ABOUT */}
-      <div className="relative group">
-        <Link href="/about-us">
-        <span className="cursor-pointer flex">About <ChevronDown className="text-lg" /></span>
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center">
+        <Link href="/cart" className="">
+          <BiCart size={24} />
         </Link>
-               <div className="absolute left-0 top-full mt-3 opacity-0 invisible
-                        group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-
-          <div className="flex rounded-lg shadow-xl bg-white text-primary">
-
-            {/* LEFT PANEL */}
-            <ul className="w-64 py-3">
-              <li className="relative group/emb px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/write-a-review">Write a Review</Link>
-              </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/contact-us">Contact</Link>
-              </li>
-              <li className="relative group/raster px-5 py-3 hover:bg-primary hover:text-white flex justify-between items-center cursor-pointer">
-                <Link href="/FAQs">FAQs</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <Link href="/login" className="">
+          <FaUser />
+        </Link>
       </div>
-
     </nav>
   );
 }
@@ -222,13 +235,12 @@ function MobileMenu() {
               >
                 <span className="font-semibold text-white">Services</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${
-                    activeAccordion === 'services' ? 'rotate-180' : ''
-                  }`}
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'services' ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
               {activeAccordion === 'services' && (
-                <div className="px-6 pb-4 space-y-2 z-[9999]">
+                <div className="px-6 pb-4 space-y-2 z-[9999">
                   <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Digitizing
                   </Link>
@@ -250,9 +262,8 @@ function MobileMenu() {
               >
                 <span className="font-semibold text-white">Pricing</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${
-                    activeAccordion === 'pricing' ? 'rotate-180' : ''
-                  }`}
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'pricing' ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
               {activeAccordion === 'pricing' && (
@@ -273,12 +284,11 @@ function MobileMenu() {
                 onClick={() => toggleAccordion('about')}
                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
-                    <span className="font-semibold text-white">About</span>
+                <span className="font-semibold text-white">About</span>
 
                 <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${
-                    activeAccordion === 'about' ? 'rotate-180' : ''
-                  }`}
+                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'about' ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
               {activeAccordion === 'about' && (
@@ -310,7 +320,7 @@ export default function Header() {
 
   return (
     <>
-      <TopNavbar />
+      {/* <TopNavbar /> */}
 
       <header className="relative z-[100">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
@@ -319,13 +329,12 @@ export default function Header() {
 
           <div className="hidden lg:flex gap-4">
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent  ${
-                hoveredButton === 'shop'
-                  ? 'bg-primary text-white border-primary'
-                  : hoveredButton === 'quote'
-                    ? 'bg-white text-primary border-primary'
-                    : 'border-accent text-accent'
-              }`}
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent  ${hoveredButton === 'shop'
+                ? 'bg-primary text-white border-primary'
+                : hoveredButton === 'quote'
+                  ? 'bg-white text-primary border-primary'
+                  : 'border-accent text-accent'
+                }`}
               onMouseEnter={() => setHoveredButton('shop')}
               onMouseLeave={() => setHoveredButton(null)}
             >
@@ -333,13 +342,12 @@ export default function Header() {
             </Button>
 
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
-                hoveredButton === 'quote'
-                  ? 'bg-primary text-white border-primary'
-                  : hoveredButton === 'shop'
-                    ? 'bg-white text-primary border-primary'
-                    : 'bg-primary text-white border-primary'
-              }`}
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
+                ? 'bg-primary text-white border-primary'
+                : hoveredButton === 'shop'
+                  ? 'bg-white text-primary border-primary'
+                  : 'bg-primary text-white border-primary'
+                }`}
               onMouseEnter={() => setHoveredButton('quote')}
               onMouseLeave={() => setHoveredButton(null)}
             >
@@ -349,12 +357,12 @@ export default function Header() {
 
           <MobileMenu />
         </div>
-
         {/* ===== SECOND ROW (DESKTOP MENU) ===== */}
-        <div className="hidden md:flex justify-center mb-5  items-center">
-          <DesktopMenu />
-        </div>
+
       </header>
+      <div className="hidden md:flex justify-center mb-5 items-center sticky top-0 z-50 ">
+        <DesktopMenu />
+      </div>
     </>
   );
 }
