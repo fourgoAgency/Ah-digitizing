@@ -16,6 +16,8 @@ import {
 import { ChevronDown, Menu } from "lucide-react";
 import { PiCarThin } from "react-icons/pi";
 import { BiCart } from "react-icons/bi";
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ================= TOP NAVBAR ================= */
 function TopNavbar() {
@@ -54,14 +56,54 @@ const rasterToVectorItems = [
   { label: "Color Separation", href: "/services/raster-to-vector/color-separation" },
 ];
 
-function DesktopMenu() {
+function DesktopMenu({ isSticky }: { isSticky: boolean }) {
   return (
-    <nav className="hidden p-2 px-18 rounded-lg border border-gray-600 shadow-lg shadow-gray-600 bg-primary w-full md:flex  justify-items-center gap-8 text-lg font-medium text-left justify-between text-white">
-      <Link href="/" className="flex items-center gap-1 text-3xl">
-        <p className="font-bold text-black text-4xl">AH </p>
-        {/* <span className="font-bold bg-linear-to-br from-primary to-black bg-clip-text text-transparent">Digitizing</span> */}
-        <p className="font-bold" style={{ WebkitTextStroke: '0.4px black' }}>Digitizing</p>
-      </Link>
+    <motion.nav
+  animate={{
+    scale: isSticky ? 0.9999 : 1,
+    marginLeft: isSticky ? "1rem" : "0rem",
+    marginRight: isSticky ? "1rem" : "0rem",
+  }}
+  transition={{ duration: 0.25, ease: "easeOut" }}
+  className={`
+    p-2 px-18
+    rounded-lg
+    bg-primary
+    border border-gray-600
+    shadow-lg shadow-gray-600
+    w-full
+    md:flex
+    justify-between
+    gap-8
+    text-lg
+    font-medium
+    text-white
+  `}
+>
+
+      <AnimatePresence>
+        {isSticky && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <Link href="/" className="flex items-center gap-1 text-3xl">
+              <p className="font-bold text-black text-4xl">AH</p>
+              <p
+                className="font-bold"
+                style={{ WebkitTextStroke: "0.4px black" }}
+              >
+                Digitizing
+              </p>
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+        {
+          isSticky ? null : <div className="flex items-center gap-2"/>
+        }
       <div className="flex items-center justify-between gap-8">
         <Link href="/">Home</Link>
 
@@ -183,7 +225,7 @@ function DesktopMenu() {
           <FaUser />
         </Link>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
 
@@ -317,7 +359,16 @@ function MobileMenu() {
 /* ================= MAIN HEADER ================= */
 export default function Header() {
   const [hoveredButton, setHoveredButton] = useState<'shop' | 'quote' | null>(null);
+  const [isSticky, setIsSticky] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 120);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <>
       {/* <TopNavbar /> */}
@@ -360,9 +411,11 @@ export default function Header() {
         {/* ===== SECOND ROW (DESKTOP MENU) ===== */}
 
       </header>
-      <div className="hidden md:flex justify-center mb-5 items-center sticky top-0 z-50 ">
-        <DesktopMenu />
+
+      <div className="hidden md:flex sticky top-0 z-50 justify-center">
+        <DesktopMenu isSticky={isSticky} />
       </div>
+
     </>
   );
 }
