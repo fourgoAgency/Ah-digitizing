@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { useState } from "react";
 export default function TransformationExamples() {
   const images: Record<number, { before: string; after: string }> = {
@@ -75,7 +76,7 @@ export default function TransformationExamples() {
                 <p className="text-sm sm:text-base text-gray-600 mb-6">
                   {example.description}
                 </p>
-                
+
                 {/* Before */}
                 <div className="text-center mt-4">
                   <div className="bg-white rounded-lg h-40 sm:h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
@@ -91,27 +92,32 @@ export default function TransformationExamples() {
                   <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
                     Order Now
                   </Button>
-                  </div>
+                </div>
               </div>
 
 
-                {/* After */}
-                <div className="text-center">
-                  <div
-                    className="bg-white rounded-lg h-full 2xl:h-96 xl:h-72 w-full 2xl:w-96 xl:w-64 flex mb-3 items-center justify-around lg:justify-end xl:justify-center overflow-hidden shadow-md shadow-gray-700 cursor-pointer"
-                    onClick={() => setActiveImage(images[example.id].after)}
-                  >
-                    <img
-                      src={images[example.id].after}
-                      className="w-full h-full object-cover xl:object-contain"
-                      alt="After"
-                    />
-                  </div>
+              {/* After */}
+              <div className="text-center mr-6">
+                <div
+                  className="bg-white rounded-lg w-full h-56 sm:h-64 md:h-72 lg:h-80 
+             flex items-center justify-center overflow-hidden 
+             shadow-md shadow-gray-700 cursor-pointer"
+                  onClick={() => setActiveImage(images[example.id].after)}
+                >
+                  <Image
+                    src={images[example.id].after}
+                    alt="After"
+                    className="max-w-full max-h-full "
+                    width={500}
+                    height={500}
+                  />
                 </div>
 
               </div>
 
-              
+            </div>
+
+
 
           ))}
         </div>
@@ -121,21 +127,23 @@ export default function TransformationExamples() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
           onClick={() => setActiveImage(null)}
         >
-            <button
-              className="absolute top-3 right-3 text-white hover:text-black text-2xl"
-              onClick={() => setActiveImage(null)}
-            >
-              &times;
-            </button>
+          <button
+            className="absolute top-3 right-3 text-white hover:text-black text-2xl"
+            onClick={() => setActiveImage(null)}
+          >
+            &times;
+          </button>
           <div
             className="relative rounded-lg w-[95%] sm:w-[80%] lg:w-[70%] h-auto lg:h-[90%] p-4 flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
 
             {/* Image */}
-            <img
+            <Image
               src={activeImage}
-              className="w-full h-full object-contain"
+              width={500}
+              height={500}
+              className="w-full h-full hover:scale-105 transition-transform duration-300"
               alt="Preview"
             />
           </div>
