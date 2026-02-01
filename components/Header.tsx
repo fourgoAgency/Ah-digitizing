@@ -59,51 +59,58 @@ const rasterToVectorItems = [
 function DesktopMenu({ isSticky }: { isSticky: boolean }) {
   return (
     <motion.nav
-  animate={{
-    scale: isSticky ? 0.9999 : 1,
-    marginLeft: isSticky ? "1rem" : "0rem",
-    marginRight: isSticky ? "1rem" : "0rem",
-  }}
-  transition={{ duration: 0.25, ease: "easeOut" }}
-  className={`
-    p-2 px-18
-    rounded-lg
-    bg-primary
-    border border-gray-600
-    shadow-lg shadow-gray-600
-    w-full
-    md:flex
-    justify-between
-    gap-8
-    text-lg
-    font-medium
-    text-white
-  `}
->
+      initial={false}
+      animate={{
+        y: isSticky ? 5 : 10,
+        opacity: 1,
+        boxShadow: isSticky
+          ? "0 10px 30px rgba(0,0,0,0.15)"
+          : "0 0 0 rgba(0,0,0,0)",
+        scale: isSticky ? 0.9999 : 1,
+        marginLeft: isSticky ? "1rem" : "0rem",
+        marginRight: isSticky ? "1rem" : "0rem",
+      }}
+      transition={{
+        duration: isSticky ? 1 : 2,
+        ease: [0.22, 1, 0.36, 1],
+      }}
 
-      <AnimatePresence>
-        {isSticky && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <Link href="/" className="flex items-center gap-1 text-3xl">
-              <p className="font-bold text-black text-4xl">AH</p>
-              <p
-                className="font-bold"
-                style={{ WebkitTextStroke: "0.4px black" }}
-              >
-                Digitizing
-              </p>
-            </Link>
-          </motion.div>
-        )}
-      </AnimatePresence>
-        {
-          isSticky ? null : <div className="flex items-center gap-2"/>
-        }
+      className="
+        p-2 px-18
+        rounded-lg
+        bg-primary
+        border border-gray-600
+        w-full
+        md:flex
+        justify-between
+        gap-8
+        text-lg
+        font-medium
+        text-white
+        will-change-transform
+      "
+    >
+
+
+      <motion.div
+        animate={{
+          opacity: isSticky ? 1 : 0,
+          y: isSticky ? 0 : -40,
+          pointerEvents: isSticky ? "auto" : "none",
+        }}
+        transition={{
+          duration: 0.35,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="w-45 shrink-0"
+      >
+        <Link href="/" className="flex items-center gap-1 text-3xl">
+          <p className="font-bold text-black text-4xl">AH</p>
+          <p className="font-bold" style={{ WebkitTextStroke: "0.4px black" }}>
+            Digitizing
+          </p>
+        </Link>
+      </motion.div>
       <div className="flex items-center justify-between gap-8">
         <Link href="/">Home</Link>
 
@@ -362,13 +369,29 @@ export default function Header() {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 120);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+
+          setIsSticky((prev) => {
+            if (!prev && y > 140) return true;   // stick late
+            if (prev && y < 80) return false;    // unstick early
+            return prev;
+          });
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
     <>
       {/* <TopNavbar /> */}
