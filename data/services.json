@@ -1,0 +1,126 @@
+{
+  "embroidery": {
+    "slug": "embroidery",
+    "hero": {
+      "title": "Transform Your Designs into Perfect Embroidery",
+      "description": "Achieve exceptional stitch quality and precision with our expert embroidery digitizing services. Perfect for logos, apparel, patches, and creative designs of any complexity.",
+      "quoteParam": "embroidery"
+    },
+    "transformation": {
+      "title": "See the Transformation",
+      "description": "Witness the dramatic improvement in quality and detail our skilled digitizers bring to every design.",
+      "examples": [
+        {
+          "id": 1,
+          "title": "Logo Embroidery Perfection",
+          "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg"
+        },
+        {
+          "id": 2,
+          "title": "Detailed Design Digitizing",
+          "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
+          "beforeImage": "/services/3D PUFF Before.png",
+          "afterImage": "/services/3D PUFF after.svg"
+        },
+        {
+          "id": 3,
+          "title": "Apparel Image Enhancement",
+          "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
+          "beforeImage": "/services/outline.png",
+          "afterImage": "/services/OUTLINE.svg"
+        },
+        {
+          "id": 4,
+          "title": "Complex Artwork Conversion",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg"
+        }
+      ]
+    },
+    "testimonials": [
+      {
+        "id": 1,
+        "name": "Anna Fernandez",
+        "country": "USA",
+        "text": "The ring itself is stunning, with a beautiful design that catches the light and sparkles from every angle. The quality of the materials used is evident, as the ring feels substantial and durable. The gemstone is exquisite, with a vibrant color and exceptional clarity.",
+        "image": "/home-page/portfolio-embroidery/2nd.jpg"
+      },
+      {
+        "id": 2,
+        "name": "Mark Johnson",
+        "country": "UK",
+        "text": "Outstanding service -- fast turnaround and precise digitizing. Our embroidered logos look crisp across every garment.",
+        "image": "/home-page/portfolio-embroidery/1st.jpg"
+      }
+    ],
+    "pricing": {
+      "serviceKey": "embroidery",
+      "serviceLabel": "Embroidery"
+    }
+  },
+  "raster-to-vector": {
+    "slug": "raster-to-vector",
+    "hero": {
+      "title": "Transform Your Raster Images into Scalable Vectors",
+      "description": "Convert your raster graphics into high-quality, scalable vector files. Perfect for logos, illustrations, and designs that need to be resized without losing quality.",
+      "quoteParam": "vector"
+    },
+    "transformation": {
+      "title": "See the Transformation: Raster to Vector Examples",
+      "description": "Witness the dramatic improvement in quality and detail our skilled digitizers bring to every image.",
+      "examples": [
+        {
+          "id": 1,
+          "title": "Logo Refinement",
+          "description": "Transforming pixelated company logos into a clean, scalable vector format suitable for all branding needs.",
+          "beforeImage": "/home-page/portfolio-vector/1st.jpg",
+          "afterImage": "/home-page/portfolio-vector/2nd.jpg"
+        },
+        {
+          "id": 2,
+          "title": "Intricate Illustration Cleanup",
+          "description": "Converting a hand-drawn or scanned illustration into a sharp vector graphic, preserving all artistic nuances.",
+          "beforeImage": "/home-page/portfolio-vector/2nd.jpg",
+          "afterImage": "/home-page/portfolio-vector/3rd.jpg"
+        },
+        {
+          "id": 3,
+          "title": "Product Image Enhancement",
+          "description": "Perfecting product images for e-commerce by converting them to vector, ensuring high-quality display at any size.",
+          "beforeImage": "/home-page/portfolio-vector/3rd.jpg",
+          "afterImage": "/home-page/portfolio-vector/4th.jpg"
+        },
+        {
+          "id": 4,
+          "title": "Detailed Artwork Conversion",
+          "description": "Bringing old or complex artwork to life in a scalable vector format, ideal for large-scale prints and digital applications.",
+          "beforeImage": "/home-page/portfolio-vector/4th.jpg",
+          "afterImage": "/home-page/portfolio-vector/1st.jpg"
+        }
+      ]
+    },
+    "testimonials": [
+      {
+        "id": 1,
+        "name": "Sarah Lee",
+        "country": "USA",
+        "text": "The vector conversion was flawless. Our logo now scales perfectly across all our marketing materials without any pixelation. Highly recommend their service!",
+        "image": "/home-page/portfolio-vector/1st.jpg"
+      },
+      {
+        "id": 2,
+        "name": "Mike Chen",
+        "country": "Canada",
+        "text": "Fast turnaround and excellent quality. The vector files are clean and editable. Saved us a lot of time and hassle in our design process.",
+        "image": "/home-page/portfolio-vector/2nd.jpg"
+      }
+    ],
+    "pricing": {
+      "serviceKey": "vector",
+      "serviceLabel": "Vector"
+    }
+  }
+}
