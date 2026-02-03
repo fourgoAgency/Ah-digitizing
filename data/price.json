@@ -3,6 +3,7 @@
     {
       "id": "basic",
       "title": "Basic",
+      "description": "Perfect for simple designs with basic digitizing needs.",
       "price": 8,
       "suffix": "only",
       "features": [
@@ -16,6 +17,7 @@
     {
       "id": "standard",
       "title": "Standard",
+      "description": "Ideal for most designs with standard digitizing requirements.",
       "price": 14,
       "suffix": "only",
       "features": [
@@ -29,6 +31,7 @@
     {
       "id": "advanced",
       "title": "Advanced",
+      "description": "Best for complex designs needing advanced digitizing techniques.",
       "price": 20,
       "suffix": "only",
       "features": [
@@ -44,6 +47,7 @@
     {
       "id": "start",
       "title": "Start",
+      "description": "Perfect for converting simple PNG images to SVG format.",
       "price": 6,
       "suffix": "only",
       "features": [
@@ -57,6 +61,7 @@
     {
       "id": "simple",
       "title": "Simple",
+      "description": "Great for basic vector conversions with enhanced features.",
       "price": 8,
       "suffix": "only",
       "features": [
@@ -65,11 +70,12 @@
         "2 revisions",
         "Simple vector conversion"
       ],
-      "popular": false
+      "popular": true
     },
     {
       "id": "standard-v",
       "title": "Standard",
+      "description": "Ideal for most vector conversion needs with quality enhancements.",
       "price": 15,
       "suffix": "",
       "features": [
@@ -78,7 +84,7 @@
         "Multiple formats (AI, EPS, SVG)",
         "Standard vector conversion"
       ],
-      "popular": true
+      "popular": false
     }
   ]
 }
