@@ -1,13 +1,26 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 type CardProps = {
   before: string;
   after: string;
 };
 
 const Card = ({ before, after }: CardProps) => {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
   return (
     <div className="relative bg-muted rounded-3xl w-full h-full flex gap-4 sm:gap-6 shadow-xl p-4 sm:p-0">
 

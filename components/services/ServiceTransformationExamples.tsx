@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type TransformationExample = {
   id: number;
@@ -25,6 +25,19 @@ export default function ServiceTransformationExamples({
 }: ServiceTransformationExamplesProps) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!activeImage) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveImage(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeImage]);
+
   return (
     <section className="bg-gray-200 px-4 py-12 flex justify-between items-center">
       <div className="max-w-full mx-auto">
@@ -42,7 +55,7 @@ export default function ServiceTransformationExamples({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
           {examples.map((example) => (
             <div
-              className="bg-white pl-4 py-3 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center justify-between "
+              className="bg-white pl-7 py-3 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center justify-center "
               key={example.id}
             >
               {/* Left: Title and Description */}
@@ -77,15 +90,15 @@ export default function ServiceTransformationExamples({
                 <div
                   className="bg-white rounded-lg w-full h-56 sm:h-64 md:h-72 lg:h-80 
              flex items-center justify-center overflow-hidden 
-             shadow-md shadow-gray-700 cursor-pointer"
+             shadow-md shadow-gray-700 cursor-pointer hover:shadow-lg hover:shadow-gray-600 transition-shadow duration-300"
                   onClick={() => setActiveImage(example.afterImage)}
                 >
                   <Image
                     src={example.afterImage}
                     alt="After"
-                    className="max-w-full max-h-full "
-                    width={500}
-                    height={500}
+                    className="w-full h-full hover:scale-105 transition-transform duration-300 object-contain"
+                    width={900}
+                    height={900}
                   />
                 </div>
               </div>
@@ -105,7 +118,7 @@ export default function ServiceTransformationExamples({
             &times;
           </button>
           <div
-            className="relative rounded-lg w-[95%] sm:w-[80%] lg:w-[70%] h-auto lg:h-[90%] p-4 flex items-center justify-center"
+            className="relative rounded-lg w-[85%] sm:w-[80%] lg:w-[45%] h-auto lg:h-[90%] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Image */}
@@ -113,7 +126,7 @@ export default function ServiceTransformationExamples({
               src={activeImage}
               width={500}
               height={500}
-              className="w-full h-full hover:scale-105 transition-transform duration-300"
+              className="w-full h-full hover:scale-105 transition-transform duration-300 object-contain bg-white"
               alt="Preview"
             />
           </div>
