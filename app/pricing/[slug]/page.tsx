@@ -7,12 +7,20 @@ import FAQs from "@/components/pricing/FAQs";
 
 export default function PricingPage() {
   const params = useParams();
-  const slug = typeof params.slug === "string" ? params.slug : ""; // ensures string
+  const rawSlug = Array.isArray(params.slug)
+    ? params.slug[0]
+    : params.slug || "";
+  const slug = typeof rawSlug === "string" ? rawSlug : "";
+  const category = slug.includes("vector")
+    ? "vector"
+    : slug.includes("embroidery")
+    ? "embroidery"
+    : "embroidery";
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Hero />
-      <Pricing slug={slug} />
+      <Pricing slug={category} />
       <FAQs />
       <section className="py-20 px-6">
         <div className="w-full lg:max-w-7xl mx-auto">

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import priceData from "@/data/price.json";
+import { useEffect, useMemo, useState } from "react";
+import pricing from "@/data/price.json";
+import portfolio from "@/data/portfolio.json";
 
 type Plan = {
   id: string;
@@ -13,98 +14,187 @@ type Plan = {
   popular: boolean;
 };
 
-type PricingProps = {
-  slug: string;
+type PriceData = {
+  embroidery: Plan[];
+  vector: Plan[];
 };
 
-export default function Pricing({ slug }: PricingProps) {
-  const keyMap: Record<string, keyof typeof priceData> = {
-    "embroidery-digitizing": "embroidery",
-    "raster-to-vector": "vector",
+type PortfolioItem = {
+  id: number;
+  src: string;
+  alt: string;
+};
+
+type PortfolioData = {
+  embroidery: PortfolioItem[];
+  vector: PortfolioItem[];
+};
+
+const accents = [
+  {
+    chip: "bg-gradient-to-b from-blue-400 to-blue-800",
+    button: "bg-blue-500 hover:bg-blue-600",
+  },
+  {
+    chip: "bg-gradient-to-b from-sky-400 to-blue-500",
+    button: "bg-sky-500 hover:bg-sky-600",
+  },
+  {
+    chip: "bg-gradient-to-b from-primary to-secondary",
+    button: "bg-primary hover:bg-secondary",
+  },
+];
+
+export default function Pricing({ slug }: { slug: string }) {
+  const data = pricing as PriceData;
+  const category = (slug in data ? slug : "embroidery") as keyof PriceData;
+  const plans = data[category];
+
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(false);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+
+  const portfolioData = portfolio as PortfolioData;
+  const items = useMemo(
+    () => portfolioData[category] ?? [],
+    [category]
+  );
+
+  const openPopup = (planId: string) => {
+    setActivePlanId(planId);
+    setOpen(true);
+    requestAnimationFrame(() => setActive(true));
   };
 
-  const selectedKey = keyMap[slug] || "embroidery";
+  const closePopup = () => {
+    setActive(false);
+    setTimeout(() => {
+      setOpen(false);
+      setActivePlanId(null);
+    }, 300);
+  };
 
-  const plans: {
-    id: string;
-    name: string;
-    description: string;
-    price: string;
-    period: string;
-    features: { text: string; included: boolean }[];
-    badge: string | null;
-    cta: string;
-    ctaVariant: "primary" | "secondary";
-  }[] = priceData[selectedKey].map((plan: Plan) => ({
-    id: plan.id,
-    name: plan.title,
-    description: plan.description,
-    price: `$${plan.price}`,
-    period: "/design",
-    features: plan.features.map((f: string) => ({ text: f, included: true })),
-    badge: plan.popular ? "Popular" : null,
-    cta: "Get Started",
-    ctaVariant: plan.popular ? "primary" : "secondary",
-  }));
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closePopup();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
-    <section className="py-20 px-6 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-900 mb-4">Understand Our Transparent Pricing</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our pricing is fair and based on several factors to ensure you get the best value for your specific project. Get a custom quote for exact pricing.
-          </p>
-        </div>
+    <section className="relative py-24 bg-slate-100 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="grid gap-16 md:grid-cols-3">
+          {plans.map((plan, index) => {
+            const accent = accents[index % accents.length];
+            const isActive = activePlanId === plan.id;
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan) => (
-            <div key={plan.id} 
-            className={`relative rounded-xl p-8 justify-between flex flex-col h-full border-2
-            ${plan.ctaVariant === "primary" 
-            ? "bg-linear-to-br from-primary to-black text-white border-2 border-white shadow-lg" 
-            : "bg-white border border-gray-200 shadow-sm"}`}>
-              <div className="mb-2">
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-              </div>
-              <div className="mb-8">
-                <p className={plan.ctaVariant === "primary" ? "text-white" : "text-gray-700"}>{plan.description}</p>
-              </div>
-              <div className="mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold ">{plan.price}</span>
-                  <span className="text-sm">{plan.period}</span>
+            return (
+              <div
+                key={plan.id}
+                className={`relative flex min-h-96 flex-col rounded-4xl bg-white px-8 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
+                  ${open && !isActive ? "opacity-0" : "opacity-100"}
+                `}
+                style={
+                  isActive && open
+                    ? {
+                        position: "fixed",
+                        right: "0",
+                        top: "50%",
+                        width: "20%",
+                        transform: active
+                          ? "translateY(-50%) translateX(0)"
+                          : "translateY(-50%) translateX(-40px)",
+                        transition: "transform 300ms ease",
+                        zIndex: 50,
+                        marginRight: 40,
+                      }
+                    : undefined
+                }
+              >
+                {/* Side Label */}
+                <button
+                  type="button"
+                  onClick={() => openPopup(plan.id)}
+                  className={`absolute -left-4 top-20 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-md ${accent.chip}`}
+                >
+                  {plan.title.toUpperCase()}
+                </button>
+
+                {/* Price */}
+                <div className="mb-3 text-[10px] uppercase tracking-[0.45em] text-slate-400">
+                  {category}
                 </div>
+
+                <h2 className="text-4xl font-semibold text-slate-800">
+                  ${plan.price.toFixed(2)}
+                  <span className="ml-1 text-xs text-slate-500">
+                    /{plan.suffix || "month"}
+                  </span>
+                </h2>
+
+                <p className="mx-auto mt-2 max-w-[16rem] text-sm text-slate-500">
+                  {plan.description}
+                </p>
+
+                <ul className="my-7 space-y-3 text-sm text-slate-500">
+                  {plan.features.map((f, i) => (
+                    <li key={i}>✓ {f}</li>
+                  ))}
+                </ul>
+
+                <button
+                  className={`mx-auto w-40 rounded-full py-2.5 text-xs font-semibold uppercase text-white ${accent.button}`}
+                >
+                  Buy Now
+                </button>
               </div>
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    {feature.included ? (
-                      <svg className="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    <span className={plan.ctaVariant === "primary" ? "text-white" : "text-gray-700"}>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href={`/account?quote=${selectedKey}`} 
-              className={`w-full py-3 px-6 rounded-full font-semibold text-center transition-colors 
-              ${plan.ctaVariant === "primary" 
-              ? "bg-white text-primary hover:border-blue-900 hover:bg-gray-200" 
-              : "border border-blue-600 text-blue-600 hover:bg-primary hover:text-white"}`}>
-                {plan.cta}
-              </Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+
+      {/* POPUP */}
+      {open && (
+        <div className="fixed inset-0 z-40">
+          <div
+            className="absolute inset-0 bg-slate-900/40"
+            onClick={closePopup}
+          />
+
+          <div
+            className={`fixed left-0 top-56 h-[50%] w-[70%] bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
+              ${active ? "translate-x-0" : "-translate-x-full"}
+            `}
+          >
+            <button
+              onClick={closePopup}
+              className="absolute right-4 top-4 rounded-full bg-slate-100 px-3 py-1 text-xs"
+            >
+              Close
+            </button>
+
+            <div className="mb-4 text-xs uppercase tracking-[0.3em] text-slate-400">
+              {category} portfolio
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 overflow-auto">
+              {items.map((item) => (
+                <img
+                  key={item.id}
+                  src={item.src}
+                  alt={item.alt}
+                  className="h-full w-full rounded-lg object-contain border border-slate-200"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

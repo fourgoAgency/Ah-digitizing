@@ -269,6 +269,47 @@ section {
   }
 }
 
+
+/* ============================================
+   BUTTON RING HOVER
+   ============================================ */
+.btn-ring {
+  position: relative;
+  overflow: visible;
+  --ring-color: var(--primary);
+}
+
+.btn-ring::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 9999px;
+  border: 2px solid color-mix(in srgb, var(--ring-color) 70%, transparent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ring-color) 55%, transparent);
+  opacity: 0;
+  transform: scale(0.2);
+  pointer-events: none;
+}
+
+.btn-ring:hover::before {
+  animation: btn-ring-pulse 1s ease-out;
+}
+
+@keyframes btn-ring-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+    box-shadow: 0 0 18px 6px color-mix(in srgb, var(--ring-color) 35%, transparent);
+  }
+}
+
 /* ============================================
    UTILITY CLASSES
    ============================================ */

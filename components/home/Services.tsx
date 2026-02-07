@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { ArrowBigLeft, ArrowBigRight, MoveLeft, MoveRight } from "lucide-react";
+import {  ChevronsLeft, ChevronsRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 
 const services = [
@@ -112,21 +112,21 @@ export default function ServicesCarousel() {
         </motion.div>
 
         {/* Bottom Center Arrows */}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-6 gap-6">
           <button
             onClick={prev}
-            className="w-20 h-10 flex items-center border-2 border-primary justify-center rounded-l-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
+            className="w-15 h-10 flex text-center items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
           >
-            <MoveLeft 
+            <ChevronsLeft 
              width="50"
              size="xl"
              fontWeight={900}/>
           </button>
           <button
             onClick={next}
-            className="w-20 h-10 flex items-center border-2 border-primary justify-center rounded-r-full bg-white shadow-lg hover:bg-primary hover:text-white transition"
+            className="w-15 h-10 text-center flex items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
           >
-            <MoveRight
+            <ChevronsRight
              width="50"
              size="xl"
              fontWeight={900} 

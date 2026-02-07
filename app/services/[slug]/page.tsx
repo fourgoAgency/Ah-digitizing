@@ -59,7 +59,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <ServiceTransformationExamples {...service.transformation} />
       <ServiceTestimonials testimonials={service.testimonials} />
       <ServicePricing {...service.pricing} />
-      <CTABanner />
     </div>
   );
 }

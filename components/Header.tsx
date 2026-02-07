@@ -403,7 +403,7 @@ export default function Header() {
 
           <div className="hidden lg:flex gap-4">
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent  ${hoveredButton === 'shop'
+              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'shop'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'quote'
                   ? 'bg-white text-primary border-primary'
@@ -416,7 +416,7 @@ export default function Header() {
             </Button>
 
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
+              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'shop'
                   ? 'bg-white text-primary border-primary'
