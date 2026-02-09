@@ -59,6 +59,10 @@ export default function Pricing({ slug }: { slug: string }) {
     () => portfolioData[category] ?? [],
     [category]
   );
+  const previewItems = useMemo(() => {
+    if (items.length === 0) return [];
+    return Array.from({ length: 10 }, (_, index) => items[index % items.length]);
+  }, [items]);
 
   const openPopup = (planId: string) => {
     setActivePlanId(planId);
@@ -85,10 +89,19 @@ export default function Pricing({ slug }: { slug: string }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   return (
     <section className="relative py-24 bg-slate-100 overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="grid gap-16 md:grid-cols-3">
+      <div className="container mx-auto ">
+        <div className="grid gap-12 md:grid-cols-3 items-center justify-center">
           {plans.map((plan, index) => {
             const accent = accents[index % accents.length];
             const isActive = activePlanId === plan.id;
@@ -96,7 +109,7 @@ export default function Pricing({ slug }: { slug: string }) {
             return (
               <div
                 key={plan.id}
-                className={`relative flex min-h-96 flex-col rounded-4xl bg-white px-8 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
+                className={`relative flex w-96 h-103 flex-col rounded-4xl bg-white px-4 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
                   ${open && !isActive ? "opacity-0" : "opacity-100"}
                 `}
                 style={
@@ -120,13 +133,14 @@ export default function Pricing({ slug }: { slug: string }) {
                 <button
                   type="button"
                   onClick={() => openPopup(plan.id)}
-                  className={`absolute -left-4 top-20 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-md ${accent.chip}`}
+                  className={`absolute left-0 top-20 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-md w-36 text-center sm:inline-flex ${accent.chip}`}
                 >
-                  {plan.title.toUpperCase()}
+                  VIEW SAMPLE
                 </button>
 
                 {/* Price */}
                 <div className="mb-3 text-[10px] uppercase tracking-[0.45em] text-slate-400">
+                  {plan.title.toUpperCase()}
                   {category}
                 </div>
 
@@ -162,12 +176,12 @@ export default function Pricing({ slug }: { slug: string }) {
       {open && (
         <div className="fixed inset-0 z-40">
           <div
-            className="absolute inset-0 bg-slate-900/40"
+            className="fixed inset-0 bg-slate-900/50"
             onClick={closePopup}
           />
 
           <div
-            className={`fixed left-0 top-56 h-[50%] w-[70%] bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
+            className={`fixed left-5 top-1/7 max-h-full w-[70%] bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
               ${active ? "translate-x-0" : "-translate-x-full"}
             `}
           >
@@ -182,14 +196,15 @@ export default function Pricing({ slug }: { slug: string }) {
               {category} portfolio
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 overflow-auto">
-              {items.map((item) => (
-                <img
-                  key={item.id}
-                  src={item.src}
-                  alt={item.alt}
-                  className="h-full w-full rounded-lg object-contain border border-slate-200"
-                />
+            <div className="hidden grid-rows-2 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-5 overflow-auto px-2">
+              {previewItems.map((item, index) => (
+                <div key={`${item.id}-${index}`} className="overflow-hidden rounded-lg">
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="h-full w-full rounded-lg object-contain border border-slate-200 transition-transform duration-200 ease-out hover:scale-105"
+                  />
+                </div>
               ))}
             </div>
           </div>
