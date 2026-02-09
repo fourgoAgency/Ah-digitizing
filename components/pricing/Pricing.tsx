@@ -53,6 +53,10 @@ export default function Pricing({ slug }: { slug: string }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [maxPreviewItems, setMaxPreviewItems] = useState(() => {
+    if (typeof window === "undefined") return 10;
+    return window.innerWidth < 1024 ? 4 : 10;
+  });
 
   const portfolioData = portfolio as PortfolioData;
   const items = useMemo(
@@ -61,8 +65,11 @@ export default function Pricing({ slug }: { slug: string }) {
   );
   const previewItems = useMemo(() => {
     if (items.length === 0) return [];
-    return Array.from({ length: 10 }, (_, index) => items[index % items.length]);
-  }, [items]);
+    return Array.from(
+      { length: maxPreviewItems },
+      (_, index) => items[index % items.length]
+    );
+  }, [items, maxPreviewItems]);
 
   const openPopup = (planId: string) => {
     setActivePlanId(planId);
@@ -88,6 +95,20 @@ export default function Pricing({ slug }: { slug: string }) {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const updateMaxItems = () => {
+      setMaxPreviewItems(media.matches ? 10 : 4);
+    };
+    updateMaxItems();
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", updateMaxItems);
+      return () => media.removeEventListener("change", updateMaxItems);
+    }
+    media.addListener(updateMaxItems);
+    return () => media.removeListener(updateMaxItems);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -133,7 +154,7 @@ export default function Pricing({ slug }: { slug: string }) {
                 <button
                   type="button"
                   onClick={() => openPopup(plan.id)}
-                  className={`absolute left-0 top-20 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-md w-36 text-center sm:inline-flex ${accent.chip}`}
+                  className={`absolute left-0 top-20 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${accent.chip}`}
                 >
                   VIEW SAMPLE
                 </button>
@@ -181,8 +202,8 @@ export default function Pricing({ slug }: { slug: string }) {
           />
 
           <div
-            className={`fixed left-5 top-1/7 max-h-full w-[70%] bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
-              ${active ? "translate-x-0" : "-translate-x-full"}
+            className={`fixed left-0 top-1/2 max-h-screen w-[70%] -translate-x-1/2 -translate-y-1/2 bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
+              ${active ? "translate-x-0" : "-translate-x-6"}
             `}
           >
             <button
@@ -198,7 +219,10 @@ export default function Pricing({ slug }: { slug: string }) {
 
             <div className="hidden grid-rows-2 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-5 overflow-auto px-2">
               {previewItems.map((item, index) => (
-                <div key={`${item.id}-${index}`} className="overflow-hidden rounded-lg">
+                <div
+                  key={`${item.id}-${index}`}
+                  className="h-24 sm:h-28 md:h-32 lg:h-full overflow-hidden rounded-lg"
+                >
                   <img
                     src={item.src}
                     alt={item.alt}
