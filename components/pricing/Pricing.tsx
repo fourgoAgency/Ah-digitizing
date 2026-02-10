@@ -121,8 +121,8 @@ export default function Pricing({ slug }: { slug: string }) {
 
   return (
     <section className="relative py-24 bg-slate-100 overflow-hidden">
-      <div className="container mx-auto ">
-        <div className="grid gap-12 md:grid-cols-3 items-center justify-center">
+      <div className="container mx-auto 2xl:px-28 px-4">
+        <div className="grid lg:gap-12 gap-6 sm:grid-cols-1 md:grid-cols-3 items-center justify-center">
           {plans.map((plan, index) => {
             const accent = accents[index % accents.length];
             const isActive = activePlanId === plan.id;
@@ -160,8 +160,8 @@ export default function Pricing({ slug }: { slug: string }) {
                 </button>
 
                 {/* Price */}
-                <div className="mb-3 text-[10px] uppercase tracking-[0.45em] text-slate-400">
-                  {plan.title.toUpperCase()}
+                <div className="mb-4 text-[10px] uppercase tracking-[0.45em] text-slate-400">
+                  {plan.title.toUpperCase()}<br/>
                   {category}
                 </div>
 
@@ -202,7 +202,7 @@ export default function Pricing({ slug }: { slug: string }) {
           />
 
           <div
-            className={`fixed left-0 top-1/2 max-h-screen w-[70%] -translate-x-1/2 -translate-y-1/2 bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
+            className={`fixed left-10 top-1/2 max-h-screen w-[70%] -translate-x-1/2 -translate-y-1/2 bg-white p-6 shadow-2xl rounded-xl transition-transform duration-300
               ${active ? "translate-x-0" : "-translate-x-6"}
             `}
           >
