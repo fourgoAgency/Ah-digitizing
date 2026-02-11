@@ -154,7 +154,7 @@ export default function Pricing({ slug }: { slug: string }) {
                 <button
                   type="button"
                   onClick={() => openPopup(plan.id)}
-                  className={`absolute left-0 top-20 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${accent.chip}`}
+                  className={`absolute left-0 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${category === "vector" ? "bottom-20" : "top-20"} ${accent.chip}`}
                 >
                   VIEW SAMPLE
                 </button>
