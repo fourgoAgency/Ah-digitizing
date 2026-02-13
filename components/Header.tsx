@@ -196,7 +196,7 @@ function DesktopMenu({ isSticky }: { isSticky: boolean }) {
         </div>
 
         <Link href="/portfolio">Portfolio</Link>
-        <Link href="/shop">Shop</Link>
+        <Link href="/shop">Store</Link>
         <Link href="/blogs">Blogs</Link>
 
         {/* ABOUT */}
@@ -274,7 +274,7 @@ function MobileMenu() {
                 Portfolio
               </Link>
               <Link href="/shop" className="block py-2 text-sm font-medium text-white hover:text-muted">
-                Shop
+                Store
               </Link>
               <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Blogs
