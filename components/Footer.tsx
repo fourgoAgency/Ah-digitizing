@@ -126,7 +126,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 uppercase text-sm">Shop</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="#">All Products</Link></li>
+              <li><Link href="/shop/all-products">All Products</Link></li>
               <li><Link href="#">Embroidery Digitizing</Link></li>
               <li><Link href="#">Raster to Vector</Link></li>
               <li><Link href="#">Custom Design</Link></li>

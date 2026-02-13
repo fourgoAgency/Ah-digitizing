@@ -257,8 +257,8 @@ function MobileMenu() {
           <div className="py-2">
             {/* BUTTONS */}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
-              <Button className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
-                Shop Now
+              <Button asChild className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
+                <Link href="/shop">Shop Now</Link>
               </Button>
               <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
                 <Link href="/get-quote">Get Quote</Link>
@@ -403,6 +403,7 @@ export default function Header() {
 
           <div className="hidden lg:flex gap-4">
             <Button
+              asChild
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'shop'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'quote'
@@ -412,7 +413,7 @@ export default function Header() {
               onMouseEnter={() => setHoveredButton('shop')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              Shop Now
+              <Link href="/shop">Shop Now</Link>
             </Button>
 
             <Button
