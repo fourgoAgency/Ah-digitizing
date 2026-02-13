@@ -260,8 +260,8 @@ function MobileMenu() {
               <Button className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
                 Shop Now
               </Button>
-              <Button className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
-                Get Quote
+              <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
+                <Link href="/get-quote">Get Quote</Link>
               </Button>
             </div>
             {/* ADDITIONAL LINKS */}
@@ -416,6 +416,7 @@ export default function Header() {
             </Button>
 
             <Button
+              asChild
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'shop'
@@ -425,7 +426,7 @@ export default function Header() {
               onMouseEnter={() => setHoveredButton('quote')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              Get Quote
+              <Link href="/get-quote">Get Quote</Link>
             </Button>
           </div>
 
