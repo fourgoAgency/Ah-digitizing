@@ -196,6 +196,7 @@ function DesktopMenu({ isSticky }: { isSticky: boolean }) {
         </div>
 
         <Link href="/portfolio">Portfolio</Link>
+        <Link href="/shop">Shop</Link>
         <Link href="/blogs">Blogs</Link>
 
         {/* ABOUT */}
@@ -258,7 +259,7 @@ function MobileMenu() {
             {/* BUTTONS */}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
               <Button asChild className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
-                <Link href="/shop">Shop Now</Link>
+                <Link href="/free">Get Free Quote</Link>
               </Button>
               <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
                 <Link href="/get-quote">Get Quote</Link>
@@ -271,6 +272,9 @@ function MobileMenu() {
               </Link>
               <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Portfolio
+              </Link>
+              <Link href="/shop" className="block py-2 text-sm font-medium text-white hover:text-muted">
+                Shop
               </Link>
               <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Blogs
@@ -365,7 +369,7 @@ function MobileMenu() {
 
 /* ================= MAIN HEADER ================= */
 export default function Header() {
-  const [hoveredButton, setHoveredButton] = useState<'shop' | 'quote' | null>(null);
+  const [hoveredButton, setHoveredButton] = useState<'free' | 'quote' | null>(null);
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
@@ -404,23 +408,23 @@ export default function Header() {
           <div className="hidden lg:flex gap-4">
             <Button
               asChild
-              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'shop'
+              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'free'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'quote'
                   ? 'bg-white text-primary border-primary'
                   : 'border-accent text-accent'
                 }`}
-              onMouseEnter={() => setHoveredButton('shop')}
+              onMouseEnter={() => setHoveredButton('free')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <Link href="/shop">Shop Now</Link>
+              <Link href="/get-free-quote">Free Quote</Link>
             </Button>
 
             <Button
               asChild
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
                 ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'shop'
+                : hoveredButton === 'free'
                   ? 'bg-white text-primary border-primary'
                   : 'bg-primary text-white border-primary'
                 }`}
