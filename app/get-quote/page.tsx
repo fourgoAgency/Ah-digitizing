@@ -17,11 +17,21 @@ const fabricTypes = [
   "Sweatshirt",
   "Spandex",
 ];
+const colorNameOptions = ["White", "Black", "Red", "Yellow"];
+const colorwayOptions = [
+  "Default",
+  "Gunold Poly 40",
+  "Gunold Poly 60",
+  "Isacord 30",
+  "Isacord 40",
+  "Madeira Classic 40",
+  "Madeira Polyneon 40",
+];
 
 const quoteFormSchema = z
   .object({
     fullName: z.string().trim().min(1, "Name is required."),
-    companyName: z.string().optional(),
+    companyName: z.string().trim().min(1, "Company name is required."),
     contactNumber: z.string().trim().min(1, "Contact number is required."),
     email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
     country: z.string().trim().min(1, "Country is required."),
@@ -32,6 +42,13 @@ const quoteFormSchema = z
     placementArea: z.string().optional(),
     outputFormatOther: z.string().optional(),
     outputFormats: z.array(z.string()),
+    unitSelect: z.string().trim().min(1, "Unit select is required."),
+    width: z.string().trim().min(1, "Width is required."),
+    height: z.string().trim().min(1, "Height is required."),
+    appliqueRequired: z.string().trim().min(1, "Applique selection is required."),
+    colorsName: z.string().optional(),
+    numberOfColors: z.string().trim().min(1, "Number of colors is required."),
+    colorwayToUse: z.string().optional(),
     whatsappOptIn: z.boolean(),
     files: z.array(z.instanceof(File)).min(1, "Please upload at least one file."),
   })
@@ -110,6 +127,13 @@ const initialFormState: FormState = {
   placementArea: "",
   outputFormatOther: "",
   outputFormats: [],
+  unitSelect: "",
+  width: "",
+  height: "",
+  appliqueRequired: "",
+  colorsName: "",
+  numberOfColors: "",
+  colorwayToUse: "",
   whatsappOptIn: false,
   files: [],
 };
@@ -268,6 +292,7 @@ export default function GetQuotePage() {
                   onChange={handleFieldChange}
                   required
                 />
+                {errors.companyName && <p className="text-sm text-red-600 mt-1">{errors.companyName}</p>}
               </div>
               <div>
                 <label htmlFor="contact-number" className="block text-sm font-medium text-gray-700 mb-1">
@@ -499,7 +524,7 @@ export default function GetQuotePage() {
                 )}
               </div>
 
-              {formData.orderType === "embroidery" && (
+{formData.orderType === "embroidery" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Required File Formats</label>
                   <div className="flex flex-wrap gap-x-5 gap-y-2">
@@ -550,6 +575,134 @@ export default function GetQuotePage() {
                   )}
                 </div>
               )}
+
+              {/* Unit Select Section */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="unit-select" className="block text-sm font-medium text-gray-700 mb-1">
+                    Unit Select
+                  </label>
+                  <select
+                    id="unit-select"
+                    name="unitSelect"
+                    className="input"
+                    value={formData.unitSelect}
+                    onChange={handleFieldChange}
+                    required
+                  >
+                    <option value="">Select unit</option>
+                    <option value="inches">Inches</option>
+                    <option value="centimeter">Centimeter</option>
+                    <option value="millimeter">Millimeter</option>
+                  </select>
+                  {errors.unitSelect && <p className="text-sm text-red-600 mt-1">{errors.unitSelect}</p>}
+                </div>
+                <div>
+                  <label htmlFor="width" className="block text-sm font-medium text-gray-700 mb-1">
+                    Width
+                  </label>
+                  <input
+                    id="width"
+                    name="width"
+                    type="text"
+                    className="input"
+                    placeholder="proportional to height"
+                    value={formData.width}
+                    onChange={handleFieldChange}
+                    required
+                  />
+                  {errors.width && <p className="text-sm text-red-600 mt-1">{errors.width}</p>}
+                </div>
+                <div>
+                  <label htmlFor="height" className="block text-sm font-medium text-gray-700 mb-1">
+                    Height
+                  </label>
+                  <input
+                    id="height"
+                    name="height"
+                    type="text"
+                    className="input"
+                    placeholder="eg:proportional to width"
+                    value={formData.height}
+                    onChange={handleFieldChange}
+                    required
+                  />
+                  {errors.height && <p className="text-sm text-red-600 mt-1">{errors.height}</p>}
+                </div>
+                <div>
+                  <label htmlFor="applique-required" className="block text-sm font-medium text-gray-700 mb-1">
+                    Applique Required
+                  </label>
+                  <select
+                    id="applique-required"
+                    name="appliqueRequired"
+                    className="input"
+                    value={formData.appliqueRequired}
+                    onChange={handleFieldChange}
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                  {errors.appliqueRequired && <p className="text-sm text-red-600 mt-1">{errors.appliqueRequired}</p>}
+                </div>
+                <div>
+                  <label htmlFor="colors-name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Colors Name
+                  </label>
+                  <select
+                    id="colors-name"
+                    name="colorsName"
+                    className="input"
+                    value={formData.colorsName}
+                    onChange={handleFieldChange}
+                  >
+                    <option value="">Select color name</option>
+                    {colorNameOptions.map((color) => (
+                      <option key={color} value={color}>
+                        {color}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="number-of-colors" className="block text-sm font-medium text-gray-700 mb-1">
+                    Numbers of colors
+                  </label>
+                  <input
+                    id="number-of-colors"
+                    name="numberOfColors"
+                    type="text"
+                    className="input"
+                    placeholder="Number of colors"
+                    value={formData.numberOfColors}
+                    onChange={handleFieldChange}
+                    required
+                  />
+                  {errors.numberOfColors && <p className="text-sm text-red-600 mt-1">{errors.numberOfColors}</p>}
+                </div>
+                <div>
+                  <label htmlFor="colorway-to-use" className="block text-sm font-medium text-gray-700 mb-1">
+                    Colorway to use
+                  </label>
+                  <select
+                    id="colorway-to-use"
+                    name="colorwayToUse"
+                    className="input"
+                    value={formData.colorwayToUse}
+                    onChange={handleFieldChange}
+                  >
+                    <option value="">Select colorway</option>
+                    {colorwayOptions.map((colorway) => (
+                      <option key={colorway} value={colorway}>
+                        {colorway}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {!formData.orderType && (
                 <p className="text-sm text-gray-500">
                   Select an order type to view relevant fields.
