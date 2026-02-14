@@ -30,6 +30,7 @@ const quoteFormSchema = z
     fabricType: z.string().optional(),
     turnaroundTime: z.string().optional(),
     placementArea: z.string().optional(),
+    outputFormatOther: z.string().optional(),
     outputFormats: z.array(z.string()),
     whatsappOptIn: z.boolean(),
     files: z.array(z.instanceof(File)).min(1, "Please upload at least one file."),
@@ -37,7 +38,7 @@ const quoteFormSchema = z
   .superRefine((data, ctx) => {
     if (!["embroidery", "vector"].includes(data.orderType)) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         path: ["orderType"],
         message: "Order type is required.",
       });
@@ -47,23 +48,30 @@ const quoteFormSchema = z
     if (data.orderType === "embroidery") {
       if (!data.designName?.trim()) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["designName"],
           message: "Design name is required.",
         });
       }
       if (!data.fabricType) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["fabricType"],
           message: "Fabric type is required.",
         });
       }
       if (data.outputFormats.length === 0) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["outputFormats"],
           message: "Select at least one required file format.",
+        });
+      }
+      if (data.outputFormats.includes("other") && !data.outputFormatOther?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["outputFormatOther"],
+          message: "Please enter the output format.",
         });
       }
     }
@@ -71,18 +79,19 @@ const quoteFormSchema = z
     if (data.orderType === "vector") {
       if (!data.turnaroundTime) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["turnaroundTime"],
           message: "Turnaround time is required.",
         });
       }
       if (!data.placementArea) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["placementArea"],
           message: "Placement area is required.",
         });
       }
+
     }
   });
 
@@ -99,6 +108,7 @@ const initialFormState: FormState = {
   fabricType: "",
   turnaroundTime: "",
   placementArea: "",
+  outputFormatOther: "",
   outputFormats: [],
   whatsappOptIn: false,
   files: [],
@@ -132,6 +142,7 @@ export default function GetQuotePage() {
             orderType: value,
             designName: "",
             fabricType: "",
+            outputFormatOther: "",
             outputFormats: [],
           };
         }
@@ -150,6 +161,7 @@ export default function GetQuotePage() {
         delete next.designName;
         delete next.fabricType;
         delete next.outputFormats;
+        delete next.outputFormatOther;
         delete next.turnaroundTime;
         delete next.placementArea;
       }
@@ -161,16 +173,19 @@ export default function GetQuotePage() {
   const handleOutputFormatToggle = (format: string) => {
     setFormData((prev) => {
       const exists = prev.outputFormats.includes(format);
+      const nextOutputFormats = exists
+        ? prev.outputFormats.filter((item) => item !== format)
+        : [...prev.outputFormats, format];
       return {
         ...prev,
-        outputFormats: exists
-          ? prev.outputFormats.filter((item) => item !== format)
-          : [...prev.outputFormats, format],
+        outputFormats: nextOutputFormats,
+        outputFormatOther: nextOutputFormats.includes("other") ? prev.outputFormatOther : "",
       };
     });
     setErrors((prev) => {
       const next = { ...prev };
       delete next.outputFormats;
+      delete next.outputFormatOther;
       return next;
     });
     setSubmitMessage("");
@@ -310,21 +325,49 @@ export default function GetQuotePage() {
 
             <div className="p-5 space-y-4">
               <div>
-                <label htmlFor="order-type" className="block text-sm font-medium text-gray-700 mb-1">
-                  Order Type Select
-                </label>
-                <select
-                  id="order-type"
-                  name="orderType"
-                  className="input"
-                  value={formData.orderType}
-                  onChange={handleFieldChange}
-                  required
-                >
-                  <option value="">Select order type</option>
-                  <option value="embroidery">Embroidery Digitizing</option>
-                  <option value="vector">Vector Conversion</option>
-                </select>
+                <p className="block text-sm font-medium text-gray-700 mb-2">Order Type Select</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label
+                    htmlFor="order-type-embroidery"
+                    className={`cursor-pointer rounded-md border px-4 py-2 text-sm font-medium text-center transition-colors ${
+                      formData.orderType === "embroidery"
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                    }`}
+                  >
+                    <input
+                      id="order-type-embroidery"
+                      type="radio"
+                      name="orderType"
+                      value="embroidery"
+                      checked={formData.orderType === "embroidery"}
+                      onChange={handleFieldChange}
+                      className="sr-only"
+                      required
+                    />
+                    Embroidery Digitizing
+                  </label>
+                  <label
+                    htmlFor="order-type-vector"
+                    className={`cursor-pointer rounded-md border px-4 py-2 text-sm font-medium text-center transition-colors ${
+                      formData.orderType === "vector"
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                    }`}
+                  >
+                    <input
+                      id="order-type-vector"
+                      type="radio"
+                      name="orderType"
+                      value="vector"
+                      checked={formData.orderType === "vector"}
+                      onChange={handleFieldChange}
+                      className="sr-only"
+                      required
+                    />
+                    Vector Conversion
+                  </label>
+                </div>
                 {errors.orderType && <p className="text-sm text-red-600 mt-1">{errors.orderType}</p>}
               </div>
 
@@ -366,6 +409,46 @@ export default function GetQuotePage() {
                         ))}
                       </select>
                       {errors.fabricType && <p className="text-sm text-red-600 mt-1">{errors.fabricType}</p>}
+                    </div>
+                                        <div>
+                      <label htmlFor="turnaround" className="block text-sm font-medium text-gray-700 mb-1">
+                        Turnaround Time
+                      </label>
+                      <select
+                        id="turnaround"
+                        name="turnaroundTime"
+                        className="input"
+                        value={formData.turnaroundTime}
+                        onChange={handleFieldChange}
+                        required
+                      >
+                        <option value="">Select turnaround</option>
+                        <option value="standard-12-24">Standard (12-24 Hours)</option>
+                        <option value="priority-4-8">Priority (4-8 Hours)</option>
+                        <option value="express-1-4">Express (1-4 Hours)</option>
+                      </select>
+                      {errors.turnaroundTime && <p className="text-sm text-red-600 mt-1">{errors.turnaroundTime}</p>}
+                    </div>
+                    <div>
+                      <label htmlFor="placement-area" className="block text-sm font-medium text-gray-700 mb-1">
+                        Placement Area
+                      </label>
+                      <select
+                        id="placement-area"
+                        name="placementArea"
+                        className="input"
+                        value={formData.placementArea}
+                        onChange={handleFieldChange}
+                        required
+                      >
+                        <option value="">Select placement area</option>
+                        {placementAreas.map((area) => (
+                          <option key={area} value={area.toLowerCase().replace(/\s+/g, "-")}>
+                            {area}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.placementArea && <p className="text-sm text-red-600 mt-1">{errors.placementArea}</p>}
                     </div>
                   </>
                 )}
@@ -423,7 +506,7 @@ export default function GetQuotePage() {
                     {outputFormats.map((format) => (
                       <label key={format} className="inline-flex items-center gap-2 text-sm text-gray-700">
                         <input
-                          type="radio"
+                          type="checkbox"
                           name="outputFormats"
                           value={format}
                           checked={formData.outputFormats.includes(format)}
@@ -433,8 +516,38 @@ export default function GetQuotePage() {
                         {format}
                       </label>
                     ))}
+                    <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                      <input
+                        type="checkbox"
+                        name="outputFormats"
+                        value="other"
+                        checked={formData.outputFormats.includes("other")}
+                        onChange={() => handleOutputFormatToggle("other")}
+                        required={formData.outputFormats.length === 0}
+                      />
+                      Other
+                    </label>
                   </div>
                   {errors.outputFormats && <p className="text-sm text-red-600 mt-1">{errors.outputFormats}</p>}
+                  {formData.outputFormats.includes("other") && (
+                    <div className="mt-3">
+                      <label htmlFor="output-format-other" className="block text-sm font-medium text-gray-700 mb-1">
+                        Other Output Format
+                      </label>
+                      <input
+                        id="output-format-other"
+                        name="outputFormatOther"
+                        className="input"
+                        placeholder="Enter output format"
+                        value={formData.outputFormatOther}
+                        onChange={handleFieldChange}
+                        required
+                      />
+                      {errors.outputFormatOther && (
+                        <p className="text-sm text-red-600 mt-1">{errors.outputFormatOther}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               {!formData.orderType && (
