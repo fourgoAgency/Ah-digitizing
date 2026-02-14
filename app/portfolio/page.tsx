@@ -58,26 +58,26 @@ const portfolioData: PortfolioItem[] = [
   { id: 40, title: "Vector Illustration Study", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
 
 
-  { id: 41, title: "Blueprint Vectorization", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 42, title: "Logo Vectorization", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 43, title: "Photo to Vector", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 44, title: "Raster Logo Reconstruction", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 45, title: "Image Trace Project", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 46, title: "Raster to Vector Study", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 47, title: "Vectorization Workflow", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 48, title: "Photo Trace Illustration", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 49, title: "Line Art Vectorization", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 50, title: "Raster Image Conversion", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 51, title: "Logo Rebuild Project", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 52, title: "Illustration Vector Trace", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 53, title: "Raster Graphic Conversion", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 54, title: "Technical Drawing Vector", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 55, title: "Vectorization Mockup", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 56, title: "Raster Art Conversion", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 57, title: "Photo to Vector Study", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 58, title: "Linework Vectorization", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 59, title: "Raster Design Rebuild", path: "/ffff.png", service: "Raster-to-Vector" },
-  { id: 60, title: "Vectorization Detail Study", path: "/ffff.png", service: "Raster-to-Vector" },
+  { id: 41, title: "Blueprint Vectorization", path: "/2nd.jpg", service: "Raster-to-Vector" },
+  { id: 42, title: "Logo Vectorization", path: "/2nd.jpg", service: "Raster-to-Vector" },
+  { id: 43, title: "Photo to Vector", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 44, title: "Raster Logo Reconstruction", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 45, title: "Image Trace Project", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 46, title: "Raster to Vector Study", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 47, title: "Vectorization Workflow", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 48, title: "Photo Trace Illustration", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 49, title: "Line Art Vectorization", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 50, title: "Raster Image Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 51, title: "Logo Rebuild Project", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 52, title: "Illustration Vector Trace", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 53, title: "Raster Graphic Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 54, title: "Technical Drawing Vector", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 55, title: "Vectorization Mockup", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 56, title: "Raster Art Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 57, title: "Photo to Vector Study", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 58, title: "Linework Vectorization", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 59, title: "Raster Design Rebuild", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 60, title: "Vectorization Detail Study", path: "2nd.jpg", service: "Raster-to-Vector" },
 ];
 
 
@@ -224,3 +224,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+
