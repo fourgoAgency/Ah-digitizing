@@ -13,71 +13,71 @@ type PortfolioItem = {
 };
 
 const portfolioData: PortfolioItem[] = [
-  
-  { id: 1, title: "Custom Logo Digitizing", path: "/my.jpg", service: "Embroidery" },
-  { id: 2, title: "Pet Portrait Embroidery", path: "/my.jpg", service: "Embroidery" },
-  { id: 3, title: "Sports Team Logo", path: "/my.jpg", service: "Embroidery" },
-  { id: 4, title: "Fashion Embroidery", path: "/my.jpg", service: "Embroidery" },
-  { id: 5, title: "Hand Embroidery Closeup", path: "/my.jpg", service: "Embroidery" },
-  { id: 6, title: "Embroidery Tools Flatlay", path: "/my.jpg", service: "Embroidery" },
-  { id: 7, title: "Thread Texture Study", path: "/my.jpg", service: "Embroidery" },
-  { id: 8, title: "Custom Name Embroidery", path: "/my.jpg", service: "Embroidery" },
-  { id: 9, title: "Floral Embroidery Design", path: "/my.jpg", service: "Embroidery" },
-  { id: 10, title: "Logo Embroidery Mockup", path: "/my.jpg", service: "Embroidery" },
-  { id: 11, title: "Embroidery Close Detail", path: "/my.jpg", service: "Embroidery" },
-  { id: 12, title: "Embroidery Hoop Art", path: "/my.jpg", service: "Embroidery" },
-  { id: 13, title: "Animal Embroidery Piece", path: "/my.jpg", service: "Embroidery" },
-  { id: 14, title: "Lettering Embroidery", path: "/my.jpg", service: "Embroidery" },
-  { id: 15, title: "Embroidery Pattern Sheet", path: "/my.jpg", service: "Embroidery" },
-  { id: 16, title: "Textile Embroidery Study", path: "/my.jpg", service: "Embroidery" },
-  { id: 17, title: "Decorative Stitching", path: "/my.jpg", service: "Embroidery" },
-  { id: 18, title: "Custom Patch Design", path: "/my.jpg", service: "Embroidery" },
-  { id: 19, title: "Embroidery Project Layout", path: "/my.jpg", service: "Embroidery" },
-  { id: 20, title: "Handmade Embroidery Art", path: "/my.jpg", service: "Embroidery" },
 
-  
-  { id: 21, title: "Vintage T-Shirt Design", path: "/my.jpg", service: "Vector" },
-  { id: 22, title: "Vintage Car Illustration", path: "/my.jpg", service: "Vector" },
-  { id: 23, title: "Abstract Vector Art", path: "/my.jpg", service: "Vector" },
-  { id: 24, title: "Corporate Branding", path: "/my.jpg", service: "Vector" },
-  { id: 25, title: "Mascot Vector Design", path: "/my.jpg", service: "Vector" },
-  { id: 26, title: "Vector Pattern Design", path: "/my.jpg", service: "Vector" },
-  { id: 27, title: "Illustration Concept Art", path: "/my.jpg", service: "Vector" },
-  { id: 28, title: "Tech Icon Vector Set", path: "/my.jpg", service: "Vector" },
-  { id: 29, title: "Logo Vector Mockup", path: "/my.jpg", service: "Vector" },
-  { id: 30, title: "Flat Vector UI Icons", path: "/my.jpg", service: "Vector" },
-  { id: 31, title: "Infographic Vector Design", path: "/my.jpg", service: "Vector" },
-  { id: 32, title: "Vector Character Illustration", path: "/my.jpg", service: "Vector" },
-  { id: 33, title: "Vector Sticker Sheet", path: "/my.jpg", service: "Vector" },
-  { id: 34, title: "Vector Illustration Pack", path: "/my.jpg", service: "Vector" },
-  { id: 35, title: "Minimalist Vector Art", path: "/my.jpg", service: "Vector" },
-  { id: 36, title: "Vector Branding Elements", path: "/my.jpg", service: "Vector" },
-  { id: 37, title: "Vector Logo Series", path: "/my.jpg", service: "Vector" },
-  { id: 38, title: "Vector Icon Set", path: "/my.jpg", service: "Vector" },
-  { id: 39, title: "Abstract Shapes Vector", path: "/my.jpg", service: "Vector" },
-  { id: 40, title: "Vector Illustration Study", path: "/my.jpg", service: "Vector" },
+  { id: 1, title: "Custom Logo Digitizing", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 2, title: "Pet Portrait Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 3, title: "Sports Team Logo", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 4, title: "Fashion Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 5, title: "Hand Embroidery Closeup", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 6, title: "Embroidery Tools Flatlay", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 7, title: "Thread Texture Study", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 8, title: "Custom Name Embroidery", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 9, title: "Floral Embroidery Design", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 10, title: "Logo Embroidery Mockup", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 11, title: "Embroidery Close Detail", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 12, title: "Embroidery Hoop Art", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 13, title: "Animal Embroidery Piece", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 14, title: "Lettering Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 15, title: "Embroidery Pattern Sheet", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 16, title: "Textile Embroidery Study", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 17, title: "Decorative Stitching", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 18, title: "Custom Patch Design", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 19, title: "Embroidery Project Layout", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 20, title: "Handmade Embroidery Art", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
 
-  
-  { id: 41, title: "Blueprint Vectorization", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 42, title: "Logo Vectorization", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 43, title: "Photo to Vector", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 44, title: "Raster Logo Reconstruction", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 45, title: "Image Trace Project", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 46, title: "Raster to Vector Study", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 47, title: "Vectorization Workflow", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 48, title: "Photo Trace Illustration", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 49, title: "Line Art Vectorization", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 50, title: "Raster Image Conversion", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 51, title: "Logo Rebuild Project", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 52, title: "Illustration Vector Trace", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 53, title: "Raster Graphic Conversion", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 54, title: "Technical Drawing Vector", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 55, title: "Vectorization Mockup", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 56, title: "Raster Art Conversion", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 57, title: "Photo to Vector Study", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 58, title: "Linework Vectorization", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 59, title: "Raster Design Rebuild", path: "/my.jpg", service: "Raster-to-Vector" },
-  { id: 60, title: "Vectorization Detail Study", path: "/my.jpg", service: "Raster-to-Vector" },
+
+  { id: 21, title: "Vintage T-Shirt Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 22, title: "Vintage Car Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 23, title: "Abstract Vector Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 24, title: "Corporate Branding", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 25, title: "Mascot Vector Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 26, title: "Vector Pattern Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 27, title: "Illustration Concept Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 28, title: "Tech Icon Vector Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 29, title: "Logo Vector Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 30, title: "Flat Vector UI Icons", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 31, title: "Infographic Vector Design", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 32, title: "Vector Character Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 33, title: "Vector Sticker Sheet", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 34, title: "Vector Illustration Pack", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 35, title: "Minimalist Vector Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 36, title: "Vector Branding Elements", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 37, title: "Vector Logo Series", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 38, title: "Vector Icon Set", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 39, title: "Abstract Shapes Vector", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 40, title: "Vector Illustration Study", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+
+
+  { id: 41, title: "Blueprint Vectorization", path: "/2nd.jpg", service: "Raster-to-Vector" },
+  { id: 42, title: "Logo Vectorization", path: "/2nd.jpg", service: "Raster-to-Vector" },
+  { id: 43, title: "Photo to Vector", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 44, title: "Raster Logo Reconstruction", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 45, title: "Image Trace Project", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 46, title: "Raster to Vector Study", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 47, title: "Vectorization Workflow", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 48, title: "Photo Trace Illustration", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 49, title: "Line Art Vectorization", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 50, title: "Raster Image Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 51, title: "Logo Rebuild Project", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 52, title: "Illustration Vector Trace", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 53, title: "Raster Graphic Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 54, title: "Technical Drawing Vector", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 55, title: "Vectorization Mockup", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 56, title: "Raster Art Conversion", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 57, title: "Photo to Vector Study", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 58, title: "Linework Vectorization", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 59, title: "Raster Design Rebuild", path: "2nd.jpg", service: "Raster-to-Vector" },
+  { id: 60, title: "Vectorization Detail Study", path: "2nd.jpg", service: "Raster-to-Vector" },
 ];
 
 
@@ -128,36 +128,39 @@ const PortfolioRow = ({
   return (
     <motion.div
       ref={ref}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-start"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center"
+
       initial={{ opacity: isFirstRow ? 1 : 0, y: isFirstRow ? 0 : 60 }}
       animate={{ opacity: isInView || isFirstRow ? 1 : 0, y: isInView || isFirstRow ? 0 : 60 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {row.map((item) => (
-        <motion.div
-          key={item.id}
-          className="group relative bg-white rounded-2xl shadow-sm cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-          whileHover={{ scale: 1.03 }}
-        >
-          <div className="relative h-48 overflow-hidden rounded-t-2xl">
-            <Image
-              src={item.path}
-              width={500}
-              height={500}
-              alt={item.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute bottom-3 left-3 z-10">
-              <span className="bg-white/30 backdrop-blur-md text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-full border border-white/40">
+       <motion.div
+  key={item.id}
+  className="group relative rounded-3xl cursor-pointer overflow-hidden w-full max-w-[320px]
+shadow-[0_15px_35px_rgba(0,0,0,0.55),0_5px_15px_rgba(0,0,0,0.35)]
+transition-all duration-300
+hover:-translate-y-2
+hover:shadow-[0_30px_70px_rgba(0,0,0,0.75),0_10px_25px_rgba(0,0,0,0.45)]"
+
+  whileHover={{ scale: 1.03 }}
+>
+          <div className="relative h-full w-full overflow-hidden rounded-2xl ">
+            <div className="relative h-full w-full overflow-hidden">
+              <Image
+                src={item.path}
+                width={500}
+                height={500}
+                alt={item.title}
+                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute bottom-3 left-3 z-10">
+              <span className="bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full border border-blue-500">
                 {item.service}
               </span>
             </div>
-          </div>
-          <div className="p-4">
-            <h3 className="text-gray-900 font-semibold text-base transition-all duration-300 group-hover:text-blue-600 group-hover:translate-x-1">
-              {item.title}
-            </h3>
+            </div>
           </div>
         </motion.div>
       ))}
@@ -176,7 +179,7 @@ export default function PortfolioSection() {
       ? portfolioData
       : portfolioData.filter((item) => item.service === activeFilter);
 
-  const rows = chunkArray(filteredData, 4);
+  const rows = chunkArray(filteredData, 3);
 
   return (
     <div className="bg-gray-50 py-16 px-4">
@@ -221,3 +224,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+
