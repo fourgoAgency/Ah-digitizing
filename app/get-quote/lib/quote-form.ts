@@ -24,6 +24,54 @@ export const colorwayOptions = [
 ] as const;
 
 export const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
+export const MAX_FILES_COUNT = 10;
+export const ALLOWED_UPLOAD_MIME_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/postscript",
+  "application/illustrator",
+  "application/eps",
+  "application/x-eps",
+  "application/photoshop",
+  "application/x-photoshop",
+  "image/vnd.adobe.photoshop",
+  "image/svg+xml",
+] as const;
+export const ALLOWED_UPLOAD_EXTENSIONS = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".bmp",
+  ".tif",
+  ".tiff",
+  ".webp",
+  ".svg",
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".ai",
+  ".eps",
+  ".ps",
+  ".psd",
+] as const;
+
+const hasUnsafeFileName = (fileName: string) => /(\.\.)|[<>:"/\\|?*\x00-\x1F]/.test(fileName);
+const hasAllowedExtension = (fileName: string) => {
+  const lastDotIndex = fileName.lastIndexOf(".");
+  if (lastDotIndex === -1) return false;
+  const extension = fileName.slice(lastDotIndex).toLowerCase();
+  return ALLOWED_UPLOAD_EXTENSIONS.includes(extension as (typeof ALLOWED_UPLOAD_EXTENSIONS)[number]);
+};
+
+export const isAllowedUploadFile = (file: File) => {
+  const mimeType = file.type.toLowerCase();
+  if (mimeType.startsWith("video/")) return false;
+  if (mimeType.startsWith("image/")) return true;
+  if (ALLOWED_UPLOAD_MIME_TYPES.includes(mimeType as (typeof ALLOWED_UPLOAD_MIME_TYPES)[number])) return true;
+  return hasAllowedExtension(file.name);
+};
 
 export const quoteFormSchema = z
   .object({
@@ -52,7 +100,9 @@ export const quoteFormSchema = z
     files: z
       .array(z.instanceof(File))
       .min(1, "Please upload one file.")
-      .max(1, "Only 1 file is allowed.")
+      .max(MAX_FILES_COUNT, `You can upload up to ${MAX_FILES_COUNT} files.`)
+      .refine((files) => files.every((file) => isAllowedUploadFile(file)), "Only images and document/design files are allowed. Videos are blocked.")
+      .refine((files) => files.every((file) => !hasUnsafeFileName(file.name)), "One or more file names are invalid.")
       .refine((files) => files.every((file) => file.size <= MAX_FILE_SIZE_BYTES), "File size must be 50MB or less."),
   })
   .superRefine((data, ctx) => {

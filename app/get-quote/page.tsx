@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { GetQuoteBackground } from "./components/GetQuoteBackground";
 import { GetQuoteForm } from "./components/GetQuoteForm";
 import { GetQuoteLivePreview } from "./components/GetQuoteLivePreview";
 import {
+  MAX_FILES_COUNT,
   MAX_FILE_SIZE_BYTES,
   initialQuoteFormState,
+  isAllowedUploadFile,
   quoteFormSchema,
   type QuoteFormState,
 } from "./lib/quote-form";
@@ -142,21 +143,76 @@ export default function GetQuotePage() {
     });
   }, []);
 
-  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    const selectedFiles = selectedFile ? [selectedFile] : [];
-    setFormData((prev) => ({ ...prev, files: selectedFiles }));
+  const processIncomingFiles = useCallback((incomingFiles: FileList | null | undefined) => {
+    const nextFiles = Array.from(incomingFiles ?? []);
+    if (nextFiles.length === 0) return;
+
+    const hasUnsafeFileName = (fileName: string) => /(\.\.)|[<>:"/\\|?*\x00-\x1F]/.test(fileName);
+    const videoByExtension = (fileName: string) => /\.(mp4|mov|avi|wmv|mkv|webm|m4v|3gp)$/i.test(fileName);
+    const blockedVideoCount = nextFiles.filter(
+      (file) => file.type.toLowerCase().startsWith("video/") || videoByExtension(file.name)
+    ).length;
+    const nonAllowedTypeCount = nextFiles.filter((file) => !isAllowedUploadFile(file)).length;
+    const oversizedCount = nextFiles.filter((file) => file.size > MAX_FILE_SIZE_BYTES).length;
+    const unsafeNameCount = nextFiles.filter((file) => hasUnsafeFileName(file.name)).length;
+    const validFiles = nextFiles.filter(
+      (file) => isAllowedUploadFile(file) && file.size <= MAX_FILE_SIZE_BYTES && !hasUnsafeFileName(file.name)
+    );
+
+    if (validFiles.length > 0) {
+      setFormData((prev) => {
+        const merged = [...prev.files, ...validFiles];
+        return { ...prev, files: merged.slice(0, MAX_FILES_COUNT) };
+      });
+    }
+
     setErrors((prev) => {
       const next = { ...prev };
-      if (selectedFile && selectedFile.size > MAX_FILE_SIZE_BYTES) {
-        next.files = "File size must be 50MB or less.";
-      } else {
+      if (blockedVideoCount > 0) {
+        next.files = "Video files are not allowed.";
+      } else if (nonAllowedTypeCount > 0) {
+        next.files = "Only images and document/design files are allowed.";
+      } else if (oversizedCount > 0) {
+        next.files = "Each file must be 50MB or less.";
+      } else if (unsafeNameCount > 0) {
+        next.files = "One or more file names are invalid.";
+      } else if (formData.files.length + validFiles.length > MAX_FILES_COUNT) {
+        next.files = `You can upload up to ${MAX_FILES_COUNT} files.`;
+      } else if (validFiles.length > 0) {
         delete next.files;
       }
       return next;
     });
     setSubmitMessage("");
+  }, [formData.files.length]);
+
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    processIncomingFiles(e.target.files);
+    e.target.value = "";
   };
+
+  const handleFilesDrop = useCallback(
+    (e: React.DragEvent<HTMLLabelElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      processIncomingFiles(e.dataTransfer?.files);
+    },
+    [processIncomingFiles]
+  );
+
+  const handleFileRemove = useCallback((fileIndex: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, index) => index !== fileIndex),
+    }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.files;
+      return next;
+    });
+    setSubmitMessage("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, []);
 
   const previewFileUrl = useMemo(() => {
     const file = formData.files[0];
@@ -222,7 +278,6 @@ export default function GetQuotePage() {
 
   return (
     <main className="relative bg-slate-100 px-4 py-14 sm:px-6">
-      <GetQuoteBackground />
       <section className="relative z-10 mx-auto max-w-7xl">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Request a Custom Quote</h1>
@@ -248,6 +303,8 @@ export default function GetQuotePage() {
             onOutputFormatToggleAction={handleOutputFormatToggle}
             onContactValuesChangeAction={handleContactValuesChange}
             onFilesChangeAction={handleFilesChange}
+            onFilesDropAction={handleFilesDrop}
+            onFileRemoveAction={handleFileRemove}
             onSubmitAction={handleSubmit}
           />
           {hasOrderType && <GetQuoteLivePreview formData={formData} previewFileUrl={previewFileUrl} />}

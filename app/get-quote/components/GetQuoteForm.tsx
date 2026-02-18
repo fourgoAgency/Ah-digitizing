@@ -1,7 +1,7 @@
 "use client";
 
-import { UploadCloud } from "lucide-react";
-import type { ChangeEvent, FormEvent, RefObject } from "react";
+import { UploadCloud, X } from "lucide-react";
+import type { ChangeEvent, DragEvent, FormEvent, RefObject } from "react";
 import { QuoteContactFields } from "./QuoteContactFields";
 import {
   colorwayOptions,
@@ -20,6 +20,8 @@ type GetQuoteFormProps = {
   onOutputFormatToggleAction: (format: string) => void;
   onContactValuesChangeAction: (values: { country: string; phone: string }) => void;
   onFilesChangeAction: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFilesDropAction: (event: DragEvent<HTMLLabelElement>) => void;
+  onFileRemoveAction: (fileIndex: number) => void;
   onSubmitAction: (event: FormEvent<HTMLFormElement>) => void;
 };
 
@@ -32,8 +34,18 @@ export function GetQuoteForm({
   onOutputFormatToggleAction,
   onContactValuesChangeAction,
   onFilesChangeAction,
+  onFilesDropAction,
+  onFileRemoveAction,
   onSubmitAction,
 }: GetQuoteFormProps) {
+  const selectedOutputFormats = formData.outputFormats.map((format) => {
+    if (format !== "other") {
+      return format;
+    }
+
+    return formData.outputFormatOther?.trim() || "Below text area appears write other formats";
+  });
+
   return (
     <form className="space-y-6" onSubmit={onSubmitAction}>
       <div className="overflow-visible rounded-lg border border-gray-200 bg-white">
@@ -242,18 +254,16 @@ export function GetQuoteForm({
                 </div>
                 <div className="sm:col-span-2">
                   <label className="mb-2 block text-sm font-semibold text-gray-700">Required File Formats</label>
-                  <input
-                    type="text"
-                    name="outputFormats"
-                    className="input mb-2"
-                    placeholder="Select required output formats"
-                    value={formData.outputFormats
-                      .map((format) =>
-                        format === "other" ? (formData.outputFormatOther?.trim() || "other") : format
-                      )
-                      .join(", ")}
-                    readOnly
-                  />
+                  {formData.outputFormats.length > 0 && (
+                    <input
+                      type="text"
+                      name="outputFormats"
+                      className="input mb-2"
+                      placeholder="Select required output formats"
+                      value={selectedOutputFormats.join(", ")}
+                      readOnly
+                    />
+                  )}
                   <div className="flex flex-wrap gap-x-5 gap-y-2">
                     {outputFormats.map((format) => (
                       <label key={format} className="inline-flex items-center gap-2 text-sm text-gray-700">
@@ -466,14 +476,48 @@ export function GetQuoteForm({
           <label
             htmlFor="file-upload"
             className="block cursor-pointer rounded-lg border border-dashed border-gray-300 p-10 text-center transition-colors hover:border-primary"
+            onDragOver={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onDrop={onFilesDropAction}
           >
             <UploadCloud className="mx-auto mb-2 text-gray-500" />
             <p className="text-gray-700">Drag &amp; drop your design here, or click to browse</p>
-            <p className="mt-1 text-sm text-gray-500">Accepted: .JPG, .PNG, .PDF, .AI, .EPS, .SVG, .BMP</p>
-            <p className="mt-1 text-sm text-gray-500">Only 1 file, max 50MB.</p>
-            <input id="file-upload" type="file" className="hidden" ref={fileInputRef} onChange={onFilesChangeAction} required />
+            <p className="mt-1 text-sm text-gray-500">Accepted: Images, PDF, DOC, DOCX, AI, EPS, PSD, SVG</p>
+            <p className="mt-1 text-sm text-gray-500">Up to 10 files, max 50MB each.</p>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*,.pdf,.doc,.docx,.ai,.eps,.ps,.psd,.svg"
+              multiple
+              className="hidden"
+              ref={fileInputRef}
+              onChange={onFilesChangeAction}
+              required={formData.files.length === 0}
+            />
           </label>
-          {formData.files.length > 0 && <p className="mt-2 text-sm text-gray-600">{formData.files[0].name}</p>}
+          {formData.files.length > 0 && (
+            <ul className="mt-3 space-y-2 col-span-5">
+              {formData.files.map((file, index) => (
+                <li
+                  key={`${file.name}-${file.lastModified}-${index}`}
+                  className="inline-flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+                >
+                  <span className="truncate pr-3">{file.name}</span>
+                  <button
+                    type="button"
+                    className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                    onClick={() => onFileRemoveAction(index)}
+                    aria-label={`Remove ${file.name}`}
+                  >
+                    <X size={16} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <span className="block mt-2"><h3 className="font-semibold">Note:</h3><p className="text-sm text-gray-600">Have a sample or old design you like? Upload it so we can follow the same style and direction.</p></span>
           {errors.files && <p className="mt-2 text-sm text-red-600">{errors.files}</p>}
         </div>
       </div>
@@ -504,3 +548,4 @@ export function GetQuoteForm({
     </form>
   );
 }
+
