@@ -1,52 +1,47 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { getCountryCallingCode, parsePhoneNumberFromString, type CountryCode } from "libphonenumber-js";
-import type { Control, FieldPath, FieldValues, UseFormSetValue } from "react-hook-form";
-import { Controller, useWatch } from "react-hook-form";
-import PhoneInput, { type Country, type Value } from "react-phone-number-input";
+import { useMemo, useRef, useState, useEffect } from "react";
+import type { Control, FieldPath, FieldValues } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { countryOptions } from "../lib/country-options";
-
-type PhoneCountryOption = {
-  value?: Country;
-  label: string;
-};
-
-type PhoneCountrySelectProps = {
-  value?: Country;
-  options: PhoneCountryOption[];
-  onChange: (value?: Country) => void;
-  disabled?: boolean;
-};
 
 type PhoneInputFieldProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
-  setValueAction: UseFormSetValue<TFieldValues>;
   name: FieldPath<TFieldValues>;
-  countryName: FieldPath<TFieldValues>;
   label?: string;
   placeholder?: string;
   disabled?: boolean;
 };
 
-function SearchablePhoneCountrySelect({
-  value,
-  options,
-  onChange,
-  disabled,
-}: PhoneCountrySelectProps) {
+const getDialCodeByCountry = (countryCode?: string): string => {
+  if (!countryCode) return "";
+  return countryOptions.find((country) => country.code === countryCode)?.dialCode ?? "";
+};
+
+const findCountryByPhoneValue = (value: string): string | undefined => {
+  if (!value.startsWith("+")) return undefined;
+  if (value.startsWith("+1")) return "US";
+  const sortedByDialLength = [...countryOptions].sort((a, b) => b.dialCode.length - a.dialCode.length);
+  return sortedByDialLength.find((country) => value.startsWith(country.dialCode))?.code;
+};
+
+type CodeSelectorProps = {
+  selectedCountryCode?: string;
+  disabled?: boolean;
+  onSelectAction: (countryCode: string) => void;
+};
+
+function CodeSelector({ selectedCountryCode, disabled, onSelectAction }: CodeSelectorProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const selectedCountry = countryOptions.find((country) => country.code === selectedCountryCode);
 
-  const filteredOptions = useMemo(() => {
+  const filteredCountries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return options;
-    return options.filter((option) => option.label.toLowerCase().includes(normalized));
-  }, [options, query]);
-
-  const selectedDialCode = value ? `+${getCountryCallingCode(value as CountryCode)}` : "";
-  const selectedCountry = countryOptions.find((country) => country.code === value);
+    if (!normalized) return countryOptions;
+    return countryOptions.filter((country) => country.name.toLowerCase().includes(normalized));
+  }, [query]);
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -63,7 +58,7 @@ function SearchablePhoneCountrySelect({
       <button
         type="button"
         disabled={disabled}
-        className="input h-12 min-w-24 rounded-r-none border-r-0"
+        className="input h-12 min-w-28 rounded-r-none border-r-0"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span className="inline-flex items-center gap-2">
@@ -76,7 +71,7 @@ function SearchablePhoneCountrySelect({
               className="rounded-xs object-cover"
             />
           ) : null}
-          <span>{selectedDialCode || "Code"}</span>
+          <span>{selectedCountry?.dialCode ?? "Code"}</span>
         </span>
       </button>
 
@@ -93,36 +88,31 @@ function SearchablePhoneCountrySelect({
           </div>
 
           <ul className="max-h-64 overflow-y-auto py-1">
-            {filteredOptions.map((option) => {
-              const optionDialCode = option.value ? `+${getCountryCallingCode(option.value as CountryCode)}` : "";
-              return (
-                <li key={option.value ?? "international"}>
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-slate-100"
-                    onClick={() => {
-                      onChange(option.value);
-                      setOpen(false);
-                      setQuery("");
-                    }}
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      {option.value ? (
-                        <img
-                          src={`https://flagcdn.com/24x18/${option.value.toLowerCase()}.png`}
-                          alt={`${option.label} flag`}
-                          width="20"
-                          height="14"
-                          className="rounded-xs object-cover"
-                        />
-                      ) : null}
-                      <span>{option.label}</span>
-                    </span>
-                    <span className="text-gray-500">{optionDialCode}</span>
-                  </button>
-                </li>
-              );
-            })}
+            {filteredCountries.map((country) => (
+              <li key={country.code}>
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-slate-100"
+                  onClick={() => {
+                    onSelectAction(country.code);
+                    setOpen(false);
+                    setQuery("");
+                  }}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <img
+                      src={country.flagUrl}
+                      alt={`${country.name} flag`}
+                      width="20"
+                      height="14"
+                      className="rounded-xs object-cover"
+                    />
+                    <span>{country.name}</span>
+                  </span>
+                  <span className="text-gray-500">{country.dialCode}</span>
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       )}
@@ -132,62 +122,64 @@ function SearchablePhoneCountrySelect({
 
 export function PhoneInputField<TFieldValues extends FieldValues>({
   control,
-  setValueAction,
   name,
-  countryName,
   label = "Phone",
   placeholder = "Enter phone number",
   disabled,
 }: PhoneInputFieldProps<TFieldValues>) {
-  const watchedCountry = useWatch({ control, name: countryName }) as string | undefined;
-  const selectedCountry = watchedCountry ? (watchedCountry as Country) : undefined;
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string | undefined>(
+    countryOptions.find((country) => country.code === "US")?.code ?? countryOptions[0]?.code
+  );
 
   return (
     <Controller
       control={control}
       name={name}
-      render={({ field, fieldState }) => (
-        <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
-          <PhoneInput
-            international
-            withCountryCallingCode
-            country={selectedCountry}
-            countrySelectComponent={SearchablePhoneCountrySelect}
-            value={(field.value as Value | undefined) || undefined}
-            onChange={(nextValue) => {
-              field.onChange(nextValue ?? "");
-              if (!nextValue) return;
+      render={({ field, fieldState }) => {
+        const rawValue = (field.value as string | undefined) ?? "";
+        const inferredCountryCode = findCountryByPhoneValue(rawValue);
+        const effectiveCountryCode = inferredCountryCode ?? selectedCountryCode;
+        const currentDialCode = getDialCodeByCountry(effectiveCountryCode);
+        const localDigits = currentDialCode && rawValue.startsWith(currentDialCode)
+          ? rawValue.slice(currentDialCode.length).replace(/\D/g, "")
+          : rawValue.replace(/\D/g, "");
 
-              const parsed = parsePhoneNumberFromString(nextValue);
-              if (parsed?.country) {
-                setValueAction(countryName, parsed.country as never, {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                  shouldValidate: true,
-                });
-              }
-            }}
-            onCountryChange={(nextCountry) => {
-              if (!nextCountry) return;
-              setValueAction(countryName, nextCountry as never, {
-                shouldDirty: true,
-                shouldTouch: true,
-                shouldValidate: true,
-              });
-            }}
-            className="flex items-stretch"
-            numberInputProps={{
-              className: "input h-12 rounded-l-none flex-1",
-              placeholder,
-              disabled,
-            }}
-            disabled={disabled}
-            onBlur={field.onBlur}
-          />
-          {fieldState.error?.message && <p className="mt-1 text-sm text-red-600">{fieldState.error.message}</p>}
-        </div>
-      )}
+        return (
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
+            <div className="flex items-stretch">
+              <CodeSelector
+                selectedCountryCode={effectiveCountryCode}
+                disabled={disabled}
+                onSelectAction={(nextCountryCode) => {
+                  setSelectedCountryCode(nextCountryCode);
+                  const nextDialCode = getDialCodeByCountry(nextCountryCode);
+                  field.onChange(localDigits ? `${nextDialCode}${localDigits}` : "");
+                }}
+              />
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="input h-12 flex-1 rounded-l-none"
+                placeholder={placeholder}
+                disabled={disabled}
+                value={localDigits}
+                onChange={(event) => {
+                  const digitsOnly = event.target.value.replace(/\D/g, "");
+                  if (!digitsOnly) {
+                    field.onChange("");
+                    return;
+                  }
+                  field.onChange(`${currentDialCode}${digitsOnly}`);
+                }}
+                onBlur={field.onBlur}
+              />
+            </div>
+            {fieldState.error?.message && <p className="mt-1 text-sm text-red-600">{fieldState.error.message}</p>}
+          </div>
+        );
+      }}
     />
   );
 }

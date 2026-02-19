@@ -1,7 +1,9 @@
 "use client";
 
 import { UploadCloud, X } from "lucide-react";
-import type { ChangeEvent, DragEvent, FormEvent, RefObject } from "react";
+import { useMemo, useState } from "react";
+import type { ChangeEvent, DragEvent, FormEvent, KeyboardEvent, RefObject } from "react";
+import { CustomDropdown } from "./CustomDropdown";
 import { QuoteContactFields } from "./QuoteContactFields";
 import {
   colorwayOptions,
@@ -10,6 +12,38 @@ import {
   placementAreas,
   type QuoteFormState,
 } from "../lib/quote-form";
+
+const turnaroundOptions = ["12 to 24 hours", "4 to 8 hours", "1 to 4 hours"] as const;
+
+const parseCustomFormats = (value: string | undefined): string[] => {
+  const seen = new Set<string>();
+  return (value ?? "")
+    .split(/[,\s]+/)
+    .map((item) => item.trim().toUpperCase())
+    .filter((item) => {
+      if (!item) return false;
+      const key = item.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+};
+
+const toSlug = (value: string) => value.toLowerCase().replace(/\s+/g, "-");
+
+const parseColorNames = (value: string | undefined): string[] => {
+  const seen = new Set<string>();
+  return (value ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => {
+      if (!item) return false;
+      const key = item.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+};
 
 type GetQuoteFormProps = {
   formData: QuoteFormState;
@@ -38,22 +72,127 @@ export function GetQuoteForm({
   onFileRemoveAction,
   onSubmitAction,
 }: GetQuoteFormProps) {
-  const selectedOutputFormats = formData.outputFormats.map((format) => {
-    if (format !== "other") {
-      return format;
+  const [customFormatDraft, setCustomFormatDraft] = useState("");
+  const [colorNameDraft, setColorNameDraft] = useState("");
+  const predefinedFormats = formData.outputFormats.filter((format) => format !== "other");
+  const customFormats = useMemo(() => parseCustomFormats(formData.outputFormatOther), [formData.outputFormatOther]);
+  const selectedColorNames = useMemo(() => parseColorNames(formData.colorsName), [formData.colorsName]);
+  const selectedOutputFormats = useMemo(() => {
+    const combined = [...predefinedFormats, ...customFormats];
+    const seen = new Set<string>();
+    return combined.filter((format) => {
+      const key = format.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [customFormats, predefinedFormats]);
+  const selectedOutputFormatLookup = useMemo(
+    () => new Set(selectedOutputFormats.map((format) => format.toLowerCase())),
+    [selectedOutputFormats]
+  );
+  const predefinedLookup = useMemo(() => new Set(outputFormats.map((format) => format.toLowerCase())), []);
+
+  const emitFieldChange = (name: string, value: string) => {
+    onFieldChangeAction({
+      target: { name, value, type: "text" },
+    } as ChangeEvent<HTMLInputElement>);
+  };
+
+  const updateCustomFormats = (nextCustomFormats: string[]) => {
+    const unique = parseCustomFormats(nextCustomFormats.join(","));
+    const hasOther = formData.outputFormats.includes("other");
+
+    if (unique.length > 0 && !hasOther) {
+      onOutputFormatToggleAction("other");
+    }
+    if (unique.length === 0 && hasOther) {
+      onOutputFormatToggleAction("other");
+    }
+    emitFieldChange("outputFormatOther", unique.join(","));
+  };
+
+  const addOutputFormatTag = (rawValue: string) => {
+    const normalizedValue = rawValue.trim().toUpperCase();
+    if (!normalizedValue) return;
+    const normalizedKey = normalizedValue.toLowerCase();
+
+    const predefinedMatch = outputFormats.find((format) => format.toLowerCase() === normalizedKey);
+    if (predefinedMatch) {
+      if (!selectedOutputFormatLookup.has(normalizedKey)) {
+        onOutputFormatToggleAction(predefinedMatch);
+      }
+      setCustomFormatDraft("");
+      return;
     }
 
-    return formData.outputFormatOther?.trim() || "Below text area appears write other formats";
-  });
+    if (selectedOutputFormatLookup.has(normalizedKey)) {
+      setCustomFormatDraft("");
+      return;
+    }
+
+    updateCustomFormats([...customFormats, normalizedValue]);
+    setCustomFormatDraft("");
+  };
+
+  const removeOutputFormatTag = (formatToRemove: string) => {
+    const normalizedKey = formatToRemove.toLowerCase();
+    if (predefinedLookup.has(normalizedKey)) {
+      const predefinedMatch = outputFormats.find((format) => format.toLowerCase() === normalizedKey);
+      if (predefinedMatch && formData.outputFormats.includes(predefinedMatch)) {
+        onOutputFormatToggleAction(predefinedMatch);
+        return;
+      }
+    }
+
+    const nextCustomFormats = customFormats.filter((format) => format.toLowerCase() !== normalizedKey);
+    updateCustomFormats(nextCustomFormats);
+  };
+
+  const handleCustomFormatKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== " " && event.key !== "Enter") return;
+    event.preventDefault();
+    addOutputFormatTag(customFormatDraft);
+  };
+
+  const updateColorNames = (nextColors: string[]) => {
+    const unique = parseColorNames(nextColors.join(","));
+    emitFieldChange("colorsName", unique.join(", "));
+  };
+
+  const addColorNameTag = (rawValue: string) => {
+    const normalized = rawValue.trim();
+    if (!normalized) return;
+    const exists = selectedColorNames.some((item) => item.toLowerCase() === normalized.toLowerCase());
+    if (exists) {
+      setColorNameDraft("");
+      return;
+    }
+    updateColorNames([...selectedColorNames, normalized]);
+    setColorNameDraft("");
+  };
+
+  const removeColorNameTag = (colorToRemove: string) => {
+    const nextColors = selectedColorNames.filter((item) => item.toLowerCase() !== colorToRemove.toLowerCase());
+    updateColorNames(nextColors);
+  };
+
+  const handleColorNameKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== " " && event.key !== "Enter") return;
+    event.preventDefault();
+    addColorNameTag(colorNameDraft);
+  };
+
+  const firstErrorMessage = Object.values(errors)[0];
 
   return (
-    <form className="space-y-6" onSubmit={onSubmitAction}>
+    <form className="space-y-6" onSubmit={onSubmitAction} noValidate>
       <div className="overflow-visible rounded-lg border border-gray-200 bg-white">
         <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Your Contact Information</h2>
         <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
           <div>
             <label htmlFor="full-name" className="mb-1 block text-sm font-semibold text-gray-700">
-              Name
+              Name *
             </label>
             <input
               id="full-name"
@@ -82,7 +221,7 @@ export function GetQuoteForm({
           </div>
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-semibold text-gray-700">
-              Email
+              Email *
             </label>
             <input
               id="email"
@@ -113,7 +252,7 @@ export function GetQuoteForm({
         <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Design Specifications</h2>
         <div className="space-y-4 p-5">
           <div>
-            <p className="mb-2 block text-sm font-semibold text-gray-700">Order Type Select</p>
+            <p className="mb-2 block text-sm font-semibold text-gray-700">Order Type Select *</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label
                 htmlFor="order-type-embroidery"
@@ -162,7 +301,7 @@ export function GetQuoteForm({
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="design-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Design Name
+                    Design Name *
                   </label>
                   <input
                     id="design-name"
@@ -177,25 +316,35 @@ export function GetQuoteForm({
                 </div>
                 <div>
                   <label htmlFor="turnaround-time" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Turnaround Time
+                    Turnaround Time *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="turnaround-time"
-                    name="turnaroundTime"
-                    className="input"
-                    value={formData.turnaroundTime}
-                    onChange={onFieldChangeAction}
-                    required
-                  >
-                    <option value="">Select turnaround</option>
-                    <option value="6-hour-rush">Standard (12–24 Hours)</option>
-                    <option value="12-hour-rush"> Priority (4–8 Hours)</option>
-                    <option value="24-hour">Express (1–4 Hours)</option>
-                  </select>
+                    placeholder="Select turnaround"
+                    options={["Standard (12-24 Hours)", "Priority (4-8 Hours)", "Express (1-4 Hours)"]}
+                    value={
+                      formData.turnaroundTime === turnaroundOptions[0]
+                        ? "Standard (12-24 Hours)"
+                        : formData.turnaroundTime === turnaroundOptions[1]
+                          ? "Priority (4-8 Hours)"
+                          : formData.turnaroundTime === turnaroundOptions[2]
+                            ? "Express (1-4 Hours)"
+                            : ""
+                    }
+                    onSelectAction={(selected) => {
+                      const value =
+                        selected === "Standard (12-24 Hours)"
+                          ? turnaroundOptions[0]
+                          : selected === "Priority (4-8 Hours)"
+                            ? turnaroundOptions[1]
+                            : turnaroundOptions[2];
+                      emitFieldChange("turnaroundTime", value);
+                    }}
+                  />
                   {errors.turnaroundTime && <p className="mt-1 text-sm text-red-600">{errors.turnaroundTime}</p>}
                 </div>
                 <div className="sm:col-span-2">
-                  <p className="mb-2 block text-sm font-semibold text-gray-700">Unit Select</p>
+                  <p className="mb-2 block text-sm font-semibold text-gray-700">Unit Select *</p>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                     {["inches", "centimeter", "millimeter"].map((unit) => (
                       <label
@@ -229,7 +378,9 @@ export function GetQuoteForm({
                   <input
                     id="width"
                     name="width"
-                    type="text"
+                    type="number"
+                    step="any"
+                    min="0"
                     className="input"
                     placeholder="proportional to height"
                     value={formData.width}
@@ -244,7 +395,9 @@ export function GetQuoteForm({
                   <input
                     id="height"
                     name="height"
-                    type="text"
+                    type="number"
+                    step="any"
+                    min="0"
                     className="input"
                     placeholder="eg:proportional to width"
                     value={formData.height}
@@ -253,102 +406,89 @@ export function GetQuoteForm({
                   {errors.height && <p className="mt-1 text-sm text-red-600">{errors.height}</p>}
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">Required File Formats</label>
-                  {formData.outputFormats.length > 0 && (
-                    <input
-                      type="text"
-                      name="outputFormats"
-                      className="input mb-2"
-                      placeholder="Select required output formats"
-                      value={selectedOutputFormats.join(", ")}
-                      readOnly
-                    />
-                  )}
-                  <div className="flex flex-wrap gap-x-5 gap-y-2">
-                    {outputFormats.map((format) => (
-                      <label key={format} className="inline-flex items-center gap-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          name="outputFormats"
-                          value={format}
-                          checked={formData.outputFormats.includes(format)}
-                          onChange={() => onOutputFormatToggleAction(format)}
-                          required={formData.outputFormats.length === 0}
-                        />
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">Required File Formats *</label>
+                  <div className="mb-2 flex min-h-12 flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2">
+                    {selectedOutputFormats.map((format) => (
+                      <span
+                        key={format}
+                        className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary"
+                      >
                         {format}
-                      </label>
+                        <button
+                          type="button"
+                          className="rounded p-0.5 hover:bg-primary/15"
+                          aria-label={`Remove ${format}`}
+                          onClick={() => removeOutputFormatTag(format)}
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
                     ))}
-                    <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                      <input
-                        type="checkbox"
-                        name="outputFormats"
-                        value="other"
-                        checked={formData.outputFormats.includes("other")}
-                        onChange={() => onOutputFormatToggleAction("other")}
-                        required={formData.outputFormats.length === 0}
-                      />
-                      Other
-                    </label>
+                    <input
+                      id="output-format-other"
+                      name="outputFormatOtherDraft"
+                      className="min-w-[180px] flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                      placeholder={selectedOutputFormats.length > 1 ? "Type custom format and press space" : "Select or type format"}
+                      value={customFormatDraft}
+                      onChange={(event) => setCustomFormatDraft(event.target.value)}
+                      onKeyDown={handleCustomFormatKeyDown}
+                      onBlur={() => {
+                        if (!customFormatDraft.trim()) return;
+                        addOutputFormatTag(customFormatDraft);
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {outputFormats.map((format) => {
+                      const active = selectedOutputFormatLookup.has(format.toLowerCase());
+                      return (
+                        <button
+                          key={format}
+                          type="button"
+                          className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors ${active
+                            ? "border-primary bg-primary text-white"
+                            : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                            }`}
+                          onClick={() => {
+                            if (active) {
+                              removeOutputFormatTag(format);
+                              return;
+                            }
+                            onOutputFormatToggleAction(format);
+                          }}
+                        >
+                          {format}
+                        </button>
+                      );
+                    })}
                   </div>
                   {errors.outputFormats && <p className="mt-1 text-sm text-red-600">{errors.outputFormats}</p>}
-                  {formData.outputFormats.includes("other") && (
-                    <div className="mt-3">
-                      <label htmlFor="output-format-other" className="mb-1 block text-sm font-semibold text-gray-700">
-                        Other Output Format
-                      </label>
-                      <input
-                        id="output-format-other"
-                        name="outputFormatOther"
-                        className="input"
-                        placeholder="Enter output format"
-                        value={formData.outputFormatOther}
-                        onChange={onFieldChangeAction}
-                        required
-                      />
-                      {errors.outputFormatOther && <p className="mt-1 text-sm text-red-600">{errors.outputFormatOther}</p>}
-                    </div>
-                  )}
+                  {errors.outputFormatOther && <p className="mt-1 text-sm text-red-600">{errors.outputFormatOther}</p>}
                 </div>
                 <div>
                   <label htmlFor="fabric-type" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Fabric Type
+                    Fabric Type *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="fabric-type"
-                    name="fabricType"
-                    className="input"
-                    value={formData.fabricType}
-                    onChange={onFieldChangeAction}
-                    required
-                  >
-                    <option value="">Select fabric type</option>
-                    {fabricTypes.map((fabric) => (
-                      <option key={fabric} value={fabric.toLowerCase().replace(/\s+/g, "-")}>
-                        {fabric}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Select fabric type"
+                    options={[...fabricTypes]}
+                    value={fabricTypes.find((fabric) => toSlug(fabric) === formData.fabricType) ?? ""}
+                    onSelectAction={(selected) => emitFieldChange("fabricType", toSlug(selected))}
+                  />
                   {errors.fabricType && <p className="mt-1 text-sm text-red-600">{errors.fabricType}</p>}
                 </div>
                 <div>
                   <label htmlFor="placement-area" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Placement Area
+                    Placement Area *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="placement-area"
-                    name="placementArea"
-                    className="input"
-                    value={formData.placementArea}
-                    onChange={onFieldChangeAction}
-                    required
-                  >
-                    <option value="">Select placement area</option>
-                    {placementAreas.map((area) => (
-                      <option key={area} value={area.toLowerCase().replace(/\s+/g, "-")}>
-                        {area}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Select placement area"
+                    options={[...placementAreas]}
+                    value={placementAreas.find((area) => toSlug(area) === formData.placementArea) ?? ""}
+                    onSelectAction={(selected) => emitFieldChange("placementArea", toSlug(selected))}
+                  />
                   {errors.placementArea && <p className="mt-1 text-sm text-red-600">{errors.placementArea}</p>}
                 </div>
               </div>
@@ -357,7 +497,7 @@ export function GetQuoteForm({
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="applique-required" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Applique Required?
+                    Applique Required? *
                   </label>
                   <select
                     id="applique-required"
@@ -375,73 +515,73 @@ export function GetQuoteForm({
                 </div>
                 <div>
                   <label htmlFor="colors-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Colors Name
+                    Colors Name *
                   </label>
-                  <input
-                    id="colors-name"
-                    name="colorsName"
-                    type="text"
-                    className="input"
-                    placeholder="eg:White, Black, Red, Yellow"
-                    value={formData.colorsName}
-                    onChange={onFieldChangeAction}
-                  />
+                  <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2">
+                    {selectedColorNames.map((color) => (
+                      <span
+                        key={color}
+                        className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary"
+                      >
+                        {color}
+                        <button
+                          type="button"
+                          className="rounded p-0.5 hover:bg-primary/15"
+                          aria-label={`Remove ${color}`}
+                          onClick={() => removeColorNameTag(color)}
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                    <input
+                      id="colors-name"
+                      name="colorsNameDraft"
+                      type="text"
+                      className="min-w-[180px] flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                      placeholder="Type color and press space"
+                      value={colorNameDraft}
+                      onChange={(event) => setColorNameDraft(event.target.value)}
+                      onKeyDown={handleColorNameKeyDown}
+                      onBlur={() => {
+                        if (!colorNameDraft.trim()) return;
+                        addColorNameTag(colorNameDraft);
+                      }}
+                    />
+                  </div>
+                  {errors.colorsName && <p className="mt-1 text-sm text-red-600">{errors.colorsName}</p>}
                 </div>
                 <div>
                   <label htmlFor="number-of-colors" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Numbers of colors
+                    Numbers of colors *
                   </label>
                   <input
                     id="number-of-colors"
                     name="numberOfColors"
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     className="input"
-                    placeholder="Number of colors"
+                    placeholder="According to Logo"
                     value={formData.numberOfColors}
-                    onChange={onFieldChangeAction}
+                    onChange={(event) => emitFieldChange("numberOfColors", event.target.value.replace(/\D/g, ""))}
                     required
                   />
                   {errors.numberOfColors && <p className="mt-1 text-sm text-red-600">{errors.numberOfColors}</p>}
                 </div>
                 <div>
                   <label htmlFor="colorway-to-use" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Colorway to use
+                    Colorway to use *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="colorway-to-use"
-                    name="colorwayToUse"
-                    className="input"
-                    value={formData.colorwayToUse}
-                    onChange={onFieldChangeAction}
-                  >
-                    {colorwayOptions.map((colorway) => (
-                      <option key={colorway} value={colorway}>
-                        {colorway}
-                      </option>
-                    ))}
-                    <option value="other">Other</option>
-                  </select>
+                    placeholder="Select colorway"
+                    options={[...colorwayOptions]}
+                    value={formData.colorwayToUse === "other" ? "" : (formData.colorwayToUse ?? "")}
+                    onSelectAction={(selected) => emitFieldChange("colorwayToUse", selected)}
+                  />
+                  {errors.colorwayToUse && <p className="mt-1 text-sm text-red-600">{errors.colorwayToUse}</p>}
                 </div>
-                {formData.colorwayToUse === "other" && (
-                  <div>
-                    <label htmlFor="colorway-to-use-other" className="mb-1 block text-sm font-semibold text-gray-700">
-                      Other Colorway
-                    </label>
-                    <input
-                      id="colorway-to-use-other"
-                      name="colorwayToUseOther"
-                      type="text"
-                      className="input"
-                      placeholder="Enter colorway"
-                      value={formData.colorwayToUseOther || ""}
-                      onChange={onFieldChangeAction}
-                      required
-                    />
-                    {errors.colorwayToUseOther && (
-                      <p className="mt-1 text-sm text-red-600">{errors.colorwayToUseOther}</p>
-                    )}
-                  </div>
-                )}
                 <div className="sm:col-span-2">
                   <label htmlFor="additional-notes" className="mb-1 block text-sm font-semibold text-gray-700">
                     Additional Notes
@@ -471,7 +611,7 @@ export function GetQuoteForm({
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">File Upload</h2>
+        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">File Upload *</h2>
         <div className="p-5">
           <label
             htmlFor="file-upload"
@@ -523,7 +663,7 @@ export function GetQuoteForm({
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Continue via WhatsApp?</h2>
+        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Continue via WhatsApp? *</h2>
         <div className="p-5">
           <label className="inline-flex items-center gap-2 text-sm text-gray-700">
             <input
@@ -545,7 +685,18 @@ export function GetQuoteForm({
       <button type="submit" className="btn">
         Submit Quote
       </button>
+
+      {firstErrorMessage && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="fixed left-1/2 top-16 z-[200] w-[min(92vw,760px)] -translate-x-1/2 rounded-lg border-2 border-red-300 bg-red-50 px-6 py-4 text-base font-semibold text-red-800 shadow-xl"
+        >
+          {firstErrorMessage}
+        </div>
+      )}
     </form>
   );
 }
+
 

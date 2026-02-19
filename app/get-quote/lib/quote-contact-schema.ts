@@ -1,4 +1,3 @@
-import { isValidPhoneNumber } from "libphonenumber-js";
 import { z } from "zod";
 import { countryOptions } from "./country-options";
 
@@ -16,10 +15,9 @@ export const quoteContactSchema = z.object({
     .refine((value) => {
       const trimmed = value.trim();
       if (!trimmed) return true;
-      if (/^\+\d{1,4}$/.test(trimmed)) return true;
-      return isValidPhoneNumber(trimmed);
+      return /^\+\d+$/.test(trimmed);
     }, {
-      message: "Enter a valid phone number.",
+      message: "Contact number must start with country code and digits only.",
     }),
 });
 

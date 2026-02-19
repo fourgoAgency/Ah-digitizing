@@ -16,8 +16,8 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
   const selectedOutputFormats = formData.outputFormats
     .map((format) => (format === "other" && formData.outputFormatOther?.trim() ? formData.outputFormatOther : format))
     .join(", ");
-  const previewWidth = formData.width?.trim() || (formData.height?.trim() ? "0" : "");
-  const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "0" : "");
+  const previewWidth = formData.width?.trim() || (formData.height?.trim() ? "proportional" : "");
+  const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "proportional" : "");
 
   return (
     <aside className="sticky top-6 self-start">
@@ -105,7 +105,10 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
               <span className="font-semibold text-gray-800">Output Formats:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(selectedOutputFormats)}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Additional Notes:</span> <span className="min-w-0 text-gray-600 wrap-break-words whitespace-normal">{toDisplay(formData.additionalNotes)}</span>
+              <span className="font-semibold text-gray-800">Additional Notes:</span>{" "}
+              <span className="min-w-0 overflow-hidden text-ellipsis break-words text-gray-600 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:5]">
+                {toDisplay(formData.additionalNotes)}
+              </span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">File:</span> <span className="min-w-0 text-gray-600 truncate">{formData.files[0]?.name}</span>
@@ -116,5 +119,3 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
     </aside>
   );
 }
-
-

@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getCountryCallingCode, type CountryCode } from "libphonenumber-js";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { CountrySelect } from "./CountrySelect";
@@ -19,7 +18,7 @@ export function QuoteContactFields({
   defaultPhone = "",
   onValuesChangeAction,
 }: QuoteContactFieldsProps) {
-  const { control, getValues, setValue } = useForm<QuoteContactValues>({
+  const { control } = useForm<QuoteContactValues>({
     resolver: zodResolver(quoteContactSchema),
     mode: "onBlur",
     defaultValues: {
@@ -44,24 +43,12 @@ export function QuoteContactFields({
       <CountrySelect
         control={control}
         name="country"
-        label="Country"
-        onCountryChangeAction={(countryCode) => {
-          const currentPhone = getValues("phone") ?? "";
-          if (currentPhone.trim()) return;
-          const dialCode = `+${getCountryCallingCode(countryCode as CountryCode)}`;
-          setValue("phone", dialCode, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: false,
-          });
-        }}
+        label="Country *"
       />
 
       <PhoneInputField
         control={control}
-        setValueAction={setValue}
         name="phone"
-        countryName="country"
         label="Contact Number"
         placeholder="Enter phone number"
       />

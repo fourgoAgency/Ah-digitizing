@@ -172,11 +172,46 @@ export const quoteFormSchema = z
           message: "Either width or height is required.",
         });
       }
+      if (hasWidth && !/^\d+(\.\d+)?$/.test((data.width ?? "").trim())) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["width"],
+          message: "Width must be a number.",
+        });
+      }
+      if (hasHeight && !/^\d+(\.\d+)?$/.test((data.height ?? "").trim())) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["height"],
+          message: "Height must be a number.",
+        });
+      }
+      if (!data.colorsName?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["colorsName"],
+          message: "Colors name is required.",
+        });
+      }
       if (!data.numberOfColors?.trim()) {
         ctx.addIssue({
           code: "custom",
           path: ["numberOfColors"],
           message: "Number of colors is required.",
+        });
+      }
+      if (data.numberOfColors?.trim() && !/^\d+$/.test(data.numberOfColors.trim())) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["numberOfColors"],
+          message: "Number of colors must be numeric.",
+        });
+      }
+      if (!data.colorwayToUse?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["colorwayToUse"],
+          message: "Colorway is required.",
         });
       }
       if (data.colorwayToUse === "other" && !data.colorwayToUseOther?.trim()) {

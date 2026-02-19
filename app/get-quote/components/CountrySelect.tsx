@@ -51,13 +51,7 @@ function CountryField<TFieldValues extends FieldValues>({
   const filteredCountries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return countryOptions;
-    return countryOptions.filter((country) => {
-      return (
-        country.name.toLowerCase().includes(normalized) ||
-        country.code.toLowerCase().includes(normalized) ||
-        country.dialCode.includes(normalized)
-      );
-    });
+    return countryOptions.filter((country) => country.name.toLowerCase().includes(normalized));
   }, [query]);
 
   const selectCountry = (countryCode: string) => {
@@ -133,7 +127,6 @@ function CountryField<TFieldValues extends FieldValues>({
                     />
                     <span>{country.name}</span>
                   </span>
-                  <span className="text-gray-500">{country.dialCode}</span>
                 </button>
               </li>
             ))}
