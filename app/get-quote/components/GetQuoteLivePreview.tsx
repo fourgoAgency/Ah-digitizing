@@ -1,4 +1,5 @@
 import type { QuoteFormState } from "../lib/quote-form";
+import { countryOptions } from "../lib/country-options";
 
 type GetQuoteLivePreviewProps = {
   formData: QuoteFormState;
@@ -11,6 +12,12 @@ const toDisplay = (value?: string) =>
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ") ?? "Not set";
+
+const getCountryName = (countryCode?: string) => {
+  const code = countryCode?.trim().toUpperCase();
+  if (!code) return "Not set";
+  return countryOptions.find((country) => country.code === code)?.name ?? code;
+};
 
 export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePreviewProps) {
   const selectedOutputFormats = formData.outputFormats
@@ -64,7 +71,7 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
               <span className="font-semibold text-gray-800">Email:</span> <span className="min-w-0 text-gray-600 truncate">{formData.email}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Country:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.country)}</span>
+              <span className="font-semibold text-gray-800">Country:</span> <span className="min-w-0 text-gray-600 truncate">{getCountryName(formData.country)}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Design Name:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.designName)}</span>

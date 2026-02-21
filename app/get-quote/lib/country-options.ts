@@ -16,7 +16,7 @@ const toFlagEmoji = (countryCode: string): string =>
     .toUpperCase()
     .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
 
-const uniqueCountryByDialCode = getCountries()
+export const countryOptions: CountryOption[] = getCountries()
   .filter((code) => !blockedCountryCodes.has(code as CountryCode))
   .map((code) => {
     const typedCode = code as CountryCode;
@@ -30,24 +30,4 @@ const uniqueCountryByDialCode = getCountries()
       flagUrl: `https://flagcdn.com/24x18/${typedCode.toLowerCase()}.png`,
     };
   })
-  .reduce((acc, current) => {
-    const existing = acc.get(current.dialCode);
-    if (!existing) {
-      acc.set(current.dialCode, current);
-      return acc;
-    }
-
-    if (current.dialCode === "+1" && current.code === "US") {
-      acc.set(current.dialCode, current);
-      return acc;
-    }
-
-    if (existing.dialCode !== "+1" && current.name.localeCompare(existing.name) < 0) {
-      acc.set(current.dialCode, current);
-    }
-    return acc;
-  }, new Map<string, CountryOption>());
-
-export const countryOptions: CountryOption[] = Array.from(uniqueCountryByDialCode.values()).sort((a, b) =>
-  a.name.localeCompare(b.name)
-);
+  .sort((a, b) => a.name.localeCompare(b.name));

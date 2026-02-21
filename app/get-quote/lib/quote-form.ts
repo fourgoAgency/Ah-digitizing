@@ -2,7 +2,7 @@ import { z } from "zod";
 import { isValidPhoneNumber, type CountryCode } from "libphonenumber-js";
 import { countryOptions } from "./country-options";
 
-export const outputFormats = ["DST", "PES", "JEF", "EXP", "NGS", "PXF", "CND", "ART", "VP3"] as const;
+export const outputFormats = ["DST", "PES", "JEF", "EXP", "OFM", "XXX", "CSD", "HUS", "CND", "ART", "VP3", "NGS", "PXF"] as const;
 export const placementAreas = ["Cap", "Left Chest", "Jacket Back"] as const;
 export const fabricTypes = [
   "Beanie",
