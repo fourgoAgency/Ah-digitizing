@@ -75,11 +75,12 @@ export function GetQuoteForm({
 }: GetQuoteFormProps) {
   const [customFormatDraft, setCustomFormatDraft] = useState("");
   const [colorNameDraft, setColorNameDraft] = useState("");
+  const hasOtherOutputFormat = formData.outputFormats.includes("other");
   const predefinedFormats = formData.outputFormats.filter((format) => format !== "other");
   const customFormats = useMemo(() => parseCustomFormats(formData.outputFormatOther), [formData.outputFormatOther]);
   const selectedColorNames = useMemo(() => parseColorNames(formData.colorsName), [formData.colorsName]);
   const selectedOutputFormats = useMemo(() => {
-    const combined = [...predefinedFormats, ...customFormats];
+    const combined = hasOtherOutputFormat ? [...predefinedFormats, ...customFormats] : [...predefinedFormats];
     const seen = new Set<string>();
     return combined.filter((format) => {
       const key = format.toLowerCase();
@@ -87,11 +88,8 @@ export function GetQuoteForm({
       seen.add(key);
       return true;
     });
-  }, [customFormats, predefinedFormats]);
-  const selectedOutputFormatLookup = useMemo(
-    () => new Set(selectedOutputFormats.map((format) => format.toLowerCase())),
-    [selectedOutputFormats]
-  );
+  }, [customFormats, hasOtherOutputFormat, predefinedFormats]);
+  const selectedOutputFormatLookup = useMemo(() => new Set(formData.outputFormats.map((format) => format.toLowerCase())), [formData.outputFormats]);
   const predefinedLookup = useMemo(() => new Set(outputFormats.map((format) => format.toLowerCase())), []);
 
   const emitFieldChange = (name: string, value: string) => {
@@ -102,32 +100,16 @@ export function GetQuoteForm({
 
   const updateCustomFormats = (nextCustomFormats: string[]) => {
     const unique = parseCustomFormats(nextCustomFormats.join(","));
-    const hasOther = formData.outputFormats.includes("other");
-
-    if (unique.length > 0 && !hasOther) {
-      onOutputFormatToggleAction("other");
-    }
-    if (unique.length === 0 && hasOther) {
-      onOutputFormatToggleAction("other");
-    }
     emitFieldChange("outputFormatOther", unique.join(","));
   };
 
   const addOutputFormatTag = (rawValue: string) => {
+    if (!hasOtherOutputFormat) return;
     const normalizedValue = rawValue.trim().toUpperCase();
     if (!normalizedValue) return;
     const normalizedKey = normalizedValue.toLowerCase();
 
-    const predefinedMatch = outputFormats.find((format) => format.toLowerCase() === normalizedKey);
-    if (predefinedMatch) {
-      if (!selectedOutputFormatLookup.has(normalizedKey)) {
-        onOutputFormatToggleAction(predefinedMatch);
-      }
-      setCustomFormatDraft("");
-      return;
-    }
-
-    if (selectedOutputFormatLookup.has(normalizedKey)) {
+    if (customFormats.some((format) => format.toLowerCase() === normalizedKey)) {
       setCustomFormatDraft("");
       return;
     }
@@ -418,20 +400,36 @@ export function GetQuoteForm({
                     <input
                       id="output-format-other"
                       name="outputFormatOtherDraft"
-                      className="min-w-45 flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
-                      placeholder={selectedOutputFormats.length > 1 ? "Type custom format and press space" : "Select or type format"}
+                      className="min-w-45 flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+                      placeholder={hasOtherOutputFormat ? "Type custom format and press space" : "Select 'Other' to type custom format"}
                       value={customFormatDraft}
+                      disabled={!hasOtherOutputFormat}
                       onChange={(event) => setCustomFormatDraft(event.target.value)}
                       onKeyDown={handleCustomFormatKeyDown}
                       onBlur={() => {
+                        if (!hasOtherOutputFormat) return;
                         if (!customFormatDraft.trim()) return;
                         addOutputFormatTag(customFormatDraft);
                       }}
                     />
                   </div>
+                  {!hasOtherOutputFormat && customFormats.length > 0 && (
+                    <div className="mb-2 flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Saved custom formats</span>
+                      {customFormats.map((format) => (
+                        <span
+                          key={`saved-${format}`}
+                          className="inline-flex items-center rounded-full border border-gray-300 bg-white px-2.5 py-1 text-xs font-semibold text-gray-600"
+                        >
+                          {format}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-2">
-                    {outputFormats.map((format) => {
+                    {[...outputFormats, "other"].map((format) => {
                       const active = selectedOutputFormatLookup.has(format.toLowerCase());
+                      const label = format === "other" ? "Other" : format;
                       return (
                         <button
                           key={format}
@@ -441,14 +439,13 @@ export function GetQuoteForm({
                             : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                             }`}
                           onClick={() => {
-                            if (active) {
-                              removeOutputFormatTag(format);
-                              return;
-                            }
                             onOutputFormatToggleAction(format);
+                            if (format === "other" && active) {
+                              setCustomFormatDraft("");
+                            }
                           }}
                         >
-                          {format}
+                          {label}
                         </button>
                       );
                     })}

@@ -48,41 +48,40 @@ export function CustomDropdown({
 
   return (
     <div ref={wrapperRef} className="relative">
-      <div className="flex">
-        <input
-          id={id}
-          type="text"
-          className="input h-12 rounded-r-none border-r-0"
-          placeholder={placeholder}
-          value={inputValue}
-          disabled={disabled}
-          readOnly={!canType}
-          onFocus={() => {
-            setOpen(false);
-          }}
-          onChange={(event) => {
-            if (!canType) return;
-            if (value) onSelectAction("");
-            setQuery(event.target.value);
-            setOpen(false);
-          }}
-          onKeyDown={(event) => {
-            if (event.key !== "Enter") return;
-            event.preventDefault();
-            commitTypedValue();
-          }}
-          onBlur={commitTypedValue}
-        />
-        <button
-          type="button"
-          disabled={disabled}
-          aria-label="Toggle options"
-          className="inline-flex h-12 w-10 items-center justify-center rounded-r-md border border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-100"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          <ChevronDown size={16} />
-        </button>
-      </div>
+      <input
+        id={id}
+        type="text"
+        className="input h-12 pr-12"
+        placeholder={placeholder}
+        value={inputValue}
+        disabled={disabled}
+        readOnly={!canType}
+        onFocus={() => {
+          setOpen(false);
+        }}
+        onChange={(event) => {
+          if (!canType) return;
+          if (value) onSelectAction("");
+          setQuery(event.target.value);
+          setOpen(false);
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter") return;
+          event.preventDefault();
+          commitTypedValue();
+        }}
+        onBlur={commitTypedValue}
+      />
+      <button
+        type="button"
+        disabled={disabled}
+        aria-label="Toggle options"
+        className="absolute inset-y-0 right-0 inline-flex w-10 items-center justify-center rounded-r-md border-l border-gray-300 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <ChevronDown size={16} />
+      </button>
 
       {open && !disabled && (
         <ul className="absolute left-0 top-full z-120 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg">

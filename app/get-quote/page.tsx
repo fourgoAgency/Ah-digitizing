@@ -180,7 +180,6 @@ export default function GetQuotePage() {
       return {
         ...prev,
         outputFormats: nextOutputFormats,
-        outputFormatOther: nextOutputFormats.includes("other") ? prev.outputFormatOther : "",
       };
     });
     setErrors((prev) => {
