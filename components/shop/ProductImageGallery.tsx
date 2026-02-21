@@ -56,7 +56,7 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
             src={currentImage}
             alt={title}
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="(max-width: 1024px) 100vw, 48vw"
             priority
           />
@@ -71,7 +71,7 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
               key={`${title}-${index}`}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative h-28 overflow-hidden rounded-lg border bg-white ${
+              className={`relative h-32 overflow-hidden rounded-lg border bg-white ${
                 isActive ? "border-primary ring-2 ring-primary/20" : "border-gray-200"
               }`}
               aria-label={`Show ${title} image ${index + 1}`}
@@ -80,8 +80,8 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
                 src={image}
                 alt={`${title} preview ${index + 1}`}
                 fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 33vw, 16vw"
+                className="object-contain"
+                sizes="(max-width: 1024px) 16vw, 16vw"
               />
             </button>
           );

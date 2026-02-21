@@ -1,73 +1,105 @@
 "use client";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import CTASection from "@/components/CTASection";
 
-// Privacy Policy Data
-const privacyData = [
+const privacySections = [
   {
     id: "intro",
-    title: null,
+    title: "Privacy Policy",
     content:
-      "Thanks for using the platform of DigitEMB for acquiring the services of any (or all) of digitization and vectorization. This policy elaborates the ins and outs of our practices, including how and why we collect your information when you acquire our digitizing/vectorizing services. The policy also explains the methods we use to collect your data that is handled for specific purposes. Nevertheless, we would also like to emphasize that we take our customers' privacy policy very seriously. We do not sell, distribute or share our records with anyone, Be that may be an individual or an enterprise.",
+      "Effective date: February 20, 2026\n\nThis Privacy Policy explains how AhDigitizing collects, uses, and protects your information when you use our website and request digitizing or vector conversion services.",
   },
   {
     id: "collection",
-    title: "Collection of Information",
+    title: "Information We Collect",
     content:
-      "All the information that is collected through this web portal, is owned and accessible by DigitEMB only. The only information we make use of or have access is provided to us by the customers (voluntarily) themselves. Either by contacting us directly over the phone, through an email or either by registering at digitemb.com.",
+      "When you submit a quote request or contact us, we may collect:\n- Full name\n- Company name (optional)\n- Email address\n- Country\n- Contact number (optional)\n- Order details (service type, size, file formats, turnaround time, notes, etc.)\n- Uploaded files and artwork references\n- WhatsApp communication preference (opt-in checkbox)\n\nWe only collect information you provide directly through forms and communications.",
   },
   {
     id: "use",
-    title: "Use of Information",
+    title: "How We Use Your Information",
     content:
-      "We will only use the information provided by you like a call of action for the specific purpose you contact us for. We may further contact you for a follow-up, to inform you about the specials and the latest services either via phone or email. We may also send a monthly newsletter if you have subscribed, unless or until you explicitly asked not to do so. As aforementioned, the information and the data we collect from our customers is not to be sold to any other enterprise or organization. Furthermore, the collected data and information will be utilized for digitemb.net as well.\n\nAll of the collected information including the password that you made for your account will be saved into our database for future references. (The figure rules apply for DigitEMB.net as well.)",
+      "We use your information to:\n- Review your design request and prepare a quote\n- Communicate about your order by email, phone, or WhatsApp (if selected)\n- Deliver files and provide customer support\n- Improve our services and website forms\n\nWe do not sell your personal information.",
+  },
+  {
+    id: "processing",
+    title: "File and Artwork Handling",
+    content:
+      "Files you upload are used to evaluate and process your request. Please upload only files you have permission to use. We may keep submitted files and order details for record-keeping, revisions, quality control, and support.",
+  },
+  {
+    id: "file-validation",
+    title: "Get Quote File Upload Validation",
+    content:
+      "To protect our systems and keep the quote process smooth, uploaded files in the Get Quote form are validated before submission.\n\nValidation rules currently include:\n- Maximum 10 files per submission\n- Maximum file size: 50MB per file\n- Video files are blocked\n- Unsafe file names are blocked\n\nAccepted file categories include image files and common document/design formats. Supported extensions include:\n- .jpg, .jpeg, .png, .gif, .bmp, .tif, .tiff, .webp, .svg\n- .pdf, .doc, .docx\n- .ai, .eps, .ps, .psd\n- .emb, .dst, .pes, .ngs, .pxf, .hus, .vp3, .jef, .cnd, .art, .csd, .xxx, .pec, .ofm, .omf\n\nIf a file does not meet validation requirements, it may be rejected at upload or form submission.If you have any file which is not accepted by the form, please contact us through our Contact Us page to discuss alternative ways to share your files for a quote.",
+  },
+  {
+    id: "sharing",
+    title: "Information Sharing",
+    content:
+      "We do not sell or rent your personal information. We may share information only when necessary to run our services (for example, hosting, file storage, or communication tools) or when required by law.",
+  },
+  {
+    id: "security",
+    title: "Data Security",
+    content:
+      "We use reasonable technical and organizational measures to protect your information. However, no online platform can guarantee absolute security.",
+  },
+  {
+    id: "retention",
+    title: "Data Retention",
+    content:
+      "We retain your information for as long as needed to provide services, resolve disputes, maintain business records, and meet legal obligations.",
   },
   {
     id: "rights",
     title: "Your Rights",
     content:
-      "You reserve the right to instruct us to provide us with the necessary information we kept within our records. You may further advise any concern or queries about us keeping your data. You may also ask us to delete your personal information from our records and we will comply with your request. Moreover, you may also ask us which contact you any further in the future for marketing purposes or any.",
+      "You can request access, correction, or deletion of your personal information by contacting us. You can also ask us to stop non-essential communications.",
   },
   {
-    id: "updation",
-    title: "Updation of Information",
+    id: "third-party",
+    title: "Third-Party Services",
     content:
-      "You are requested to make us aware of any personal information, i.e. email address, phone number(s), etc., that needs to be updated, modified, or corrected in our records at your earliest convenience.",
+      "Our website may use third-party services for functionality such as media delivery, website hosting, and communication channels. Their handling of data is governed by their own privacy policies.",
   },
   {
-    id: "security",
-    title: "Security Precautions",
+    id: "updates",
+    title: "Policy Updates",
     content:
-      "We take special precautions in order to prevent any kind of loss, damage, and modification of your personal and sensitive information, within our records, both offline and online. All the information we collect is archived and stored safely in our secure database servers. All of the information is encrypted to maximize the security of our customers. Furthermore, we will never ask you to disclose your password, except for the log-in purpose. The responsibility of safekeeping the password rests upon you. DigitEMB is not liable for any loss of data, whether it may be due to a technical error, hack or any other.",
+      "We may update this Privacy Policy from time to time. Any updates will be posted on this page with the revised effective date.",
   },
   {
-    id: "amendments",
-    title: "Amendments",
+    id: "contact",
+    title: "Contact Us",
     content:
-      "We reserve the right to, and will, update this policy occasionally, by issuing a newer version on our website in lieu of the changes within the business environment and the organization within. It is recommended that you visit this page from time to time, in order be aware of any and every changes or amendment made to the privacy policy.",
+      "If you have any privacy-related questions, please contact us through our Contact Us page.",
   },
 ];
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Privacy Policy Content */}
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          {privacyData.map((section, index) => (
+          {privacySections.map((section, index) => (
             <motion.div
               key={section.id}
+              id={section.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.01 }}
-              className={section.title ? "mb-10" : "mb-6"}>
-              {section.title && (
-                <h2 className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-4">
-                  {section.title}
-                </h2>
-              )}
+              className="mb-10 scroll-mt-28"
+            >
+              <h2
+                className={`${section.id === "intro"
+                  ? "text-3xl sm:text-4xl lg:text-5xl"
+                  : "text-2xl sm:text-[26px] lg:text-3xl"
+                  } font-bold text-[#0A21C0] mb-4`}
+              >
+                {section.title}
+              </h2>
 
               <div className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line">
                 {section.content}
@@ -77,7 +109,6 @@ export default function PrivacyPolicyPage() {
         </div>
       </div>
 
-      {/* CTA Section */}
       <CTASection />
     </div>
   );

@@ -31,6 +31,22 @@ type CodeSelectorProps = {
   onSelectAction: (countryCode: string) => void;
 };
 
+const getCountryInitials = (name: string): string =>
+  name
+    .split(/[\s()-]+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .toLowerCase();
+
+const matchesCountryQuery = (country: { name: string; code: string }, normalizedQuery: string): boolean => {
+  if (!normalizedQuery) return true;
+  const name = country.name.toLowerCase();
+  const code = country.code.toLowerCase();
+  const initials = getCountryInitials(country.name);
+  return name.startsWith(normalizedQuery) || code.startsWith(normalizedQuery) || initials.startsWith(normalizedQuery);
+};
+
 function CodeSelector({ selectedCountryCode, disabled, onSelectAction }: CodeSelectorProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -40,7 +56,9 @@ function CodeSelector({ selectedCountryCode, disabled, onSelectAction }: CodeSel
   const filteredCountries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return countryOptions;
-    return countryOptions.filter((country) => country.name.toLowerCase().includes(normalized));
+    return countryOptions
+      .filter((country) => matchesCountryQuery(country, normalized))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [query]);
 
   useEffect(() => {
@@ -158,6 +176,8 @@ export function PhoneInputField<TFieldValues extends FieldValues>({
                 }}
               />
               <input
+                id={String(field.name)}
+                name={String(field.name)}
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"

@@ -23,6 +23,40 @@ type CountryFieldProps<TFieldValues extends FieldValues> = {
   onCountryChangeAction?: (countryCode: string) => void;
 };
 
+const getCountryInitials = (name: string): string =>
+  name
+    .split(/[\s()-]+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .toLowerCase();
+
+const matchesCountryQuery = (country: { name: string; code: string }, normalizedQuery: string): boolean => {
+  if (!normalizedQuery) return true;
+  const name = country.name.toLowerCase();
+  const code = country.code.toLowerCase();
+  const initials = getCountryInitials(country.name);
+  return name.startsWith(normalizedQuery) || code.startsWith(normalizedQuery) || initials.startsWith(normalizedQuery);
+};
+
+const findBestCountryMatch = (query: string) => {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return undefined;
+
+  const exactNameMatch = countryOptions.find((country) => country.name.toLowerCase() === normalized);
+  if (exactNameMatch) return exactNameMatch;
+
+  const exactCodeMatch = countryOptions.find((country) => country.code.toLowerCase() === normalized);
+  if (exactCodeMatch) return exactCodeMatch;
+
+  const exactInitialsMatch = countryOptions.find((country) => getCountryInitials(country.name) === normalized);
+  if (exactInitialsMatch) return exactInitialsMatch;
+
+  return countryOptions
+    .filter((country) => matchesCountryQuery(country, normalized))
+    .sort((a, b) => a.name.localeCompare(b.name))[0];
+};
+
 function CountryField<TFieldValues extends FieldValues>({
   field,
   errorMessage,
@@ -35,6 +69,7 @@ function CountryField<TFieldValues extends FieldValues>({
   const selectedCountry = countryOptions.find((country) => country.code === field.value);
   const [query, setQuery] = useState(selectedCountry?.name ?? "");
   const [open, setOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const inputValue = open ? query : (selectedCountry?.name ?? query);
 
   useEffect(() => {
@@ -51,8 +86,15 @@ function CountryField<TFieldValues extends FieldValues>({
   const filteredCountries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return countryOptions;
-    return countryOptions.filter((country) => country.name.toLowerCase().includes(normalized));
+    return countryOptions
+      .filter((country) => matchesCountryQuery(country, normalized))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [query]);
+
+  useEffect(() => {
+    if (!open) return;
+    setHighlightedIndex(0);
+  }, [open, query]);
 
   const selectCountry = (countryCode: string) => {
     const match = countryOptions.find((country) => country.code === countryCode);
@@ -64,11 +106,11 @@ function CountryField<TFieldValues extends FieldValues>({
   };
 
   const commitTypedCountry = () => {
-    const exact = countryOptions.find((country) => country.name.toLowerCase() === query.trim().toLowerCase());
-    if (exact) {
-      field.onChange(exact.code);
-      onCountryChangeAction?.(exact.code);
-      setQuery(exact.name);
+    const match = findBestCountryMatch(query);
+    if (match) {
+      field.onChange(match.code);
+      onCountryChangeAction?.(match.code);
+      setQuery(match.name);
     }
   };
 
@@ -88,6 +130,8 @@ function CountryField<TFieldValues extends FieldValues>({
           </span>
         ) : null}
         <input
+          id={`${String(field.name)}-input`}
+          name={String(field.name)}
           type="text"
           className={`input h-12 ${selectedCountry ? "pl-11" : ""}`}
           value={inputValue}
@@ -96,6 +140,42 @@ function CountryField<TFieldValues extends FieldValues>({
           onFocus={() => {
             setQuery(selectedCountry?.name ?? query);
             setOpen(true);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown") {
+              event.preventDefault();
+              setOpen(true);
+              setHighlightedIndex((prev) => {
+                const maxIndex = filteredCountries.length - 1;
+                if (maxIndex < 0) return 0;
+                return Math.min(prev + 1, maxIndex);
+              });
+              return;
+            }
+
+            if (event.key === "ArrowUp") {
+              event.preventDefault();
+              setOpen(true);
+              setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+              return;
+            }
+
+            if (event.key === "Enter") {
+              event.preventDefault();
+              if (filteredCountries.length > 0) {
+                const highlightedCountry = filteredCountries[highlightedIndex] ?? filteredCountries[0];
+                if (highlightedCountry) {
+                  selectCountry(highlightedCountry.code);
+                  return;
+                }
+              }
+              commitTypedCountry();
+              return;
+            }
+
+            if (event.key === "Escape") {
+              setOpen(false);
+            }
           }}
           onBlur={commitTypedCountry}
           onChange={(event) => {
@@ -113,8 +193,14 @@ function CountryField<TFieldValues extends FieldValues>({
               <li key={country.code}>
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-slate-100"
+                  className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-slate-100 ${
+                    filteredCountries[highlightedIndex]?.code === country.code ? "bg-slate-100" : ""
+                  }`}
                   onMouseDown={(event) => event.preventDefault()}
+                  onMouseEnter={() => {
+                    const hoveredIndex = filteredCountries.findIndex((item) => item.code === country.code);
+                    if (hoveredIndex >= 0) setHighlightedIndex(hoveredIndex);
+                  }}
                   onClick={() => selectCountry(country.code)}
                 >
                   <span className="inline-flex items-center gap-2">

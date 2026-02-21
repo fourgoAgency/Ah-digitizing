@@ -26,11 +26,15 @@ export function CustomDropdown({
 
   const canType = !disabled;
   const inputValue = query !== "" ? query : value;
-  const filteredOptions = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return options;
-    return options.filter((option) => option.toLowerCase().includes(normalized));
-  }, [options, query]);
+  const commitTypedValue = () => {
+    if (!canType) return;
+    const typed = query.trim();
+    if (!typed) return;
+    onSelectAction(typed);
+    setQuery(typed);
+    setOpen(false);
+  };
+  const filteredOptions = useMemo(() => options, [options]);
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -53,11 +57,21 @@ export function CustomDropdown({
           value={inputValue}
           disabled={disabled}
           readOnly={!canType}
+          onFocus={() => {
+            setOpen(false);
+          }}
           onChange={(event) => {
             if (!canType) return;
             if (value) onSelectAction("");
             setQuery(event.target.value);
+            setOpen(false);
           }}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter") return;
+            event.preventDefault();
+            commitTypedValue();
+          }}
+          onBlur={commitTypedValue}
         />
         <button
           type="button"

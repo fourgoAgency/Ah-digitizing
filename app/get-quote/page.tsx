@@ -12,6 +12,73 @@ import {
   type QuoteFormState,
 } from "./lib/quote-form";
 
+const fieldValidationOrder = [
+  "fullName",
+  "email",
+  "country",
+  "contactNumber",
+  "orderType",
+  "designName",
+  "turnaroundTime",
+  "unitSelect",
+  "width",
+  "height",
+  "outputFormats",
+  "outputFormatOther",
+  "fabricType",
+  "placementArea",
+  "appliqueRequired",
+  "colorsName",
+  "numberOfColors",
+  "colorwayToUse",
+  "colorwayToUseOther",
+  "files",
+  "whatsappOptIn",
+] as const;
+
+const focusInvalidField = (field: string) => {
+  const selectorsByField: Record<string, string[]> = {
+    fullName: ["#full-name", "[name='fullName']"],
+    email: ["#email", "[name='email']"],
+    country: ["#country-input", "[name='country']"],
+    contactNumber: ["#phone", "[name='phone']"],
+    orderType: ["[name='orderType']"],
+    designName: ["#design-name", "[name='designName']"],
+    turnaroundTime: ["#turnaround-time"],
+    unitSelect: ["[name='unitSelect']"],
+    width: ["#width", "[name='width']"],
+    height: ["#height", "[name='height']"],
+    outputFormats: ["#output-format-other"],
+    outputFormatOther: ["#output-format-other"],
+    fabricType: ["#fabric-type"],
+    placementArea: ["#placement-area"],
+    appliqueRequired: ["#applique-required", "[name='appliqueRequired']"],
+    colorsName: ["#colors-name"],
+    numberOfColors: ["#number-of-colors", "[name='numberOfColors']"],
+    colorwayToUse: ["#colorway-to-use"],
+    colorwayToUseOther: ["#colorway-to-use"],
+    files: ["label[for='file-upload']", "#file-upload"],
+    whatsappOptIn: ["[name='whatsappOptIn']"],
+  };
+
+  const selectors = selectorsByField[field] ?? [`[name='${field}']`, `#${field}`];
+  for (const selector of selectors) {
+    const element = document.querySelector(selector) as HTMLElement | null;
+    if (!element) continue;
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    if ("focus" in element) {
+      element.focus();
+    }
+    return;
+  }
+};
+
+const getFirstErrorField = (errors: Record<string, string>) => {
+  const ordered = fieldValidationOrder.find((field) => Boolean(errors[field]));
+  if (ordered) return ordered;
+  return Object.keys(errors)[0];
+};
+
 export default function GetQuotePage() {
   const [formData, setFormData] = useState<QuoteFormState>(initialQuoteFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -238,6 +305,10 @@ export default function GetQuotePage() {
         }
       });
       setErrors(nextErrors);
+      const firstErrorField = getFirstErrorField(nextErrors);
+      if (firstErrorField) {
+        requestAnimationFrame(() => focusInvalidField(firstErrorField));
+      }
       return;
     }
 

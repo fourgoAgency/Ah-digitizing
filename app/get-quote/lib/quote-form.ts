@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { isValidPhoneNumber, type CountryCode } from "libphonenumber-js";
+import { countryOptions } from "./country-options";
 
 export const outputFormats = ["DST", "PES", "JEF", "EXP", "NGS", "PXF", "CND", "ART", "VP3"] as const;
 export const placementAreas = ["Cap", "Left Chest", "Jacket Back"] as const;
@@ -55,6 +57,20 @@ export const ALLOWED_UPLOAD_EXTENSIONS = [
   ".eps",
   ".ps",
   ".psd",
+  ".emb",
+  ".dst",
+  ".pes",
+  ".ngs",
+  ".pxf",
+  ".hus",
+  ".vp3",
+  ".jef",
+  ".cnd",
+  ".art",
+  ".csd",
+  ".xxx",
+  ".pec",
+  ".ofm",
 ] as const;
 
 const hasUnsafeFileName = (fileName: string) => /(\.\.)|[<>:"/\\|?*\x00-\x1F]/.test(fileName);
@@ -106,6 +122,18 @@ export const quoteFormSchema = z
       .refine((files) => files.every((file) => file.size <= MAX_FILE_SIZE_BYTES), "File size must be 50MB or less."),
   })
   .superRefine((data, ctx) => {
+    const phone = data.contactNumber?.trim() ?? "";
+    if (phone && countryOptions.some((country) => country.code === data.country)) {
+      const isValidContact = isValidPhoneNumber(phone, data.country as CountryCode);
+      if (!isValidContact) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["contactNumber"],
+          message: "Enter a valid contact number for the selected country.",
+        });
+      }
+    }
+
     if (!["embroidery", "vector"].includes(data.orderType)) {
       ctx.addIssue({
         code: "custom",

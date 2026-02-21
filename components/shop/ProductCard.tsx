@@ -36,9 +36,9 @@ export default function ProductCard({ product, imageVariant = "default" }: Produ
           <h3 className="text-base font-semibold text-gray-900">{product.title}</h3>
         </Link>
         <p className="text-sm text-gray-600">{product.shortDescription}</p>
-        <div className="flex justify-between p-2">
+        <div className="flex justify-between p-2 items-end">
         <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
-        <Button asChild className="h-8 rounded-md px-6 text-sm font-semibold">
+        <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold">
           <Link href={`/shop/${product.slug}`}>Add to Cart</Link>
         </Button>
         </div>

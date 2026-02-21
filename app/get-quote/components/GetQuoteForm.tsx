@@ -1,6 +1,7 @@
 "use client";
 
 import { UploadCloud, X } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent, KeyboardEvent, RefObject } from "react";
 import { CustomDropdown } from "./CustomDropdown";
@@ -318,29 +319,19 @@ export function GetQuoteForm({
                   <label htmlFor="turnaround-time" className="mb-1 block text-sm font-semibold text-gray-700">
                     Turnaround Time *
                   </label>
-                  <CustomDropdown
+                  <select
                     id="turnaround-time"
-                    placeholder="Select turnaround"
-                    options={["Standard (12-24 Hours)", "Priority (4-8 Hours)", "Express (1-4 Hours)"]}
-                    value={
-                      formData.turnaroundTime === turnaroundOptions[0]
-                        ? "Standard (12-24 Hours)"
-                        : formData.turnaroundTime === turnaroundOptions[1]
-                          ? "Priority (4-8 Hours)"
-                          : formData.turnaroundTime === turnaroundOptions[2]
-                            ? "Express (1-4 Hours)"
-                            : ""
-                    }
-                    onSelectAction={(selected) => {
-                      const value =
-                        selected === "Standard (12-24 Hours)"
-                          ? turnaroundOptions[0]
-                          : selected === "Priority (4-8 Hours)"
-                            ? turnaroundOptions[1]
-                            : turnaroundOptions[2];
-                      emitFieldChange("turnaroundTime", value);
-                    }}
-                  />
+                    name="turnaroundTime"
+                    className="input h-12"
+                    value={formData.turnaroundTime}
+                    onChange={onFieldChangeAction}
+                    required
+                  >
+                    <option value="">Select turnaround</option>
+                    <option value={turnaroundOptions[0]}>Standard (12-24 Hours)</option>
+                    <option value={turnaroundOptions[1]}>Priority (4-8 Hours)</option>
+                    <option value={turnaroundOptions[2]}>Express (1-4 Hours)</option>
+                  </select>
                   {errors.turnaroundTime && <p className="mt-1 text-sm text-red-600">{errors.turnaroundTime}</p>}
                 </div>
                 <div className="sm:col-span-2">
@@ -427,7 +418,7 @@ export function GetQuoteForm({
                     <input
                       id="output-format-other"
                       name="outputFormatOtherDraft"
-                      className="min-w-[180px] flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                      className="min-w-45 flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
                       placeholder={selectedOutputFormats.length > 1 ? "Type custom format and press space" : "Select or type format"}
                       value={customFormatDraft}
                       onChange={(event) => setCustomFormatDraft(event.target.value)}
@@ -538,7 +529,7 @@ export function GetQuoteForm({
                       id="colors-name"
                       name="colorsNameDraft"
                       type="text"
-                      className="min-w-[180px] flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                      className="min-w-45 flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
                       placeholder="Type color and press space"
                       value={colorNameDraft}
                       onChange={(event) => setColorNameDraft(event.target.value)}
@@ -624,12 +615,12 @@ export function GetQuoteForm({
           >
             <UploadCloud className="mx-auto mb-2 text-gray-500" />
             <p className="text-gray-700">Drag &amp; drop your design here, or click to browse</p>
-            <p className="mt-1 text-sm text-gray-500">Accepted: Images, PDF, DOC, DOCX, AI, EPS, PSD, SVG</p>
+            <p className="mt-1 text-sm text-gray-500">Accepted: JPG, PNG, JPEG, PDF, AI, EPS, SVG, PSD & more</p>
             <p className="mt-1 text-sm text-gray-500">Up to 10 files, max 50MB each.</p>
             <input
               id="file-upload"
               type="file"
-              accept="image/*,.pdf,.doc,.docx,.ai,.eps,.ps,.psd,.svg"
+              accept="image/*,.pdf,.doc,.docx,.ai,.eps,.ps,.psd,.svg,.emb,.dst,.pes,.ngs,.pxf,.hus,.vp3,.jef,.cnd,.art,.csd,.xxx,.pec,.omf"
               multiple
               className="hidden"
               ref={fileInputRef}
@@ -657,7 +648,17 @@ export function GetQuoteForm({
               ))}
             </ul>
           )}
-          <span className="block mt-2"><h3 className="font-semibold">Note:</h3><p className="text-sm text-gray-600">Have a sample or old design you like? Upload it so we can follow the same style and direction.</p></span>
+          <span className="mt-2 block">
+            <h3 className="font-semibold">Note:</h3>
+            <p className="text-sm text-gray-600">
+              Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
+              <Link href="/privacy-policy#file-validation" className="font-semibold text-primary underline">
+                Learn more about uploading files
+              </Link>
+              .
+            </p>
+          </span>
+          
           {errors.files && <p className="mt-2 text-sm text-red-600">{errors.files}</p>}
         </div>
       </div>
