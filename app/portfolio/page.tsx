@@ -63,7 +63,7 @@ const categories: CategoryConfig[] = [
     service: "Vector",
     label: "VECTOR ART",
     description: "Scalable vector illustrations crafted for print, screen, and beyond.",
-    bannerBg: "from-emerald-950 via-teal-900 to-slate-900",
+    bannerBg: "from-indigo-950 via-blue-900 to-slate-900",
     accentColor: "bg-emerald-600 border-emerald-500",
     bannerTextColor: "text-white",
     tagline: "Infinite resolution. Infinite possibilities.",
@@ -262,3 +262,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+
