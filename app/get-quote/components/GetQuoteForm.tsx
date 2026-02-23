@@ -324,7 +324,7 @@ export function GetQuoteForm({
                     id="turnaround-time"
                     placeholder="Select turnaround"
                     options={[...turnaroundOptions]}
-                    value={formData.turnaroundTime}
+                    value={formData.turnaroundTime ?? ""}
                     allowTyping={false}
                     onSelectAction={(selected) => emitFieldChange("turnaroundTime", selected)}
                   />
