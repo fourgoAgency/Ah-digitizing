@@ -99,7 +99,8 @@ export default function GetQuotePage() {
             orderType: value,
             designName: prev.designName,
             fabricType: prev.fabricType,
-            appliqueRequired: prev.appliqueRequired || "default",
+            appliqueRequired: prev.appliqueRequired,
+            colorwayToUse: prev.colorwayToUse || "Default",
           };
         }
         if (value === "vector") {
@@ -113,7 +114,7 @@ export default function GetQuotePage() {
             unitSelect: "",
             width: "",
             height: "",
-            appliqueRequired: "default",
+            appliqueRequired: "",
             colorsName: "",
             numberOfColors: "",
             colorwayToUse: "",
@@ -328,7 +329,7 @@ export default function GetQuotePage() {
             unitSelect: "",
             width: "",
             height: "",
-            appliqueRequired: "default",
+            appliqueRequired: "",
             colorsName: "",
             numberOfColors: "",
             colorwayToUse: "",

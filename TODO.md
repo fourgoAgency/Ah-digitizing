@@ -101,3 +101,15 @@ Create a reusable component with:
     
 
 If you want, I can also convert this into a proper GitHub-ready markdown file format with commit message suggestions.
+
+---
+
+# Get Quote Change TODO
+
+- [x] Make `Fabric type` and `Colors name` optional.
+- [x] Auto-select `Colorway` to `Default` for embroidery.
+- [x] Convert `Number of colors` to custom dropdown with typing support and include `According to Logo`.
+- [x] Match live preview field sequence with form sequence (notably after `Design Name` show `Turnaround` next).
+- [x] Remove `Quote Preview` text above image in live preview.
+- [x] Auto-hide error toast after 7 seconds and add close button.
+- [x] Remove `Default` option from `Applique Required` and show placeholder on start.

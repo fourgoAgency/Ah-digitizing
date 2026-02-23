@@ -32,8 +32,7 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
         <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Live Preview</h2>
         <div className="space-y-4 p-5">
           <div className="rounded-md border border-dashed border-gray-300 bg-gray-50 p-4 text-center">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Quote Preview</p>
-            <div className="mt-3 flex h-40 items-center justify-center rounded-md border border-gray-200 bg-white">
+            <div className="flex h-40 items-center justify-center rounded-md border border-gray-200 bg-white">
               {previewFileUrl ? (
                 <img src={previewFileUrl} alt="Uploaded file preview" className="h-full w-full rounded-md object-contain" />
               ) : formData.files[0] ? (
@@ -77,13 +76,7 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
               <span className="font-semibold text-gray-800">Design Name:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.designName)}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Fabric:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.fabricType)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Turnaround:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.turnaroundTime)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Placement:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.placementArea)}</span>
             </p>
             <div className="grid grid-cols-3 gap-1">
               <span className="text-sm font-semibold text-gray-800">Unit</span>
@@ -93,6 +86,15 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
               <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
               <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
             </div>
+            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+              <span className="font-semibold text-gray-800">Output Formats:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(selectedOutputFormats)}</span>
+            </p>
+            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+              <span className="font-semibold text-gray-800">Fabric:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.fabricType)}</span>
+            </p>
+            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+              <span className="font-semibold text-gray-800">Placement:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.placementArea)}</span>
+            </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Applique:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.appliqueRequired)}</span>
             </p>
@@ -107,9 +109,6 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
               <span className="min-w-0 text-gray-600 truncate">
                 {toDisplay(formData.colorwayToUse === "other" ? formData.colorwayToUseOther : formData.colorwayToUse)}
               </span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Output Formats:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(selectedOutputFormats)}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Additional Notes:</span>{" "}

@@ -2,7 +2,7 @@
 
 import { UploadCloud, X } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent, KeyboardEvent, RefObject } from "react";
 import { CustomDropdown } from "./CustomDropdown";
 import { QuoteContactFields } from "./QuoteContactFields";
@@ -15,7 +15,8 @@ import {
 } from "../lib/quote-form";
 
 const turnaroundOptions = ["12 to 24 hours", "4 to 8 hours", "1 to 4 hours"] as const;
-const appliqueOptions = ["Default", "Yes", "No"] as const;
+const appliqueOptions = ["Yes", "No"] as const;
+const numberOfColorOptions = ["According to Logo"];
 
 const parseCustomFormats = (value: string | undefined): string[] => {
   const seen = new Set<string>();
@@ -76,6 +77,7 @@ export function GetQuoteForm({
 }: GetQuoteFormProps) {
   const [customFormatDraft, setCustomFormatDraft] = useState("");
   const [colorNameDraft, setColorNameDraft] = useState("");
+  const errorToastRef = useRef<HTMLDivElement | null>(null);
   const predefinedFormats = formData.outputFormats.filter((format) => format !== "other");
   const customFormats = useMemo(() => parseCustomFormats(formData.outputFormatOther), [formData.outputFormatOther]);
   const selectedColorNames = useMemo(() => parseColorNames(formData.colorsName), [formData.colorsName]);
@@ -186,6 +188,15 @@ export function GetQuoteForm({
   };
 
   const firstErrorMessage = Object.values(errors)[0];
+
+  useEffect(() => {
+    if (!firstErrorMessage || !errorToastRef.current) return;
+    errorToastRef.current.classList.remove("hidden");
+    const timeoutId = window.setTimeout(() => {
+      errorToastRef.current?.classList.add("hidden");
+    }, 7000);
+    return () => window.clearTimeout(timeoutId);
+  }, [errors, firstErrorMessage]);
 
   return (
     <form className="space-y-6" onSubmit={onSubmitAction} noValidate>
@@ -454,7 +465,7 @@ export function GetQuoteForm({
                 </div>
                 <div>
                   <label htmlFor="fabric-type" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Fabric Type *
+                    Fabric Type
                   </label>
                   <CustomDropdown
                     id="fabric-type"
@@ -488,7 +499,7 @@ export function GetQuoteForm({
                   </label>
                   <CustomDropdown
                     id="applique-required"
-                    placeholder="Select applique option"
+                    placeholder="Select Applique Required"
                     options={[...appliqueOptions]}
                     value={appliqueOptions.find((option) => option.toLowerCase() === formData.appliqueRequired) ?? ""}
                     allowTyping={false}
@@ -498,7 +509,7 @@ export function GetQuoteForm({
                 </div>
                 <div>
                   <label htmlFor="colors-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Colors Name *
+                    Colors Name
                   </label>
                   <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2">
                     {selectedColorNames.map((color) => (
@@ -538,17 +549,12 @@ export function GetQuoteForm({
                   <label htmlFor="number-of-colors" className="mb-1 block text-sm font-semibold text-gray-700">
                     Numbers of colors *
                   </label>
-                  <input
+                  <CustomDropdown
                     id="number-of-colors"
-                    name="numberOfColors"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    className="input"
-                    placeholder="According to Logo"
-                    value={formData.numberOfColors}
-                    onChange={(event) => emitFieldChange("numberOfColors", event.target.value.replace(/\D/g, ""))}
-                    required
+                    placeholder="Select or type number of color"
+                    options={numberOfColorOptions}
+                    value={formData.numberOfColors ?? ""}
+                    onSelectAction={(selected) => emitFieldChange("numberOfColors", selected)}
                   />
                   {errors.numberOfColors && <p className="mt-1 text-sm text-red-600">{errors.numberOfColors}</p>}
                 </div>
@@ -561,6 +567,7 @@ export function GetQuoteForm({
                     placeholder="Select colorway"
                     options={[...colorwayOptions]}
                     value={formData.colorwayToUse === "other" ? "" : (formData.colorwayToUse ?? "")}
+                    allowTyping={false}
                     onSelectAction={(selected) => emitFieldChange("colorwayToUse", selected)}
                   />
                   {errors.colorwayToUse && <p className="mt-1 text-sm text-red-600">{errors.colorwayToUse}</p>}
@@ -681,10 +688,19 @@ export function GetQuoteForm({
 
       {firstErrorMessage && (
         <div
+          ref={errorToastRef}
           role="alert"
           aria-live="assertive"
-          className="fixed left-1/2 top-16 z-200 w-[min(92vw,760px)] -translate-x-1/2 rounded-lg border-2 border-red-300 bg-red-50 px-6 py-4 text-base font-semibold text-red-800 shadow-xl"
+          className="fixed left-1/2 top-16 z-200 w-[min(92vw,760px)] -translate-x-1/2 rounded-lg border-2 border-red-300 bg-red-50 px-6 py-4 pr-12 text-base font-semibold text-red-800 shadow-xl"
         >
+          <button
+            type="button"
+            className="absolute right-3 top-3 rounded p-1 text-red-700 hover:bg-red-100"
+            aria-label="Close error message"
+            onClick={() => errorToastRef.current?.classList.add("hidden")}
+          >
+            <X size={16} />
+          </button>
           {firstErrorMessage}
         </div>
       )}

@@ -106,7 +106,7 @@ export const quoteFormSchema = z
     unitSelect: z.string().optional(),
     width: z.string().optional(),
     height: z.string().optional(),
-    appliqueRequired: z.enum(["default", "yes", "no"]).default("default"),
+    appliqueRequired: z.string().optional(),
     colorsName: z.string().optional(),
     numberOfColors: z.string().optional(),
     colorwayToUse: z.string().optional(),
@@ -149,13 +149,6 @@ export const quoteFormSchema = z
           code: "custom",
           path: ["designName"],
           message: "Design name is required.",
-        });
-      }
-      if (!data.fabricType) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["fabricType"],
-          message: "Fabric type is required.",
         });
       }
       if (!data.turnaroundTime) {
@@ -214,13 +207,6 @@ export const quoteFormSchema = z
           message: "Height must be a number.",
         });
       }
-      if (!data.colorsName?.trim()) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["colorsName"],
-          message: "Colors name is required.",
-        });
-      }
       if (!data.numberOfColors?.trim()) {
         ctx.addIssue({
           code: "custom",
@@ -228,12 +214,24 @@ export const quoteFormSchema = z
           message: "Number of colors is required.",
         });
       }
-      if (data.numberOfColors?.trim() && !/^\d+$/.test(data.numberOfColors.trim())) {
+      if (!data.appliqueRequired?.trim()) {
         ctx.addIssue({
           code: "custom",
-          path: ["numberOfColors"],
-          message: "Number of colors must be numeric.",
+          path: ["appliqueRequired"],
+          message: "Please select applique required.",
         });
+      }
+      if (data.numberOfColors?.trim()) {
+        const normalizedNumberOfColors = data.numberOfColors.trim().toLowerCase();
+        const isAccordingToLogo = normalizedNumberOfColors === "according to logo";
+        const isNumeric = /^\d+$/.test(data.numberOfColors.trim());
+        if (!isAccordingToLogo && !isNumeric) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["numberOfColors"],
+            message: "Use a number or select 'According to Logo'.",
+          });
+        }
       }
       if (!data.colorwayToUse?.trim()) {
         ctx.addIssue({
@@ -294,7 +292,7 @@ export const initialQuoteFormState: QuoteFormState = {
   unitSelect: "",
   width: "",
   height: "",
-  appliqueRequired: "default",
+  appliqueRequired: "",
   colorsName: "",
   numberOfColors: "",
   colorwayToUse: "",
