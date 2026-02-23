@@ -258,13 +258,14 @@ export default function PortfolioSection() {
       <section className="min-h-[60vh] flex items-center justify-center bg-white">
         <div className="text-center px-6">
           <p className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">
-            Welcome to
+            Creative Studio
           </p>
           <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6">
-            My Portfolio
+            Our Portfolio
           </h1>
           <p className="text-gray-500 max-w-xl mx-auto text-lg">
-            Explore my collection of creative work and projects.
+            Explore our diverse collection of digitized embroidery, vector art, raster conversions, and
+      custom patches — crafted with precision for every client.
           </p>
         </div>
       </section>
@@ -275,4 +276,5 @@ export default function PortfolioSection() {
     </div>
   );
 }
+
 
