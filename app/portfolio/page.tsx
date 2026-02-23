@@ -255,6 +255,19 @@ const PageHeader = () => (
 export default function PortfolioSection() {
   return (
     <div className="bg-gray-50">
+      <section className="min-h-[60vh] flex items-center justify-center bg-white">
+        <div className="text-center px-6">
+          <p className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">
+            Welcome to
+          </p>
+          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6">
+            My Portfolio
+          </h1>
+          <p className="text-gray-500 max-w-xl mx-auto text-lg">
+            Explore my collection of creative work and projects.
+          </p>
+        </div>
+      </section>
       {/* <PageHeader /> */}
       {categories.map((config) => (
         <CategorySection key={config.service} config={config} />
