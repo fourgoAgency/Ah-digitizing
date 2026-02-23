@@ -7,7 +7,7 @@ const countryCodeSet = new Set(countryOptions.map((country) => country.code));
 export const quoteContactSchema = z.object({
   country: z
     .string()
-    .min(1, "Country is required.")
+    .min(1, "Select your country.")
     .refine((value) => countryCodeSet.has(value as (typeof countryOptions)[number]["code"]), {
       message: "Select a valid country.",
     }),

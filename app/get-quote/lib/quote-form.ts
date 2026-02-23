@@ -95,7 +95,7 @@ export const quoteFormSchema = z
     companyName: z.string().trim().optional(),
     contactNumber: z.string().trim().optional(),
     email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
-    country: z.string().trim().min(1, "Country is required."),
+    country: z.string().trim().min(1, "Select your country."),
     orderType: z.string(),
     designName: z.string().optional(),
     fabricType: z.string().optional(),

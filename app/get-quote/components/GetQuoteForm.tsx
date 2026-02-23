@@ -15,6 +15,7 @@ import {
 } from "../lib/quote-form";
 
 const turnaroundOptions = ["12 to 24 hours", "4 to 8 hours", "1 to 4 hours"] as const;
+const appliqueOptions = ["Default", "Yes", "No"] as const;
 
 const parseCustomFormats = (value: string | undefined): string[] => {
   const seen = new Set<string>();
@@ -319,19 +320,14 @@ export function GetQuoteForm({
                   <label htmlFor="turnaround-time" className="mb-1 block text-sm font-semibold text-gray-700">
                     Turnaround Time *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="turnaround-time"
-                    name="turnaroundTime"
-                    className="input h-12"
+                    placeholder="Select turnaround"
+                    options={[...turnaroundOptions]}
                     value={formData.turnaroundTime}
-                    onChange={onFieldChangeAction}
-                    required
-                  >
-                    <option value="">Select turnaround</option>
-                    <option value={turnaroundOptions[0]}>Standard (12-24 Hours)</option>
-                    <option value={turnaroundOptions[1]}>Priority (4-8 Hours)</option>
-                    <option value={turnaroundOptions[2]}>Express (1-4 Hours)</option>
-                  </select>
+                    allowTyping={false}
+                    onSelectAction={(selected) => emitFieldChange("turnaroundTime", selected)}
+                  />
                   {errors.turnaroundTime && <p className="mt-1 text-sm text-red-600">{errors.turnaroundTime}</p>}
                 </div>
                 <div className="sm:col-span-2">
@@ -490,18 +486,14 @@ export function GetQuoteForm({
                   <label htmlFor="applique-required" className="mb-1 block text-sm font-semibold text-gray-700">
                     Applique Required? *
                   </label>
-                  <select
+                  <CustomDropdown
                     id="applique-required"
-                    name="appliqueRequired"
-                    className="input"
-                    value={formData.appliqueRequired}
-                    onChange={onFieldChangeAction}
-                    required
-                  >
-                    <option value="default">Default</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                    placeholder="Select applique option"
+                    options={[...appliqueOptions]}
+                    value={appliqueOptions.find((option) => option.toLowerCase() === formData.appliqueRequired) ?? ""}
+                    allowTyping={false}
+                    onSelectAction={(selected) => emitFieldChange("appliqueRequired", selected.toLowerCase())}
+                  />
                   {errors.appliqueRequired && <p className="mt-1 text-sm text-red-600">{errors.appliqueRequired}</p>}
                 </div>
                 <div>

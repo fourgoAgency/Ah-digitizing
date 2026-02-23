@@ -9,6 +9,7 @@ type CustomDropdownProps = {
   value: string;
   id?: string;
   disabled?: boolean;
+  allowTyping?: boolean;
   onSelectAction: (value: string) => void;
 };
 
@@ -18,13 +19,14 @@ export function CustomDropdown({
   value,
   id,
   disabled,
+  allowTyping = true,
   onSelectAction,
 }: CustomDropdownProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const canType = !disabled;
+  const canType = !disabled && allowTyping;
   const inputValue = query !== "" ? query : value;
   const commitTypedValue = () => {
     if (!canType) return;
@@ -51,13 +53,22 @@ export function CustomDropdown({
       <input
         id={id}
         type="text"
-        className="input h-12 pr-12"
+        className={`input h-12 pr-12 ${canType ? "" : "cursor-pointer"}`}
         placeholder={placeholder}
         value={inputValue}
         disabled={disabled}
         readOnly={!canType}
         onFocus={() => {
+          if (!canType) {
+            setOpen(true);
+            return;
+          }
           setOpen(false);
+        }}
+        onClick={() => {
+          if (!canType && !disabled) {
+            setOpen((prev) => !prev);
+          }
         }}
         onChange={(event) => {
           if (!canType) return;

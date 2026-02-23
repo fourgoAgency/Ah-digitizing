@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ControllerRenderProps, Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { countryOptions } from "../lib/country-options";
+import Image from "next/image";
 
 type CountrySelectProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
@@ -106,6 +107,14 @@ function CountryField<TFieldValues extends FieldValues>({
   };
 
   const commitTypedCountry = () => {
+    const normalizedQuery = query.trim();
+    if (!normalizedQuery) {
+      field.onChange("");
+      onCountryChangeAction?.("");
+      setQuery("");
+      return;
+    }
+
     const match = findBestCountryMatch(query);
     if (match) {
       field.onChange(match.code);
@@ -179,8 +188,17 @@ function CountryField<TFieldValues extends FieldValues>({
           }}
           onBlur={commitTypedCountry}
           onChange={(event) => {
-            setQuery(event.target.value);
+            const nextQuery = event.target.value;
+            setQuery(nextQuery);
             setOpen(true);
+
+            if (field.value) {
+              const selectedName = selectedCountry?.name ?? "";
+              if (nextQuery !== selectedName) {
+                field.onChange("");
+                onCountryChangeAction?.("");
+              }
+            }
           }}
         />
       </div>
@@ -204,7 +222,7 @@ function CountryField<TFieldValues extends FieldValues>({
                   onClick={() => selectCountry(country.code)}
                 >
                   <span className="inline-flex items-center gap-2">
-                    <img
+                    <Image
                       src={country.flagUrl}
                       alt={`${country.name} flag`}
                       width="20"
