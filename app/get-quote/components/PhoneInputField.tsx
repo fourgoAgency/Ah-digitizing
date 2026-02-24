@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import { useMemo, useRef, useState, useEffect } from "react";
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -76,20 +77,23 @@ function CodeSelector({ selectedCountryCode, disabled, onSelectAction }: CodeSel
       <button
         type="button"
         disabled={disabled}
-        className="input h-12 min-w-28 rounded-r-none border-r-0"
+        className="input h-12 min-w-28 rounded-r-none border-r-0 pr-2"
         onClick={() => setOpen((prev) => !prev)}
       >
-        <span className="inline-flex items-center gap-2">
-          {selectedCountry ? (
-            <img
-              src={selectedCountry.flagUrl}
-              alt={`${selectedCountry.name} flag`}
-              width="20"
-              height="14"
-              className="rounded-xs object-cover"
-            />
-          ) : null}
-          <span>{selectedCountry?.dialCode ?? "Code"}</span>
+        <span className="inline-flex w-full items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-2">
+            {selectedCountry ? (
+              <img
+                src={selectedCountry.flagUrl}
+                alt={`${selectedCountry.name} flag`}
+                width="20"
+                height="14"
+                className="rounded-xs object-cover"
+              />
+            ) : null}
+            <span>{selectedCountry?.dialCode ?? "Code"}</span>
+          </span>
+          <ChevronDown size={16} className="shrink-0 text-gray-600" />
         </span>
       </button>
 
@@ -203,3 +207,5 @@ export function PhoneInputField<TFieldValues extends FieldValues>({
     />
   );
 }
+
+
