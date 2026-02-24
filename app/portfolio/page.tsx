@@ -12,6 +12,7 @@ type PortfolioItem = {
 };
 
 const portfolioData: PortfolioItem[] = [
+  // Embroidery - 50 items
   { id: 1, title: "Custom Logo Digitizing", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
   { id: 2, title: "Pet Portrait Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
   { id: 3, title: "Sports Team Logo", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
@@ -24,19 +25,96 @@ const portfolioData: PortfolioItem[] = [
   { id: 10, title: "Logo Embroidery Mockup", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
   { id: 11, title: "Embroidery Close Detail", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
   { id: 12, title: "Embroidery Hoop Art", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 13, title: "Monogram Patch Design", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 14, title: "Jacket Back Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 15, title: "Cap Logo Stitching", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 16, title: "Uniform Badge Embroidery", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 17, title: "Decorative Stitch Pattern", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 18, title: "3D Puff Embroidery", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 19, title: "Gold Thread Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 20, title: "Applique Patch Work", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 21, title: "Chenille Letter Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 22, title: "Towel Monogramming", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 23, title: "Quilt Embroidery Border", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 24, title: "Sleeve Emblem Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 25, title: "Pocket Logo Embroidery", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 26, title: "Letterman Jacket Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 27, title: "Scout Badge Collection", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 28, title: "Wedding Handkerchief", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 29, title: "Christmas Stocking Design", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 30, title: "Baby Blanket Border", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 31, title: "Polo Shirt Logo", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 32, title: "Chef Coat Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 33, title: "Medical Scrubs Badge", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 34, title: "Firefighter Patch", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 35, title: "Military Unit Insignia", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 36, title: "Biker Club Back Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 37, title: "Band Logo Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 38, title: "School Crest Badge", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 39, title: "Hospitality Name Tag", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 40, title: "Golf Tournament Logo", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 41, title: "Yacht Club Emblem", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 42, title: "Tennis Club Badge", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 43, title: "Soccer Jersey Number", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 44, title: "Basketball Team Patch", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 45, title: "Martial Arts Belt Rank", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 46, title: "Dance Studio Logo", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
+  { id: 47, title: "Music School Badge", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
+  { id: 48, title: "Art Class Patch", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
+  { id: 49, title: "Camp Logo Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
+  { id: 50, title: "Volunteer Group Badge", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
 
-  { id: 21, title: "Vintage T-Shirt Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 22, title: "Vintage Car Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 23, title: "Abstract Vector Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 24, title: "Corporate Branding", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 25, title: "Mascot Vector Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 26, title: "Vector Pattern Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 27, title: "Illustration Concept Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 28, title: "Tech Icon Vector Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 29, title: "Logo Vector Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 30, title: "Flat Vector UI Icons", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 31, title: "Infographic Vector Design", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 32, title: "Vector Character Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  // Vector - 50 items
+  { id: 51, title: "Vintage T-Shirt Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 52, title: "Vintage Car Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 53, title: "Abstract Vector Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 54, title: "Corporate Branding", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 55, title: "Mascot Vector Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 56, title: "Vector Pattern Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 57, title: "Illustration Concept Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 58, title: "Tech Icon Vector Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 59, title: "Logo Vector Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 60, title: "Flat Vector UI Icons", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 61, title: "Infographic Vector Design", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 62, title: "Vector Character Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 63, title: "Minimalist Line Art", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 64, title: "Geometric Pattern Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 65, title: "Watercolor Vector Portrait", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 66, title: "Isometric Building Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 67, title: "Botanical Vector Illustration", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 68, title: "Sports Team Crest", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 69, title: "Food Menu Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 70, title: "Travel Badge Collection", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 71, title: "Animated Character Sheet", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 72, title: "Product Packaging Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 73, title: "Comic Book Style Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 74, title: "Gradient Mesh Portrait", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 75, title: "Stencil Art Vector", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 76, title: "Retro Poster Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 77, title: "Business Card Template", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 78, title: "Social Media Icons", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 79, title: "App Interface Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 80, title: "Website Wireframe Set", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 81, title: "Flowchart Diagram", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 82, title: "Timeline Infographic", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 83, title: "Map Illustration", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 84, title: "Weather Icon Set", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 85, title: "Shopping Cart Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 86, title: "Education Icons", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 87, title: "Medical Icons", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 88, title: "Finance Chart Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 89, title: "Real Estate Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 90, title: "Construction Symbols", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 91, title: "Transportation Icons", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 92, title: "Animal Vector Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 93, title: "Nature Landscape Vector", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 94, title: "Space Galaxy Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 95, title: "Ocean Life Vector Set", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 96, title: "Festival Poster Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 97, title: "Holiday Greeting Card", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
+  { id: 98, title: "Birthday Invitation Design", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
+  { id: 99, title: "Wedding Invitation Vector", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
+  { id: 100, title: "Certificate Template", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
 ];
 
 type CategoryConfig = {
@@ -329,12 +407,15 @@ const ProductGrid = ({
   items,
   accentColor,
   onCardClick,
+  visibleCount,
 }: {
   items: PortfolioItem[];
   accentColor: string;
   onCardClick: (index: number) => void;
+  visibleCount: number;
 }) => {
-  const rows = chunkArray(items, 3);
+  const visibleItems = items.slice(0, visibleCount);
+  const rows = chunkArray(visibleItems, 3);
   return (
     <div className="space-y-8">
       {rows.map((row, rowIdx) => (
@@ -415,10 +496,19 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
   // Lightbox state
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  // Visible items state - start with 4 rows (12 items), then add 15 more on each click
+  const [visibleCount, setVisibleCount] = useState(12);
+
   const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
   const goPrev = useCallback(() => setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i)), []);
   const goNext = useCallback(() => setLightboxIndex((i) => (i !== null && i < items.length - 1 ? i + 1 : i)), [items.length]);
+
+  const handleViewMore = () => {
+    setVisibleCount((prev) => Math.min(prev + 15, items.length));
+  };
+
+  const hasMoreItems = visibleCount < items.length;
 
   return (
     <div ref={sectionRef}>
@@ -426,20 +516,26 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
 
       <div className="relative z-20 bg-gray-50 py-14 px-4 shadow-[0_-40px_80px_rgba(0,0,0,0.5)]">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
-              <p className="text-gray-500 mt-1 text-sm">{items.length} projects</p>
-            </div>
-            <a href="#" className="text-sm font-semibold text-gray-700 border border-gray-300 rounded-full px-5 py-2 hover:border-blue-600 hover:text-blue-600 transition-colors">
-              View All →
-            </a>
+          <div className="mb-10">
+            <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
+            <p className="text-gray-500 mt-1 text-sm">{items.length} projects</p>
           </div>
           <ProductGrid
             items={items}
             accentColor={config.accentColor}
             onCardClick={openLightbox}
+            visibleCount={visibleCount}
           />
+          {hasMoreItems && (
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={handleViewMore}
+                className="cursor-pointer text-sm font-semibold text-gray-700 border border-gray-300 rounded-full px-5 py-2 hover:border-blue-600 hover:text-blue-600 transition-colors"
+              >
+                View More →
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -477,3 +573,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+  
