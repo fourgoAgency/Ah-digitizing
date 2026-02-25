@@ -1,141 +1,203 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { FaFacebookF, FaGithub, FaGoogle, FaLinkedinIn } from "react-icons/fa";
+
+function SocialButtons() {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-center gap-3">
+        <button
+          type="button"
+          aria-label="Continue with Google"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+        >
+          <FaGoogle size={14} />
+        </button>
+        <button
+          type="button"
+          aria-label="Continue with Facebook"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+        >
+          <FaFacebookF size={14} />
+        </button>
+        <button
+          type="button"
+          aria-label="Continue with GitHub"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+        >
+          <FaGithub size={14} />
+        </button>
+        <button
+          type="button"
+          aria-label="Continue with LinkedIn"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+        >
+          <FaLinkedinIn size={14} />
+        </button>
+      </div>
+      <p className="text-center text-[13px] text-foreground/80">Sign in With Email &amp; Password</p>
+    </div>
+  );
+}
+
+function Input({ placeholder, type = "text" }: { placeholder: string; type?: string }) {
+  return (
+    <input
+      className="w-full rounded-lg border border-border bg-muted/30 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+      type={type}
+      placeholder={placeholder}
+      required
+    />
+  );
+}
 
 export default function AuthSlider() {
   const [isSignup, setIsSignup] = useState(false);
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 min-h-screen min-w-full">
-      <div className="relative w-250 h-175 rounded-4xl overflow-hidden shadow-2xl">
-
-        {/* FORMS */}
-        <div className="absolute inset-0 flex">
-          {/* SIGN IN */}
-          <motion.div
-            animate={{
-              x: isSignup ? "100%" : "0%",
-              opacity: isSignup ? 0 : 1
-            }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="w-1/2 flex items-center justify-center"
-          >
-            <form className="w-3/4 space-y-6">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
-                <p className="text-gray-500 text-sm mt-2">Sign in to your account</p>
-              </div>
-              <input
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-                placeholder="Email"
-              />
-              <input
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-                placeholder="Password"
-                type="password"
-              />
-              <button className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Sign In
-              </button>
-            </form>
-          </motion.div>
-
-          {/* SIGN UP */}
-          <motion.div
-            animate={{
-              x: isSignup ? "0%" : "-100%",
-              opacity: isSignup ? 1 : 0
-            }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="w-1/2 flex items-center justify-center"
-          >
-            <form className="w-3/4 space-y-6">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
-                <p className="text-gray-500 text-sm mt-2">Join us today</p>
-              </div>
-              <input
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-                placeholder="Full Name"
-              />
-              <input
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-                placeholder="Email"
-              />
-              <input
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-                placeholder="Password"
-                type="password"
-              />
-              <button className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Sign Up
-              </button>
-            </form>
-          </motion.div>
-        </div>
-
-        {/* SLIDING OVERLAY */}
-        <motion.div
-          animate={{ x: isSignup ? "0%" : "100%" }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-1/2 h-full rounded-4xl bg-linear-to-br from-primary via-primary to-black text-white flex items-center justify-center z-10"
-        >
-          <motion.div
-            initial={{ opacity: 0, x: isSignup ? 0 : 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="text-center space-y-8 px-10"
-          >
-            <div className="text-center space-y-8 px-10 ">
-              {isSignup ? (
-                <motion.div
-                  key="signin"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="space-y-8"
+    <section className="font-inter flex min-h-screen w-full items-center justify-center px-4 py-10">
+      <div className="w-full max-w-4xl overflow-hidden rounded-[26px] bg-background shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-border">
+        <div className="relative hidden h-[620px] md:block">
+          <div className="absolute inset-0 overflow-hidden">
+            <div
+              className={`absolute left-0 top-0 z-20 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-transform duration-700 ease-in-out ${
+                isSignup ? "translate-x-full" : "translate-x-0"
+              }`}
+            >
+              <form className="w-full max-w-sm space-y-5" onSubmit={(e) => e.preventDefault()}>
+                <h2 className="text-center text-4xl font-bold tracking-tight text-foreground">Sign In</h2>
+                <SocialButtons />
+                <Input type="email" placeholder="Enter E-mail" />
+                <Input type="password" placeholder="Enter Password" />
+                <button
+                  type="button"
+                  className="block w-full text-center text-base text-foreground/80 transition hover:text-primary"
                 >
-                  <div>
-                    <h2 className="text-4xl font-bold mb-2">Welcome Back</h2>
-                    <div className="h-1 w-16 bg-white mx-auto rounded-full"></div>
-                  </div>
-                  <p className="text-white/80 text-lg">Already have an account? Sign in to continue</p>
+                  Forget Password?
+                </button>
+                <button
+                  type="submit"
+                  className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90"
+                >
+                  Sign In
+                </button>
+              </form>
+            </div>
+
+            <div
+              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-transform duration-700 ease-in-out will-change-transform [backface-visibility:hidden] [transform:translateZ(0)] ${
+                isSignup
+                  ? "z-20 translate-x-full"
+                  : "z-10 translate-x-[200%] pointer-events-none"
+              }`}
+            >
+              <form className="w-full max-w-sm space-y-5" onSubmit={(e) => e.preventDefault()}>
+                <h2 className="text-center text-4xl font-bold tracking-tight text-foreground">Sign Up</h2>
+                <SocialButtons />
+                <Input placeholder="Enter Name" />
+                <Input type="email" placeholder="Enter E-mail" />
+                <Input type="password" placeholder="Enter Password" />
+                <button
+                  type="submit"
+                  className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90"
+                >
+                  Sign Up
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div
+            className={`absolute left-1/2 top-0 z-30 h-full w-1/2 overflow-hidden transition-transform duration-700 ease-in-out ${
+              isSignup ? "-translate-x-full" : "translate-x-0"
+            }`}
+          >
+            <div
+              className={`absolute -left-full top-0 flex h-full w-[200%] transition-transform duration-700 ease-in-out ${
+                isSignup ? "translate-x-1/2" : "translate-x-0"
+              }`}
+            >
+              <div className="flex h-full w-1/2 items-center justify-center bg-primary px-10 text-primary-foreground">
+                <div className="space-y-6 text-center">
+                  <h3 className="text-5xl font-bold">Welcome to AH Digitizing</h3>
+                  <p className="text-lg text-primary-foreground/95">Sign in now and enjoy our site</p>
                   <button
+                    type="button"
                     onClick={() => setIsSignup(false)}
-                    className="border-2 border-white text-white px-8 py-2.5 rounded-lg font-semibold hover:bg-white hover:text-primary transition duration-300"
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
                   >
                     Sign In
                   </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="signup"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="space-y-8"
-                >
-                  <div>
-                    <h2 className="text-4xl font-bold mb-2">Hello, Friend</h2>
-                    <div className="h-1 w-16 bg-white mx-auto rounded-full"></div>
-                  </div>
-                  <p className="text-white/80 text-lg">Start your journey with us today</p>
+                </div>
+              </div>
+
+              <div className="flex h-full w-1/2 items-center justify-center bg-primary px-10 text-primary-foreground">
+                <div className="space-y-6 text-center">
+                  <h3 className="text-5xl font-bold">Hello</h3>
+                  <p className="text-lg text-primary-foreground/95">Sign up now and enjoy our products</p>
                   <button
+                    type="button"
                     onClick={() => setIsSignup(true)}
-                    className="border-2 border-white text-white px-8 py-2.5 rounded-lg font-semibold hover:bg-white hover:text-primary transition duration-300"
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
                   >
                     Sign Up
                   </button>
-                </motion.div>
-              )}
+                </div>
+              </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
+        <div className="block bg-background p-6 md:hidden">
+          <div className="mb-6 grid grid-cols-2 overflow-hidden rounded-full border border-border">
+            <button
+              type="button"
+              onClick={() => setIsSignup(false)}
+              className={`py-2 text-sm font-semibold transition ${
+                !isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsSignup(true)}
+              className={`py-2 text-sm font-semibold transition ${
+                isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          {!isSignup ? (
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <h2 className="text-center text-3xl font-bold text-foreground">Sign In</h2>
+              <SocialButtons />
+              <Input type="email" placeholder="Enter E-mail" />
+              <Input type="password" placeholder="Enter Password" />
+              <button className="block w-full text-center text-base text-foreground/80 transition hover:text-primary" type="button">
+                Forget Password?
+              </button>
+              <button type="submit" className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
+                Sign In
+              </button>
+            </form>
+          ) : (
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <h2 className="text-center text-3xl font-bold text-foreground">Sign Up</h2>
+              <SocialButtons />
+              <Input placeholder="Enter Name" />
+              <Input type="email" placeholder="Enter E-mail" />
+              <Input type="password" placeholder="Enter Password" />
+              <button type="submit" className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
+                Sign Up
+              </button>
+            </form>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
