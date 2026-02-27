@@ -28,7 +28,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="mt-4 flex items-center justify-between gap-3">
           <span className="text-xs text-slate-400">{post.date}</span>
           <Link
-            href={`/blog/${post.slug}`}
+            href={`/blogs/${post.slug}`}
             className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary"
           >
             Read More

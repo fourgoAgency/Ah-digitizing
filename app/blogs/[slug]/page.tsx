@@ -14,17 +14,21 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = blogPosts.find((item) => item.slug === slug);
+  const currentIndex = blogPosts.findIndex((item) => item.slug === slug);
+  const post = currentIndex >= 0 ? blogPosts[currentIndex] : undefined;
 
   if (!post) {
     notFound();
   }
 
+  const previousPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
+  const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
+
   return (
     <main className="bg-[#f3f4f6] py-10 sm:py-12 2xl:py-16 4k:py-24">
       <article className="mx-auto w-full max-w-245 px-4 sm:px-6 lg:px-8 2xl:max-w-300 4k:max-w-[1500px]">
         <Link
-          href="/blog"
+          href="/blogs"
           className="inline-flex rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -65,6 +69,38 @@ export default async function BlogDetailPage({
                   {paragraph}
                 </p>
               ))}
+            </div>
+
+            <div className="mt-10 flex flex-col gap-3 border-t border-[#e7ebf0] pt-6 sm:flex-row sm:items-center sm:justify-between">
+              {previousPost ? (
+                <Link
+                  href={`/blogs/${previousPost.slug}`}
+                  className="inline-flex items-center rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Previous
+                </Link>
+              ) : (
+                <span className="inline-flex items-center rounded-md border border-[#eef2f6] bg-[#f8fafc] px-4 py-2 text-sm font-medium text-slate-400">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Previous
+                </span>
+              )}
+
+              {nextPost ? (
+                <Link
+                  href={`/blogs/${nextPost.slug}`}
+                  className="inline-flex items-center rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
+                >
+                  Next
+                  <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
+                </Link>
+              ) : (
+                <span className="inline-flex items-center rounded-md border border-[#eef2f6] bg-[#f8fafc] px-4 py-2 text-sm font-medium text-slate-400">
+                  Next
+                  <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
+                </span>
+              )}
             </div>
           </div>
         </div>
