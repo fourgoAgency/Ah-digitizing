@@ -166,13 +166,25 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
   // Ref to prevent rapid scroll triggers
   const isScrollingRef = useRef(false);
 
-  // Ref for the thumbnail strip — auto-scrolls active thumb into view
+  // Ref for the thumbnail strip
   const thumbStripRef = useRef<HTMLDivElement>(null);
-  const activeThumbRef = useRef<HTMLButtonElement>(null);
 
   // Auto-scroll active thumbnail into view whenever index changes
   useEffect(() => {
-    activeThumbRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (thumbStripRef.current) {
+      const activeThumb = thumbStripRef.current.children[currentIndex] as HTMLElement;
+      if (activeThumb) {
+        const container = thumbStripRef.current;
+        const thumbLeft = activeThumb.offsetLeft;
+        const thumbWidth = activeThumb.offsetWidth;
+        const containerWidth = container.offsetWidth;
+        
+        container.scrollTo({
+          left: thumbLeft - (containerWidth - thumbWidth) / 2,
+          behavior: "smooth",
+        });
+      }
+    }
   }, [currentIndex]);
 
   // Keyboard navigation
@@ -228,83 +240,90 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       {/* Modal content */}
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none"
+        className="fixed inset-0 z-[1000] flex items-start justify-center pt-6 pointer-events-none"
         initial={{ scale: 0.92, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.92, opacity: 0 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
       >
         {/* Centered image viewer */}
-        <div className="flex flex-col items-center pointer-events-auto"
+        <div className="flex items-center gap-4 pointer-events-auto"
           onClick={(e) => e.stopPropagation()}>
 
-            {/* UP arrow */}
+            {/* LEFT arrow */}
             <button
               onClick={onPrev}
               disabled={!hasPrev}
-              className={`w-[420px] max-w-[75vw] h-14 flex items-center justify-center
-                bg-neutral-700/80 backdrop-blur rounded-t-xl transition-all duration-200
+              className={`h-[500px] max-h-[75vh] w-12 flex items-center justify-center
+                bg-neutral-700/80 backdrop-blur rounded-l-xl transition-all duration-200
                 ${hasPrev ? "hover:bg-neutral-600/90 cursor-pointer text-white" : "cursor-default text-white/20"}`}
               aria-label="Previous image"
             >
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="18 15 12 9 6 15" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
 
             {/* Image panel */}
-            <div
-              onWheel={handleImageWheel}
-              className="w-[420px] max-w-[75vw] bg-white flex items-center justify-center p-4 min-h-[380px]"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.18 }}
-                  className="w-full flex items-center justify-center"
-                >
-                  <Image
-                    src={item.path}
-                    width={500}
-                    height={500}
-                    alt={item.title}
-                    className="max-h-[50vh] w-auto object-contain drop-shadow-xl"
-                  />
-                </motion.div>
-              </AnimatePresence>
+            <div className="flex flex-col items-center">
+              {/* Counter + title on bottom left */}
+              <div className="w-[500px] max-w-[75vw] flex  mb-3">
+                <div className="flex flex-col">
+                  <p className="text-white/50 text-xs font-medium tracking-widest uppercase">
+                    {currentIndex + 1} / {items.length}
+                  </p>
+                  <p className="text-white/80 text-sm font-semibold">{item.title}</p>
+                </div>
+              </div>
+
+              <div
+                onWheel={handleImageWheel}
+                className="w-[500px] max-w-[75vw] bg-white flex items-center justify-center p-4 min-h-[350px]"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.18 }}
+                    className="w-full flex items-center justify-center"
+                  >
+                    <Image
+                      src={item.path}
+                      width={600}
+                      height={600}
+                      alt={item.title}
+                      className="max-h-[55vh] w-auto object-contain drop-shadow-xl"
+                      unoptimized
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
 
-            {/* DOWN arrow */}
+            {/* RIGHT arrow */}
             <button
               onClick={onNext}
               disabled={!hasNext}
-              className={`w-[420px] max-w-[75vw] h-14 flex items-center justify-center
-                bg-neutral-700/80 backdrop-blur rounded-b-xl transition-all duration-200
+              className={`h-[500px] max-h-[75vh] w-12 flex items-center justify-center
+                bg-neutral-700/80 backdrop-blur rounded-r-xl transition-all duration-200
                 ${hasNext ? "hover:bg-neutral-600/90 cursor-pointer text-white" : "cursor-default text-white/20"}`}
               aria-label="Next image"
             >
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-
-            {/* Counter + title */}
-            <p className="mt-3 text-white/50 text-xs font-medium tracking-widest uppercase">
-              {currentIndex + 1} / {items.length}
-            </p>
-            <p className="mt-1 text-white/80 text-sm font-semibold">{item.title}</p>
           </div>
 
-          {/* ── RIGHT: vertical thumbnail strip (fixed to right edge) ── */}
+          {/* ── BOTTOM: horizontal thumbnail strip ── */}
           <div
             ref={thumbStripRef}
             onWheel={handleThumbWheel}
-            className="fixed right-0 top-0 flex flex-col gap-2 overflow-y-auto h-screen pr-1
-              scrollbar-none pointer-events-auto"
-            style={{ width: "160px", scrollbarWidth: "none", msOverflowStyle: "none" }}
+            className="fixed bottom-0 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto py-3 px-8
+              scrollbar-none pointer-events-auto bg-black/40 backdrop-blur-sm rounded-t-xl"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             onClick={(e) => e.stopPropagation()}
           >
             <style>{`
@@ -315,43 +334,43 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
             {items.map((thumb, idx) => (
               <button
                 key={thumb.id}
-                ref={idx === currentIndex ? activeThumbRef : null}
                 onClick={() => onJump(idx)}
                 className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200 outline-none
                   ${idx === currentIndex
-                    ? "ring-2 ring-white scale-[1.04] brightness-100"
-                    : "brightness-50 hover:brightness-75 hover:scale-[1.02]"
+                    ? "ring-2 ring-white scale-105 brightness-100"
+                    : "brightness-50 hover:brightness-75 hover:scale-105"
                   }`}
-                style={{ width: "160px", height: "120px" }}
+                style={{ width: "120px", height: "80px" }}
                 aria-label={`View ${thumb.title}`}
               >
                 <Image
                   src={thumb.path}
-                  width={200}
-                  height={160}
+                  width={160}
+                  height={120}
                   alt={thumb.title}
                   className="w-full h-full object-cover"
+                  unoptimized
                 />
-                {/* Active indicator line on left edge */}
+                {/* Active indicator line on bottom edge */}
                 {idx === currentIndex && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t-full" />
                 )}
               </button>
             ))}
-
-            {/* ── Close button ── */}
-            <button
-              onClick={onClose}
-              className="mt-4 w-10 h-10 rounded-full bg-white text-gray-800
-                flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors cursor-pointer"
-              aria-label="Close"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
           </div>
+
+          {/* ── Close button ── */}
+          <button
+            onClick={onClose}
+            className="fixed top-6 right-6 w-10 h-10 rounded-full bg-white text-gray-800
+              flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors cursor-pointer z-[1001]"
+            aria-label="Close"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </motion.div>
       </AnimatePresence>
   );
@@ -573,4 +592,3 @@ export default function PortfolioSection() {
     </div>
   );
 }
-  
