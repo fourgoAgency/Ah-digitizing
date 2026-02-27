@@ -148,6 +148,25 @@ const categories: CategoryConfig[] = [
   },
 ];
 
+// ─── Direction-aware slide animation variants ─────────────────────────────────
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 80 : -80,
+    opacity: 0,
+    scale: 0.97,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -80 : 80,
+    opacity: 0,
+    scale: 0.97,
+  }),
+};
+
 // ─── Lightbox Modal ────────────────────────────────────────────────────────────
 type LightboxProps = {
   items: PortfolioItem[];
@@ -163,13 +182,20 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < items.length - 1;
 
-  // Ref to prevent rapid scroll triggers
-  const isScrollingRef = useRef(false);
+  // Track direction for animation (+1 = next/right, -1 = prev/left)
+  const [direction, setDirection] = useState(0);
+  const prevIndexRef = useRef(currentIndex);
 
-  // Ref for the thumbnail strip
+  useEffect(() => {
+    const diff = currentIndex - prevIndexRef.current;
+    setDirection(diff >= 0 ? 1 : -1);
+    prevIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  const isScrollingRef = useRef(false);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll active thumbnail into view whenever index changes
+  // Auto-scroll active thumbnail into view
   useEffect(() => {
     if (thumbStripRef.current) {
       const activeThumb = thumbStripRef.current.children[currentIndex] as HTMLElement;
@@ -178,7 +204,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
         const thumbLeft = activeThumb.offsetLeft;
         const thumbWidth = activeThumb.offsetWidth;
         const containerWidth = container.offsetWidth;
-        
         container.scrollTo({
           left: thumbLeft - (containerWidth - thumbWidth) / 2,
           behavior: "smooth",
@@ -198,7 +223,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrev, onNext, hasPrev, hasNext]);
 
-  // Wheel scroll on thumbnail strip changes image
+  // Scroll on thumbnail strip → change image + scroll thumb strip
   const handleThumbWheel = useCallback((e: React.WheelEvent) => {
     if (isScrollingRef.current) return;
     e.preventDefault();
@@ -208,7 +233,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 300);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
-  // Wheel scroll on main image changes image
+  // Scroll on main image → change image (thumb strip auto-syncs via useEffect)
   const handleImageWheel = useCallback((e: React.WheelEvent) => {
     if (isScrollingRef.current) return;
     e.preventDefault();
@@ -224,155 +249,234 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  // Progress bar width
+  const progressPct = ((currentIndex + 1) / items.length) * 100;
+
   return (
     <AnimatePresence>
       {/* Backdrop */}
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm cursor-pointer"
+        className="fixed inset-0 z-[999] bg-black/85 backdrop-blur-md cursor-pointer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <motion.div
+        key="modal"
+        className="fixed inset-0 z-[1000] flex flex-col items-center justify-center pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        onClick={onClose}
-      />
-
-      {/* Modal content */}
-      <motion.div
-        key="modal"
-        className="fixed inset-0 z-[1000] flex items-start justify-center pt-6 pointer-events-none"
-        initial={{ scale: 0.92, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.92, opacity: 0 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
       >
-        {/* Centered image viewer */}
-        <div className="flex items-center gap-4 pointer-events-auto"
-          onClick={(e) => e.stopPropagation()}>
-
-            {/* LEFT arrow */}
-            <button
-              onClick={onPrev}
-              disabled={!hasPrev}
-              className={`h-[500px] max-h-[75vh] w-12 flex items-center justify-center
-                bg-neutral-700/80 backdrop-blur rounded-l-xl transition-all duration-200
-                ${hasPrev ? "hover:bg-neutral-600/90 cursor-pointer text-white" : "cursor-default text-white/20"}`}
-              aria-label="Previous image"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-
-            {/* Image panel */}
-            <div className="flex flex-col items-center">
-              {/* Counter + title on bottom left */}
-              <div className="w-[500px] max-w-[75vw] flex  mb-3">
-                <div className="flex flex-col">
-                  <p className="text-white/50 text-xs font-medium tracking-widest uppercase">
-                    {currentIndex + 1} / {items.length}
-                  </p>
-                  <p className="text-white/80 text-sm font-semibold">{item.title}</p>
-                </div>
-              </div>
-
-              <div
-                onWheel={handleImageWheel}
-                className="w-[500px] max-w-[75vw] bg-white flex items-center justify-center p-4 min-h-[350px]"
+        {/* ── Top info bar ── */}
+        <div
+          className="pointer-events-auto w-full max-w-5xl px-4 mb-4 flex items-center justify-between gap-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Left: index pill */}
+          <div className="flex items-center gap-3">
+            <span className="bg-white/10 backdrop-blur border border-white/15 text-white/90 text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full">
+              {String(currentIndex + 1).padStart(2, "0")}
+              <span className="text-white/40 mx-1">/</span>
+              {String(items.length).padStart(2, "0")}
+            </span>
+            {/* Title */}
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={item.id}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="text-white font-semibold text-sm tracking-wide truncate max-w-[220px]"
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.18 }}
-                    className="w-full flex items-center justify-center"
-                  >
-                    <Image
-                      src={item.path}
-                      width={600}
-                      height={600}
-                      alt={item.title}
-                      className="max-h-[55vh] w-auto object-contain drop-shadow-xl"
-                      unoptimized
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
+                {item.title}
+              </motion.p>
+            </AnimatePresence>
+          </div>
 
-            {/* RIGHT arrow */}
+          {/* Right: progress bar + close */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block w-32 h-1 bg-white/15 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-white rounded-full"
+                animate={{ width: `${progressPct}%` }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </div>
             <button
-              onClick={onNext}
-              disabled={!hasNext}
-              className={`h-[500px] max-h-[75vh] w-12 flex items-center justify-center
-                bg-neutral-700/80 backdrop-blur rounded-r-xl transition-all duration-200
-                ${hasNext ? "hover:bg-neutral-600/90 cursor-pointer text-white" : "cursor-default text-white/20"}`}
-              aria-label="Next image"
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-white/10 border border-white/20 text-white/80
+                flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-200 cursor-pointer"
+              aria-label="Close"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
+        </div>
 
-          {/* ── BOTTOM: horizontal thumbnail strip ── */}
+        {/* ── Main viewer row ── */}
+        <div
+          className="pointer-events-auto flex items-stretch gap-2 w-full max-w-5xl px-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* LEFT arrow */}
+          <button
+            onClick={onPrev}
+            disabled={!hasPrev}
+            className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
+              bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
+              ${hasPrev
+                ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white"
+                : "cursor-default text-white/15"
+              }`}
+            style={{ minHeight: "min(72vh, 600px)" }}
+            aria-label="Previous image"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          {/* Image area — full width, fixed height, no padding */}
+          <div
+            onWheel={handleImageWheel}
+            className="relative flex-1 bg-neutral-900 rounded-2xl overflow-hidden border border-white/8"
+            style={{ height: "min(72vh, 600px)" }}
+          >
+            <AnimatePresence custom={direction} mode="wait">
+              <motion.div
+                key={item.id}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <Image
+                  src={item.path}
+                  width={900}
+                  height={700}
+                  alt={item.title}
+                  className="w-full h-full object-contain"
+                  unoptimized
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Subtle left/right tap zones */}
+            <div
+              onClick={hasPrev ? onPrev : undefined}
+              className={`absolute left-0 top-0 bottom-0 w-1/5 z-10 ${hasPrev ? "cursor-pointer" : ""}`}
+            />
+            <div
+              onClick={hasNext ? onNext : undefined}
+              className={`absolute right-0 top-0 bottom-0 w-1/5 z-10 ${hasNext ? "cursor-pointer" : ""}`}
+            />
+          </div>
+
+          {/* RIGHT arrow */}
+          <button
+            onClick={onNext}
+            disabled={!hasNext}
+            className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
+              bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
+              ${hasNext
+                ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white"
+                : "cursor-default text-white/15"
+              }`}
+            style={{ minHeight: "min(72vh, 600px)" }}
+            aria-label="Next image"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* ── Thumbnail strip ── */}
+        <div
+          className="pointer-events-auto w-full max-w-5xl px-4 mt-4"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div
             ref={thumbStripRef}
             onWheel={handleThumbWheel}
-            className="fixed bottom-0 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto py-3 px-8
-              scrollbar-none pointer-events-auto bg-black/40 backdrop-blur-sm rounded-t-xl"
+            className="flex gap-2 overflow-x-auto py-1 px-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <style>{`
-              .scrollbar-none::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
+            <style>{`.thumb-strip::-webkit-scrollbar { display: none; }`}</style>
             {items.map((thumb, idx) => (
               <button
                 key={thumb.id}
                 onClick={() => onJump(idx)}
-                className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200 outline-none
+                className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-250 outline-none
                   ${idx === currentIndex
-                    ? "ring-2 ring-white scale-105 brightness-100"
-                    : "brightness-50 hover:brightness-75 hover:scale-105"
+                    ? "ring-2 ring-white opacity-100 scale-105"
+                    : "opacity-40 hover:opacity-70 hover:scale-105"
                   }`}
-                style={{ width: "120px", height: "80px" }}
+                style={{ width: 72, height: 52 }}
                 aria-label={`View ${thumb.title}`}
               >
                 <Image
                   src={thumb.path}
-                  width={160}
-                  height={120}
+                  width={100}
+                  height={80}
                   alt={thumb.title}
                   className="w-full h-full object-cover"
                   unoptimized
                 />
-                {/* Active indicator line on bottom edge */}
+                {/* Active dot indicator */}
                 {idx === currentIndex && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t-full" />
+                  <motion.div
+                    layoutId="thumb-active-dot"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow"
+                  />
                 )}
               </button>
             ))}
           </div>
 
-          {/* ── Close button ── */}
-          <button
-            onClick={onClose}
-            className="fixed top-6 right-6 w-10 h-10 rounded-full bg-white text-gray-800
-              flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors cursor-pointer z-[1001]"
-            aria-label="Close"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </motion.div>
-      </AnimatePresence>
+          {/* Bottom: dot-style position indicator (for quick visual) */}
+          <div className="flex justify-center mt-3 gap-1">
+            {items.length <= 20 ? (
+              items.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onJump(idx)}
+                  className={`rounded-full transition-all duration-200 cursor-pointer
+                    ${idx === currentIndex
+                      ? "w-5 h-1.5 bg-white"
+                      : "w-1.5 h-1.5 bg-white/30 hover:bg-white/60"
+                    }`}
+                  aria-label={`Go to ${idx + 1}`}
+                />
+              ))
+            ) : (
+              /* For long lists, show a mini progress track */
+              <div className="w-48 h-1 bg-white/15 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-white/60 rounded-full"
+                  animate={{ width: `${progressPct}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
@@ -401,7 +505,6 @@ const PortfolioCard = ({
         alt={item.title}
         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
       />
-      {/* Hover overlay with zoom icon hint */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
         <span className="text-white text-xs font-semibold tracking-widest uppercase flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -512,10 +615,7 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const items = portfolioData.filter((item) => item.service === config.service);
 
-  // Lightbox state
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  // Visible items state - start with 4 rows (12 items), then add 15 more on each click
   const [visibleCount, setVisibleCount] = useState(12);
 
   const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
@@ -523,10 +623,7 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
   const goPrev = useCallback(() => setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i)), []);
   const goNext = useCallback(() => setLightboxIndex((i) => (i !== null && i < items.length - 1 ? i + 1 : i)), [items.length]);
 
-  const handleViewMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 15, items.length));
-  };
-
+  const handleViewMore = () => setVisibleCount((prev) => Math.min(prev + 15, items.length));
   const hasMoreItems = visibleCount < items.length;
 
   return (
@@ -558,7 +655,6 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
         </div>
       </div>
 
-      {/* Lightbox — renders per section so each has its own item list */}
       {lightboxIndex !== null && (
         <Lightbox
           items={items}
