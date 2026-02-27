@@ -182,15 +182,17 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < items.length - 1;
 
-  // Track direction for animation (+1 = next/right, -1 = prev/left)
-  const [direction, setDirection] = useState(0);
+  // Track direction for animation — computed synchronously at render time
+  // (useEffect causes a render-delay which makes prev nav flash black)
   const prevIndexRef = useRef(currentIndex);
+  const directionRef = useRef(0);
 
-  useEffect(() => {
-    const diff = currentIndex - prevIndexRef.current;
-    setDirection(diff >= 0 ? 1 : -1);
+  if (currentIndex !== prevIndexRef.current) {
+    directionRef.current = currentIndex > prevIndexRef.current ? 1 : -1;
     prevIndexRef.current = currentIndex;
-  }, [currentIndex]);
+  }
+
+  const direction = directionRef.current;
 
   const isScrollingRef = useRef(false);
   const thumbStripRef = useRef<HTMLDivElement>(null);
