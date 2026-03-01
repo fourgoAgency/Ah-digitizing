@@ -584,7 +584,7 @@ const CategoryBanner = ({
   const ghostY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
 
   return (
-    <div className="sticky top-0 z-10 h-screen overflow-hidden">
+    <div className="sticky top-0 z-10 h-[60vh] md:h-[70vh] overflow-hidden">
       <motion.div
         style={{ y: bgY }}
         className={`absolute inset-0 scale-[1.4] bg-gradient-to-br ${config.bannerBg}`}
@@ -596,7 +596,7 @@ const CategoryBanner = ({
       >
         <span
           className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
-          style={{ fontSize: "clamp(80px, 18vw, 220px)" }}
+          style={{ fontSize: "clamp(60px, 14vw, 180px)" }}
         >
           {config.label}
         </span>
@@ -605,8 +605,8 @@ const CategoryBanner = ({
       <motion.div style={{ y: bgY }} className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl pointer-events-none" />
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <p className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3">{config.tagline}</p>
-        <h2 className={`text-5xl md:text-7xl font-black uppercase tracking-tight ${config.bannerTextColor} mb-4`}>{config.label}</h2>
-        <p className="text-white/70 max-w-xl text-base md:text-lg">{config.description}</p>
+        <h2 className={`text-4xl md:text-6xl font-black uppercase tracking-tight ${config.bannerTextColor} mb-4`}>{config.label}</h2>
+        <p className="text-white/70 max-w-xl text-sm md:text-base">{config.description}</p>
       </div>
     </div>
   );
