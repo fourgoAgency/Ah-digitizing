@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+// ─── Types & Data ──────────────────────────────────────────────────────────────
 type PortfolioItem = {
   id: number;
   title: string;
@@ -148,18 +149,14 @@ const categories: CategoryConfig[] = [
   },
 ];
 
-// ─── Direction-aware slide animation variants ─────────────────────────────────
+// ─── Direction-aware slide animation variants ──────────────────────────────────
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 80 : -80,
     opacity: 0,
     scale: 0.97,
   }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-  },
+  center: { x: 0, opacity: 1, scale: 1 },
   exit: (direction: number) => ({
     x: direction > 0 ? -80 : 80,
     opacity: 0,
@@ -182,8 +179,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < items.length - 1;
 
-  // Track direction for animation — computed synchronously at render time
-  // (useEffect causes a render-delay which makes prev nav flash black)
   const prevIndexRef = useRef(currentIndex);
   const directionRef = useRef(0);
 
@@ -193,11 +188,9 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
   }
 
   const direction = directionRef.current;
-
   const isScrollingRef = useRef(false);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll active thumbnail into view
   useEffect(() => {
     if (thumbStripRef.current) {
       const activeThumb = thumbStripRef.current.children[currentIndex] as HTMLElement;
@@ -214,7 +207,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     }
   }, [currentIndex]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -225,7 +217,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrev, onNext, hasPrev, hasNext]);
 
-  // Scroll on thumbnail strip → change image + scroll thumb strip
   const handleThumbWheel = useCallback((e: React.WheelEvent) => {
     if (isScrollingRef.current) return;
     e.preventDefault();
@@ -235,7 +226,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 300);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
-  // Scroll on main image → change image (thumb strip auto-syncs via useEffect)
   const handleImageWheel = useCallback((e: React.WheelEvent) => {
     if (isScrollingRef.current) return;
     e.preventDefault();
@@ -245,29 +235,24 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 300);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  // Progress bar width
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
   return (
     <AnimatePresence>
-      {/* Backdrop */}
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[999] bg-black/85 backdrop-blur-md cursor-pointer"
+        className="fixed inset-0 z-[999] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25 }}
         onClick={onClose}
       />
-
-      {/* Modal */}
       <motion.div
         key="modal"
         className="fixed inset-0 z-[1000] flex flex-col items-center justify-center pointer-events-none"
@@ -276,19 +261,16 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
       >
-        {/* ── Top info bar ── */}
         <div
           className="pointer-events-auto w-full max-w-5xl px-4 mb-4 flex items-center justify-between gap-4"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Left: index pill */}
           <div className="flex items-center gap-3">
             <span className="bg-white/10 backdrop-blur border border-white/15 text-white/90 text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full">
               {String(currentIndex + 1).padStart(2, "0")}
               <span className="text-white/40 mx-1">/</span>
               {String(items.length).padStart(2, "0")}
             </span>
-            {/* Title */}
             <AnimatePresence mode="wait">
               <motion.p
                 key={item.id}
@@ -302,8 +284,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
               </motion.p>
             </AnimatePresence>
           </div>
-
-          {/* Right: progress bar + close */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:block w-32 h-1 bg-white/15 rounded-full overflow-hidden">
               <motion.div
@@ -316,7 +296,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
               onClick={onClose}
               className="w-8 h-8 rounded-full bg-white/10 border border-white/20 text-white/80
                 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-200 cursor-pointer"
-              aria-label="Close"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -326,34 +305,27 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </div>
         </div>
 
-        {/* ── Main viewer row ── */}
         <div
           className="pointer-events-auto flex items-stretch gap-2 w-full max-w-5xl px-4"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* LEFT arrow */}
           <button
             onClick={onPrev}
             disabled={!hasPrev}
             className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
               bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
-              ${hasPrev
-                ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white"
-                : "cursor-default text-white/15"
-              }`}
+              ${hasPrev ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white" : "cursor-default text-white/15"}`}
             style={{ minHeight: "min(72vh, 600px)" }}
-            aria-label="Previous image"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
 
-          {/* Image area — full width, fixed height, no padding */}
           <div
             onWheel={handleImageWheel}
-            className="relative flex-1 bg-neutral-900 rounded-2xl overflow-hidden border border-white/8"
-            style={{ height: "min(72vh, 600px)" }}
+            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40" style={{ background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" ,height: "min(72vh, 600px)" }}
+            // style={{ height: "min(72vh, 600px)" }}
           >
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
@@ -376,30 +348,17 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 />
               </motion.div>
             </AnimatePresence>
-
-            {/* Subtle left/right tap zones */}
-            <div
-              onClick={hasPrev ? onPrev : undefined}
-              className={`absolute left-0 top-0 bottom-0 w-1/5 z-10 ${hasPrev ? "cursor-pointer" : ""}`}
-            />
-            <div
-              onClick={hasNext ? onNext : undefined}
-              className={`absolute right-0 top-0 bottom-0 w-1/5 z-10 ${hasNext ? "cursor-pointer" : ""}`}
-            />
+            <div onClick={hasPrev ? onPrev : undefined} className={`absolute left-0 top-0 bottom-0 w-1/5 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
+            <div onClick={hasNext ? onNext : undefined} className={`absolute right-0 top-0 bottom-0 w-1/5 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
           </div>
 
-          {/* RIGHT arrow */}
           <button
             onClick={onNext}
             disabled={!hasNext}
             className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
               bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
-              ${hasNext
-                ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white"
-                : "cursor-default text-white/15"
-              }`}
+              ${hasNext ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white" : "cursor-default text-white/15"}`}
             style={{ minHeight: "min(72vh, 600px)" }}
-            aria-label="Next image"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
@@ -407,7 +366,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </button>
         </div>
 
-        {/* ── Thumbnail strip ── */}
         <div
           className="pointer-events-auto w-full max-w-5xl px-4 mt-4"
           onClick={(e) => e.stopPropagation()}
@@ -418,39 +376,21 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
             className="flex gap-2 overflow-x-auto py-1 px-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            <style>{`.thumb-strip::-webkit-scrollbar { display: none; }`}</style>
             {items.map((thumb, idx) => (
               <button
                 key={thumb.id}
                 onClick={() => onJump(idx)}
                 className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-250 outline-none
-                  ${idx === currentIndex
-                    ? "ring-2 ring-white opacity-100 scale-105"
-                    : "opacity-40 hover:opacity-70 hover:scale-105"
-                  }`}
+                  ${idx === currentIndex ? "ring-2 ring-white opacity-100 scale-105" : "opacity-40 hover:opacity-70 hover:scale-105"}`}
                 style={{ width: 72, height: 52 }}
-                aria-label={`View ${thumb.title}`}
               >
-                <Image
-                  src={thumb.path}
-                  width={100}
-                  height={80}
-                  alt={thumb.title}
-                  className="w-full h-full object-cover"
-                  unoptimized
-                />
-                {/* Active dot indicator */}
+                <Image src={thumb.path} width={100} height={80} alt={thumb.title} className="w-full h-full object-cover" unoptimized />
                 {idx === currentIndex && (
-                  <motion.div
-                    layoutId="thumb-active-dot"
-                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow"
-                  />
+                  <motion.div layoutId="thumb-active-dot" className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow" />
                 )}
               </button>
             ))}
           </div>
-
-          {/* Bottom: dot-style position indicator (for quick visual) */}
           <div className="flex justify-center mt-3 gap-1">
             {items.length <= 20 ? (
               items.map((_, idx) => (
@@ -458,21 +398,12 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                   key={idx}
                   onClick={() => onJump(idx)}
                   className={`rounded-full transition-all duration-200 cursor-pointer
-                    ${idx === currentIndex
-                      ? "w-5 h-1.5 bg-white"
-                      : "w-1.5 h-1.5 bg-white/30 hover:bg-white/60"
-                    }`}
-                  aria-label={`Go to ${idx + 1}`}
+                    ${idx === currentIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/30 hover:bg-white/60"}`}
                 />
               ))
             ) : (
-              /* For long lists, show a mini progress track */
               <div className="w-48 h-1 bg-white/15 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-white/60 rounded-full"
-                  animate={{ width: `${progressPct}%` }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                />
+                <motion.div className="h-full bg-white/60 rounded-full" animate={{ width: `${progressPct}%` }} transition={{ duration: 0.3, ease: "easeOut" }} />
               </div>
             )}
           </div>
@@ -483,35 +414,22 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 };
 
 // ─── Portfolio Card ────────────────────────────────────────────────────────────
-const PortfolioCard = ({
-  item,
-  onClick,
-}: {
-  item: PortfolioItem;
-  onClick: () => void;
-}) => (
+const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => void }) => (
   <motion.div
     onClick={onClick}
     className="group relative rounded-3xl cursor-pointer overflow-hidden w-full max-w-[320px]
       shadow-[0_15px_35px_rgba(0,0,0,0.45),0_5px_15px_rgba(0,0,0,0.3)]
-      transition-all duration-300
-      hover:-translate-y-2
+      transition-all duration-300 hover:-translate-y-2
       hover:shadow-[0_30px_70px_rgba(0,0,0,0.65),0_10px_25px_rgba(0,0,0,0.4)]"
     whileHover={{ scale: 1.03 }}
   >
     <div className="relative w-full overflow-hidden rounded-2xl">
-      <Image
-        src={item.path}
-        width={500}
-        height={500}
-        alt={item.title}
-        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-      />
+      <Image src={item.path} width={500} height={500} alt={item.title} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
         <span className="text-white text-xs font-semibold tracking-widest uppercase flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
           </svg>
           View
         </span>
@@ -553,13 +471,7 @@ const ProductGrid = ({
         >
           {row.map((item, colIdx) => {
             const globalIndex = rowIdx * 3 + colIdx;
-            return (
-              <PortfolioCard
-                key={item.id}
-                item={item}
-                onClick={() => onCardClick(globalIndex)}
-              />
-            );
+            return <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(globalIndex)} />;
           })}
         </motion.div>
       ))}
@@ -567,72 +479,120 @@ const ProductGrid = ({
   );
 };
 
-// ─── Category Banner ───────────────────────────────────────────────────────────
-const CategoryBanner = ({
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BOTTOM LAYER — Fixed category banners (z-0, always behind the top layer)
+//  These remain stationary in the viewport while the top layer scrolls over them.
+// ═══════════════════════════════════════════════════════════════════════════════
+const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number }) => (
+  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    {categories.map((config, i) => (
+      <motion.div
+        key={config.service}
+        className={`absolute inset-0 bg-gradient-to-br ${config.bannerBg}`}
+        initial={false}
+        animate={{ opacity: i === activeBannerIndex ? 1 : 0 }}
+        transition={{ duration: 0 }}
+      >
+        {/* Ghost watermark text */}
+        <div
+          className="absolute inset-0 flex items-center justify-center select-none"
+          aria-hidden="true"
+        >
+          <span
+            className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
+            style={{ fontSize: "clamp(60px, 14vw, 180px)" }}
+          >
+            {config.label}
+          </span>
+        </div>
+
+        {/* Decorative ambient blobs */}
+        <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl" />
+        <div className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.02] blur-3xl" />
+
+        {/* Banner text content (centered) */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+          <motion.p
+            className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
+            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
+            transition={{ duration: 0 }}
+          >
+            {config.tagline}
+          </motion.p>
+          <motion.h2
+            className={`text-4xl md:text-6xl font-black uppercase tracking-tight ${config.bannerTextColor} mb-4`}
+            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
+            transition={{ duration: 0 }}
+          >
+            {config.label}
+          </motion.h2>
+          <motion.p
+            className="text-white/70 max-w-xl text-sm md:text-base"
+            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
+            transition={{ duration: 0 }}
+          >
+            {config.description}
+          </motion.p>
+
+          {/* Subtle scroll hint that appears in the banner */}
+          <motion.div
+            className="absolute bottom-8 flex flex-col items-center gap-1.5"
+            animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <span className="text-white text-[10px] uppercase tracking-[0.25em]">scroll</span>
+            <motion.div
+              className="w-px h-6 bg-white/50 origin-top"
+              animate={{ scaleY: [0, 1, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+        </div>
+      </motion.div>
+    ))}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  TOP LAYER — Category section (transparent spacer + opaque product grid)
+//  The spacer is fully transparent, revealing the fixed banner behind.
+//  The grid has a solid background that slides over the banner as you scroll.
+// ═══════════════════════════════════════════════════════════════════════════════
+const CategorySection = ({
   config,
-  sectionRef,
+  spacerRef,
+  gridMidRef,
 }: {
   config: CategoryConfig;
-  sectionRef: React.RefObject<HTMLDivElement | null>;
+  spacerRef: (el: HTMLDivElement | null) => void;
+  gridMidRef: (el: HTMLDivElement | null) => void;
 }) => {
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  const ghostY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
-
-  return (
-    <div className="sticky top-0 z-10 h-[60vh] md:h-[70vh] overflow-hidden">
-      <motion.div
-        style={{ y: bgY }}
-        className={`absolute inset-0 scale-[1.4] bg-gradient-to-br ${config.bannerBg}`}
-      />
-      <motion.div
-        style={{ y: ghostY }}
-        className="absolute inset-0 flex items-center justify-center select-none pointer-events-none"
-        aria-hidden="true"
-      >
-        <span
-          className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
-          style={{ fontSize: "clamp(60px, 14vw, 180px)" }}
-        >
-          {config.label}
-        </span>
-      </motion.div>
-      <motion.div style={{ y: bgY }} className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-      <motion.div style={{ y: bgY }} className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
-        <p className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3">{config.tagline}</p>
-        <h2 className={`text-4xl md:text-6xl font-black uppercase tracking-tight ${config.bannerTextColor} mb-4`}>{config.label}</h2>
-        <p className="text-white/70 max-w-xl text-sm md:text-base">{config.description}</p>
-      </div>
-    </div>
-  );
-};
-
-// ─── Single Category Section ───────────────────────────────────────────────────
-const CategorySection = ({ config }: { config: CategoryConfig }) => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
   const items = portfolioData.filter((item) => item.service === config.service);
-
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(12);
 
   const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
   const goPrev = useCallback(() => setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i)), []);
-  const goNext = useCallback(() => setLightboxIndex((i) => (i !== null && i < items.length - 1 ? i + 1 : i)), [items.length]);
+  const goNext = useCallback(
+    () => setLightboxIndex((i) => (i !== null && i < items.length - 1 ? i + 1 : i)),
+    [items.length]
+  );
 
   const handleViewMore = () => setVisibleCount((prev) => Math.min(prev + 15, items.length));
   const hasMoreItems = visibleCount < items.length;
 
   return (
-    <div ref={sectionRef}>
-      <CategoryBanner config={config} sectionRef={sectionRef} />
+    <div>
+      {/* ── TRANSPARENT SPACER — banner shows through here ── */}
+      <div ref={spacerRef} className="h-[100vh]" aria-hidden="true" />
 
-      <div className="relative z-20 bg-gray-50 py-14 px-4 shadow-[0_-40px_80px_rgba(0,0,0,0.5)]">
+      {/* ── OPAQUE PRODUCT GRID ── */}
+      <div
+        className="relative z-20 bg-gray-50 py-14 px-4"
+        style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
+      >
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
             <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
@@ -644,6 +604,13 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
             onCardClick={openLightbox}
             visibleCount={visibleCount}
           />
+          {/*
+           * ── SWITCH SENTINEL ──────────────────────────────────────────────────
+           * Placed midway through the grid. When this crosses the viewport the
+           * parent switches the bottom banner to the NEXT category — so by the
+           * time the transparent spacer below is revealed, the banner is ready.
+           */}
+          <div ref={gridMidRef} aria-hidden="true" />
           {hasMoreItems && (
             <div className="flex justify-center mt-10">
               <button
@@ -673,20 +640,71 @@ const CategorySection = ({ config }: { config: CategoryConfig }) => {
 
 // ─── Main Export ───────────────────────────────────────────────────────────────
 export default function PortfolioSection() {
+  const spacerRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
+  // gridMidRefs — sentinel divs placed mid-grid; crossing these pre-switches the banner
+  const gridMidRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      const vh = window.innerHeight;
+      // Default: show banner for whichever spacer the user is currently inside
+      let next = 0;
+
+      // Phase 1 — spacer-based: once a spacer top has entered the viewport
+      //           (or is above it) we are officially "in" that category
+      spacerRefs.current.forEach((ref, i) => {
+        if (!ref) return;
+        if (ref.getBoundingClientRect().top < vh) next = i;
+      });
+
+      // Phase 2 — grid-mid-based: once the sentinel inside grid[i] enters
+      //           the viewport, pre-switch to the NEXT banner so it is already
+      //           correct before the next spacer ever becomes visible.
+      //           This fires while the user is still reading cards mid-grid.
+      gridMidRefs.current.forEach((ref, i) => {
+        if (!ref) return;
+        const nextIdx = i + 1;
+        if (nextIdx < categories.length && ref.getBoundingClientRect().top < vh) {
+          next = nextIdx;
+        }
+      });
+
+      setActiveBannerIndex(next);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
   return (
-    <div className="bg-gray-50">
-      <section className="min-h-[60vh] flex items-center justify-center bg-white">
-        <div className="text-center px-6">
-          <p className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">Creative Studio</p>
-          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6">Our Portfolio</h1>
-          <p className="text-gray-500 max-w-xl mx-auto text-lg">
-            Explore our diverse collection of digitized embroidery, vector art, raster conversions, and custom patches — crafted with precision for every client.
-          </p>
-        </div>
-      </section>
-      {categories.map((config) => (
-        <CategorySection key={config.service} config={config} />
-      ))}
+    <div className="relative">
+      <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
+      <div className="relative z-10">
+        {/* ── Hero section ── */}
+        <section className="min-h-screen flex items-center justify-center bg-white relative">
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
+          <div className="relative text-center px-6">
+            <p className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">Creative Studio</p>
+            <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6">Our Portfolio</h1>
+            <p className="text-gray-500 max-w-xl mx-auto text-lg">
+              Explore our diverse collection of digitized embroidery, vector art, raster conversions,
+              and custom patches — crafted with precision for every client.
+            </p>
+          </div>
+        </section>
+
+        {/* ── Category sections ── */}
+        {categories.map((config, i) => (
+          <CategorySection
+            key={config.service}
+            config={config}
+            spacerRef={(el) => { spacerRefs.current[i] = el; }}
+            gridMidRef={(el) => { gridMidRefs.current[i] = el; }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
