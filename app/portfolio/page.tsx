@@ -324,8 +324,8 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
           <div
             onWheel={handleImageWheel}
-            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40"
-            style={{ height: "min(72vh, 600px)", background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" }}
+            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40" style={{ background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" ,height: "min(72vh, 600px)" }}
+            // style={{ height: "min(72vh, 600px)" }}
           >
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
@@ -483,8 +483,8 @@ const ProductGrid = ({
 //  BOTTOM LAYER — Fixed category banners (z-0, always behind the top layer)
 //  These remain stationary in the viewport while the top layer scrolls over them.
 // ═══════════════════════════════════════════════════════════════════════════════
-const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex: number; topOffset: number }) => (
-  <div className="fixed inset-x-0 bottom-0 z-0 pointer-events-none overflow-hidden" style={{ top: topOffset }}>
+const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number }) => (
+  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
     {categories.map((config, i) => (
       <motion.div
         key={config.service}
@@ -536,7 +536,7 @@ const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex
           </motion.p>
 
           {/* Subtle scroll hint that appears in the banner */}
-          <motion.div
+          {/* <motion.div
             className="absolute bottom-8 flex flex-col items-center gap-1.5"
             animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
             transition={{ duration: 0.4 }}
@@ -547,7 +547,7 @@ const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex
               animate={{ scaleY: [0, 1, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
             />
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     ))}
@@ -644,21 +644,6 @@ export default function PortfolioSection() {
   // gridMidRefs — sentinel divs placed mid-grid; crossing these pre-switches the banner
   const gridMidRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
-  // topOffset — distance from viewport top to where this section begins.
-  // Used to clamp the fixed banner so it never bleeds behind the navbar.
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const [topOffset, setTopOffset] = useState(0);
-
-  useEffect(() => {
-    const measure = () => {
-      if (rootRef.current) {
-        setTopOffset(rootRef.current.getBoundingClientRect().top + window.scrollY);
-      }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -694,8 +679,8 @@ export default function PortfolioSection() {
   }, []);
 
   return (
-    <div className="relative" ref={rootRef}>
-      <BottomBannerLayer activeBannerIndex={activeBannerIndex} topOffset={topOffset} />
+    <div className="relative">
+      <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
       <div className="relative z-10">
         {/* ── Hero section ── */}
         <section className="min-h-screen flex items-center justify-center bg-white relative">
@@ -723,3 +708,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+    
