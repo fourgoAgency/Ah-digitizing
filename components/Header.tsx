@@ -441,7 +441,7 @@ export default function Header() {
 
       </header>
 
-      <div className="hidden md:flex sticky top-0 z-50 justify-center">
+      <div className="hidden md:flex sticky top-0 z-50 justify-center bg-white">
         <DesktopMenu isSticky={isSticky} />
       </div>
 
