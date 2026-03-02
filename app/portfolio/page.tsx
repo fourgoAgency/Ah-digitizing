@@ -246,7 +246,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     <AnimatePresence>
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[9999] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
+        className="fixed inset-0 z-[9998] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -255,7 +255,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       />
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[10000] flex flex-col items-center justify-center pointer-events-none"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -536,7 +536,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
           </motion.p>
 
           {/* Subtle scroll hint that appears in the banner */}
-          <motion.div
+          {/* <motion.div
             className="absolute bottom-8 flex flex-col items-center gap-1.5"
             animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
             transition={{ duration: 0.4 }}
@@ -547,7 +547,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
               animate={{ scaleY: [0, 1, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
             />
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     ))}
