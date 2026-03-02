@@ -293,7 +293,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'services' && (
-                <div className="px-6 pb-4 space-y-2 z-[9999">
+                <div className="px-6 pb-4 space-y-2 z-[9999]">
                   <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Digitizing
                   </Link>
@@ -400,7 +400,7 @@ export default function Header() {
     <>
       {/* <TopNavbar /> */}
 
-      <header className="relative z-[100">
+      <header className="relative z-[100]">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
         <div className="flex justify-between items-center px-6">
           <Image src={logo} alt="Logo" width={150} />
