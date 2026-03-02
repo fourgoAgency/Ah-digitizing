@@ -536,7 +536,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
           </motion.p>
 
           {/* Subtle scroll hint that appears in the banner */}
-          <motion.div
+          {/* <motion.div
             className="absolute bottom-8 flex flex-col items-center gap-1.5"
             animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
             transition={{ duration: 0.4 }}
@@ -547,7 +547,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
               animate={{ scaleY: [0, 1, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
             />
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     ))}
@@ -708,3 +708,4 @@ export default function PortfolioSection() {
     </div>
   );
 }
+
