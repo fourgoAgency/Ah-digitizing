@@ -293,7 +293,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'services' && (
-                <div className="px-6 pb-4 space-y-2 z-[9999]">
+                <div className="px-6 pb-4 space-y-2 z-[999]">
                   <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Digitizing
                   </Link>
@@ -320,7 +320,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'pricing' && (
-                <div className="px-6 pb-4 space-y-2 z-9999">
+                <div className="px-6 pb-4 space-y-2 z-999">
                   <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-muted">
                     Embroidery Pricing
                   </Link>
@@ -345,7 +345,7 @@ function MobileMenu() {
                 />
               </button>
               {activeAccordion === 'about' && (
-                <div className="px-6 pb-4 space-y-2 z-9999">
+                <div className="px-6 pb-4 space-y-2 z-999">
                   <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-muted">
                     Write a Review
                   </Link>
