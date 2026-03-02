@@ -324,8 +324,8 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
           <div
             onWheel={handleImageWheel}
-            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40" style={{ background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" }}
-            style={{ height: "min(72vh, 600px)" }}
+            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40"
+            style={{ height: "min(72vh, 600px)", background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" }}
           >
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
