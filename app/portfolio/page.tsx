@@ -484,7 +484,7 @@ const ProductGrid = ({
 //  These remain stationary in the viewport while the top layer scrolls over them.
 // ═══════════════════════════════════════════════════════════════════════════════
 const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex: number; topOffset: number }) => (
-  <div className="fixed inset-x-0 bottom-0 z-[-1] pointer-events-none overflow-hidden" style={{ top: topOffset }}>
+  <div className="fixed inset-x-0 bottom-0 z-0 pointer-events-none overflow-hidden" style={{ top: topOffset }}>
     {categories.map((config, i) => (
       <motion.div
         key={config.service}
@@ -536,7 +536,7 @@ const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex
           </motion.p>
 
           {/* Subtle scroll hint that appears in the banner */}
-          <motion.div
+          {/* <motion.div
             className="absolute bottom-8 flex flex-col items-center gap-1.5"
             animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
             transition={{ duration: 0.4 }}
@@ -547,7 +547,7 @@ const BottomBannerLayer = ({ activeBannerIndex, topOffset }: { activeBannerIndex
               animate={{ scaleY: [0, 1, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
             />
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     ))}
