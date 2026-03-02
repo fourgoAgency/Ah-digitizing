@@ -400,7 +400,7 @@ export default function Header() {
     <>
       {/* <TopNavbar /> */}
 
-      <header className="relative z-[100]">
+      <header className="relative z-[100] bg-white">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
         <div className="flex justify-between items-center px-6">
           <Image src={logo} alt="Logo" width={150} />
