@@ -586,7 +586,7 @@ const CategorySection = ({
   return (
     <div>
       {/* ── TRANSPARENT SPACER — banner shows through here ── */}
-      <div ref={spacerRef} className="h-[50vh]" aria-hidden="true" />
+      <div ref={spacerRef} className="h-[70vh]" aria-hidden="true" />
 
       {/* ── OPAQUE PRODUCT GRID ── */}
       <div
