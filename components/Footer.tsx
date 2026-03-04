@@ -118,7 +118,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="px-4 pb-6">
+    <footer className="px-4 pb-6 z-10">
       <div className="max-w-full mx-auto bg-linear-to-t from-primary via-primary to-black/90 text-white rounded-2xl px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-10">
 
