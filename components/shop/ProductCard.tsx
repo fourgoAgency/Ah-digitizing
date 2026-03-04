@@ -6,16 +6,21 @@ import { formatPrice, Product } from "@/data/products";
 type ProductCardProps = {
   product: Product;
   imageVariant?: "default" | "largeSquare";
+  showDescription?: boolean;
 };
 
-export default function ProductCard({ product, imageVariant = "default" }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  imageVariant = "default",
+  showDescription = true,
+}: ProductCardProps) {
   const imageWrapperClass =
     imageVariant === "largeSquare"
       ? "relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100"
       : "relative h-44 w-full overflow-hidden rounded-lg bg-gray-100";
 
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+    <article className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <Link href={`/shop/${product.slug}`} className="block">
         <div className={imageWrapperClass}>
           <Image
@@ -31,16 +36,18 @@ export default function ProductCard({ product, imageVariant = "default" }: Produ
         </div>
       </Link>
 
-      <div className="mt-3 space-y-2">
+      <div className="mt-3 flex flex-1 flex-col gap-2">
         <Link href={`/shop/${product.slug}`} className="block">
-          <h3 className="text-base font-semibold text-gray-900">{product.title}</h3>
+          <h3 className="min-h-[3rem] text-base font-semibold text-gray-900 line-clamp-2">{product.title}</h3>
         </Link>
-        <p className="text-sm text-gray-600">{product.shortDescription}</p>
-        <div className="flex justify-between p-2 items-end">
-        <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
-        <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold">
-          <Link href={`/shop/${product.slug}`}>Add to Cart</Link>
-        </Button>
+        {showDescription ? (
+          <p className="min-h-[3.75rem] text-sm text-gray-600 line-clamp-3">{product.shortDescription}</p>
+        ) : null}
+        <div className="mt-auto flex items-end justify-between gap-3 pt-2">
+          <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
+          <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold">
+            <Link href={`/shop/${product.slug}`}>Add to Cart</Link>
+          </Button>
         </div>
       </div>
     </article>
