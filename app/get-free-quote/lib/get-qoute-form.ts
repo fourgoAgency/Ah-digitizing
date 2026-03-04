@@ -16,14 +16,12 @@ export const getQouteFormSchema = z
     contactNumber: z.string().trim().optional(),
     email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
     country: z.string().trim().min(1, "Select your country."),
-    orderType: z.enum(["embroidery", "vector"], {
-      errorMap: () => ({ message: "Order type is required." }),
-    }),
+    orderType: z.enum(["embroidery", "vector"], { error: "Order type is required." }),
     designName: z.string().trim().min(1, "Design name is required."),
     numberOfColors: z.string().trim().min(1, "Number of colors is required."),
-    unitType: z.enum(["inches", "centimeter", "millimeter"], {
-      errorMap: () => ({ message: "Unit type is required." }),
-    }),
+    unitType: z
+      .enum(["", "inches", "centimeter", "millimeter"])
+      .refine((value) => value !== "", "Unit type is required."),
     width: z.string().optional(),
     height: z.string().optional(),
     additionalNotes: z.string().optional(),
@@ -119,3 +117,5 @@ export const initialGetQouteFormState: GetQouteFormState = {
   whatsappOptIn: false,
   files: [],
 };
+
+
