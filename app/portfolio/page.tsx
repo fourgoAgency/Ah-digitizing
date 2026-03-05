@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -242,11 +243,15 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[999] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
+        className="fixed inset-0 z-[9998] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -255,7 +260,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       />
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[1000] flex flex-col items-center justify-center pointer-events-none"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -324,8 +329,8 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
           <div
             onWheel={handleImageWheel}
-            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40" style={{ background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" ,height: "min(72vh, 600px)" }}
-            // style={{ height: "min(72vh, 600px)" }}
+            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40"
+            style={{ height: "min(72vh, 600px)", background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" }}
           >
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
@@ -409,7 +414,8 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </div>
         </div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
@@ -483,8 +489,8 @@ const ProductGrid = ({
 //  BOTTOM LAYER — Fixed category banners (z-0, always behind the top layer)
 //  These remain stationary in the viewport while the top layer scrolls over them.
 // ═══════════════════════════════════════════════════════════════════════════════
-const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number }) => (
-  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+const BottomBannerLayer = ({ activeBannerIndex, visible }: { activeBannerIndex: number; visible: boolean }) => (
+  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ opacity: visible ? 1 : 0, transition: 'none' }}>
     {categories.map((config, i) => (
       <motion.div
         key={config.service}
@@ -644,24 +650,25 @@ export default function PortfolioSection() {
   // gridMidRefs — sentinel divs placed mid-grid; crossing these pre-switches the banner
   const gridMidRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+  const [bannerVisible, setBannerVisible] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const update = () => {
       const vh = window.innerHeight;
-      // Default: show banner for whichever spacer the user is currently inside
       let next = 0;
 
-      // Phase 1 — spacer-based: once a spacer top has entered the viewport
-      //           (or is above it) we are officially "in" that category
+      // Show banner ONLY while the portfolio wrapper overlaps the viewport
+      if (wrapperRef.current) {
+        const { top, bottom } = wrapperRef.current.getBoundingClientRect();
+        setBannerVisible(top < vh && bottom > 0);
+      }
+
       spacerRefs.current.forEach((ref, i) => {
         if (!ref) return;
         if (ref.getBoundingClientRect().top < vh) next = i;
       });
 
-      // Phase 2 — grid-mid-based: once the sentinel inside grid[i] enters
-      //           the viewport, pre-switch to the NEXT banner so it is already
-      //           correct before the next spacer ever becomes visible.
-      //           This fires while the user is still reading cards mid-grid.
       gridMidRefs.current.forEach((ref, i) => {
         if (!ref) return;
         const nextIdx = i + 1;
@@ -679,8 +686,8 @@ export default function PortfolioSection() {
   }, []);
 
   return (
-    <div className="relative">
-      <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
+    <div className="relative" ref={wrapperRef}>
+      <BottomBannerLayer activeBannerIndex={activeBannerIndex} visible={bannerVisible} />
       <div className="relative z-10">
         {/* ── Hero section ── */}
         <section className="min-h-[60vh] flex items-center justify-center bg-white relative">
@@ -704,6 +711,8 @@ export default function PortfolioSection() {
             gridMidRef={(el) => { gridMidRefs.current[i] = el; }}
           />
         ))}
+        {/* Sentinel at the very end of the portfolio section */}
+        <div ref={sectionEndRef} aria-hidden="true" />
       </div>
     </div>
   );
