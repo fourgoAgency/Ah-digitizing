@@ -40,9 +40,6 @@ export default function ProductCard({
         <Link href={`/shop/${product.slug}`} className="block">
           <h3 className="min-h-[3rem] text-base font-semibold text-gray-900 line-clamp-2">{product.title}</h3>
         </Link>
-        {showDescription ? (
-          <p className="min-h-[3.75rem] text-sm text-gray-600 line-clamp-3">{product.shortDescription}</p>
-        ) : null}
         <div className="mt-auto flex items-end justify-between gap-3 pt-2">
           <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
           <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold">

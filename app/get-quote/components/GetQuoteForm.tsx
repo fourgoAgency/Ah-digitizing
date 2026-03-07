@@ -11,6 +11,7 @@ import {
   fabricTypes,
   outputFormats,
   placementAreas,
+  vectorOutputFormats,
   type QuoteFormState,
 } from "../lib/quote-form";
 
@@ -95,7 +96,14 @@ export function GetQuoteForm({
     () => new Set(selectedOutputFormats.map((format) => format.toLowerCase())),
     [selectedOutputFormats]
   );
-  const predefinedLookup = useMemo(() => new Set(outputFormats.map((format) => format.toLowerCase())), []);
+  const availableOutputFormats = useMemo(
+    () => (formData.orderType === "vector" ? [...vectorOutputFormats, "other"] : [...outputFormats, "other"]),
+    [formData.orderType]
+  );
+  const predefinedLookup = useMemo(
+    () => new Set(availableOutputFormats.filter((format) => format !== "other").map((format) => format.toLowerCase())),
+    [availableOutputFormats]
+  );
 
   const emitFieldChange = (name: string, value: string) => {
     onFieldChangeAction({
@@ -121,7 +129,9 @@ export function GetQuoteForm({
     if (!normalizedValue) return;
     const normalizedKey = normalizedValue.toLowerCase();
 
-    const predefinedMatch = outputFormats.find((format) => format.toLowerCase() === normalizedKey);
+    const predefinedMatch = availableOutputFormats
+      .filter((format) => format !== "other")
+      .find((format) => format.toLowerCase() === normalizedKey);
     if (predefinedMatch) {
       if (!selectedOutputFormatLookup.has(normalizedKey)) {
         onOutputFormatToggleAction(predefinedMatch);
@@ -142,7 +152,9 @@ export function GetQuoteForm({
   const removeOutputFormatTag = (formatToRemove: string) => {
     const normalizedKey = formatToRemove.toLowerCase();
     if (predefinedLookup.has(normalizedKey)) {
-      const predefinedMatch = outputFormats.find((format) => format.toLowerCase() === normalizedKey);
+      const predefinedMatch = availableOutputFormats
+        .filter((format) => format !== "other")
+        .find((format) => format.toLowerCase() === normalizedKey);
       if (predefinedMatch && formData.outputFormats.includes(predefinedMatch)) {
         onOutputFormatToggleAction(predefinedMatch);
         return;
@@ -591,7 +603,109 @@ export function GetQuoteForm({
 
           {(formData.orderType === "vector") && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
+              <div>
+                <label htmlFor="design-name" className="mb-1 block text-sm font-semibold text-gray-700">
+                  Design Name *
+                </label>
+                <input
+                  id="design-name"
+                  name="designName"
+                  className="input"
+                  placeholder="Enter design name"
+                  value={formData.designName}
+                  onChange={onFieldChangeAction}
+                  required
+                />
+                {errors.designName && <p className="mt-1 text-sm text-red-600">{errors.designName}</p>}
+              </div>
+              <div>
+                <label htmlFor="turnaround-time" className="mb-1 block text-sm font-semibold text-gray-700">
+                  Turnaround Time *
+                </label>
+                <CustomDropdown
+                  id="turnaround-time"
+                  placeholder="Select turnaround"
+                  options={[...turnaroundOptions]}
+                  value={formData.turnaroundTime ?? ""}
+                  allowTyping={false}
+                  onSelectAction={(selected) => emitFieldChange("turnaroundTime", selected)}
+                />
+                {errors.turnaroundTime && <p className="mt-1 text-sm text-red-600">{errors.turnaroundTime}</p>}
+              </div>
+              <div className="sm:col-span-2">
+                <label className="mb-2 block text-sm font-semibold text-gray-700">Required File Formats *</label>
+                <div className="mb-2 flex min-h-12 flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2">
+                  {selectedOutputFormats.map((format) => (
+                    <span
+                      key={format}
+                      className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary"
+                    >
+                      {format}
+                      <button
+                        type="button"
+                        className="rounded p-0.5 hover:bg-primary/15"
+                        aria-label={`Remove ${format}`}
+                        onClick={() => removeOutputFormatTag(format)}
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    id="output-format-other"
+                    name="outputFormatOtherDraft"
+                    className="min-w-45 flex-1 border-0 bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                    placeholder={selectedOutputFormats.length > 1 ? "Type custom format and press space" : "Select or type format"}
+                    value={customFormatDraft}
+                    onChange={(event) => setCustomFormatDraft(event.target.value)}
+                    onKeyDown={handleCustomFormatKeyDown}
+                    onBlur={() => {
+                      if (!customFormatDraft.trim()) return;
+                      addOutputFormatTag(customFormatDraft);
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {availableOutputFormats.map((format) => {
+                    const active = selectedOutputFormatLookup.has(format.toLowerCase());
+                    const label = format === "other" ? "OTHER" : format;
+                    return (
+                      <button
+                        key={format}
+                        type="button"
+                        className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors ${active
+                          ? "border-primary bg-primary text-white"
+                          : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                          }`}
+                        onClick={() => {
+                          if (active) {
+                            removeOutputFormatTag(format);
+                            return;
+                          }
+                          onOutputFormatToggleAction(format);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {errors.outputFormats && <p className="mt-1 text-sm text-red-600">{errors.outputFormats}</p>}
+                {errors.outputFormatOther && <p className="mt-1 text-sm text-red-600">{errors.outputFormatOther}</p>}
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="additional-notes" className="mb-1 block text-sm font-semibold text-gray-700">
+                  Additional Notes
+                </label>
+                <textarea
+                  id="additional-notes"
+                  name="additionalNotes"
+                  className="input h-24 resize-none"
+                  placeholder="Additional notes or instructions for your quote (optional)"
+                  value={formData.additionalNotes || ""}
+                  onChange={onFieldChangeAction}
+                />
+              </div>
 
             </div>
           )}

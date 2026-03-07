@@ -23,7 +23,7 @@ export default function ShopHero() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild className="rounded-full px-7">
-            <Link href="/shop/all-products">All Products</Link>
+            <Link href="/services">Explore Services</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full border-white bg-white/10 px-7 text-white hover:bg-white hover:text-primary">
             <Link href="/get-quote">Get Custom Quote</Link>

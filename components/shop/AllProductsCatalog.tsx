@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import AllProductsFilter, { TurnaroundFilter } from "@/components/shop/AllProductsFilter";
+import AllProductsFilter from "@/components/shop/AllProductsFilter";
 import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
 import { ProductCategory, products } from "@/data/products";
 
@@ -32,31 +32,10 @@ const EMBROIDERY_ITEMS: SubcategoryDefinition[] = [
   { label: "Towel Embroidery Digitizing", href: "/services/embroidery/towel", category: "embroidery-digitizing" },
 ];
 
-const RASTER_TO_VECTOR_ITEMS: SubcategoryDefinition[] = [
-  { label: "Raster To Vector Services", href: "/services/raster-to-vector", category: "vector-conversion" },
-  { label: "Silhouette Art", href: "/services/raster-to-vector/silhouette", category: "vector-conversion" },
-  { label: "Stencil Art", href: "/services/raster-to-vector/stencil", category: "vector-conversion" },
-  {
-    label: "Color Separation",
-    href: "/services/raster-to-vector/color-separation",
-    category: "vector-conversion",
-  },
-];
-
-const SUBCATEGORY_OPTIONS: SubcategoryDefinition[] = [...EMBROIDERY_ITEMS, ...RASTER_TO_VECTOR_ITEMS];
-
-function getMinimumHours(turnaround: string): number {
-  const matchedHours = turnaround.match(/\d+/);
-  return matchedHours ? Number(matchedHours[0]) : 0;
-}
-
-function matchesTurnaround(turnaround: string, turnaroundFilter: TurnaroundFilter): boolean {
-  if (turnaroundFilter === "all") return true;
-  return getMinimumHours(turnaround) <= 8;
-}
+const SUBCATEGORY_OPTIONS: SubcategoryDefinition[] = [...EMBROIDERY_ITEMS];
 
 export default function AllProductsCatalog() {
-  const [turnaroundFilter, setTurnaroundFilter] = useState<TurnaroundFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("relevance");
   const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
@@ -69,11 +48,13 @@ export default function AllProductsCatalog() {
       }
     }
 
-    return (Array.from(labels.entries()) as [ProductCategory, string][]).map(([slug, label]) => ({
-      slug,
-      label,
-      count: products.filter((product) => product.category === slug).length,
-    }));
+    return (Array.from(labels.entries()) as [ProductCategory, string][])
+      .filter(([slug]) => slug !== "vector-conversion")
+      .map(([slug, label]) => ({
+        slug,
+        label,
+        count: products.filter((product) => product.category === slug).length,
+      }));
   }, []);
 
   const subcategoryOptions = useMemo<FilterSubcategoryOption[]>(() => {
@@ -90,6 +71,8 @@ export default function AllProductsCatalog() {
   }, [selectedCategories]);
 
   const filteredProducts = useMemo(() => {
+    const normalizedSearch = searchQuery.trim().toLowerCase();
+
     let nextProducts = products.filter((product) => {
       const categoryMatch =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
@@ -99,8 +82,14 @@ export default function AllProductsCatalog() {
           const option = SUBCATEGORY_OPTIONS.find((item) => item.href === subcategoryHref);
           return option ? option.category === product.category : false;
         });
+      const searchMatch =
+        normalizedSearch.length === 0 ||
+        product.title.toLowerCase().includes(normalizedSearch) ||
+        product.categoryLabel.toLowerCase().includes(normalizedSearch) ||
+        product.category.toLowerCase().includes(normalizedSearch) ||
+        product.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch));
 
-      return categoryMatch && subcategoryMatch && matchesTurnaround(product.turnaround, turnaroundFilter);
+      return categoryMatch && subcategoryMatch && searchMatch;
     });
 
     if (sortOption === "price-low-to-high") {
@@ -112,15 +101,14 @@ export default function AllProductsCatalog() {
     }
 
     return nextProducts;
-  }, [selectedCategories, selectedSubcategories, sortOption, turnaroundFilter]);
+  }, [searchQuery, selectedCategories, selectedSubcategories, sortOption]);
 
-  const activeFilterCount =
-    selectedCategories.length + selectedSubcategories.length + (turnaroundFilter !== "all" ? 1 : 0);
+  const activeFilterCount = selectedCategories.length + selectedSubcategories.length + (searchQuery.trim() ? 1 : 0);
 
   const clearAllFilters = () => {
+    setSearchQuery("");
     setSelectedCategories([]);
     setSelectedSubcategories([]);
-    setTurnaroundFilter("all");
     setSortOption("relevance");
   };
 
@@ -136,10 +124,6 @@ export default function AllProductsCatalog() {
     );
   };
 
-  const toggleTurnaround = () => {
-    setTurnaroundFilter((previous) => (previous === "fast" ? "all" : "fast"));
-  };
-
   return (
     <>
       <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">Shop</p>
@@ -151,15 +135,15 @@ export default function AllProductsCatalog() {
       <section className="mt-8 grid gap-6 lg:grid-cols-[340px_1fr]">
         <AllProductsFilter
           activeFilterCount={activeFilterCount}
+          searchQuery={searchQuery}
           categoryOptions={categoryOptions}
           selectedCategories={selectedCategories}
           selectedSubcategories={selectedSubcategories}
           subcategoryOptions={subcategoryOptions}
-          turnaroundFilter={turnaroundFilter}
+          onSearchChange={setSearchQuery}
           onClearAll={clearAllFilters}
           onToggleCategory={toggleCategory}
           onToggleSubcategory={toggleSubcategory}
-          onToggleTurnaround={toggleTurnaround}
         />
 
         <AllProductsGrid

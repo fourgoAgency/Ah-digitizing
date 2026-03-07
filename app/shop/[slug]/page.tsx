@@ -47,7 +47,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         <div>
           <p className="text-sm text-gray-500">
             <Link href="/shop" className="hover:text-primary">Shop</Link> /{" "}
-            <Link href="/shop/all-products" className="hover:text-primary">All Products</Link> /{" "}
+            <Link href="/shop" className="hover:text-primary">All Products</Link> /{" "}
             <span className="font-medium text-gray-700">{product.title}</span>
           </p>
 
@@ -84,7 +84,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               <Link href="/get-quote">Order This Service</Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full px-7">
-              <Link href="/shop/all-products">Back to Catalog</Link>
+              <Link href="/shop">Back to Catalog</Link>
             </Button>
           </div>
         </div>
@@ -111,3 +111,4 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     </main>
   );
 }
+

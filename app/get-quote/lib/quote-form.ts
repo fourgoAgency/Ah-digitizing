@@ -3,6 +3,7 @@ import { isValidPhoneNumber, type CountryCode } from "libphonenumber-js";
 import { countryOptions } from "./country-options";
 
 export const outputFormats = ["DST", "PES", "JEF", "EXP", "OFM", "XXX", "CSD", "HUS", "CND", "ART", "VP3", "NGS", "PXF"] as const;
+export const vectorOutputFormats = ["AI", "PNG", "SVG", "EPS", "PDF"] as const;
 export const placementAreas = ["Cap", "Left Chest", "Jacket Back"] as const;
 export const fabricTypes = [
   "Beanie",
@@ -257,6 +258,13 @@ export const quoteFormSchema = z
     }
 
     if (data.orderType === "vector") {
+      if (!data.designName?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["designName"],
+          message: "Design name is required.",
+        });
+      }
       if (!data.turnaroundTime) {
         ctx.addIssue({
           code: "custom",
@@ -264,11 +272,18 @@ export const quoteFormSchema = z
           message: "Turnaround time is required.",
         });
       }
-      if (!data.placementArea) {
+      if (data.outputFormats.length === 0) {
         ctx.addIssue({
           code: "custom",
-          path: ["placementArea"],
-          message: "Placement area is required.",
+          path: ["outputFormats"],
+          message: "Select at least one required file format.",
+        });
+      }
+      if (data.outputFormats.includes("other") && !data.outputFormatOther?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["outputFormatOther"],
+          message: "Please enter the output format.",
         });
       }
     }

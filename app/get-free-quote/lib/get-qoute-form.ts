@@ -16,7 +16,9 @@ export const getQouteFormSchema = z
     contactNumber: z.string().trim().optional(),
     email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
     country: z.string().trim().min(1, "Select your country."),
-    orderType: z.enum(["embroidery", "vector"], { error: "Order type is required." }),
+    orderType: z
+      .enum(["", "embroidery", "vector"])
+      .refine((value) => value !== "", "Order type is required."),
     designName: z.string().trim().min(1, "Design name is required."),
     numberOfColors: z.string().trim().min(1, "Number of colors is required."),
     unitType: z
@@ -107,7 +109,7 @@ export const initialGetQouteFormState: GetQouteFormState = {
   contactNumber: "",
   email: "",
   country: "",
-  orderType: "embroidery",
+  orderType: "",
   designName: "",
   numberOfColors: "",
   unitType: "",

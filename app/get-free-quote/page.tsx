@@ -2,9 +2,10 @@
 
 import { UploadCloud, X } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CustomDropdown } from "../get-quote/components/CustomDropdown";
 import { QuoteContactFields } from "../get-quote/components/QuoteContactFields";
+import { countryOptions } from "../get-quote/lib/country-options";
 import {
   initialGetQouteFormState,
   getQouteFormSchema,
@@ -65,11 +66,36 @@ const getFirstErrorField = (errors: Record<string, string>) => {
   return Object.keys(errors)[0];
 };
 
+const toDisplay = (value?: string) =>
+  value
+    ?.trim()
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ") ?? "Not set";
+
+const getCountryName = (countryCode?: string) => {
+  const code = countryCode?.trim().toUpperCase();
+  if (!code) return "Not set";
+  return countryOptions.find((country) => country.code === code)?.name ?? code;
+};
+
 export default function GetQoutePage() {
   const [formData, setFormData] = useState<GetQouteFormState>(initialGetQouteFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const previewFileUrl = useMemo(() => {
+    const file = formData.files[0];
+    if (!file || !file.type.startsWith("image/")) return "";
+    return URL.createObjectURL(file);
+  }, [formData.files]);
+
+  useEffect(() => {
+    return () => {
+      if (previewFileUrl) URL.revokeObjectURL(previewFileUrl);
+    };
+  }, [previewFileUrl]);
 
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -211,14 +237,23 @@ export default function GetQoutePage() {
 
     void sanitizedData;
 
-    setFormData({
-      ...initialGetQouteFormState,
-      orderType: "embroidery",
-    });
+    setFormData(initialGetQouteFormState);
     setErrors({});
     setSubmitMessage("Quote submitted successfully.");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const previewWidth = formData.width?.trim() || (formData.height?.trim() ? "proportional" : "");
+  const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "proportional" : "");
+  const hasDesignSpecSelection = Boolean(
+    formData.orderType ||
+      formData.designName.trim() ||
+      formData.numberOfColors.trim() ||
+      formData.unitType ||
+      formData.width?.trim() ||
+      formData.height?.trim() ||
+      formData.additionalNotes?.trim()
+  );
 
   return (
     <main className="relative bg-slate-100 px-4 py-14 sm:px-6">
@@ -226,13 +261,19 @@ export default function GetQoutePage() {
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Request a Free Quote</h1>
           <p className="mx-auto mt-3 max-w-2xl text-gray-600">
-            Tell us about your design project. Upload your files, describe your specifications, and we&apos;ll
-            get back to you with a personalized quote.
+            Tell us about your design project. Upload your files, describe your specifications, and we&apos;ll get back to you.
           </p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="overflow-visible rounded-lg border border-gray-200 bg-white">
+        <div
+          className={
+            hasDesignSpecSelection
+              ? "grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1fr)_380px]"
+              : "grid grid-cols-1 items-start gap-6"
+          }
+        >
+          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+            <div className="overflow-visible rounded-lg border border-gray-200 bg-white">
             <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
               Your Contact Information
             </h2>
@@ -295,9 +336,9 @@ export default function GetQoutePage() {
                 {errors.country && <p className="mt-1 text-sm text-red-600">{errors.country}</p>}
               </div>
             </div>
-          </div>
+            </div>
 
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
             <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
               Design Specifications
             </h2>
@@ -461,9 +502,9 @@ export default function GetQoutePage() {
                 </div>
               </div>
             </div>
-          </div>
+            </div>
 
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
             <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">File Upload *</h2>
             <div className="p-5">
               <label
@@ -523,9 +564,9 @@ export default function GetQoutePage() {
 
               {errors.files && <p className="mt-2 text-sm text-red-600">{errors.files}</p>}
             </div>
-          </div>
+            </div>
 
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
             <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
               Continue via WhatsApp? *
             </h2>
@@ -542,18 +583,101 @@ export default function GetQoutePage() {
               </label>
               {errors.whatsappOptIn && <p className="mt-2 text-sm text-red-600">{errors.whatsappOptIn}</p>}
             </div>
-          </div>
+            </div>
 
-          {submitMessage && (
-            <p className="rounded-md border border-green-200 bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">
-              {submitMessage}
-            </p>
+            {submitMessage && (
+              <p className="rounded-md border border-green-200 bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">
+                {submitMessage}
+              </p>
+            )}
+
+            <button type="submit" className="btn">
+              Submit Quote
+            </button>
+          </form>
+
+          {hasDesignSpecSelection && (
+            <aside className="sticky top-6 self-start">
+              <div className="rounded-lg border border-gray-200 bg-white">
+                <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Live Preview</h2>
+                <div className="space-y-4 p-5">
+                  <div className="rounded-md border border-dashed border-gray-300 bg-gray-50 p-4 text-center">
+                    <div className="flex h-40 items-center justify-center rounded-md border border-gray-200 bg-white">
+                      {previewFileUrl ? (
+                        <img
+                          src={previewFileUrl}
+                          alt="Uploaded file preview"
+                          className="h-full w-full rounded-md object-contain"
+                        />
+                      ) : formData.files[0] ? (
+                        <p className="break-all px-3 text-sm text-gray-600">{formData.files[0].name}</p>
+                      ) : (
+                        <p className="text-sm text-gray-600">Quote preview shows here</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-left text-sm">
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Order Type:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.orderType)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Name:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.fullName)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Company:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.companyName)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Contact:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.contactNumber)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Email:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.email)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Country:</span>
+                      <span className="min-w-0 truncate text-gray-600">{getCountryName(formData.country)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Design Name:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.designName)}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">No. of Colors:</span>
+                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.numberOfColors)}</span>
+                    </p>
+                    <div className="grid grid-cols-3 gap-1">
+                      <span className="text-sm font-semibold text-gray-800">Unit</span>
+                      <span className="text-sm font-semibold text-gray-800">Width</span>
+                      <span className="text-sm font-semibold text-gray-800">Height</span>
+                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(formData.unitType)}</span>
+                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
+                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
+                    </div>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">WhatsApp:</span>
+                      <span className="min-w-0 truncate text-gray-600">{formData.whatsappOptIn ? "Yes" : "No"}</span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">Notes:</span>
+                      <span className="min-w-0 overflow-hidden text-ellipsis break-words text-gray-600 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]">
+                        {toDisplay(formData.additionalNotes)}
+                      </span>
+                    </p>
+                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                      <span className="font-semibold text-gray-800">File:</span>
+                      <span className="min-w-0 truncate text-gray-600">{formData.files[0]?.name ?? "Not set"}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </aside>
           )}
-
-          <button type="submit" className="btn">
-            Submit Quote
-          </button>
-        </form>
+        </div>
       </section>
     </main>
   );

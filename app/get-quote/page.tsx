@@ -107,10 +107,7 @@ export default function GetQuotePage() {
           return {
             ...prev,
             orderType: value,
-            designName: "",
             fabricType: "",
-            outputFormatOther: "",
-            outputFormats: [],
             unitSelect: "",
             width: "",
             height: "",
@@ -119,7 +116,7 @@ export default function GetQuotePage() {
             numberOfColors: "",
             colorwayToUse: "",
             colorwayToUseOther: "",
-            additionalNotes: "",
+            placementArea: "",
           };
         }
       }
@@ -322,10 +319,7 @@ export default function GetQuotePage() {
           }
         : {
             ...validationResult.data,
-            designName: "",
             fabricType: "",
-            outputFormatOther: "",
-            outputFormats: [],
             unitSelect: "",
             width: "",
             height: "",
@@ -334,7 +328,7 @@ export default function GetQuotePage() {
             numberOfColors: "",
             colorwayToUse: "",
             colorwayToUseOther: "",
-            additionalNotes: "",
+            placementArea: "",
           };
 
     // TODO: Send sanitizedData to backend API route when endpoint is available.
