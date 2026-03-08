@@ -357,8 +357,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 />
               </motion.div>
             </AnimatePresence>
-            <div onClick={hasPrev ? onPrev : undefined} className={`absolute left-0 top-0 bottom-0 w-1/5 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
-            <div onClick={hasNext ? onNext : undefined} className={`absolute right-0 top-0 bottom-0 w-1/5 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
+
           </div>
 
           <button
