@@ -181,7 +181,10 @@ section {
 .shutter-panel.left {
   left: 0;
 }
-
+body.lightbox-open header,
+body.lightbox-open .sticky {
+  display: none !important;
+}
 .shutter-open .shutter-panel.left {
   transform: scaleX(0);
 }
