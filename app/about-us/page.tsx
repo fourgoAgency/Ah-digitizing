@@ -6,7 +6,6 @@ import MissionValuesSection from "@/components/about/MissionValuesSection";
 import ServicesSection from "@/components/about/ServicesSection";
 import JourneySection from "@/components/about/JourneySection";
 import TestimonialsSection from "@/components/about/TestimonialsSection";
-import CTASection from "@/components/about/CTASection";
 
 /* =======================
    DATA
@@ -42,7 +41,6 @@ export default function DigitizingLandingPage() {
       <ServicesSection />
       <JourneySection timeline={timeline} />
       <TestimonialsSection testimonials={testimonials} />
-      <CTASection />
     </div>
   );
 
