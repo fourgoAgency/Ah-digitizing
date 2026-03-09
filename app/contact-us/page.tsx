@@ -8,6 +8,8 @@ const ContactFormBlue: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
+    subject: '',
     message: ''
   });
 
@@ -23,7 +25,7 @@ const ContactFormBlue: React.FC = () => {
   };
 
   return (
-    <div className="relative bg-blue-700 min-h-[500px] h-[60vh] py-16 px-4 overflow-hidden">
+    <div className="relative bg-blue-700 min-h-[700px] h-[80vh] pb-4 px-4 overflow-hidden">
       {/* Decorative circles */}
       <div className="absolute top-20 left-32 w-40 h-40 rounded-full border-2 border-blue-500 opacity-30"></div>
       <div className="absolute bottom-32 left-16 w-32 h-32 rounded-full border-2 border-blue-500 opacity-30"></div>
@@ -78,6 +80,34 @@ const ContactFormBlue: React.FC = () => {
 
     <div>
       <label className="text-white text-xs mb-1 block font-medium">
+        Contact number
+      </label>
+      <input
+        type="tel"
+        name="phone"
+        placeholder="+1 (123) 456-7890"
+        value={formData.phone}
+        onChange={handleChange}
+        className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-40"
+      />
+    </div>
+
+    <div>
+      <label className="text-white text-xs mb-1 block font-medium">
+        Subject
+      </label>
+      <input
+        type="text"
+        name="subject"
+        placeholder="What is this regarding?"
+        value={formData.subject}
+        onChange={handleChange}
+        className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-40"
+      />
+    </div>
+
+    <div>
+      <label className="text-white text-xs mb-1 block font-medium">
         How can we help?
       </label>
       <textarea
@@ -85,14 +115,14 @@ const ContactFormBlue: React.FC = () => {
         placeholder="Enter your message here"
         value={formData.message}
         onChange={handleChange}
-        rows={3}
+        rows={6}
         className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-40 resize-none"
       />
     </div>
 
     <button
       onClick={handleSubmit}
-      className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-2.5 rounded-full transition-colors duration-200 shadow-lg"
+      className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-2.5 rounded-xl transition-colors duration-200 shadow-lg"
     >
       Send my message
     </button>
