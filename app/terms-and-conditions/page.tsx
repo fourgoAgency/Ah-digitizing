@@ -1,26 +1,26 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import CTASection from "@/components/CTASection";
+
 // Disclaimers Data
 const disclaimersData = [
   {
     id: "intro",
     title: null,
     content:
-      "By Accessing DigitEMB Website, You Agree To Comply And Adhere To The Following Terms And Conditions Of Using This Website.",
+      "By Accessing AHDigitizing Website, You Agree To Comply And Adhere To The Following Terms And Conditions Of Using This Website.",
   },
   {
     id: "website-disclaimers",
     title: "Website Disclaimers",
     content:
-      "All information and materials contained in this website, including but not limited to text, visuals, links and the service mentioned on the website are provided as is. We do not claim that everything on this website and its contents are or will be completely accurate or understandable which must or not warrant secure and error-free. By using this website, you expressly agree that your use of the DigitEMB website is at your own risk.",
+      "All information and materials contained in this website, including but not limited to text, visuals, links and the service mentioned on the website are provided as is. We do not claim that everything on this website and its contents are or will be completely accurate or understandable which must or not warrant secure and error-free. By using this website, you expressly agree that your use of the AHDigitizing website is at your own risk.",
   },
   {
     id: "services",
     title: "Services",
     content:
-      "Due to the customized of our services, it is necessary to renew your artwork (principally digitizing or vectorization services) that includes any images that are based on the 3D effects or text inside it.. In view of the lacking or non-clarity in the color scheme and visible aspect of any kind prior to the production process, the first second or vectorization text should be verified to perfection; the digitizing or vectorization process. Please review the new artwork. DigitEMB shall not be appointed for any damages, inconvenience and/or inaccuracies to the garment or specialized file. The final end copies is also submitted to banner or permission from the customer. DigitEMB shall not be held accountable for any misused of any logo, website and/or digitized design.",
+      "Due to the customized of our services, it is necessary to renew your artwork (principally digitizing or vectorization services) that includes any images that are based on the 3D effects or text inside it.. In view of the lacking or non-clarity in the color scheme and visible aspect of any kind prior to the production process, the first second or vectorization text should be verified to perfection; the digitizing or vectorization process. Please review the new artwork. AHDigitizing shall not be appointed for any damages, inconvenience and/or inaccuracies to the garment or specialized file. The final end copies is also submitted to banner or permission from the customer. AHDigitizing shall not be held accountable for any misused of any logo, website and/or digitized design.",
   },
   {
     id: "modification",
@@ -38,7 +38,7 @@ const disclaimersData = [
     id: "limitation",
     title: "Limitation of Liability",
     content:
-      "DigitEMB always strives to ensure that the service provided on its website is accurate and delivered on time.",
+      "AHDigitizing always strives to ensure that the service provided on its website is accurate and delivered on time.",
   },
   {
     id: "free-order",
@@ -50,7 +50,7 @@ const disclaimersData = [
     id: "copyright",
     title: "Copyright",
     content:
-      "All the digitize and vectorize artwork at DigitEMB are exclusively owned by DigitEMB.",
+      "All the digitize and vectorize artwork at AHDigitizing are exclusively owned by AHDigitizing.",
   },
   {
     id: "return-policy",
@@ -102,9 +102,6 @@ export default function DisclaimersPage() {
           ))}
         </div>
       </div>
-
-      {/* CTA Section */}
-      <CTASection />
     </>
   );
 }
