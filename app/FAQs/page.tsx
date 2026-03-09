@@ -151,25 +151,25 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="mb-20">
-      <div className="flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-16">
-        {/* Left Side - Heading */}
-        <div className="lg:w-1/3 lg:sticky lg:top-32">
+      className="mb-16">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 pl-4 lg:pl-8">
+        {/* Left Side - Heading (Sticky & Centered) */}
+        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-center">
           <div className="relative">
-            <div className="absolute -left-4 top-0 w-1 h-16 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-blue-600 mb-3 pl-4">
+            <div className="absolute left-0 top-0 w-1 h-20 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-3 pl-5">
               {section.title}
             </h2>
           </div>
-          <p className="text-gray-500 text-sm lg:text-base pl-4 leading-relaxed">{section.subtitle}</p>
-          <div className="hidden lg:block mt-6 pl-4">
-            <div className="w-12 h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"></div>
+          <p className="text-gray-500 text-sm lg:text-base pl-5 leading-relaxed">{section.subtitle}</p>
+          <div className="hidden lg:block mt-5 pl-5">
+            <div className="w-[50%] h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"></div>
           </div>
         </div>
 
-        {/* Right Side - Questions (Centered) */}
-        <div className="lg:w-2/3">
-          <div className="space-y-4 max-w-2xl mx-auto">
+        {/* Right Side - Questions (Wider) */}
+        <div className="lg:w-3/4">
+          <div className="space-y-4 pr-4 lg:pr-8">
             {section.questions.map((item, index) => {
               const isOpen = openItem === item.id;
 
@@ -313,7 +313,7 @@ export default function FAQPage() {
       </motion.nav>
 
       {/* FAQ Content */}
-      <div className="max-w-5xl mx-auto px-4 py-12 lg:py-16">
+      <div className="py-12 lg:py-16">
         {faqData.map((section) => (
           <div
             className="scroll-mt-24 lg:scroll-mt-32"
