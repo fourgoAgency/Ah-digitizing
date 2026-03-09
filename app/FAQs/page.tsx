@@ -248,13 +248,12 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
-      <motion.nav
+      {/* <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
         className="bg-blue-600 text-white sticky top-0 z-50 shadow-lg overflow-x-hidden ">
         <div className="max-w-7xl mx-auto px-4 relative">
-          {/* LEFT ARROW — ONLY ≤ 440px */}
           <button
             onClick={() =>
               navRef.current?.scrollBy({ left: -150, behavior: "smooth" })
@@ -267,7 +266,6 @@ export default function FAQPage() {
             <ChevronLeft className="w-5 h-5 text-white" />
           </button>
 
-          {/* MENU */}
           <div
   ref={navRef}
   className="
@@ -297,7 +295,6 @@ export default function FAQPage() {
             ))}
           </div>
 
-          {/* RIGHT ARROW — ONLY ≤ 440px */}
           <button
             onClick={() =>
               navRef.current?.scrollBy({ left: 150, behavior: "smooth" })
@@ -310,7 +307,7 @@ export default function FAQPage() {
             <ChevronRight className="w-5 h-5 text-white" />
           </button>
         </div>
-      </motion.nav>
+      </motion.nav> */}
 
       {/* FAQ Content */}
       <div className="py-12 lg:py-16">
