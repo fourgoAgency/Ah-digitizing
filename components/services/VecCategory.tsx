@@ -30,7 +30,7 @@ export default function VecCategory() {
                 <p className="text-sm text-gray-600 mb-6">Convert raster images to high-quality vector graphics. Perfect for logos, artwork, and designs that need to scale infinitely without quality loss. Professional results suitable for any application.</p>
 
                 <div className="flex justify-center">
-                  <Link href="/get-qoute" className="inline-block px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-transparent hover:text-primary hover:border hover:border-primary transition-colors">
+                  <Link href="/get-quote" className="inline-block px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-transparent hover:text-primary hover:border hover:border-primary transition-colors">
                     Order Now
                   </Link>
                 </div>
