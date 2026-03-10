@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <rect width="240" height="240" fill="#f4f4f5"/>
+  <rect x="18" y="18" width="80" height="80" fill="#111827"/>
+  <rect x="30" y="30" width="56" height="56" fill="#f4f4f5"/>
+  <rect x="142" y="18" width="80" height="80" fill="#111827"/>
+  <rect x="154" y="30" width="56" height="56" fill="#f4f4f5"/>
+  <rect x="18" y="142" width="80" height="80" fill="#111827"/>
+  <rect x="30" y="154" width="56" height="56" fill="#f4f4f5"/>
+  <rect x="120" y="120" width="16" height="16" fill="#111827"/>
+  <rect x="144" y="120" width="16" height="16" fill="#111827"/>
+  <rect x="168" y="120" width="16" height="16" fill="#111827"/>
+  <rect x="120" y="144" width="16" height="16" fill="#111827"/>
+  <rect x="168" y="144" width="16" height="16" fill="#111827"/>
+  <rect x="120" y="168" width="16" height="16" fill="#111827"/>
+  <rect x="144" y="168" width="16" height="16" fill="#111827"/>
+  <rect x="168" y="168" width="16" height="16" fill="#111827"/>
+  <text x="120" y="226" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">PAYPAL QR</text>
+</svg>
