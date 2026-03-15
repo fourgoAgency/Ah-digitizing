@@ -223,7 +223,16 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    // Pull header behind the lightbox backdrop while it's open
+    const header = document.querySelector("header") as HTMLElement | null;
+    const stickyNav = document.querySelector(".sticky") as HTMLElement | null;
+    if (header) header.style.zIndex = "0";
+    if (stickyNav) stickyNav.style.zIndex = "0";
+    return () => {
+      document.body.style.overflow = "";
+      if (header) header.style.zIndex = "";
+      if (stickyNav) stickyNav.style.zIndex = "";
+    };
   }, []);
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
