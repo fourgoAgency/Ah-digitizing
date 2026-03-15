@@ -132,7 +132,7 @@ export default function AllProductsCatalog() {
         Browse our complete catalog of ready-to-order digitizing and vector services.
       </p>
 
-      <section className="mt-8 grid gap-6 lg:grid-cols-[240px_1fr] xl:grid-cols-[280px_1fr]">
+      <section className="mt-8 grid lg:grid-cols-[220px_1fr] xl:grid-cols-[240px_1fr]">
         <AllProductsFilter
           activeFilterCount={activeFilterCount}
           searchQuery={searchQuery}
