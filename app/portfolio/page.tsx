@@ -233,7 +233,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       {/* Backdrop */}
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[999] cursor-pointer"
+        className="fixed inset-0 z-[99999] cursor-pointer"
         style={{ background: "rgba(2, 6, 30, 0.93)", backdropFilter: "blur(20px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -245,7 +245,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       {/* Modal shell */}
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[1000] flex flex-col pointer-events-none"
+        className="fixed inset-0 z-[100000] flex flex-col pointer-events-none"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.98 }}
