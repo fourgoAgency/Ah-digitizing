@@ -51,7 +51,7 @@ export const products: Product[] = [
     price: 25,
     turnaround: "6-10 Hours",
     revisions: "Unlimited minor revisions",
-    heroImage: "/home-page/products picture/2.png",
+    heroImage: "/home-page/portfolio-embroidery/2nd.png",
     gallery: [
       "/home-page/products picture/2.png",
       "/home-page/portfolio-embroidery/2nd.jpg",
@@ -114,7 +114,7 @@ export const products: Product[] = [
     price: 35,
     turnaround: "8-14 Hours",
     revisions: "Unlimited minor revisions",
-    heroImage: "/home-page/products picture/5.png",
+    heroImage: "/home-page/portfolio-embroidery/5th.png",
     gallery: [
       "/home-page/products picture/5.png",
       "/services/3D PUFF after.svg",

@@ -1,51 +1,34 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { products, formatPrice } from "@/data/products";
+import { formatPrice, Product } from "@/data/products";
+import { Trash } from "lucide-react";
+
+type CartLine = {
+  product: Product;
+  qty: number;
+};
 
 type CartSidebarProps = {
   open: boolean;
   onClose: () => void;
+  items: CartLine[];
+  increaseQty: (id: number) => void;
+  decreaseQty: (id: number) => void;
+  deleteItem: (id: number) => void;
 };
 
-type CartLine = {
-  product: (typeof products)[number];
-  qty: number;
-};
-
-const initialItems: CartLine[] = [
-  { product: products[0], qty: 1 },
-  { product: products[2], qty: 2 },
-].filter((item) => item.product);
-
-export default function CartSidebar({ open, onClose }: CartSidebarProps) {
-  const [items, setItems] = useState<CartLine[]>(initialItems);
-
-  const increaseQty = (id: number) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.product.id === id ? { ...item, qty: item.qty + 1 } : item
-      )
-    );
-  };
-
-  const decreaseQty = (id: number) => {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.product.id !== id) return item;
-        const nextQty = Math.max(1, item.qty - 1);
-        return { ...item, qty: nextQty };
-      })
-    );
-  };
-
-  const deleteItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.product.id !== id));
-  };
-
+export default function CartSidebar({
+  open,
+  onClose,
+  items,
+  increaseQty,
+  decreaseQty,
+  deleteItem,
+}: CartSidebarProps) {
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -86,7 +69,7 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
 
           <motion.aside
             key="cart-panel"
-            className="fixed right-0 top-0 z-[130] flex h-full w-full max-w-md flex-col bg-white shadow-2xl"
+            className="fixed right-0 top-0 z-[130] flex h-full w-full max-w-xs flex-col bg-white shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -97,9 +80,9 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
                   Your Cart
                 </p>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h5 className="text-xl font-bold text-gray-900">
                   Items {items.length}
-                </h3>
+                </h5>
               </div>
               <button
                 onClick={onClose}
@@ -119,31 +102,28 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                   <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-gray-100">
                     <Image
                       src={item.product.heroImage}
-                      alt={item.product.title}
+                      alt={item.product.title.split(" ").slice(0, 2).join(" ")}
                       fill
                       className="object-cover"
                       sizes="80px"
                     />
                   </div>
                   <div className="flex flex-1 flex-col">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">
-                          {item.product.title}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {item.product.categoryLabel}
+                    <div className="flex items-start gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-sm font-semibold text-gray-900">
+                          {item.product.title.split(" ").slice(0, 2).join(" ")}
                         </p>
                         <p className="mt-1 text-[11px] font-semibold text-gray-400">
-                          Qty {item.qty}
+                          Qty
                         </p>
                       </div>
-                      <span className="text-sm font-semibold text-primary">
+                      <span className="shrink-0 text-sm font-semibold text-primary">
                         {formatPrice(item.product.price)}
                       </span>
                     </div>
-                    <div className="mt-auto flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 rounded-full border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700">
+                    <div className="mt-auto flex items-center justify-between">
+                      <div className="flex items-center rounded-full border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700">
                         <button
                           type="button"
                           className="h-6 w-6 rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
@@ -169,7 +149,7 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                         className="text-xs font-semibold text-gray-500 transition hover:text-gray-900"
                         onClick={() => deleteItem(item.product.id)}
                       >
-                        Delete
+                        <Trash size={14} />
                       </button>
                     </div>
                   </div>
@@ -213,4 +193,3 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
     </AnimatePresence>
   );
 }
-

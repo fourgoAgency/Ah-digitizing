@@ -83,6 +83,10 @@ export default function GetQoutePage() {
   const [formData, setFormData] = useState<GetQouteFormState>(initialGetQouteFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const previewFileUrl = useMemo(() => {
@@ -237,6 +241,20 @@ export default function GetQoutePage() {
 
     void sanitizedData;
 
+    setShowOtp(true);
+    setOtpCode("");
+    setOtpError("");
+  };
+
+  const handleOtpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const normalized = otpCode.trim();
+    if (normalized !== "123456") {
+      setOtpError("Invalid code. Please enter 123456.");
+      return;
+    }
+    setShowOtp(false);
+    setShowSuccess(true);
     setFormData(initialGetQouteFormState);
     setErrors({});
     setSubmitMessage("Quote submitted successfully.");
@@ -254,6 +272,26 @@ export default function GetQoutePage() {
       formData.height?.trim() ||
       formData.additionalNotes?.trim()
   );
+
+  if (showSuccess) {
+    return (
+      <main className="relative bg-slate-100 px-4 py-20 sm:px-6">
+        <section className="relative z-10 mx-auto max-w-2xl">
+          <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+            <h1 className="text-3xl font-bold text-gray-900">Submission Successful</h1>
+            <p className="mt-3 text-gray-600">We have received your quote request. Our team will get back to you soon.</p>
+            <button
+              type="button"
+              className="mt-6 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              onClick={() => setShowSuccess(false)}
+            >
+              Submit Another Quote
+            </button>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="relative bg-slate-100 px-4 py-14 sm:px-6">
@@ -679,6 +717,48 @@ export default function GetQoutePage() {
           )}
         </div>
       </section>
+
+      {showOtp && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">Verify Your Email</h2>
+              <button
+                type="button"
+                className="text-sm font-semibold text-gray-500 hover:text-gray-900"
+                onClick={() => setShowOtp(false)}
+              >
+                Close
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-gray-600">Enter the 6-digit code sent to your email.</p>
+            <p className="mt-1 text-xs text-gray-400">Use 123456 for now.</p>
+            <form className="mt-4 space-y-3" onSubmit={handleOtpSubmit}>
+              <input
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                value={otpCode}
+                onChange={(event) => {
+                  setOtpCode(event.target.value.replace(/\D/g, ""));
+                  setOtpError("");
+                }}
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 text-center text-lg font-semibold tracking-[0.3em] text-gray-900 focus:border-primary focus:outline-none"
+                placeholder="123456"
+              />
+              {otpError && <p className="text-sm text-red-600">{otpError}</p>}
+              <button
+                type="submit"
+                className="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              >
+                Verify &amp; Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
+
+
