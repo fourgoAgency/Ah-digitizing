@@ -51,7 +51,7 @@ export default function AllProductsFilter({
 
   return (
     <aside className="h-fit p-3 rounded-md border border-gray-200 bg-gray-200 lg:sticky lg:top-24 lg:left-[calc((100vw-100%)/-2)]">
-      <div className="flex items-center justify-between border-b border-gray-200  py-3">
+      <div className="flex items-center justify-between border-b border-gray-200 py-3">
         <h2 className="text-sm font-bold uppercase tracking-wide text-black">Filters</h2>
         {activeFilterCount > 0 && (
           <button

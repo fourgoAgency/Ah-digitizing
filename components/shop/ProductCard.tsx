@@ -12,7 +12,6 @@ type ProductCardProps = {
 export default function ProductCard({
   product,
   imageVariant = "default",
-  showDescription = true,
 }: ProductCardProps) {
   const imageWrapperClass =
     imageVariant === "largeSquare"
