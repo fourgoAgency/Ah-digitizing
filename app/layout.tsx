@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./global.css";
 import Header from "@/components/Header";
+import { CartSidebarProvider } from "@/components/shop/CartSidebarContext";
 import Footer from "@/components/Footer";
 
 const geistSans = Geist({
@@ -30,11 +31,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
-        <Footer />
+        <CartSidebarProvider>
+          <Header />
+          {children}
+          <Footer />
+        </CartSidebarProvider>
       </body>
     </html>
   );
 }
-

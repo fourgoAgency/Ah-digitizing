@@ -34,7 +34,7 @@ export default function EmbCategory() {
                 <p className="text-sm text-gray-600">Transform any image or logo into a high quality, scalable embroidery-ready file. Our digitizing service produces stitch-accurate files suitable for production on any machine.</p>
 
                 <div className="flex justify-center items-end mb-3 mt-auto">
-                  <Link href="/get-qoute" className="inline-block px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-transparent hover:border-primary hover:text-primary hover:border transition-colors">
+                  <Link href="/get-quote" className="inline-block px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-transparent hover:border-primary hover:text-primary hover:border transition-colors">
                     Order Now
                   </Link>
                 </div>

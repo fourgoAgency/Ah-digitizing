@@ -17,7 +17,8 @@ import { ChevronDown, Menu } from "lucide-react";
 import { PiCarThin } from "react-icons/pi";
 import { BiCart } from "react-icons/bi";
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { useCartSidebar } from "@/components/shop/CartSidebarContext";
 
 /* ================= TOP NAVBAR ================= */
 function TopNavbar() {
@@ -56,7 +57,7 @@ const rasterToVectorItems = [
   { label: "Color Separation", href: "/services/raster-to-vector/color-separation" },
 ];
 
-function DesktopMenu({ isSticky }: { isSticky: boolean }) {
+function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; onCartClick: () => void; cartCount: number }) {
   return (
     <motion.nav
       initial={false}
@@ -226,9 +227,15 @@ function DesktopMenu({ isSticky }: { isSticky: boolean }) {
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center">
-        <Link href="/cart" className="">
+                <button
+          type="button"
+          onClick={onCartClick}
+          className="relative transition hover:text-white/90"
+          aria-label="Open cart"
+        >
+          <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
           <BiCart size={24} />
-        </Link>
+        </button>
         <Link href="/login" className="">
           <FaUser />
         </Link>
@@ -239,7 +246,7 @@ function DesktopMenu({ isSticky }: { isSticky: boolean }) {
 
 
 /* ================= MOBILE MENU ================= */
-function MobileMenu() {
+function MobileMenu({ cartCount }: { cartCount: number }) {
   const [open, setOpen] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
@@ -275,6 +282,10 @@ function MobileMenu() {
               </Link>
               <Link href="/shop" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Store
+              </Link>
+                            <Link href="/cart" className="flex items-center justify-between py-2 text-sm font-medium text-white hover:text-muted">
+                <span>Cart</span>
+                <span className="min-w-[1.1rem] rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
               </Link>
               <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-muted">
                 Blogs
@@ -369,6 +380,8 @@ function MobileMenu() {
 
 /* ================= MAIN HEADER ================= */
 export default function Header() {
+  const { openCart, items } = useCartSidebar();
+  const cartCount = items.reduce((sum, item) => sum + item.qty, 0);
   const [hoveredButton, setHoveredButton] = useState<'free' | 'quote' | null>(null);
   const [isSticky, setIsSticky] = useState(false);
 
@@ -435,17 +448,29 @@ export default function Header() {
             </Button>
           </div>
 
-          <MobileMenu />
+          <MobileMenu cartCount={cartCount} />
         </div>
         {/* ===== SECOND ROW (DESKTOP MENU) ===== */}
 
       </header>
 
       <div className="hidden md:flex sticky top-0 z-50 justify-center bg-white">
-        <DesktopMenu isSticky={isSticky} />
+        <DesktopMenu isSticky={isSticky} onCartClick={openCart} cartCount={cartCount} />
       </div>
-
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

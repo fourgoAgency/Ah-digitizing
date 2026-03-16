@@ -14,108 +14,108 @@ type PortfolioItem = {
 
 const portfolioData: PortfolioItem[] = [
   // Embroidery - 50 items
-  { id: 1, title: "Custom Logo Digitizing", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 2, title: "Pet Portrait Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 3, title: "Sports Team Logo", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 4, title: "Fashion Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 5, title: "Hand Embroidery Closeup", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 6, title: "Embroidery Tools Flatlay", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 7, title: "Thread Texture Study", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 8, title: "Custom Name Embroidery", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 9, title: "Floral Embroidery Design", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 10, title: "Logo Embroidery Mockup", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 11, title: "Embroidery Close Detail", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 12, title: "Embroidery Hoop Art", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 13, title: "Monogram Patch Design", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 14, title: "Jacket Back Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 15, title: "Cap Logo Stitching", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 16, title: "Uniform Badge Embroidery", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 17, title: "Decorative Stitch Pattern", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 18, title: "3D Puff Embroidery", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 19, title: "Gold Thread Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 20, title: "Applique Patch Work", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 21, title: "Chenille Letter Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 22, title: "Towel Monogramming", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 23, title: "Quilt Embroidery Border", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 24, title: "Sleeve Emblem Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 25, title: "Pocket Logo Embroidery", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 26, title: "Letterman Jacket Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 27, title: "Scout Badge Collection", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 28, title: "Wedding Handkerchief", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 29, title: "Christmas Stocking Design", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 30, title: "Baby Blanket Border", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 31, title: "Polo Shirt Logo", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 32, title: "Chef Coat Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 33, title: "Medical Scrubs Badge", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 34, title: "Firefighter Patch", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 35, title: "Military Unit Insignia", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 36, title: "Biker Club Back Patch", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 37, title: "Band Logo Embroidery", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 38, title: "School Crest Badge", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 39, title: "Hospitality Name Tag", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 40, title: "Golf Tournament Logo", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 41, title: "Yacht Club Emblem", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 42, title: "Tennis Club Badge", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 43, title: "Soccer Jersey Number", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 44, title: "Basketball Team Patch", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 45, title: "Martial Arts Belt Rank", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
-  { id: 46, title: "Dance Studio Logo", path: "/home-page/portfolio-embroidery/1st.jpg", service: "Embroidery" },
-  { id: 47, title: "Music School Badge", path: "/home-page/portfolio-embroidery/2nd.jpg", service: "Embroidery" },
-  { id: 48, title: "Art Class Patch", path: "/home-page/portfolio-embroidery/3rd.jpg", service: "Embroidery" },
-  { id: 49, title: "Camp Logo Embroidery", path: "/home-page/portfolio-embroidery/4th.jpg", service: "Embroidery" },
-  { id: 50, title: "Volunteer Group Badge", path: "/home-page/portfolio-embroidery/5th.jpg", service: "Embroidery" },
+  { id: 1, title: "Custom Logo Digitizing", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
+  { id: 2, title: "Pet Portrait Embroidery", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
+  { id: 3, title: "Sports Team Logo", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
+  { id: 4, title: "Fashion Embroidery", path: "/portfolio_page_images/4.svg", service: "Embroidery" },
+  { id: 5, title: "Hand Embroidery Closeup", path: "/portfolio_page_images/5.svg", service: "Embroidery" },
+  { id: 6, title: "Embroidery Tools Flatlay", path: "/portfolio_page_images/6.svg", service: "Embroidery" },
+  { id: 7, title: "Thread Texture Study", path: "/portfolio_page_images/7.svg", service: "Embroidery" },
+  { id: 8, title: "Custom Name Embroidery", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
+  { id: 9, title: "Floral Embroidery Design", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
+  { id: 10, title: "Logo Embroidery Mockup", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
+  { id: 11, title: "Embroidery Close Detail", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
+  { id: 12, title: "Embroidery Hoop Art", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
+  { id: 13, title: "Monogram Patch Design", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
+  { id: 14, title: "Jacket Back Embroidery", path: "/portfolio_page_images/4.svg", service: "Embroidery" },
+  { id: 15, title: "Cap Logo Stitching", path: "/portfolio_page_images/5.svg", service: "Embroidery" },
+  { id: 16, title: "Uniform Badge Embroidery", path: "/portfolio_page_images/6.svg", service: "Embroidery" },
+  { id: 17, title: "Decorative Stitch Pattern", path: "/portfolio_page_images/7.svg", service: "Embroidery" },
+  { id: 18, title: "3D Puff Embroidery", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
+  { id: 19, title: "Gold Thread Embroidery", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
+  { id: 20, title: "Applique Patch Work", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
+  { id: 21, title: "Chenille Letter Patch", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
+  { id: 22, title: "Towel Monogramming", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
+  { id: 23, title: "Quilt Embroidery Border", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
+  { id: 24, title: "Sleeve Emblem Embroidery", path: "/portfolio_page_images/4.svg", service: "Embroidery" },
+  { id: 25, title: "Pocket Logo Embroidery", path: "/portfolio_page_images/5.svg", service: "Embroidery" },
+  { id: 26, title: "Letterman Jacket Patch", path: "/portfolio_page_images/6.svg", service: "Embroidery" },
+  { id: 27, title: "Scout Badge Collection", path: "/portfolio_page_images/7.svg", service: "Embroidery" },
+  { id: 28, title: "Wedding Handkerchief", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
+  { id: 29, title: "Christmas Stocking Design", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
+  { id: 30, title: "Baby Blanket Border", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
+  { id: 31, title: "Polo Shirt Logo", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
+  { id: 32, title: "Chef Coat Embroidery", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
+  { id: 33, title: "Medical Scrubs Badge", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
+  { id: 34, title: "Firefighter Patch", path: "/portfolio_page_images/4.svg", service: "Embroidery" },
+  { id: 35, title: "Military Unit Insignia", path: "/portfolio_page_images/5.svg", service: "Embroidery" },
+  { id: 36, title: "Biker Club Back Patch", path: "/portfolio_page_images/6.svg", service: "Embroidery" },
+  { id: 37, title: "Band Logo Embroidery", path: "/portfolio_page_images/7.svg", service: "Embroidery" },
+  { id: 38, title: "School Crest Badge", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
+  { id: 39, title: "Hospitality Name Tag", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
+  { id: 40, title: "Golf Tournament Logo", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
+  { id: 41, title: "Yacht Club Emblem", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
+  { id: 42, title: "Tennis Club Badge", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
+  { id: 43, title: "Soccer Jersey Number", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
+  { id: 44, title: "Basketball Team Patch", path: "/portfolio_page_images/4.svg", service: "Embroidery" },
+  { id: 45, title: "Martial Arts Belt Rank", path: "/portfolio_page_images/5.svg", service: "Embroidery" },
+  { id: 46, title: "Dance Studio Logo", path: "/portfolio_page_images/6.svg", service: "Embroidery" },
+  { id: 47, title: "Music School Badge", path: "/portfolio_page_images/7.svg", service: "Embroidery" },
+  { id: 48, title: "Art Class Patch", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
+  { id: 49, title: "Camp Logo Embroidery", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
+  { id: 50, title: "Volunteer Group Badge", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
 
   // Vector - 50 items
-  { id: 51, title: "Vintage T-Shirt Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 52, title: "Vintage Car Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 53, title: "Abstract Vector Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 54, title: "Corporate Branding", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 55, title: "Mascot Vector Design", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 56, title: "Vector Pattern Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 57, title: "Illustration Concept Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 58, title: "Tech Icon Vector Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 59, title: "Logo Vector Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 60, title: "Flat Vector UI Icons", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 61, title: "Infographic Vector Design", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 62, title: "Vector Character Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 63, title: "Minimalist Line Art", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 64, title: "Geometric Pattern Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 65, title: "Watercolor Vector Portrait", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 66, title: "Isometric Building Set", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 67, title: "Botanical Vector Illustration", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 68, title: "Sports Team Crest", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 69, title: "Food Menu Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 70, title: "Travel Badge Collection", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 71, title: "Animated Character Sheet", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 72, title: "Product Packaging Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 73, title: "Comic Book Style Art", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 74, title: "Gradient Mesh Portrait", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 75, title: "Stencil Art Vector", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 76, title: "Retro Poster Design", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 77, title: "Business Card Template", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 78, title: "Social Media Icons", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 79, title: "App Interface Mockup", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 80, title: "Website Wireframe Set", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 81, title: "Flowchart Diagram", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 82, title: "Timeline Infographic", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 83, title: "Map Illustration", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 84, title: "Weather Icon Set", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 85, title: "Shopping Cart Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 86, title: "Education Icons", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 87, title: "Medical Icons", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 88, title: "Finance Chart Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 89, title: "Real Estate Icons", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 90, title: "Construction Symbols", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 91, title: "Transportation Icons", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 92, title: "Animal Vector Illustration", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 93, title: "Nature Landscape Vector", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 94, title: "Space Galaxy Illustration", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 95, title: "Ocean Life Vector Set", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 96, title: "Festival Poster Vector", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
-  { id: 97, title: "Holiday Greeting Card", path: "/home-page/portfolio-vector/3rd.jpg", service: "Vector" },
-  { id: 98, title: "Birthday Invitation Design", path: "/home-page/portfolio-vector/4th.jpg", service: "Vector" },
-  { id: 99, title: "Wedding Invitation Vector", path: "/home-page/portfolio-vector/1st.jpg", service: "Vector" },
-  { id: 100, title: "Certificate Template", path: "/home-page/portfolio-vector/2nd.jpg", service: "Vector" },
+  { id: 51, title: "Vintage T-Shirt Design", path: "/portfolio_page_images/1.svg", service: "Vector" },
+  { id: 52, title: "Vintage Car Illustration", path: "/portfolio_page_images/2.svg", service: "Vector" },
+  { id: 53, title: "Abstract Vector Art", path: "/portfolio_page_images/3.svg", service: "Vector" },
+  { id: 54, title: "Corporate Branding", path: "/portfolio_page_images/4.svg", service: "Vector" },
+  { id: 55, title: "Mascot Vector Design", path: "/portfolio_page_images/5.svg", service: "Vector" },
+  { id: 56, title: "Vector Pattern Design", path: "/portfolio_page_images/6.svg", service: "Vector" },
+  { id: 57, title: "Illustration Concept Art", path: "/portfolio_page_images/7.svg", service: "Vector" },
+  { id: 58, title: "Tech Icon Vector Set", path: "/portfolio_page_images/8.svg", service: "Vector" },
+  { id: 59, title: "Logo Vector Mockup", path: "/portfolio_page_images/9.svg", service: "Vector" },
+  { id: 60, title: "Flat Vector UI Icons", path: "/portfolio_page_images/10.svg", service: "Vector" },
+  { id: 61, title: "Infographic Vector Design", path: "/portfolio_page_images/1.svg", service: "Vector" },
+  { id: 62, title: "Vector Character Illustration", path: "/portfolio_page_images/2.svg", service: "Vector" },
+  { id: 63, title: "Minimalist Line Art", path: "/portfolio_page_images/3.svg", service: "Vector" },
+  { id: 64, title: "Geometric Pattern Vector", path: "/portfolio_page_images/4.svg", service: "Vector" },
+  { id: 65, title: "Watercolor Vector Portrait", path: "/portfolio_page_images/5.svg", service: "Vector" },
+  { id: 66, title: "Isometric Building Set", path: "/portfolio_page_images/6.svg", service: "Vector" },
+  { id: 67, title: "Botanical Vector Illustration", path: "/portfolio_page_images/7.svg", service: "Vector" },
+  { id: 68, title: "Sports Team Crest", path: "/portfolio_page_images/8.svg", service: "Vector" },
+  { id: 69, title: "Food Menu Icons", path: "/portfolio_page_images/9.svg", service: "Vector" },
+  { id: 70, title: "Travel Badge Collection", path: "/portfolio_page_images/10.svg", service: "Vector" },
+  { id: 71, title: "Animated Character Sheet", path: "/portfolio_page_images/1.svg", service: "Vector" },
+  { id: 72, title: "Product Packaging Vector", path: "/portfolio_page_images/2.svg", service: "Vector" },
+  { id: 73, title: "Comic Book Style Art", path: "/portfolio_page_images/3.svg", service: "Vector" },
+  { id: 74, title: "Gradient Mesh Portrait", path: "/portfolio_page_images/4.svg", service: "Vector" },
+  { id: 75, title: "Stencil Art Vector", path: "/portfolio_page_images/5.svg", service: "Vector" },
+  { id: 76, title: "Retro Poster Design", path: "/portfolio_page_images/6.svg", service: "Vector" },
+  { id: 77, title: "Business Card Template", path: "/portfolio_page_images/7.svg", service: "Vector" },
+  { id: 78, title: "Social Media Icons", path: "/portfolio_page_images/8.svg", service: "Vector" },
+  { id: 79, title: "App Interface Mockup", path: "/portfolio_page_images/9.svg", service: "Vector" },
+  { id: 80, title: "Website Wireframe Set", path: "/portfolio_page_images/10.svg", service: "Vector" },
+  { id: 81, title: "Flowchart Diagram", path: "/portfolio_page_images/1.svg", service: "Vector" },
+  { id: 82, title: "Timeline Infographic", path: "/portfolio_page_images/2.svg", service: "Vector" },
+  { id: 83, title: "Map Illustration", path: "/portfolio_page_images/3.svg", service: "Vector" },
+  { id: 84, title: "Weather Icon Set", path: "/portfolio_page_images/4.svg", service: "Vector" },
+  { id: 85, title: "Shopping Cart Icons", path: "/portfolio_page_images/5.svg", service: "Vector" },
+  { id: 86, title: "Education Icons", path: "/portfolio_page_images/6.svg", service: "Vector" },
+  { id: 87, title: "Medical Icons", path: "/portfolio_page_images/7.svg", service: "Vector" },
+  { id: 88, title: "Finance Chart Vector", path: "/portfolio_page_images/8.svg", service: "Vector" },
+  { id: 89, title: "Real Estate Icons", path: "/portfolio_page_images/9.svg", service: "Vector" },
+  { id: 90, title: "Construction Symbols", path: "/portfolio_page_images/10.svg", service: "Vector" },
+  { id: 91, title: "Transportation Icons", path: "/portfolio_page_images/1.svg", service: "Vector" },
+  { id: 92, title: "Animal Vector Illustration", path: "/portfolio_page_images/2.svg", service: "Vector" },
+  { id: 93, title: "Nature Landscape Vector", path: "/portfolio_page_images/3.svg", service: "Vector" },
+  { id: 94, title: "Space Galaxy Illustration", path: "/portfolio_page_images/4.svg", service: "Vector" },
+  { id: 95, title: "Ocean Life Vector Set", path: "/portfolio_page_images/5.svg", service: "Vector" },
+  { id: 96, title: "Festival Poster Vector", path: "/portfolio_page_images/6.svg", service: "Vector" },
+  { id: 97, title: "Holiday Greeting Card", path: "/portfolio_page_images/7.svg", service: "Vector" },
+  { id: 98, title: "Birthday Invitation Design", path: "/portfolio_page_images/8.svg", service: "Vector" },
+  { id: 99, title: "Wedding Invitation Vector", path: "/portfolio_page_images/9.svg", service: "Vector" },
+  { id: 100, title: "Certificate Template", path: "/portfolio_page_images/10.svg", service: "Vector" },
 ];
 
 type CategoryConfig = {
@@ -181,151 +181,161 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
   const prevIndexRef = useRef(currentIndex);
   const directionRef = useRef(0);
-
   if (currentIndex !== prevIndexRef.current) {
     directionRef.current = currentIndex > prevIndexRef.current ? 1 : -1;
     prevIndexRef.current = currentIndex;
   }
-
   const direction = directionRef.current;
+
   const isScrollingRef = useRef(false);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (thumbStripRef.current) {
-      const activeThumb = thumbStripRef.current.children[currentIndex] as HTMLElement;
-      if (activeThumb) {
-        const container = thumbStripRef.current;
-        const thumbLeft = activeThumb.offsetLeft;
-        const thumbWidth = activeThumb.offsetWidth;
-        const containerWidth = container.offsetWidth;
-        container.scrollTo({
-          left: thumbLeft - (containerWidth - thumbWidth) / 2,
-          behavior: "smooth",
-        });
-      }
+    const container = thumbStripRef.current;
+    if (!container) return;
+    const activeThumb = container.children[currentIndex] as HTMLElement;
+    if (activeThumb) {
+      container.scrollTo({
+        left: activeThumb.offsetLeft - (container.offsetWidth - activeThumb.offsetWidth) / 2,
+        behavior: "smooth",
+      });
     }
   }, [currentIndex]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") { if (hasPrev) onPrev(); }
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") { if (hasNext) onNext(); }
+      if (e.key === "ArrowLeft") { if (hasPrev) onPrev(); }
+      if (e.key === "ArrowRight") { if (hasNext) onNext(); }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrev, onNext, hasPrev, hasNext]);
 
-  const handleThumbWheel = useCallback((e: React.WheelEvent) => {
+  const handleWheel = useCallback((e: React.WheelEvent) => {
     if (isScrollingRef.current) return;
     e.preventDefault();
     isScrollingRef.current = true;
     if (e.deltaY > 0) { if (hasNext) onNext(); }
     else { if (hasPrev) onPrev(); }
-    setTimeout(() => { isScrollingRef.current = false; }, 300);
-  }, [hasNext, hasPrev, onNext, onPrev]);
-
-  const handleImageWheel = useCallback((e: React.WheelEvent) => {
-    if (isScrollingRef.current) return;
-    e.preventDefault();
-    isScrollingRef.current = true;
-    if (e.deltaY > 0) { if (hasNext) onNext(); }
-    else { if (hasPrev) onPrev(); }
-    setTimeout(() => { isScrollingRef.current = false; }, 300);
+    setTimeout(() => { isScrollingRef.current = false; }, 350);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    // Pull header behind the lightbox backdrop while it's open
+    const header = document.querySelector("header") as HTMLElement | null;
+    const stickyNav = document.querySelector(".sticky") as HTMLElement | null;
+    if (header) header.style.zIndex = "0";
+    if (stickyNav) stickyNav.style.zIndex = "0";
+    return () => {
+      document.body.style.overflow = "";
+      if (header) header.style.zIndex = "";
+      if (stickyNav) stickyNav.style.zIndex = "";
+    };
   }, []);
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
   return (
     <AnimatePresence>
+      {/* Backdrop */}
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[999] cursor-pointer" style={{background: "linear-gradient(135deg, rgba(10,33,192,0.82) 0%, rgba(4,12,60,0.92) 50%, rgba(0,0,0,0.88) 100%)", backdropFilter: "blur(12px)"}}
+        className="fixed inset-0 z-[99999] cursor-pointer"
+        style={{ background: "rgba(2, 6, 30, 0.93)", backdropFilter: "blur(20px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        transition={{ duration: 0.3 }}
         onClick={onClose}
       />
+
+      {/* Modal shell */}
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[1000] flex flex-col items-center justify-center pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-[100000] flex flex-col pointer-events-none"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
       >
+        {/* TOP BAR */}
         <div
-          className="pointer-events-auto w-full max-w-5xl px-4 mb-4 flex items-center justify-between gap-4"
+          className="pointer-events-auto flex-shrink-0 flex items-center justify-between px-5 md:px-8 py-4"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center gap-3">
-            <span className="bg-white/10 backdrop-blur border border-white/15 text-white/90 text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full">
-              {String(currentIndex + 1).padStart(2, "0")}
-              <span className="text-white/40 mx-1">/</span>
-              {String(items.length).padStart(2, "0")}
-            </span>
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5">
+              <span className="text-white text-xs font-bold tabular-nums">{currentIndex + 1}</span>
+              <span className="text-white/30 text-xs">/</span>
+              <span className="text-white/40 text-xs tabular-nums">{items.length}</span>
+            </div>
             <AnimatePresence mode="wait">
-              <motion.p
+              <motion.span
                 key={item.id}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="text-white font-semibold text-sm tracking-wide truncate max-w-[220px]"
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 6 }}
+                transition={{ duration: 0.18 }}
+                className="text-white/70 text-sm font-medium truncate max-w-[160px] md:max-w-xs"
               >
                 {item.title}
-              </motion.p>
+              </motion.span>
             </AnimatePresence>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:block w-32 h-1 bg-white/15 rounded-full overflow-hidden">
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <div className="hidden sm:block w-28 h-[3px] bg-white/10 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-white rounded-full"
+                className="h-full bg-white/60 rounded-full"
                 animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
               />
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 border border-white/20 text-white/80
-                flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-200 cursor-pointer"
+              className="w-9 h-9 rounded-full border border-white/15 bg-white/8 text-white/60
+                flex items-center justify-center hover:bg-white hover:text-gray-900 hover:border-white
+                transition-all duration-200 cursor-pointer flex-shrink-0"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
         </div>
 
+        {/* IMAGE STAGE */}
         <div
-          className="pointer-events-auto flex items-stretch gap-2 w-full max-w-5xl px-4"
+          className="pointer-events-auto flex-1 min-h-0 flex items-center justify-center px-4 md:px-8 gap-3 md:gap-4"
           onClick={(e) => e.stopPropagation()}
+          onWheel={handleWheel}
         >
+          {/* Prev button */}
           <button
             onClick={onPrev}
             disabled={!hasPrev}
-            className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
-              bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
-              ${hasPrev ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white" : "cursor-default text-white/15"}`}
-            style={{ minHeight: "min(72vh, 600px)" }}
+            className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center
+              border transition-all duration-200
+              ${hasPrev
+                ? "bg-white/10 border-white/20 text-white hover:bg-white hover:text-gray-900 hover:border-white cursor-pointer"
+                : "bg-white/4 border-white/8 text-white/20 cursor-default"
+              }`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
 
+          {/* Image container */}
           <div
-            onWheel={handleImageWheel}
-            className="relative flex-1 rounded-2xl overflow-hidden border border-blue-900/40" style={{ background: "linear-gradient(145deg, #060d2e 0%, #0a1a4a 40%, #0d1f5c 70%, #061028 100%)" ,height: "min(72vh, 600px)" }}
-            // style={{ height: "min(72vh, 600px)" }}
+            className="relative flex-1 min-w-0 rounded-2xl overflow-hidden"
+            style={{
+              maxWidth: "min(100%, 780px)",
+              height: "clamp(300px, 65vh, 660px)",
+              background: "linear-gradient(160deg, #07112e 0%, #0b1e52 50%, #06102e 100%)",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
+            }}
           >
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
@@ -335,77 +345,83 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-                className="absolute inset-0 flex items-center justify-center"
+                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                className="absolute inset-0 flex items-center justify-center p-3"
               >
                 <Image
                   src={item.path}
                   width={900}
                   height={700}
                   alt={item.title}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain drop-shadow-2xl"
                   unoptimized
                 />
               </motion.div>
             </AnimatePresence>
-            <div onClick={hasPrev ? onPrev : undefined} className={`absolute left-0 top-0 bottom-0 w-1/5 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
-            <div onClick={hasNext ? onNext : undefined} className={`absolute right-0 top-0 bottom-0 w-1/5 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
+            <div className="absolute inset-0 rounded-2xl pointer-events-none"
+              style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.2)" }} />
+            <div onClick={hasPrev ? onPrev : undefined}
+              className={`absolute left-0 top-0 bottom-0 w-1/4 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
+            <div onClick={hasNext ? onNext : undefined}
+              className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
           </div>
 
+          {/* Next button */}
           <button
             onClick={onNext}
             disabled={!hasNext}
-            className={`flex-shrink-0 w-11 rounded-xl flex items-center justify-center
-              bg-white/8 border border-white/10 backdrop-blur transition-all duration-200
-              ${hasNext ? "hover:bg-white/20 hover:border-white/30 cursor-pointer text-white" : "cursor-default text-white/15"}`}
-            style={{ minHeight: "min(72vh, 600px)" }}
+            className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center
+              border transition-all duration-200
+              ${hasNext
+                ? "bg-white/10 border-white/20 text-white hover:bg-white hover:text-gray-900 hover:border-white cursor-pointer"
+                : "bg-white/4 border-white/8 text-white/20 cursor-default"
+              }`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
         </div>
 
+        {/* BOTTOM: THUMBNAILS */}
         <div
-          className="pointer-events-auto w-full max-w-5xl px-4 mt-4"
+          className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-3 pb-5"
           onClick={(e) => e.stopPropagation()}
         >
           <div
             ref={thumbStripRef}
-            onWheel={handleThumbWheel}
-            className="flex gap-2 overflow-x-auto py-1 px-1"
+            onWheel={handleWheel}
+            className="flex gap-2 overflow-x-auto px-1 pb-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {items.map((thumb, idx) => (
               <button
                 key={thumb.id}
                 onClick={() => onJump(idx)}
-                className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-250 outline-none
-                  ${idx === currentIndex ? "ring-2 ring-white opacity-100 scale-105" : "opacity-40 hover:opacity-70 hover:scale-105"}`}
-                style={{ width: 72, height: 52 }}
+                className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none transition-all duration-200"
+                style={{
+                  width: "clamp(44px, 9vw, 68px)",
+                  height: "clamp(32px, 6.5vw, 50px)",
+                  opacity: idx === currentIndex ? 1 : 0.35,
+                  transform: idx === currentIndex ? "scale(1.08)" : "scale(1)",
+                  boxShadow: idx === currentIndex
+                    ? "0 0 0 2px rgba(255,255,255,0.8), 0 4px 16px rgba(0,0,0,0.5)"
+                    : "none",
+                }}
               >
-                <Image src={thumb.path} width={100} height={80} alt={thumb.title} className="w-full h-full object-cover" unoptimized />
-                {idx === currentIndex && (
-                  <motion.div layoutId="thumb-active-dot" className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow" />
-                )}
+                <Image src={thumb.path} width={100} height={80} alt={thumb.title}
+                  className="w-full h-full object-cover" unoptimized />
               </button>
             ))}
           </div>
-          <div className="flex justify-center mt-3 gap-1">
-            {items.length <= 20 ? (
-              items.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => onJump(idx)}
-                  className={`rounded-full transition-all duration-200 cursor-pointer
-                    ${idx === currentIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/30 hover:bg-white/60"}`}
-                />
-              ))
-            ) : (
-              <div className="w-48 h-1 bg-white/15 rounded-full overflow-hidden">
-                <motion.div className="h-full bg-white/60 rounded-full" animate={{ width: `${progressPct}%` }} transition={{ duration: 0.3, ease: "easeOut" }} />
-              </div>
-            )}
+          <div className="mt-3 flex justify-center">
+            <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-white/50 rounded-full"
+                animate={{ width: `${progressPct}%` }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              />
+            </div>
           </div>
         </div>
       </motion.div>
@@ -424,12 +440,20 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
     whileHover={{ scale: 1.03 }}
   >
     <div className="relative w-full overflow-hidden rounded-2xl">
-      <Image src={item.path} width={500} height={500} alt={item.title} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
+      <Image
+        src={item.path}
+        width={500}
+        height={500}
+        alt={item.title}
+        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
         <span className="text-white text-xs font-semibold tracking-widest uppercase flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            <line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <line x1="11" y1="8" x2="11" y2="14" />
+            <line x1="8" y1="11" x2="14" y2="11" />
           </svg>
           View
         </span>
@@ -480,8 +504,7 @@ const ProductGrid = ({
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  BOTTOM LAYER — Fixed category banners (z-0, always behind the top layer)
-//  These remain stationary in the viewport while the top layer scrolls over them.
+//  BOTTOM LAYER — Fixed category banners
 // ═══════════════════════════════════════════════════════════════════════════════
 const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number }) => (
   <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -494,10 +517,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         transition={{ duration: 0 }}
       >
         {/* Ghost watermark text */}
-        <div
-          className="absolute inset-0 flex items-center justify-center select-none"
-          aria-hidden="true"
-        >
+        <div className="absolute inset-0 flex items-center justify-center select-none" aria-hidden="true">
           <span
             className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
             style={{ fontSize: "clamp(60px, 14vw, 180px)" }}
@@ -506,12 +526,12 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
           </span>
         </div>
 
-        {/* Decorative ambient blobs */}
+        {/* Ambient blobs */}
         <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl" />
         <div className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.02] blur-3xl" />
 
-        {/* Banner text content (centered) */}
+        {/* Banner text */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <motion.p
             className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
@@ -534,20 +554,6 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
           >
             {config.description}
           </motion.p>
-
-          {/* Subtle scroll hint that appears in the banner */}
-          {/* <motion.div
-            className="absolute bottom-8 flex flex-col items-center gap-1.5"
-            animate={{ opacity: i === activeBannerIndex ? 0.4 : 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <span className="text-white text-[10px] uppercase tracking-[0.25em]">scroll</span>
-            <motion.div
-              className="w-px h-6 bg-white/50 origin-top"
-              animate={{ scaleY: [0, 1, 0] }}
-              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div> */}
         </div>
       </motion.div>
     ))}
@@ -555,9 +561,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  TOP LAYER — Category section (transparent spacer + opaque product grid)
-//  The spacer is fully transparent, revealing the fixed banner behind.
-//  The grid has a solid background that slides over the banner as you scroll.
+//  TOP LAYER — Category section
 // ═══════════════════════════════════════════════════════════════════════════════
 const CategorySection = ({
   config,
@@ -585,10 +589,10 @@ const CategorySection = ({
 
   return (
     <div>
-      {/* ── TRANSPARENT SPACER — banner shows through here ── */}
+      {/* Transparent spacer — banner shows through */}
       <div ref={spacerRef} className="h-[70vh]" aria-hidden="true" />
 
-      {/* ── OPAQUE PRODUCT GRID ── */}
+      {/* Opaque product grid */}
       <div
         className="relative z-20 bg-gray-50 py-14 px-4"
         style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
@@ -604,12 +608,6 @@ const CategorySection = ({
             onCardClick={openLightbox}
             visibleCount={visibleCount}
           />
-          {/*
-           * ── SWITCH SENTINEL ──────────────────────────────────────────────────
-           * Placed midway through the grid. When this crosses the viewport the
-           * parent switches the bottom banner to the NEXT category — so by the
-           * time the transparent spacer below is revealed, the banner is ready.
-           */}
           <div ref={gridMidRef} aria-hidden="true" />
           {hasMoreItems && (
             <div className="flex justify-center mt-10">
@@ -641,27 +639,19 @@ const CategorySection = ({
 // ─── Main Export ───────────────────────────────────────────────────────────────
 export default function PortfolioSection() {
   const spacerRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
-  // gridMidRefs — sentinel divs placed mid-grid; crossing these pre-switches the banner
   const gridMidRefs = useRef<(HTMLDivElement | null)[]>(categories.map(() => null));
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
 
   useEffect(() => {
     const update = () => {
       const vh = window.innerHeight;
-      // Default: show banner for whichever spacer the user is currently inside
       let next = 0;
 
-      // Phase 1 — spacer-based: once a spacer top has entered the viewport
-      //           (or is above it) we are officially "in" that category
       spacerRefs.current.forEach((ref, i) => {
         if (!ref) return;
         if (ref.getBoundingClientRect().top < vh) next = i;
       });
 
-      // Phase 2 — grid-mid-based: once the sentinel inside grid[i] enters
-      //           the viewport, pre-switch to the NEXT banner so it is already
-      //           correct before the next spacer ever becomes visible.
-      //           This fires while the user is still reading cards mid-grid.
       gridMidRefs.current.forEach((ref, i) => {
         if (!ref) return;
         const nextIdx = i + 1;
@@ -682,7 +672,7 @@ export default function PortfolioSection() {
     <div className="relative">
       <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
       <div className="relative z-10">
-        {/* ── Hero section ── */}
+        {/* Hero section */}
         <section className="min-h-[60vh] flex items-center justify-center bg-white relative">
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
           <div className="relative text-center px-6">
@@ -695,7 +685,7 @@ export default function PortfolioSection() {
           </div>
         </section>
 
-        {/* ── Category sections ── */}
+        {/* Category sections */}
         {categories.map((config, i) => (
           <CategorySection
             key={config.service}
