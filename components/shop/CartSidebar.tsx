@@ -99,7 +99,12 @@ export default function CartSidebar({
                   key={item.product.id}
                   className="flex gap-4 rounded-xl border border-gray-200 p-3"
                 >
-                  <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-gray-100">
+                  <Link
+                    href={`/shop/${item.product.slug}`}
+                    onClick={onClose}
+                    aria-label={`View ${item.product.title}`}
+                    className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+                  >
                     <Image
                       src={item.product.heroImage}
                       alt={item.product.title.split(" ").slice(0, 2).join(" ")}
@@ -107,13 +112,17 @@ export default function CartSidebar({
                       className="object-cover"
                       sizes="80px"
                     />
-                  </div>
+                  </Link>
                   <div className="flex flex-1 flex-col">
                     <div className="flex items-start gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="break-words text-sm font-semibold text-gray-900">
+                        <Link
+                          href={`/shop/${item.product.slug}`}
+                          onClick={onClose}
+                          className="break-words text-sm font-semibold text-gray-900 transition hover:text-gray-700"
+                        >
                           {item.product.title.split(" ").slice(0, 2).join(" ")}
-                        </p>
+                        </Link>
                         <p className="mt-1 text-[11px] font-semibold text-gray-400">
                           Qty
                         </p>

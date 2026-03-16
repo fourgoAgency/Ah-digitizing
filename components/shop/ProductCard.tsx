@@ -25,7 +25,7 @@ export default function ProductCard({
 
   return (
     <article className="group relative flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-      <div className="z-0 rounded-2xl pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/70 via-5% to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="z-0 rounded-2xl pointer-events-none absolute inset-0 bg-radial to-primary/30 via-5% from-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <Link href={`/shop/${product.slug}`} className="relative z-10 block">
         <div className={imageWrapperClass}>
           <Image
