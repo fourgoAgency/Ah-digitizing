@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 // ─── Types & Data ──────────────────────────────────────────────────────────────
@@ -164,6 +164,107 @@ const slideVariants = {
   }),
 };
 
+// ─── Animated Nav Button ───────────────────────────────────────────────────────
+// direction: "prev" slides arrow left on hover, "next" slides arrow right
+const NavButton = ({
+  direction,
+  enabled,
+  onClick,
+}: {
+  direction: "prev" | "next";
+  enabled: boolean;
+  onClick: () => void;
+}) => {
+  const isPrev = direction === "prev";
+
+  return (
+    <motion.button
+      onClick={onClick}
+      disabled={!enabled}
+      // Tap press-down
+      whileTap={enabled ? { scale: 0.93 } : {}}
+      // Outer button: glow border + background fill on hover
+      className="relative flex-shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
+      style={{
+        width: "clamp(36px, 3vw, 44px)",
+        height: "clamp(300px, 65vh, 660px)",
+        borderColor: enabled ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)",
+        background: enabled ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
+        cursor: enabled ? "pointer" : "default",
+        // Glow on hover via boxShadow is handled by motion variants below
+      }}
+      variants={
+        enabled
+          ? {
+              rest: {
+                boxShadow: "0 0 0px 0px rgba(255,255,255,0)",
+                borderColor: "rgba(255,255,255,0.18)",
+                background: "rgba(255,255,255,0.08)",
+              },
+              hover: {
+                boxShadow: "0 0 18px 2px rgba(255,255,255,0.12), inset 0 0 20px rgba(255,255,255,0.06)",
+                borderColor: "rgba(255,255,255,0.55)",
+                background: "rgba(255,255,255,0.15)",
+              },
+            }
+          : {}
+      }
+      initial="rest"
+      whileHover={enabled ? "hover" : "rest"}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      {/* Shimmer sweep on hover — absolutely positioned */}
+      {enabled && (
+        <motion.span
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: isPrev
+              ? "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)"
+              : "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)",
+          }}
+          variants={{
+            rest: { opacity: 0, y: "100%" },
+            hover: { opacity: 1, y: "0%" },
+          }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        />
+      )}
+
+      {/* Arrow icon — slides in travel direction on hover */}
+      <motion.span
+        className="relative z-10 flex items-center justify-center"
+        variants={
+          enabled
+            ? {
+                rest: { x: 0, opacity: 0.7 },
+                hover: { x: isPrev ? -3 : 3, opacity: 1 },
+              }
+            : { rest: { x: 0, opacity: 0.2 }, hover: { x: 0, opacity: 0.2 } }
+        }
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}
+        >
+          {isPrev ? (
+            <polyline points="15 18 9 12 15 6" />
+          ) : (
+            <polyline points="9 18 15 12 9 6" />
+          )}
+        </svg>
+      </motion.span>
+    </motion.button>
+  );
+};
+
 // ─── Lightbox Modal ────────────────────────────────────────────────────────────
 type LightboxProps = {
   items: PortfolioItem[];
@@ -223,16 +324,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    // Pull header behind the lightbox backdrop while it's open
-    const header = document.querySelector("header") as HTMLElement | null;
-    const stickyNav = document.querySelector(".sticky") as HTMLElement | null;
-    if (header) header.style.zIndex = "0";
-    if (stickyNav) stickyNav.style.zIndex = "0";
-    return () => {
-      document.body.style.overflow = "";
-      if (header) header.style.zIndex = "";
-      if (stickyNav) stickyNav.style.zIndex = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, []);
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
@@ -311,76 +403,56 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           onClick={(e) => e.stopPropagation()}
           onWheel={handleWheel}
         >
-          {/* Prev button */}
-          <button
-            onClick={onPrev}
-            disabled={!hasPrev}
-            className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center
-              border transition-all duration-200
-              ${hasPrev
-                ? "bg-white/10 border-white/20 text-white hover:bg-white hover:text-gray-900 hover:border-white cursor-pointer"
-                : "bg-white/4 border-white/8 text-white/20 cursor-default"
-              }`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          {/* Image container */}
+          {/* ── Inner wrapper: locks button height to exactly the image height ── */}
           <div
-            className="relative flex-1 min-w-0 rounded-2xl overflow-hidden"
-            style={{
-              maxWidth: "min(100%, 780px)",
-              height: "clamp(300px, 65vh, 660px)",
-              background: "linear-gradient(160deg, #07112e 0%, #0b1e52 50%, #06102e 100%)",
-              boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
-            }}
+            className="flex items-stretch gap-3 md:gap-4 w-full justify-center"
+            style={{ height: "clamp(300px, 65vh, 660px)" }}
           >
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
-                key={item.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                className="absolute inset-0 flex items-center justify-center p-3"
-              >
-                <Image
-                  src={item.path}
-                  width={900}
-                  height={700}
-                  alt={item.title}
-                  className="w-full h-full object-contain drop-shadow-2xl"
-                  unoptimized
-                />
-              </motion.div>
-            </AnimatePresence>
-            <div className="absolute inset-0 rounded-2xl pointer-events-none"
-              style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.2)" }} />
-            <div onClick={hasPrev ? onPrev : undefined}
-              className={`absolute left-0 top-0 bottom-0 w-1/4 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
-            <div onClick={hasNext ? onNext : undefined}
-              className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
-          </div>
+            {/* Prev button */}
+            <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
 
-          {/* Next button */}
-          <button
-            onClick={onNext}
-            disabled={!hasNext}
-            className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center
-              border transition-all duration-200
-              ${hasNext
-                ? "bg-white/10 border-white/20 text-white hover:bg-white hover:text-gray-900 hover:border-white cursor-pointer"
-                : "bg-white/4 border-white/8 text-white/20 cursor-default"
-              }`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
+            {/* Image container */}
+            <div
+              className="relative flex-1 min-w-0 rounded-2xl overflow-hidden"
+              style={{
+                maxWidth: "min(100%, 780px)",
+                height: "100%",
+                background: "linear-gradient(160deg, #07112e 0%, #0b1e52 50%, #06102e 100%)",
+                boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
+              }}
+            >
+              <AnimatePresence custom={direction} mode="wait">
+                <motion.div
+                  key={item.id}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                  className="absolute inset-0 flex items-center justify-center p-3"
+                >
+                  <Image
+                    src={item.path}
+                    width={900}
+                    height={700}
+                    alt={item.title}
+                    className="w-full h-full object-contain drop-shadow-2xl"
+                    unoptimized
+                  />
+                </motion.div>
+              </AnimatePresence>
+              <div className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.2)" }} />
+              <div onClick={hasPrev ? onPrev : undefined}
+                className={`absolute left-0 top-0 bottom-0 w-1/4 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
+              <div onClick={hasNext ? onNext : undefined}
+                className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
+            </div>
+
+            {/* Next button */}
+            <NavButton direction="next" enabled={hasNext} onClick={onNext} />
+          </div>
         </div>
 
         {/* BOTTOM: THUMBNAILS */}
