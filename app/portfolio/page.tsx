@@ -13,7 +13,6 @@ type PortfolioItem = {
 };
 
 const portfolioData: PortfolioItem[] = [
-  // Embroidery - 50 items
   { id: 1, title: "Custom Logo Digitizing", path: "/portfolio_page_images/1.svg", service: "Embroidery" },
   { id: 2, title: "Pet Portrait Embroidery", path: "/portfolio_page_images/2.svg", service: "Embroidery" },
   { id: 3, title: "Sports Team Logo", path: "/portfolio_page_images/3.svg", service: "Embroidery" },
@@ -64,8 +63,6 @@ const portfolioData: PortfolioItem[] = [
   { id: 48, title: "Art Class Patch", path: "/portfolio_page_images/8.svg", service: "Embroidery" },
   { id: 49, title: "Camp Logo Embroidery", path: "/portfolio_page_images/9.svg", service: "Embroidery" },
   { id: 50, title: "Volunteer Group Badge", path: "/portfolio_page_images/10.svg", service: "Embroidery" },
-
-  // Vector - 50 items
   { id: 51, title: "Vintage T-Shirt Design", path: "/portfolio_page_images/1.svg", service: "Vector" },
   { id: 52, title: "Vintage Car Illustration", path: "/portfolio_page_images/2.svg", service: "Vector" },
   { id: 53, title: "Abstract Vector Art", path: "/portfolio_page_images/3.svg", service: "Vector" },
@@ -149,19 +146,21 @@ const categories: CategoryConfig[] = [
   },
 ];
 
-// ─── Direction-aware slide animation variants ──────────────────────────────────
+// ─── Animation variants ────────────────────────────────────────────────────────
 const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 80 : -80,
-    opacity: 0,
-    scale: 0.97,
-  }),
+  enter: (direction: number) => ({ x: direction > 0 ? 80 : -80, opacity: 0, scale: 0.97 }),
   center: { x: 0, opacity: 1, scale: 1 },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -80 : 80,
-    opacity: 0,
-    scale: 0.97,
-  }),
+  exit: (direction: number) => ({ x: direction > 0 ? -80 : 80, opacity: 0, scale: 0.97 }),
+};
+
+const staggerContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 
 // ─── Animated Nav Button ───────────────────────────────────────────────────────
@@ -175,7 +174,6 @@ const NavButton = ({
   onClick: () => void;
 }) => {
   const isPrev = direction === "prev";
-
   return (
     <motion.button
       onClick={onClick}
@@ -192,16 +190,8 @@ const NavButton = ({
       variants={
         enabled
           ? {
-              rest: {
-                boxShadow: "0 0 0px 0px rgba(255,255,255,0)",
-                borderColor: "rgba(255,255,255,0.18)",
-                background: "rgba(255,255,255,0.08)",
-              },
-              hover: {
-                boxShadow: "0 0 18px 2px rgba(255,255,255,0.12), inset 0 0 20px rgba(255,255,255,0.06)",
-                borderColor: "rgba(255,255,255,0.55)",
-                background: "rgba(255,255,255,0.15)",
-              },
+              rest: { boxShadow: "0 0 0px 0px rgba(255,255,255,0)", borderColor: "rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.08)" },
+              hover: { boxShadow: "0 0 18px 2px rgba(255,255,255,0.12), inset 0 0 20px rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.55)", background: "rgba(255,255,255,0.15)" },
             }
           : {}
       }
@@ -212,52 +202,71 @@ const NavButton = ({
       {enabled && (
         <motion.span
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background: isPrev
-              ? "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)"
-              : "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)",
-          }}
-          variants={{
-            rest: { opacity: 0, y: "100%" },
-            hover: { opacity: 1, y: "0%" },
-          }}
+          style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)" }}
+          variants={{ rest: { opacity: 0, y: "100%" }, hover: { opacity: 1, y: "0%" } }}
           transition={{ duration: 0.35, ease: "easeOut" }}
         />
       )}
-
       <motion.span
         className="relative z-10 flex items-center justify-center"
         variants={
           enabled
-            ? {
-                rest: { x: 0, opacity: 0.7 },
-                hover: { x: isPrev ? -3 : 3, opacity: 1 },
-              }
+            ? { rest: { x: 0, opacity: 0.7 }, hover: { x: isPrev ? -3 : 3, opacity: 1 } }
             : { rest: { x: 0, opacity: 0.2 }, hover: { x: 0, opacity: 0.2 } }
         }
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}
-        >
-          {isPrev ? (
-            <polyline points="15 18 9 12 15 6" />
-          ) : (
-            <polyline points="9 18 15 12 9 6" />
-          )}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round"
+          style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}>
+          {isPrev ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
         </svg>
       </motion.span>
     </motion.button>
   );
 };
+
+// ─── Animated Thumbnail Button ────────────────────────────────────────────────
+const ThumbButton = ({
+  thumb,
+  isActive,
+  onClick,
+}: {
+  thumb: PortfolioItem;
+  isActive: boolean;
+  onClick: () => void;
+}) => (
+  <motion.button
+    onClick={onClick}
+    className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none cursor-pointer"
+    style={{ width: "clamp(44px, 9vw, 68px)", height: "clamp(32px, 6.5vw, 50px)" }}
+    animate={{
+      opacity: isActive ? 1 : 0.35,
+      scale: isActive ? 1.08 : 1,
+      boxShadow: isActive
+        ? "0 0 0 2px rgba(255,255,255,0.85), 0 4px 16px rgba(0,0,0,0.5)"
+        : "0 0 0 0px rgba(255,255,255,0)",
+    }}
+    whileHover={
+      !isActive
+        ? { opacity: 0.85, scale: 1.12, boxShadow: "0 0 0 1.5px rgba(255,255,255,0.5), 0 4px 14px rgba(0,0,0,0.4)" }
+        : {}
+    }
+    whileTap={{ scale: 0.97 }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
+  >
+    {/* Shine sweep on hover */}
+    <motion.span
+      className="absolute inset-0 z-10 pointer-events-none"
+      initial={{ x: "-100%", opacity: 0 }}
+      whileHover={{ x: "100%", opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }}
+    />
+    <Image src={thumb.path} width={100} height={80} alt={thumb.title}
+      className="w-full h-full object-cover" unoptimized />
+  </motion.button>
+);
 
 // ─── Lightbox Modal ────────────────────────────────────────────────────────────
 type LightboxProps = {
@@ -316,7 +325,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 350);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
-  // ── FIX: suppress header z-index while lightbox is open ──────────────────
+  // ── Suppress header z-index while lightbox is open ────────────────────────
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const header = document.querySelector("header") as HTMLElement | null;
@@ -329,7 +338,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       if (stickyNav) stickyNav.style.zIndex = "";
     };
   }, []);
-  // ─────────────────────────────────────────────────────────────────────────
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
@@ -351,10 +359,10 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       <motion.div
         key="modal"
         className="fixed inset-0 z-[100000] flex flex-col pointer-events-none"
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.98 }}
-        transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+        initial={{ opacity: 0, scale: 0.97, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 12 }}
+        transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
       >
         {/* TOP BAR */}
         <div
@@ -362,18 +370,23 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5">
+            <motion.div
+              className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.12, duration: 0.28 }}
+            >
               <span className="text-white text-xs font-bold tabular-nums">{currentIndex + 1}</span>
               <span className="text-white/30 text-xs">/</span>
               <span className="text-white/40 text-xs tabular-nums">{items.length}</span>
-            </div>
+            </motion.div>
             <AnimatePresence mode="wait">
               <motion.span
                 key={item.id}
-                initial={{ opacity: 0, x: -6 }}
+                initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 6 }}
-                transition={{ duration: 0.18 }}
+                exit={{ opacity: 0, x: 8 }}
+                transition={{ duration: 0.2 }}
                 className="text-white/70 text-sm font-medium truncate max-w-[160px] md:max-w-xs"
               >
                 {item.title}
@@ -385,19 +398,24 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
               <motion.div
                 className="h-full bg-white/60 rounded-full"
                 animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               />
             </div>
-            <button
+            {/* Close button — spins in on mount */}
+            <motion.button
               onClick={onClose}
+              initial={{ opacity: 0, rotate: -90, scale: 0.7 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              transition={{ delay: 0.15, duration: 0.3, ease: "easeOut" }}
+              whileHover={{ scale: 1.12, backgroundColor: "rgba(255,255,255,1)", color: "#111827" }}
+              whileTap={{ scale: 0.9, rotate: 90 }}
               className="w-9 h-9 rounded-full border border-white/15 bg-white/8 text-white/60
-                flex items-center justify-center hover:bg-white hover:text-gray-900 hover:border-white
-                transition-all duration-200 cursor-pointer flex-shrink-0"
+                flex items-center justify-center cursor-pointer flex-shrink-0 transition-colors duration-150"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -411,7 +429,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
             className="flex items-stretch gap-3 md:gap-4 w-full justify-center"
             style={{ height: "clamp(300px, 65vh, 660px)" }}
           >
-            {/* Prev button */}
             <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
 
             {/* Image container */}
@@ -453,7 +470,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
             </div>
 
-            {/* Next button */}
             <NavButton direction="next" enabled={hasNext} onClick={onNext} />
           </div>
         </div>
@@ -463,38 +479,30 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-3 pb-5"
           onClick={(e) => e.stopPropagation()}
         >
-          <div
+          <motion.div
             ref={thumbStripRef}
             onWheel={handleWheel}
             className="flex gap-2 overflow-x-auto px-1 pb-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.35, ease: "easeOut" }}
           >
             {items.map((thumb, idx) => (
-              <button
+              <ThumbButton
                 key={thumb.id}
+                thumb={thumb}
+                isActive={idx === currentIndex}
                 onClick={() => onJump(idx)}
-                className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none transition-all duration-200 cursor-pointer"
-                style={{
-                  width: "clamp(44px, 9vw, 68px)",
-                  height: "clamp(32px, 6.5vw, 50px)",
-                  opacity: idx === currentIndex ? 1 : 0.35,
-                  transform: idx === currentIndex ? "scale(1.08)" : "scale(1)",
-                  boxShadow: idx === currentIndex
-                    ? "0 0 0 2px rgba(255,255,255,0.8), 0 4px 16px rgba(0,0,0,0.5)"
-                    : "none",
-                }}
-              >
-                <Image src={thumb.path} width={100} height={80} alt={thumb.title}
-                  className="w-full h-full object-cover" unoptimized />
-              </button>
+              />
             ))}
-          </div>
+          </motion.div>
           <div className="mt-3 flex justify-center">
             <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-white/50 rounded-full"
                 animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               />
             </div>
           </div>
@@ -508,12 +516,22 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => void }) => (
   <motion.div
     onClick={onClick}
-    className="group relative rounded-3xl cursor-pointer overflow-hidden w-full max-w-[320px]
-      shadow-[0_15px_35px_rgba(0,0,0,0.45),0_5px_15px_rgba(0,0,0,0.3)]
-      transition-all duration-300 hover:-translate-y-2
-      hover:shadow-[0_30px_70px_rgba(0,0,0,0.65),0_10px_25px_rgba(0,0,0,0.4)]"
-    whileHover={{ scale: 1.03 }}
+    className="group relative rounded-3xl cursor-pointer overflow-hidden w-full max-w-[320px]"
+    variants={fadeUp}
+    whileHover={{ y: -8, scale: 1.03 }}
+    whileTap={{ scale: 0.97 }}
+    transition={{ type: "spring", stiffness: 280, damping: 22 }}
+    style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.45), 0 5px 15px rgba(0,0,0,0.3)" }}
   >
+    {/* Hover glow border */}
+    <motion.div
+      className="absolute inset-0 rounded-3xl pointer-events-none z-10"
+      initial={{ opacity: 0 }}
+      whileHover={{ opacity: 1 }}
+      transition={{ duration: 0.25 }}
+      style={{ boxShadow: "inset 0 0 0 1.5px rgba(99,102,241,0.6), 0 0 28px rgba(99,102,241,0.12)" }}
+    />
+
     <div className="relative w-full overflow-hidden rounded-2xl">
       <Image
         src={item.path}
@@ -522,9 +540,21 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
         alt={item.title}
         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-        <span className="text-white text-xs font-semibold tracking-widest uppercase flex items-center gap-1.5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+
+      {/* Gradient overlay + staggered text */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300
+        flex flex-col items-center justify-end pb-4 gap-1">
+        <span className="text-white text-xs font-bold tracking-wide px-3 text-center
+          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+          transition-all duration-300 ease-out">
+          {item.title}
+        </span>
+        <span className="text-white/75 text-[10px] font-semibold tracking-widest uppercase
+          flex items-center gap-1
+          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+          transition-all duration-300 ease-out delay-[40ms]">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
             <line x1="11" y1="8" x2="11" y2="14" />
@@ -533,11 +563,19 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
           View
         </span>
       </div>
+
+      {/* Shine sweep */}
+      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-2xl">
+        <div
+          className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
+          style={{ background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.09) 50%, transparent 70%)" }}
+        />
+      </div>
     </div>
   </motion.div>
 );
 
-// ─── Product Grid ──────────────────────────────────────────────────────────────
+// ─── Product Grid with staggered cards ────────────────────────────────────────
 const chunkArray = <T,>(arr: T[], size: number) =>
   arr.reduce<T[][]>((acc, _, i) => {
     if (i % size === 0) acc.push(arr.slice(i, i + size));
@@ -563,14 +601,16 @@ const ProductGrid = ({
         <motion.div
           key={rowIdx}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.55, ease: "easeOut", delay: rowIdx === 0 ? 0 : 0.1 }}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.15 }}
         >
           {row.map((item, colIdx) => {
             const globalIndex = rowIdx * 3 + colIdx;
-            return <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(globalIndex)} />;
+            return (
+              <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(globalIndex)} />
+            );
           })}
         </motion.div>
       ))}
@@ -579,8 +619,16 @@ const ProductGrid = ({
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  BOTTOM LAYER — Fixed category banners
+//  BOTTOM LAYER — Fixed banners with animated floating blobs
 // ═══════════════════════════════════════════════════════════════════════════════
+const FloatingBlob = ({ className, delay = 0 }: { className: string; delay?: number }) => (
+  <motion.div
+    className={className}
+    animate={{ y: [0, -18, 0], scale: [1, 1.07, 1] }}
+    transition={{ duration: 7 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+  />
+);
+
 const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number }) => (
   <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
     {categories.map((config, i) => (
@@ -591,41 +639,44 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         animate={{ opacity: i === activeBannerIndex ? 1 : 0 }}
         transition={{ duration: 0 }}
       >
-        {/* Ghost watermark text */}
+        {/* Ghost watermark — scales in */}
         <div className="absolute inset-0 flex items-center justify-center select-none" aria-hidden="true">
-          <span
+          <motion.span
             className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
             style={{ fontSize: "clamp(60px, 14vw, 180px)" }}
+            animate={i === activeBannerIndex ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.92 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
           >
             {config.label}
-          </span>
+          </motion.span>
         </div>
 
-        {/* Ambient blobs */}
-        <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl" />
-        <div className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.02] blur-3xl" />
+        {/* Floating ambient blobs */}
+        <FloatingBlob className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/5 blur-2xl" delay={0} />
+        <FloatingBlob className="absolute -bottom-16 -right-16 w-80 h-80 rounded-full bg-white/5 blur-2xl" delay={2.5} />
+        <FloatingBlob className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.025] blur-3xl" delay={1.2} />
+        <FloatingBlob className="absolute top-1/4 right-1/4 w-52 h-52 rounded-full bg-indigo-400/5 blur-2xl" delay={3.5} />
 
-        {/* Banner text */}
+        {/* Banner text — staggered slide-up per category */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <motion.p
             className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
-            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
-            transition={{ duration: 0 }}
+            animate={i === activeBannerIndex ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
           >
             {config.tagline}
           </motion.p>
           <motion.h2
             className={`text-4xl md:text-6xl font-black uppercase tracking-tight ${config.bannerTextColor} mb-4`}
-            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
-            transition={{ duration: 0 }}
+            animate={i === activeBannerIndex ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.06 }}
           >
             {config.label}
           </motion.h2>
           <motion.p
             className="text-white/70 max-w-xl text-sm md:text-base"
-            animate={{ opacity: i === activeBannerIndex ? 1 : 0, y: 0 }}
-            transition={{ duration: 0 }}
+            animate={i === activeBannerIndex ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.12 }}
           >
             {config.description}
           </motion.p>
@@ -664,19 +715,33 @@ const CategorySection = ({
 
   return (
     <div>
-      {/* Transparent spacer — banner shows through */}
       <div ref={spacerRef} className="h-[70vh]" aria-hidden="true" />
 
-      {/* Opaque product grid */}
       <div
         className="relative z-20 bg-gray-50 py-14 px-4"
         style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
       >
         <div className="max-w-6xl mx-auto">
-          <div className="mb-10">
+          {/* Section header — slides in from left */}
+          <motion.div
+            className="mb-10"
+            initial={{ opacity: 0, x: -28 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
-            <p className="text-gray-500 mt-1 text-sm">{items.length} projects</p>
-          </div>
+            {/* Animated accent line under header */}
+            <motion.div
+              className="mt-2 h-0.5 bg-gradient-to-r from-blue-500 to-transparent rounded-full"
+              initial={{ width: 0 }}
+              whileInView={{ width: "60px" }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
+            />
+            <p className="text-gray-500 mt-2 text-sm">{items.length} projects</p>
+          </motion.div>
+
           <ProductGrid
             items={items}
             accentColor={config.accentColor}
@@ -684,15 +749,33 @@ const CategorySection = ({
             visibleCount={visibleCount}
           />
           <div ref={gridMidRef} aria-hidden="true" />
+
           {hasMoreItems && (
-            <div className="flex justify-center mt-10">
-              <button
+            <motion.div
+              className="flex justify-center mt-10"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+            >
+              <motion.button
                 onClick={handleViewMore}
-                className="cursor-pointer text-sm font-semibold text-gray-700 border border-gray-300 rounded-full px-5 py-2 hover:border-blue-600 hover:text-blue-600 transition-colors"
+                className="cursor-pointer text-sm font-semibold text-gray-700 border border-gray-300
+                  rounded-full px-6 py-2.5 relative overflow-hidden"
+                whileHover={{ scale: 1.04, color: "#2563eb", borderColor: "#2563eb" }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.18 }}
               >
-                View More →
-              </button>
-            </div>
+                {/* Fill sweep on hover */}
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-blue-50 pointer-events-none"
+                  initial={{ scaleX: 0, originX: "0%" }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
+                <span className="relative">View More →</span>
+              </motion.button>
+            </motion.div>
           )}
         </div>
       </div>
@@ -721,23 +804,17 @@ export default function PortfolioSection() {
     const update = () => {
       const vh = window.innerHeight;
       let next = 0;
-
       spacerRefs.current.forEach((ref, i) => {
         if (!ref) return;
         if (ref.getBoundingClientRect().top < vh) next = i;
       });
-
       gridMidRefs.current.forEach((ref, i) => {
         if (!ref) return;
         const nextIdx = i + 1;
-        if (nextIdx < categories.length && ref.getBoundingClientRect().top < vh) {
-          next = nextIdx;
-        }
+        if (nextIdx < categories.length && ref.getBoundingClientRect().top < vh) next = nextIdx;
       });
-
       setActiveBannerIndex(next);
     };
-
     update();
     window.addEventListener("scroll", update, { passive: true });
     return () => window.removeEventListener("scroll", update);
@@ -747,20 +824,36 @@ export default function PortfolioSection() {
     <div className="relative">
       <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
       <div className="relative z-10">
-        {/* Hero section */}
+        {/* ── Hero — staggered entrance ── */}
         <section className="min-h-[60vh] flex items-center justify-center bg-white relative">
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-          <div className="relative text-center px-6">
-            <p className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">Creative Studio</p>
-            <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6">Our Portfolio</h1>
-            <p className="text-gray-500 max-w-xl mx-auto text-lg">
+          <motion.div
+            className="relative text-center px-6"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+          >
+            <motion.p variants={fadeUp} className="text-blue-600 text-sm font-semibold uppercase tracking-[0.3em] mb-4">
+              Creative Studio
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-black text-gray-900 mb-4">
+              Our Portfolio
+            </motion.h1>
+            {/* Animated gradient underline */}
+            <motion.div
+              className="mx-auto mb-6 h-1 rounded-full"
+              style={{ background: "linear-gradient(90deg, #3b82f6, #6366f1, #a855f7)" }}
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: "80px", opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <motion.p variants={fadeUp} className="text-gray-500 max-w-xl mx-auto text-lg">
               Explore our diverse collection of digitized embroidery, vector art, raster conversions,
               and custom patches — crafted with precision for every client.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </section>
 
-        {/* Category sections */}
         {categories.map((config, i) => (
           <CategorySection
             key={config.service}
