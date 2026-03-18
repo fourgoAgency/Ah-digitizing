@@ -165,7 +165,6 @@ const slideVariants = {
 };
 
 // ─── Animated Nav Button ───────────────────────────────────────────────────────
-// direction: "prev" slides arrow left on hover, "next" slides arrow right
 const NavButton = ({
   direction,
   enabled,
@@ -181,9 +180,7 @@ const NavButton = ({
     <motion.button
       onClick={onClick}
       disabled={!enabled}
-      // Tap press-down
       whileTap={enabled ? { scale: 0.93 } : {}}
-      // Outer button: glow border + background fill on hover
       className="relative flex-shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
       style={{
         width: "clamp(36px, 3vw, 44px)",
@@ -191,7 +188,6 @@ const NavButton = ({
         borderColor: enabled ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)",
         background: enabled ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
         cursor: enabled ? "pointer" : "default",
-        // Glow on hover via boxShadow is handled by motion variants below
       }}
       variants={
         enabled
@@ -213,7 +209,6 @@ const NavButton = ({
       whileHover={enabled ? "hover" : "rest"}
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
-      {/* Shimmer sweep on hover — absolutely positioned */}
       {enabled && (
         <motion.span
           className="absolute inset-0 pointer-events-none"
@@ -230,7 +225,6 @@ const NavButton = ({
         />
       )}
 
-      {/* Arrow icon — slides in travel direction on hover */}
       <motion.span
         className="relative z-10 flex items-center justify-center"
         variants={
@@ -322,10 +316,20 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 350);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
+  // ── FIX: suppress header z-index while lightbox is open ──────────────────
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    const header = document.querySelector("header") as HTMLElement | null;
+    const stickyNav = document.querySelector(".sticky") as HTMLElement | null;
+    if (header) header.style.zIndex = "0";
+    if (stickyNav) stickyNav.style.zIndex = "0";
+    return () => {
+      document.body.style.overflow = "";
+      if (header) header.style.zIndex = "";
+      if (stickyNav) stickyNav.style.zIndex = "";
+    };
   }, []);
+  // ─────────────────────────────────────────────────────────────────────────
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
@@ -403,7 +407,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           onClick={(e) => e.stopPropagation()}
           onWheel={handleWheel}
         >
-          {/* ── Inner wrapper: locks button height to exactly the image height ── */}
           <div
             className="flex items-stretch gap-3 md:gap-4 w-full justify-center"
             style={{ height: "clamp(300px, 65vh, 660px)" }}
