@@ -473,7 +473,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
               <button
                 key={thumb.id}
                 onClick={() => onJump(idx)}
-                className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none transition-all duration-200"
+                className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none transition-all duration-200 cursor-pointer"
                 style={{
                   width: "clamp(44px, 9vw, 68px)",
                   height: "clamp(32px, 6.5vw, 50px)",
