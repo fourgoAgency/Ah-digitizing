@@ -119,7 +119,7 @@ export default function CartSidebar({
                         <Link
                           href={`/shop/${item.product.slug}`}
                           onClick={onClose}
-                          className="break-words text-sm font-semibold text-gray-900 transition hover:text-gray-700"
+                          className="wrap-break-word text-sm font-semibold text-gray-900 transition hover:text-gray-700"
                         >
                           {item.product.title.split(" ").slice(0, 2).join(" ")}
                         </Link>
