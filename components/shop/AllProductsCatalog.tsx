@@ -3,36 +3,18 @@
 import { useMemo, useState } from "react";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
 import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
-import { ProductCategory, products } from "@/data/products";
-
-type SubcategoryDefinition = {
-  label: string;
-  href: string;
-  category: ProductCategory;
-};
+import {
+  ProductCategory,
+  products,
+  shopCategoryDefinitions,
+  shopSubcategoryDefinitions,
+} from "@/data/products";
 
 type FilterSubcategoryOption = {
   label: string;
   href: string;
   count: number;
 };
-
-const EMBROIDERY_ITEMS: SubcategoryDefinition[] = [
-  { label: "Logo Embroidery Digitizing", href: "/services/embroidery/logo", category: "embroidery-digitizing" },
-  {
-    label: "Left Chest Embroidery Digitizing",
-    href: "/services/embroidery/left-chest",
-    category: "embroidery-digitizing",
-  },
-  { label: "Cap Embroidery Digitizing", href: "/services/embroidery/cap", category: "embroidery-digitizing" },
-  { label: "3D Puff Embroidery Digitizing", href: "/services/embroidery/3d-puff", category: "embroidery-digitizing" },
-  { label: "Jacket Embroidery Digitizing", href: "/services/embroidery/jacket", category: "embroidery-digitizing" },
-  { label: "Applique Embroidery Digitizing", href: "/services/embroidery/applique", category: "embroidery-digitizing" },
-  { label: "Image Embroidery Digitizing", href: "/services/embroidery/image", category: "embroidery-digitizing" },
-  { label: "Towel Embroidery Digitizing", href: "/services/embroidery/towel", category: "embroidery-digitizing" },
-];
-
-const SUBCATEGORY_OPTIONS: SubcategoryDefinition[] = [...EMBROIDERY_ITEMS];
 
 export default function AllProductsCatalog() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,27 +23,18 @@ export default function AllProductsCatalog() {
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
 
   const categoryOptions = useMemo(() => {
-    const labels = new Map<ProductCategory, string>();
-    for (const product of products) {
-      if (!labels.has(product.category)) {
-        labels.set(product.category, product.categoryLabel);
-      }
-    }
-
-    return (Array.from(labels.entries()) as [ProductCategory, string][])
-      .filter(([slug]) => slug !== "vector-conversion")
-      .map(([slug, label]) => ({
-        slug,
-        label,
-        count: products.filter((product) => product.category === slug).length,
-      }));
+    return shopCategoryDefinitions.map(({ slug, label }) => ({
+      slug,
+      label,
+      count: products.filter((product) => product.category === slug).length,
+    }));
   }, []);
 
   const subcategoryOptions = useMemo<FilterSubcategoryOption[]>(() => {
     const baseOptions =
       selectedCategories.length === 0
-        ? SUBCATEGORY_OPTIONS
-        : SUBCATEGORY_OPTIONS.filter((option) => selectedCategories.includes(option.category));
+        ? shopSubcategoryDefinitions
+        : shopSubcategoryDefinitions.filter((option) => selectedCategories.includes(option.category));
 
     return baseOptions.map((option) => ({
       href: option.href,
@@ -79,7 +52,7 @@ export default function AllProductsCatalog() {
       const subcategoryMatch =
         selectedSubcategories.length === 0 ||
         selectedSubcategories.some((subcategoryHref) => {
-          const option = SUBCATEGORY_OPTIONS.find((item) => item.href === subcategoryHref);
+          const option = shopSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
           return option ? option.category === product.category : false;
         });
       const searchMatch =
