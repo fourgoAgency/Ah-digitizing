@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, cubicBezier } from "framer-motion";
 import Image from "next/image";
 
 // ─── Types & Data ──────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ const staggerContainer = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: cubicBezier(0.22, 1, 0.36, 1) } },
 };
 
 // ─── Animated Nav Button ───────────────────────────────────────────────────────
@@ -179,7 +179,7 @@ const NavButton = ({
       onClick={onClick}
       disabled={!enabled}
       whileTap={enabled ? { scale: 0.93 } : {}}
-      className="relative flex-shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
+      className="relative shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
       style={{
         width: "clamp(36px, 3vw, 44px)",
         height: "clamp(300px, 65vh, 660px)",
@@ -238,7 +238,7 @@ const ThumbButton = ({
 }) => (
   <motion.button
     onClick={onClick}
-    className="relative flex-shrink-0 rounded-lg overflow-hidden outline-none cursor-pointer"
+    className="relative shrink-0 rounded-lg overflow-hidden outline-none cursor-pointer"
     style={{ width: "clamp(44px, 9vw, 68px)", height: "clamp(32px, 6.5vw, 50px)" }}
     animate={{
       opacity: isActive ? 1 : 0.35,
@@ -346,7 +346,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       {/* Backdrop */}
       <motion.div
         key="backdrop"
-        className="fixed inset-0 z-[99999] cursor-pointer"
+        className="fixed inset-0 z-99999 cursor-pointer"
         style={{ background: "rgba(2, 6, 30, 0.93)", backdropFilter: "blur(20px)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -358,7 +358,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       {/* Modal shell */}
       <motion.div
         key="modal"
-        className="fixed inset-0 z-[100000] flex flex-col pointer-events-none"
+        className="fixed inset-0 z-100000 flex flex-col pointer-events-none"
         initial={{ opacity: 0, scale: 0.97, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 12 }}
@@ -366,7 +366,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       >
         {/* TOP BAR */}
         <div
-          className="pointer-events-auto flex-shrink-0 flex items-center justify-between px-5 md:px-8 py-4"
+          className="pointer-events-auto shrink-0 flex items-center justify-between px-5 md:px-8 py-4"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 min-w-0">
@@ -387,7 +387,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 8 }}
                 transition={{ duration: 0.2 }}
-                className="text-white/70 text-sm font-medium truncate max-w-[160px] md:max-w-xs"
+                className="text-white/70 text-sm font-medium truncate max-w-40 md:max-w-xs"
               >
                 {item.title}
               </motion.span>
@@ -560,7 +560,6 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
             <line x1="11" y1="8" x2="11" y2="14" />
             <line x1="8" y1="11" x2="14" y2="11" />
           </svg>
-          View
         </span>
       </div>
 
