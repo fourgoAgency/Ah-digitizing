@@ -227,6 +227,8 @@ const NavButton = ({
 };
 
 // ─── Animated Thumbnail Button ────────────────────────────────────────────────
+// FIX 2: Scale kam kiya (1.12 → 1.06) taake adjacent images se na jure.
+// Scroll container me py-2 padding add ki taake vertical overflow clip na ho.
 const ThumbButton = ({
   thumb,
   isActive,
@@ -242,14 +244,14 @@ const ThumbButton = ({
     style={{ width: "clamp(44px, 9vw, 68px)", height: "clamp(32px, 6.5vw, 50px)" }}
     animate={{
       opacity: isActive ? 1 : 0.35,
-      scale: isActive ? 1.08 : 1,
+      scale: isActive ? 1.06 : 1,
       boxShadow: isActive
         ? "0 0 0 2px rgba(255,255,255,0.85), 0 4px 16px rgba(0,0,0,0.5)"
         : "0 0 0 0px rgba(255,255,255,0)",
     }}
     whileHover={
       !isActive
-        ? { opacity: 0.85, scale: 1.12, boxShadow: "0 0 0 1.5px rgba(255,255,255,0.5), 0 4px 14px rgba(0,0,0,0.4)" }
+        ? { opacity: 0.9, scale: 1.06, boxShadow: "0 0 0 1.5px rgba(255,255,255,0.5), 0 4px 14px rgba(0,0,0,0.4)" }
         : {}
     }
     whileTap={{ scale: 0.97 }}
@@ -474,30 +476,40 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </div>
         </div>
 
-        {/* BOTTOM: THUMBNAILS */}
+        {/* BOTTOM: THUMBNAILS
+            FIX 2: outer wrapper overflow-x-auto moved here with py-2 padding so
+            scaled thumbs don't clip vertically. Inner div uses width fit-content. */}
         <div
-          className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-3 pb-5"
+          className="pointer-events-auto shrink-0 px-4 md:px-8 pt-3 pb-5"
           onClick={(e) => e.stopPropagation()}
         >
           <motion.div
-            ref={thumbStripRef}
-            onWheel={handleWheel}
-            className="flex gap-2 overflow-x-auto px-1 pb-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.35, ease: "easeOut" }}
+            /* overflow-x-auto here, py-2 gives vertical room for scale */
+            className="overflow-x-auto py-2"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {items.map((thumb, idx) => (
-              <ThumbButton
-                key={thumb.id}
-                thumb={thumb}
-                isActive={idx === currentIndex}
-                onClick={() => onJump(idx)}
-              />
-            ))}
+            {/* inner row — ref lives here so scroll math still works */}
+            <div
+              ref={thumbStripRef}
+              onWheel={handleWheel}
+              className="flex gap-2 px-1"
+              style={{ width: "max-content" }}
+            >
+              {items.map((thumb, idx) => (
+                <ThumbButton
+                  key={thumb.id}
+                  thumb={thumb}
+                  isActive={idx === currentIndex}
+                  onClick={() => onJump(idx)}
+                />
+              ))}
+            </div>
           </motion.div>
-          <div className="mt-3 flex justify-center">
+
+          <div className="mt-1 flex justify-center">
             <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-white/50 rounded-full"
@@ -513,6 +525,13 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 };
 
 // ─── Portfolio Card ────────────────────────────────────────────────────────────
+// FIX 1: Overlay image ke PEECHE — z-index layering:
+//   z-0  → dark gradient overlay  (image ke peeche)
+//   z-10 → Image                  (image ke upar, overlay ke upar)
+//   z-20 → title / view text      (sab ke upar)
+//   z-30 → shine sweep            (sabse upar)
+// Is tarah overlay sirf un jagahon pe dikhega jahan image transparent hai,
+// image khud dark nahi hogi aur quality sahi lagegi.
 const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => void }) => (
   <motion.div
     onClick={onClick}
@@ -523,9 +542,9 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
     transition={{ type: "spring", stiffness: 280, damping: 22 }}
     style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.45), 0 5px 15px rgba(0,0,0,0.3)" }}
   >
-    {/* Hover glow border */}
+    {/* Hover glow border — outermost ring */}
     <motion.div
-      className="absolute inset-0 rounded-3xl pointer-events-none z-10"
+      className="absolute inset-0 rounded-3xl pointer-events-none z-40"
       initial={{ opacity: 0 }}
       whileHover={{ opacity: 1 }}
       transition={{ duration: 0.25 }}
@@ -533,38 +552,49 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
     />
 
     <div className="relative w-full overflow-hidden rounded-2xl">
+
+      {/* ── z-0: Dark gradient overlay — IMAGE KE PEECHE ── */}
+      <div
+        className="absolute inset-0 z-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent
+          opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      />
+
+      {/* ── z-10: Image — overlay ke upar ── */}
       <Image
         src={item.path}
         width={500}
         height={500}
         alt={item.title}
-        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+        className="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
       />
 
-      {/* Gradient overlay + staggered text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300
-        flex flex-col items-center justify-end pb-4 gap-1">
-        <span className="text-white text-xs font-bold tracking-wide px-3 text-center
-          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
-          transition-all duration-300 ease-out">
+      {/* ── z-20: Title + View label — image ke upar ── */}
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-4 gap-1 pointer-events-none">
+        <span
+          className="text-white text-xs font-bold tracking-wide px-3 text-center
+            translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+            transition-all duration-300 ease-out drop-shadow-md"
+        >
           {item.title}
         </span>
-        <span className="text-white/75 text-[10px] font-semibold tracking-widest uppercase
-          flex items-center gap-1
-          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
-          transition-all duration-300 ease-out delay-[40ms]">
+        <span
+          className="text-white/80 text-[10px] font-semibold tracking-widest uppercase
+            flex items-center gap-1
+            translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+            transition-all duration-300 ease-out delay-[40ms] drop-shadow-md"
+        >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
             <line x1="11" y1="8" x2="11" y2="14" />
             <line x1="8" y1="11" x2="14" y2="11" />
           </svg>
+          View
         </span>
       </div>
 
-      {/* Shine sweep */}
-      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-2xl">
+      {/* ── z-30: Shine sweep — sabse upar ── */}
+      <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden rounded-2xl">
         <div
           className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
           style={{ background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.09) 50%, transparent 70%)" }}
@@ -656,7 +686,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         <FloatingBlob className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.025] blur-3xl" delay={1.2} />
         <FloatingBlob className="absolute top-1/4 right-1/4 w-52 h-52 rounded-full bg-indigo-400/5 blur-2xl" delay={3.5} />
 
-        {/* Banner text — staggered slide-up per category */}
+        {/* Banner text */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <motion.p
             className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
@@ -721,7 +751,7 @@ const CategorySection = ({
         style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
       >
         <div className="max-w-6xl mx-auto">
-          {/* Section header — slides in from left */}
+          {/* Section header */}
           <motion.div
             className="mb-10"
             initial={{ opacity: 0, x: -28 }}
@@ -730,7 +760,6 @@ const CategorySection = ({
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
-            {/* Animated accent line under header */}
             <motion.div
               className="mt-2 h-0.5 bg-gradient-to-r from-blue-500 to-transparent rounded-full"
               initial={{ width: 0 }}
@@ -765,7 +794,6 @@ const CategorySection = ({
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
               >
-                {/* Fill sweep on hover */}
                 <motion.span
                   className="absolute inset-0 rounded-full bg-blue-50 pointer-events-none"
                   initial={{ scaleX: 0, originX: "0%" }}
