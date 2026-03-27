@@ -14,6 +14,7 @@ type PaymentMethod = "card" | "paypal";
 
 export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [couponCode, setCouponCode] = useState("");
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.product.price * item.qty,
@@ -50,7 +51,7 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="Ali"
+                      placeholder="eg: Jason"
                     />
                   </div>
                   <div className="space-y-2">
@@ -58,7 +59,7 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="Khan"
+                      placeholder="eg: Smith"
                     />
                   </div>
                   <div className="space-y-2 sm:col-span-2">
@@ -66,7 +67,7 @@ export default function CheckoutPage() {
                     <input
                       type="email"
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="you@example.com"
+                      placeholder="eg: you@example.com"
                     />
                   </div>
                   <div className="space-y-2 sm:col-span-2">
@@ -74,7 +75,7 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="AH Digitizing"
+                      placeholder="eg: AH Digitizing"
                     />
                   </div>
                 </div>
@@ -88,7 +89,7 @@ export default function CheckoutPage() {
                     <input
                       type="email"
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="delivery@example.com"
+                      placeholder="eg: delivery@example.com"
                     />
                   </div>
                   <div className="space-y-2">
@@ -96,7 +97,7 @@ export default function CheckoutPage() {
                     <textarea
                       rows={4}
                       className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                      placeholder="Thread colors, sizes, format preferences..."
+                      placeholder="eg: Thread colors, sizes, format preferences..."
                     />
                   </div>
                 </div>
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
                       <input
                         type="text"
                         className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                        placeholder="1234 5678 9012 3456"
+                        placeholder="eg: 1234 5678 9012 3456"
                       />
                     </div>
                     <div className="space-y-2">
@@ -148,7 +149,7 @@ export default function CheckoutPage() {
                       <input
                         type="text"
                         className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
-                        placeholder="123"
+                        placeholder="eg: 123"
                       />
                     </div>
                   </div>
@@ -205,6 +206,24 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                 ))}
+              </div>
+              <div className="mt-6 rounded-2xl border border-gray-200 p-4">
+                <label className="text-sm font-semibold text-gray-900">Coupon Code</label>
+                <div className="mt-3 flex gap-3">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(event) => setCouponCode(event.target.value)}
+                    placeholder="Enter coupon code"
+                    className="flex-1 rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    className="rounded-xl border border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
               <div className="mt-6 space-y-3 text-sm text-gray-600">
                 <div className="flex items-center justify-between">

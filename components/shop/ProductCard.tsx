@@ -25,8 +25,8 @@ export default function ProductCard({
 
   const restImageClass =
     imageVariant === "largeSquare"
-      ? "absolute inset-x-4 top-4 bottom-24 z-10 block overflow-hidden rounded-[1.25rem]"
-      : "absolute inset-x-4 top-4 bottom-20 z-10 block overflow-hidden rounded-[1.25rem]";
+      ? "absolute inset-x-4 top-4 bottom-36 z-10 block overflow-hidden rounded-[1.25rem]"
+      : "absolute inset-x-4 top-4 bottom-32 z-10 block overflow-hidden rounded-[1.25rem]";
 
   const hoverImageClass =
     imageVariant === "largeSquare"
@@ -55,6 +55,23 @@ export default function ProductCard({
               {product.title}
             </h3>
           </Link>
+          <div className="mt-3 flex items-end justify-between gap-3">
+            <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
+            <Button
+              asChild
+              className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  addItem(product, 1);
+                  openCart();
+                }}
+              >
+                Add to Cart
+              </button>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -96,6 +113,4 @@ export default function ProductCard({
     </article>
   );
 }
-
-
 

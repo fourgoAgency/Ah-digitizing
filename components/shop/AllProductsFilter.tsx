@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCategory } from "@/data/products";
 
@@ -41,6 +41,7 @@ export default function AllProductsFilter({
   onToggleSubcategory,
 }: AllProductsFilterProps) {
   const [showAllSubcategories, setShowAllSubcategories] = useState(false);
+  const hasSelectedCategory = selectedCategories.length > 0;
 
   const visibleSubcategories = useMemo(
     () => (showAllSubcategories ? subcategoryOptions : subcategoryOptions.slice(0, 7)),
@@ -48,6 +49,12 @@ export default function AllProductsFilter({
   );
 
   const hasMoreSubcategories = subcategoryOptions.length > 7;
+
+  useEffect(() => {
+    if (!hasSelectedCategory) {
+      setShowAllSubcategories(false);
+    }
+  }, [hasSelectedCategory]);
 
   return (
     <aside className="h-fit w-full max-w-[220px] p-3 rounded-md border border-gray-200 bg-gray-200 lg:sticky lg:top-24 lg:left-[calc((100vw-100%)/-2)] lg:w-[260px]">
@@ -93,35 +100,39 @@ export default function AllProductsFilter({
             ))}
           </ul>
 
-          <h3 className="mb-2 mt-4 text-sm font-semibold text-black">Sub Category</h3>
-          <ul className="space-y-2">
-            {visibleSubcategories.map((option) => (
-              <li key={option.href}>
-                <label className="flex cursor-pointer items-center justify-between gap-2 text-sm text-gray-800">
-                  <span className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedSubcategories.includes(option.href)}
-                      onChange={() => onToggleSubcategory(option.href)}
-                      className="h-4 w-4 rounded border-gray-800 text-black focus:ring-primary"
-                    />
-                    {option.label}
-                  </span>
-                  <span className="text-xs text-gray-800">({option.count})</span>
-                </label>
-              </li>
-            ))}
-          </ul>
-          {hasMoreSubcategories && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAllSubcategories((previous) => !previous)}
-              className="mt-3 border-white bg-primary text-white hover:bg-white/90 hover:shadow-2xl hover:text-primary hover:border-primary"
-            >
-              {showAllSubcategories ? "Less" : "View all"}
-            </Button>
+          {hasSelectedCategory && (
+            <>
+              <h3 className="mb-2 mt-4 text-sm font-semibold text-black">Sub Category</h3>
+              <ul className="space-y-2">
+                {visibleSubcategories.map((option) => (
+                  <li key={option.href}>
+                    <label className="flex cursor-pointer items-center justify-between gap-2 text-sm text-gray-800">
+                      <span className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedSubcategories.includes(option.href)}
+                          onChange={() => onToggleSubcategory(option.href)}
+                          className="h-4 w-4 rounded border-gray-800 text-black focus:ring-primary"
+                        />
+                        {option.label}
+                      </span>
+                      <span className="text-xs text-gray-800">({option.count})</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              {hasMoreSubcategories && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAllSubcategories((previous) => !previous)}
+                  className="mt-3 border-white bg-primary text-white hover:bg-white/90 hover:shadow-2xl hover:text-primary hover:border-primary"
+                >
+                  {showAllSubcategories ? "Less" : "View all"}
+                </Button>
+              )}
+            </>
           )}
         </div>
     </aside>

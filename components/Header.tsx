@@ -107,8 +107,10 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
       >
         <Link href="/" className="flex items-center gap-1 text-3xl">
           <p className="font-bold text-black text-4xl">AH</p>
-          <p className="font-bold" style={{ WebkitTextStroke: "0.4px black" }}>
-            Digitizing
+          <p
+            className="font-bold"
+          >
+           𝓓𝓲𝓰𝓲𝓽𝓲𝔃𝓲𝓷𝓰
           </p>
         </Link>
       </motion.div>

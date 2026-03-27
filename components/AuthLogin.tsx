@@ -4,37 +4,29 @@ import { useState } from "react";
 import { FaFacebookF, FaGithub, FaGoogle, FaLinkedinIn } from "react-icons/fa";
 
 function SocialButtons() {
+  const socialOptions = [
+    { label: "Continue with Google", icon: <FaGoogle size={14} /> },
+    { label: "Continue with Facebook", icon: <FaFacebookF size={14} /> },
+    { label: "Continue with LinkedIn", icon: <FaLinkedinIn size={14} /> },
+  ];
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-center gap-3">
-        <button
-          type="button"
-          aria-label="Continue with Google"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
-        >
-          <FaGoogle size={14} />
-        </button>
-        <button
-          type="button"
-          aria-label="Continue with Facebook"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
-        >
-          <FaFacebookF size={14} />
-        </button>
-        <button
-          type="button"
-          aria-label="Continue with GitHub"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
-        >
-          <FaGithub size={14} />
-        </button>
-        <button
-          type="button"
-          aria-label="Continue with LinkedIn"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
-        >
-          <FaLinkedinIn size={14} />
-        </button>
+        {socialOptions.map((option) => (
+          <div key={option.label} className="group relative">
+            <button
+              type="button"
+              aria-label={option.label}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+            >
+              {option.icon}
+            </button>
+            <span className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-[11px] font-medium text-background opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100">
+              {option.label}
+            </span>
+          </div>
+        ))}
       </div>
       <p className="text-center text-[13px] text-foreground/80">Sign in With Email &amp; Password</p>
     </div>
@@ -61,8 +53,10 @@ export default function AuthSlider() {
         <div className="relative hidden h-[620px] md:block">
           <div className="absolute inset-0 overflow-hidden">
             <div
-              className={`absolute left-0 top-0 z-20 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-transform duration-700 ease-in-out ${
-                isSignup ? "translate-x-full" : "translate-x-0"
+              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-all duration-700 ease-out will-change-transform ${
+                isSignup
+                  ? "translate-x-full opacity-0 pointer-events-none"
+                  : "translate-x-0 opacity-100 pointer-events-auto"
               }`}
             >
               <form className="w-full max-w-sm space-y-5" onSubmit={(e) => e.preventDefault()}>
@@ -86,10 +80,10 @@ export default function AuthSlider() {
             </div>
 
             <div
-              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-transform duration-700 ease-in-out will-change-transform [backface-visibility:hidden] [transform:translateZ(0)] ${
+              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-all duration-700 ease-out will-change-transform [backface-visibility:hidden] [transform:translateZ(0)] ${
                 isSignup
-                  ? "z-20 translate-x-full"
-                  : "z-10 translate-x-[200%] pointer-events-none"
+                  ? "translate-x-full opacity-100 pointer-events-auto"
+                  : "translate-x-[200%] opacity-0 pointer-events-none"
               }`}
             >
               <form className="w-full max-w-sm space-y-5" onSubmit={(e) => e.preventDefault()}>
@@ -109,12 +103,12 @@ export default function AuthSlider() {
           </div>
 
           <div
-            className={`absolute left-1/2 top-0 z-30 h-full w-1/2 overflow-hidden transition-transform duration-700 ease-in-out ${
+            className={`absolute left-1/2 top-0 z-30 h-full w-1/2 overflow-hidden transition-transform duration-700 ease-out will-change-transform ${
               isSignup ? "-translate-x-full" : "translate-x-0"
             }`}
           >
             <div
-              className={`absolute -left-full top-0 flex h-full w-[200%] transition-transform duration-700 ease-in-out ${
+              className={`absolute -left-full top-0 flex h-full w-[200%] transition-transform duration-700 ease-out will-change-transform ${
                 isSignup ? "translate-x-1/2" : "translate-x-0"
               }`}
             >

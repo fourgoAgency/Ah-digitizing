@@ -3,6 +3,9 @@
 import { useMemo, useState } from "react";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
 import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
+import BestSellingProducts from "@/components/shop/BestSellingProducts";
+import BulkProducts from "@/components/shop/BulkProducts";
+import FreeProducts from "@/components/shop/FreeProducts";
 import {
   ProductCategory,
   products,
@@ -33,7 +36,7 @@ export default function AllProductsCatalog() {
   const subcategoryOptions = useMemo<FilterSubcategoryOption[]>(() => {
     const baseOptions =
       selectedCategories.length === 0
-        ? shopSubcategoryDefinitions
+        ? []
         : shopSubcategoryDefinitions.filter((option) => selectedCategories.includes(option.category));
 
     return baseOptions.map((option) => ({
@@ -86,9 +89,20 @@ export default function AllProductsCatalog() {
   };
 
   const toggleCategory = (slug: ProductCategory) => {
-    setSelectedCategories((previous) =>
-      previous.includes(slug) ? previous.filter((item) => item !== slug) : [...previous, slug]
-    );
+    setSelectedCategories((previous) => {
+      const nextCategories = previous.includes(slug)
+        ? previous.filter((item) => item !== slug)
+        : [...previous, slug];
+
+      setSelectedSubcategories((previousSubcategories) =>
+        previousSubcategories.filter((subcategoryHref) => {
+          const option = shopSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
+          return option ? nextCategories.includes(option.category) : false;
+        })
+      );
+
+      return nextCategories;
+    });
   };
 
   const toggleSubcategory = (slug: string) => {
@@ -99,12 +113,6 @@ export default function AllProductsCatalog() {
 
   return (
     <>
-      <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">Shop</p>
-      <h1 className="mt-2 text-4xl font-bold text-gray-900">All Products</h1>
-      <p className="mt-3 max-w-2xl text-gray-600">
-        Browse our complete catalog of ready-to-order digitizing and vector services.
-      </p>
-
       <section className="mt-8 grid lg:grid-cols-[220px_1fr] xl:grid-cols-[240px_1fr]">
         <AllProductsFilter
           activeFilterCount={activeFilterCount}
@@ -118,13 +126,15 @@ export default function AllProductsCatalog() {
           onToggleCategory={toggleCategory}
           onToggleSubcategory={toggleSubcategory}
         />
-
+        <section className="mb-6 flex flex-col gap-6">
+        <BulkProducts />
+        <FreeProducts />
+        <BestSellingProducts />
         <AllProductsGrid
           filteredProducts={filteredProducts}
-          sortOption={sortOption}
-          onSortChange={setSortOption}
-          onClearAll={clearAllFilters}
+          onClearAllAction={clearAllFilters}
         />
+        </section>
       </section>
     </>
   );
