@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
 import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
 import BestSellingProducts from "@/components/shop/BestSellingProducts";
@@ -24,6 +24,7 @@ export default function AllProductsCatalog() {
   const [sortOption, setSortOption] = useState<SortOption>("relevance");
   const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
+  const allProductsGridRef = useRef<HTMLElement | null>(null);
 
   const categoryOptions = useMemo(() => {
     return shopCategoryDefinitions.map(({ slug, label }) => ({
@@ -82,6 +83,14 @@ export default function AllProductsCatalog() {
   const activeFilterCount = selectedCategories.length + selectedSubcategories.length + (searchQuery.trim() ? 1 : 0);
   const shouldShowFeaturedSections = selectedCategories.length === 0;
 
+  useEffect(() => {
+    if (selectedCategories.length === 0) {
+      return;
+    }
+
+    allProductsGridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedCategories]);
+
   const clearAllFilters = () => {
     setSearchQuery("");
     setSelectedCategories([]);
@@ -128,17 +137,19 @@ export default function AllProductsCatalog() {
           onToggleSubcategory={toggleSubcategory}
         />
         <section className="mb-6 flex flex-col gap-6">
-        {shouldShowFeaturedSections ? (
-          <>
-            <BestSellingProducts />
-            <BulkProducts />
-            <FreeProducts />
-          </>
-        ) : null}
-        <AllProductsGrid
-          filteredProducts={filteredProducts}
-          onClearAllAction={clearAllFilters}
-        />
+          {shouldShowFeaturedSections ? (
+            <>
+              <BestSellingProducts />
+              <BulkProducts />
+              <FreeProducts />
+            </>
+          ) : null}
+          <section ref={allProductsGridRef} className="scroll-mt-24">
+            <AllProductsGrid
+              filteredProducts={filteredProducts}
+              onClearAllAction={clearAllFilters}
+            />
+          </section>
         </section>
       </section>
     </>
