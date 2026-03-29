@@ -181,8 +181,8 @@ const NavButton = ({
       whileTap={enabled ? { scale: 0.93 } : {}}
       className="relative shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
       style={{
-        width: "clamp(36px, 3vw, 44px)",
-        height: "clamp(300px, 65vh, 660px)",
+        width: "clamp(36px, 4vw, 48px)",
+        height: "100%",
         borderColor: enabled ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)",
         background: enabled ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
         cursor: enabled ? "pointer" : "default",
@@ -241,7 +241,7 @@ const ThumbButton = ({
   <motion.button
     onClick={onClick}
     className="relative shrink-0 rounded-lg overflow-hidden outline-none cursor-pointer"
-    style={{ width: "clamp(44px, 9vw, 68px)", height: "clamp(32px, 6.5vw, 50px)", background: "white" }}
+    style={{ width: "clamp(56px, 10vw, 84px)", height: "clamp(40px, 8vw, 60px)", background: "white" }}
     animate={{
       opacity: isActive ? 1 : 0.35,
       scale: isActive ? 1.06 : 1,
@@ -422,15 +422,15 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
         >
           <div
             className="flex items-stretch gap-3 md:gap-4 w-full justify-center"
-            style={{ height: "clamp(300px, 65vh, 660px)" }}
+            style={{ height: "clamp(280px, 48vh, 540px)" }}
           >
             <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
 
-            {/* Image container */}
+            {/* Image container - optimized for 1280x1001 aspect ratio (~1.28:1) */}
             <div
               className="relative flex-1 min-w-0 rounded-2xl overflow-hidden"
               style={{
-                maxWidth: "min(100%, 580px)",
+                maxWidth: "min(100%, 480px)",
                 height: "100%",
                 background: "linear-gradient(160deg, #07112e 0%, #0b1e52 50%, #06102e 100%)",
                 boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
@@ -449,10 +449,10 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                   >
                   <Image
                     src={item.path}
-                    width={900}
-                    height={700}
+                    width={1280}
+                    height={1001}
                     alt={item.title}
-                    className="w-full lg:w-[60%] h-full object-contain drop-shadow-2xl"
+                    className="w-full h-full object-contain drop-shadow-2xl"
                     style={{ background: "white" }}
                     unoptimized
                   />
