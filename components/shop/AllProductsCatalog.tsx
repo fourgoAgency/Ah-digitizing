@@ -80,6 +80,7 @@ export default function AllProductsCatalog() {
   }, [searchQuery, selectedCategories, selectedSubcategories, sortOption]);
 
   const activeFilterCount = selectedCategories.length + selectedSubcategories.length + (searchQuery.trim() ? 1 : 0);
+  const shouldShowFeaturedSections = selectedCategories.length === 0;
 
   const clearAllFilters = () => {
     setSearchQuery("");
@@ -127,9 +128,13 @@ export default function AllProductsCatalog() {
           onToggleSubcategory={toggleSubcategory}
         />
         <section className="mb-6 flex flex-col gap-6">
-        <BulkProducts />
-        <FreeProducts />
-        <BestSellingProducts />
+        {shouldShowFeaturedSections ? (
+          <>
+            <BestSellingProducts />
+            <BulkProducts />
+            <FreeProducts />
+          </>
+        ) : null}
         <AllProductsGrid
           filteredProducts={filteredProducts}
           onClearAllAction={clearAllFilters}
