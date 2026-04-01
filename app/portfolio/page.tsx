@@ -148,9 +148,9 @@ const categories: CategoryConfig[] = [
 
 // ─── Animation variants ────────────────────────────────────────────────────────
 const slideVariants = {
-  enter: (direction: number) => ({ x: direction > 0 ? 300 : -300, opacity: 0, scale: 0.95 }),
+  enter: (direction: number) => ({ x: direction > 0 ? 80 : -80, opacity: 0, scale: 0.97 }),
   center: { x: 0, opacity: 1, scale: 1 },
-  exit: (direction: number) => ({ x: direction > 0 ? -300 : 300, opacity: 0, scale: 0.95 }),
+  exit: (direction: number) => ({ x: direction > 0 ? -80 : 80, opacity: 0, scale: 0.97 }),
 };
 
 const staggerContainer = {
@@ -162,6 +162,10 @@ const fadeUp = {
   hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: cubicBezier(0.22, 1, 0.36, 1) } },
 };
+
+// ─── Shared image size constant ───────────────────────────────────────────────
+const IMG_WIDTH = "clamp(360px, min(55vh, calc(100vw - 60px)), 1100px)";
+const IMG_HEIGHT = "clamp(280px, min(45vh, calc(100vw - 160px)), 850px)";
 
 // ─── Animated Nav Button ───────────────────────────────────────────────────────
 const NavButton = ({
@@ -181,8 +185,8 @@ const NavButton = ({
       whileTap={enabled ? { scale: 0.93 } : {}}
       className="relative shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
       style={{
-        width: "clamp(36px, 4vw, 48px)",
-        height: "100%",
+        width: "clamp(36px, 3vw, 50px)",
+        height: IMG_HEIGHT,
         borderColor: enabled ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)",
         background: enabled ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
         cursor: enabled ? "pointer" : "default",
@@ -216,7 +220,7 @@ const NavButton = ({
         }
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
           strokeLinecap="round" strokeLinejoin="round"
           style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}>
           {isPrev ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
@@ -226,9 +230,44 @@ const NavButton = ({
   );
 };
 
+// ─── Mobile Nav Button (for inside image container on mobile) ─────────────────
+const MobileNavButton = ({
+  direction,
+  enabled,
+  onClick,
+}: {
+  direction: "prev" | "next";
+  enabled: boolean;
+  onClick: () => void;
+}) => {
+  const isPrev = direction === "prev";
+  return (
+    <motion.button
+      onClick={onClick}
+      disabled={!enabled}
+      whileTap={enabled ? { scale: 0.9 } : {}}
+      whileHover={enabled ? { scale: 1.08, backgroundColor: "rgba(255,255,255,0.22)" } : {}}
+      className="flex items-center justify-center rounded-full outline-none border"
+      style={{
+        width: 44,
+        height: 44,
+        borderColor: enabled ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.08)",
+        background: enabled ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.04)",
+        backdropFilter: "blur(8px)",
+        cursor: enabled ? "pointer" : "default",
+      }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+        strokeLinecap="round" strokeLinejoin="round"
+        style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}>
+        {isPrev ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
+      </svg>
+    </motion.button>
+  );
+};
+
 // ─── Animated Thumbnail Button ────────────────────────────────────────────────
-// FIX 2: Scale kam kiya (1.12 → 1.06) taake adjacent images se na jure.
-// Scroll container me py-2 padding add ki taake vertical overflow clip na ho.
 const ThumbButton = ({
   thumb,
   isActive,
@@ -241,17 +280,21 @@ const ThumbButton = ({
   <motion.button
     onClick={onClick}
     className="relative shrink-0 rounded-lg overflow-hidden outline-none cursor-pointer"
-    style={{ width: "clamp(56px, 10vw, 84px)", height: "clamp(40px, 8vw, 60px)", background: "white" }}
+    style={{ 
+      width: "clamp(36px, 7vw, 72px)", 
+      height: "clamp(28px, 5vw, 54px)", 
+      background: "white" 
+    }}
     animate={{
       opacity: isActive ? 1 : 0.35,
-      scale: isActive ? 1.06 : 1,
+      scale: isActive ? 1.08 : 1,
       boxShadow: isActive
         ? "0 0 0 2px rgba(255,255,255,0.85), 0 4px 16px rgba(0,0,0,0.5)"
         : "0 0 0 0px rgba(255,255,255,0)",
     }}
     whileHover={
       !isActive
-        ? { opacity: 0.9, scale: 1.06, boxShadow: "0 0 0 1.5px rgba(255,255,255,0.5), 0 4px 14px rgba(0,0,0,0.4)" }
+        ? { opacity: 0.85, scale: 1.12, boxShadow: "0 0 0 1.5px rgba(255,255,255,0.5), 0 4px 14px rgba(0,0,0,0.4)" }
         : {}
     }
     whileTap={{ scale: 0.97 }}
@@ -368,19 +411,19 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       >
         {/* TOP BAR */}
         <div
-          className="pointer-events-auto shrink-0 flex items-center justify-between px-5 md:px-8 py-4"
+          className="pointer-events-auto shrink-0 flex items-center justify-between px-5 md:px-8 xl:px-12 py-4 xl:py-5"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 min-w-0">
             <motion.div
-              className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5"
+              className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5 xl:px-4 xl:py-2"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.12, duration: 0.28 }}
             >
-              <span className="text-white text-xs font-bold tabular-nums">{currentIndex + 1}</span>
-              <span className="text-white/30 text-xs">/</span>
-              <span className="text-white/40 text-xs tabular-nums">{items.length}</span>
+              <span className="text-white text-xs font-bold xl:text-sm tabular-nums">{currentIndex + 1}</span>
+              <span className="text-white/30 text-xs xl:text-sm">/</span>
+              <span className="text-white/40 text-xs tabular-nums xl:text-sm">{items.length}</span>
             </motion.div>
             <AnimatePresence mode="wait">
               <motion.span
@@ -389,13 +432,20 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 8 }}
                 transition={{ duration: 0.2 }}
-                className="text-white/70 text-sm font-medium truncate max-w-40 md:max-w-xs"
+                className="text-white/70 text-sm font-medium xl:text-base truncate max-w-40 md:max-w-xs"
               >
                 {item.title}
               </motion.span>
             </AnimatePresence>
           </div>
           <div className="flex items-center gap-4 flex-shrink-0">
+            <div className="hidden sm:block w-28 xl:w-40 h-[3px] xl:h-[4px] bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-white/60 rounded-full"
+                animate={{ width: `${progressPct}%` }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
+            </div>
             {/* Close button — spins in on mount */}
             <motion.button
               onClick={onClose}
@@ -404,7 +454,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
               transition={{ delay: 0.15, duration: 0.3, ease: "easeOut" }}
               whileHover={{ scale: 1.12, backgroundColor: "rgba(255,255,255,1)", color: "#111827" }}
               whileTap={{ scale: 0.9, rotate: 90 }}
-              className="w-9 h-9 rounded-full border border-white/15 bg-white/8 text-white/60
+              className="w-9 h-9 xl:w-10 xl:h-10 rounded-full border border-white/15 bg-white/8 text-white/60
                 flex items-center justify-center cursor-pointer flex-shrink-0 transition-colors duration-150"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -420,23 +470,27 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           onClick={(e) => e.stopPropagation()}
           onWheel={handleWheel}
         >
-          <div
-            className="flex items-stretch gap-3 md:gap-4 w-full justify-center"
-            style={{ height: "clamp(280px, 48vh, 540px)" }}
-          >
-            <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full justify-center">
 
-            {/* Image container - optimized for 1280x1001 aspect ratio (~1.28:1) */}
+            {/* Desktop-only left nav — height tracks image width */}
+            <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
+              <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
+            </div>
+
+            {/* ── Image container ──
+                width  : IMG_WIDTH (min of vh and available horizontal room)
+                height : IMG_HEIGHT (shorter than width for rectangular look)   */}
             <div
-              className="relative flex-1 min-w-0 rounded-2xl overflow-hidden"
+              className="relative rounded-2xl overflow-hidden shrink-0"
               style={{
-                maxWidth: "min(100%, 480px)",
-                height: "100%",
-                background: "linear-gradient(160deg, #07112e 0%, #0b1e52 50%, #06102e 100%)",
+                width: IMG_WIDTH,
+                height: IMG_HEIGHT,
                 boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
+                // background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%)",
+                background: "white",
               }}
             >
-              <AnimatePresence custom={direction} mode="popLayout">
+              <AnimatePresence custom={direction} mode="wait">
                 <motion.div
                   key={item.id}
                   custom={direction}
@@ -444,74 +498,68 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-                  className="absolute inset-0 flex items-center justify-center p-3"
-                  >
+                  transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                  className="absolute inset-0"
+                >
                   <Image
                     src={item.path}
                     width={1280}
                     height={1001}
                     alt={item.title}
-                    className="w-full h-full object-contain drop-shadow-2xl"
-                    style={{ background: "white" }}
+                    className="w-full h-full object-contain bg-white"
                     unoptimized
                   />
                 </motion.div>
               </AnimatePresence>
+
               <div className="absolute inset-0 rounded-2xl pointer-events-none"
                 style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.2)" }} />
+
+              {/* Desktop click zones */}
               <div onClick={hasPrev ? onPrev : undefined}
-                className={`absolute left-0 top-0 bottom-0 w-1/4 z-10 ${hasPrev ? "cursor-pointer" : ""}`} />
+                className={`absolute left-0 top-0 bottom-0 w-1/4 z-10 hidden md:block ${hasPrev ? "cursor-pointer" : ""}`} />
               <div onClick={hasNext ? onNext : undefined}
-                className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 ${hasNext ? "cursor-pointer" : ""}`} />
+                className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 hidden md:block ${hasNext ? "cursor-pointer" : ""}`} />
             </div>
 
-            <NavButton direction="next" enabled={hasNext} onClick={onNext} />
+            {/* Desktop-only right nav — height tracks image height */}
+            <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
+              <NavButton direction="next" enabled={hasNext} onClick={onNext} />
+            </div>
+
+            {/* Mobile nav buttons - below image container on small screens */}
+            <div className="flex md:hidden items-center gap-4 w-full justify-center pt-2">
+              <MobileNavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
+              <MobileNavButton direction="next" enabled={hasNext} onClick={onNext} />
+            </div>
+
           </div>
         </div>
 
-        {/* BOTTOM: THUMBNAILS
-            FIX 2: outer wrapper overflow-x-auto moved here with py-2 padding so
-            scaled thumbs don't clip vertically. Inner div uses width fit-content. */}
+        {/* THUMBNAIL STRIP — shorter height + tighter padding */}
         <div
-          className="pointer-events-auto shrink-0 px-4 md:px-8 pt-3 pb-5"
+          className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-2 pb-4 hidden md:block"
           onClick={(e) => e.stopPropagation()}
         >
           <motion.div
+            ref={thumbStripRef}
+            onWheel={handleWheel}
+            className="flex gap-3 overflow-x-auto px-1 pb-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.35, ease: "easeOut" }}
-            /* overflow-x-auto here, py-2 gives vertical room for scale */
-            className="overflow-x-auto py-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {/* inner row — ref lives here so scroll math still works */}
-            <div
-              ref={thumbStripRef}
-              onWheel={handleWheel}
-              className="flex gap-2 px-1"
-              style={{ width: "max-content" }}
-            >
-              {items.map((thumb, idx) => (
-                <ThumbButton
-                  key={thumb.id}
-                  thumb={thumb}
-                  isActive={idx === currentIndex}
-                  onClick={() => onJump(idx)}
-                />
-              ))}
-            </div>
+            {items.map((thumb, idx) => (
+              <ThumbButton
+                key={thumb.id}
+                thumb={thumb}
+                isActive={idx === currentIndex}
+                onClick={() => onJump(idx)}
+              />
+            ))}
           </motion.div>
 
-          <div className="mt-1 flex justify-center">
-            <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-white/50 rounded-full"
-                animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              />
-            </div>
-          </div>
         </div>
       </motion.div>
     </AnimatePresence>
@@ -519,58 +567,59 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 };
 
 // ─── Portfolio Card ────────────────────────────────────────────────────────────
-// FIX 1: Overlay image ke PEECHE — z-index layering:
-//   z-0  → dark gradient overlay  (image ke peeche)
-//   z-10 → Image                  (image ke upar, overlay ke upar)
-//   z-20 → title / view text      (sab ke upar)
-//   z-30 → shine sweep            (sabse upar)
-// Is tarah overlay sirf un jagahon pe dikhega jahan image transparent hai,
-// image khud dark nahi hogi aur quality sahi lagegi.
 const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => void }) => (
   <motion.div
     onClick={onClick}
-    className="group relative rounded-3xl cursor-pointer overflow-hidden w-full max-w-[320px]"
+    // `aspect-square`  → always a perfect 1:1 square, regardless of grid column width
+    // `bg-white`       → the white canvas lives here so it scales with the card
+    // `w-full max-w-[320px]` → still respects the grid column width
+    className="group relative rounded-2xl cursor-pointer overflow-hidden w-full max-w-[320px] aspect-square bg-white"
     variants={fadeUp}
     whileHover={{ y: -8, scale: 1.03 }}
     whileTap={{ scale: 0.97 }}
     transition={{ type: "spring", stiffness: 280, damping: 22 }}
     style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.45), 0 5px 15px rgba(0,0,0,0.3)" }}
   >
-    {/* Hover glow border — outermost ring */}
+    {/* Hover glow border — unchanged */}
     <motion.div
-      className="absolute inset-0 rounded-3xl pointer-events-none z-40"
+      className="absolute inset-0 rounded-2xl pointer-events-none z-10"
       initial={{ opacity: 0 }}
       whileHover={{ opacity: 1 }}
       transition={{ duration: 0.25 }}
       style={{ boxShadow: "inset 0 0 0 1.5px rgba(99,102,241,0.6), 0 0 28px rgba(99,102,241,0.12)" }}
     />
-
-    <div className="relative w-full overflow-hidden rounded-2xl">
-
-      {/* ── z-0: Dark gradient overlay — IMAGE KE PEECHE ── */}
-      <div
-        className="absolute inset-0 z-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent
-          opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      />
-
-      {/* ── z-10: Image — overlay ke upar ── */}
+ 
+    {/*
+      Image wrapper
+      ─────────────
+      `absolute inset-[2px]`  → 2 px gap between the image and the card edge.
+                                 This gives the "almost no space" look from the screenshot.
+                                 • Use `inset-0`    for fully edge-to-edge
+                                 • Use `inset-1`    for 4 px gap
+                                 • Use `inset-[6px]` for a more padded look
+      `overflow-hidden`        → clip the image on hover scale so it doesn't bleed outside
+    */}
+    <div className="absolute inset-[2px] overflow-hidden rounded-xl">
       <Image
         src={item.path}
-        width={500}
-        height={500}
+        fill                   // ← stretches to fill the parent box (the `absolute inset-[2px]` div)
         alt={item.title}
-        className="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        // `object-contain` keeps the full artwork visible, no cropping.
+        // The white card background shows through any transparent/white image padding.
+        className="object-contain transition-transform duration-500 group-hover:scale-105"
+        unoptimized
       />
-
-      {/* ── z-20: View icon — image ke upar ── */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-4 gap-1 pointer-events-none">
-        <span
-          className="text-white
-            flex items-center gap-1
-            translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
-            transition-all duration-300 ease-out drop-shadow-md"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+ 
+      {/* Gradient overlay + magnify icon */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300
+        flex flex-col items-center justify-end pb-4 gap-2">
+        <span className="text-white/75 text-[14px] font-semibold tracking-widest uppercase
+          flex items-center gap-1
+          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+          transition-all duration-300 ease-out delay-[40ms]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
             <line x1="11" y1="8" x2="11" y2="14" />
@@ -578,9 +627,9 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
           </svg>
         </span>
       </div>
-
-      {/* ── z-30: Shine sweep — sabse upar ── */}
-      <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden rounded-2xl">
+ 
+      {/* Shine sweep — unchanged */}
+      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-xl">
         <div
           className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
           style={{ background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.09) 50%, transparent 70%)" }}
@@ -672,7 +721,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         <FloatingBlob className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.025] blur-3xl" delay={1.2} />
         <FloatingBlob className="absolute top-1/4 right-1/4 w-52 h-52 rounded-full bg-indigo-400/5 blur-2xl" delay={3.5} />
 
-        {/* Banner text */}
+        {/* Banner text — staggered slide-up per category */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <motion.p
             className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
@@ -737,7 +786,7 @@ const CategorySection = ({
         style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
       >
         <div className="max-w-6xl mx-auto">
-          {/* Section header */}
+          {/* Section header — slides in from left */}
           <motion.div
             className="mb-10"
             initial={{ opacity: 0, x: -28 }}
@@ -746,6 +795,7 @@ const CategorySection = ({
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <h3 className="text-3xl font-bold text-gray-900">{config.label}</h3>
+            {/* Animated accent line under header */}
             <motion.div
               className="mt-2 h-0.5 bg-gradient-to-r from-blue-500 to-transparent rounded-full"
               initial={{ width: 0 }}
@@ -776,10 +826,11 @@ const CategorySection = ({
                 onClick={handleViewMore}
                 className="cursor-pointer text-sm font-semibold text-gray-700 border border-gray-300
                   rounded-full px-6 py-2.5 relative overflow-hidden"
-                whileHover={{ scale: 1.04, color: "#0A21C0", borderColor: "#0A21C0" }}
+                whileHover={{ scale: 1.04, color: "#2563eb", borderColor: "#2563eb" }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
               >
+                {/* Fill sweep on hover */}
                 <motion.span
                   className="absolute inset-0 rounded-full bg-blue-50 pointer-events-none"
                   initial={{ scaleX: 0, originX: "0%" }}
