@@ -1,7 +1,9 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import AnimatedSectionHeading from "./AnimatedSectionHeading";
 import { Button } from "../ui/button";
 
 const categories = [
@@ -13,19 +15,55 @@ const categories = [
   { id: 6, name: "Applique", slug: "applique", image: "/home-page/portfolio-embroidery/3rd.png" },
 ];
 
+const sectionVariants = {
+  hidden: {
+    x: -140,
+  },
+  visible: {
+    x: 0,
+    transition: {
+      duration: 1.45,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: {
+    x: -56,
+  },
+  visible: (index: number) => ({
+    x: 0,
+    transition: {
+      delay: 0.26 + index * 0.1,
+      duration: 0.72,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  }),
+};
+
 export default function ServicesCarousel() {
   return (
-    <section className=" bg-gray-50">
+    <section className="overflow-x-hidden py-14 bg-gray-50">
       <div className="max-w-full pr-4">
-        <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+        <motion.div
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col gap-8 items-stretch lg:flex-row"
+        >
 
           {/* LEFT SIDEBAR */}
-          <div className="hidden lg:flex w-80 shrink-0">
+          <div className="hidden w-80 shrink-0 lg:flex">
             <div className="bg-primary p-8 shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)] shadow-black/50 flex flex-col justify-center h-full w-full rounded-r-2xl">
               <div>
-                <h3 className="text-5xl font-bold text-white mb-4">
+                <AnimatedSectionHeading
+                  as="h3"
+                  className="mb-4 text-5xl font-bold text-white"
+                >
                   Shop By<br />Category
-                </h3>
+                </AnimatedSectionHeading>
                 <p className="text-gray-100 text-xl mb-6">
                   Explore our wide range of services tailored to meet your design and digitizing needs.
                 </p>
@@ -42,45 +80,48 @@ export default function ServicesCarousel() {
 
           {/* SERVICES GRID */}
           <div className="flex-1 flex flex-col">
-<h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 md:mb-12 mt-6 text-center">
-              Services we Offered
-            </h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 px-2 md:px-4 mr-7">
+<div className="grid grid-cols-1 gap-6 px-2 mr-7 sm:grid-cols-2 md:px-4 lg:grid-cols-3">
   
-  {categories.map((category) => (
-    <Link
+  {categories.map((category, index) => (
+    <motion.div
       key={category.id}
-      href={`/shop/${category.slug}`}
+      custom={index}
+      variants={cardVariants}
       className="w-full"
     >
-      <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
+      <Link
+        href={`/shop/${category.slug}`}
+        className="block h-full w-full"
+      >
+        <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
 
-        {/* IMAGE WRAPPER */}
-        <div className="
+          {/* IMAGE WRAPPER */}
+          <div className="
           w-full 
           h-48 sm:h-52 md:h-56 
           flex items-center justify-center rounded-t-2xl  drop-shadow-xl drop-shadow-black/70
           shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)]
         ">
-          <Image
-            src={category.image}
-            alt={category.name}
-            width={500}
-            height={500}
-            className="max-h-full max-w-[80%] object-contain"
-            draggable={false}
-          />
-        </div>
+            <Image
+              src={category.image}
+              alt={category.name}
+              width={500}
+              height={500}
+              className="max-h-full max-w-[80%] object-contain"
+              draggable={false}
+            />
+          </div>
 
-        {/* BUTTON */}
-        <div className="mt-auto">
-          <span className="block text-center bg-primary text-white py-3 rounded-b-2xl text-sm font-semibold">
-            {category.name}
-          </span>
-        </div>
+          {/* BUTTON */}
+          <div className="mt-auto">
+            <span className="block text-center bg-primary text-white py-3 rounded-b-2xl text-sm font-semibold">
+              {category.name}
+            </span>
+          </div>
 
-      </div>
-    </Link>
+        </div>
+      </Link>
+    </motion.div>
   ))}
 </div>
 <div className="lg:flex hidden justify-center">
@@ -92,7 +133,7 @@ export default function ServicesCarousel() {
   </Button>
 </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* MOBILE CTA */}
         <div className="lg:hidden mt-10 text-center">

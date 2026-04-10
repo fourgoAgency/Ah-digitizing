@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { FaStar, FaPhoneAlt, FaUserTie, FaShieldAlt, FaUsers } from "react-icons/fa";
 
 const features = [
   {
@@ -32,31 +31,37 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <div className="bg-white py-10 shadow-xl rounded-3xl
-                max-w-6xl mx-auto
-                relative
-                -mt-28 z-20">
-
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
+    <section
+      className="relative z-20 mx-auto mb-8 -mt-28 max-w-6xl rounded-3xl bg-white py-10 shadow-xl"
+      aria-label="Trust signals"
+    >
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 md:flex-row md:gap-0">
         {features.map((feature, idx) => (
           <div
             key={idx}
-            className="flex flex-col items-center justify-center text-center relative px-4 md:px-6 "
-          ><div className="flex flex-col items-center justify-center text-center relative px-4 md:px-6 hover:scale-110 transition-transform duration-300">   
-            <Image src={feature.image} alt={feature.title} width={50} height={50} className="drop-shadow-md drop-shadow-black/80 mx-12" />
-            <h3 className="font-semibold text-secondary mt-4">{feature.title}</h3>
-            {feature.description && (
+            className="relative flex flex-col items-center justify-center px-4 text-center md:px-6"
+          >
+            <div className="relative flex flex-col items-center justify-center px-4 text-center transition-transform duration-300 hover:scale-110 md:px-6">
+              <Image
+                src={feature.image}
+                alt={feature.title}
+                width={50}
+                height={50}
+                className="mx-12 drop-shadow-md drop-shadow-black/80"
+              />
+              <h3 className="mt-4 font-semibold text-secondary">{feature.title}</h3>
+              {feature.description && (
                 <p className="text-secondary text-sm mt-1">{feature.description}</p>
-            )}
+              )}
             </div>
-            {/* Vertical divider except last item */}
+
             {idx !== features.length - 1 && (
-              <div className="hidden md:block absolute right-0 top-1/2 transform -translate-y-1/2 h-48 border-r border-primary"></div>
+              <div className="absolute right-0 top-1/2 hidden h-48 -translate-y-1/2 border-r border-primary md:block" />
             )}
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

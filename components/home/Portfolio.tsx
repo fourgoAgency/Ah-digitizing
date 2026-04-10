@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import portfolioData from "../../data/portfolio.json";
+import AnimatedSectionHeading from "./AnimatedSectionHeading";
 import { Button } from "../ui/button";
 
 type ImageItem = {
@@ -22,28 +24,56 @@ const embroideryImages: ImageItem[] =
 const vectorImages: ImageItem[] =
   typedPortfolioData.vector?.slice(0, 4) || [];
 
+const groupVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const createCardVariants = (offset: number) => ({
+  hidden: {
+    opacity: 0,
+    x: offset,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.65,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+});
+
+const embroideryCardVariants = createCardVariants(-72);
+const vectorCardVariants = createCardVariants(72);
+
 export default function ShowcaseGallery() {
   return (
-    <section className="pt-16 sm:pt-20 pb-6 bg-gray-100">
+    <section className="overflow-x-hidden bg-gray-100 pt-16 pb-6 sm:pt-20">
       <div className="max-w-7xl 4k:max-w-[1800px] mx-auto px-4 4k:px-16">
 
         {/* HEADER */}
         <div className="text-center mb-10 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl 4k:text-6xl font-bold mb-4">
+          <AnimatedSectionHeading className="mb-4 text-3xl font-bold sm:text-4xl lg:text-5xl 4k:text-6xl">
             Showcasing Our Crafts
-          </h2>
+          </AnimatedSectionHeading>
           <p className="text-sm sm:text-base lg:text-lg 4k:text-xl text-gray-600 max-w-2xl mx-auto">
             Explore our recent embroidery and vector design work.
           </p>
         </div>
 
         {/* TABS (STATIC UI) */}
-        <div className="flex w-full mx-auto mb-10 gap-16">
-          <span className="w-1/2 text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-2xl border-2 border-primary transition hover:bg-primary/90">
+        <div className="mx-auto mb-10 grid w-full max-w-3xl grid-cols-2 gap-3 sm:gap-4">
+          <span className="text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-2xl border-2 border-primary transition hover:bg-primary/90">
             Embroidery
           </span>
 
-          <span className="w-1/2 text-center py-2 sm:py-3 font-medium text-white bg-primary rounded-2xl border-2 border-primary transition hover:bg-primary/90">
+          <span className="text-center py-2 sm:py-3 font-medium text-white bg-primary rounded-2xl border-2 border-primary transition hover:bg-primary/90">
             Vector
           </span>
         </div>
@@ -52,17 +82,24 @@ export default function ShowcaseGallery() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 4k:gap-24">
 
           {/* EMBROIDERY COLUMN */}
-          <div className="
+          <motion.div
+            variants={groupVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="
             grid 
             grid-cols-2 
             sm:grid-cols-3 
             lg:grid-cols-2 
             4k:grid-cols-3
             gap-4 sm:gap-6 4k:gap-10
-          ">
+          "
+          >
             {embroideryImages.map((image) => (
-              <div
+              <motion.div
                 key={image.id}
+                variants={embroideryCardVariants}
                 className="
                   relative aspect-square rounded-2xl 4k:rounded-3xl 
                   overflow-hidden border border-primary 
@@ -79,22 +116,29 @@ export default function ShowcaseGallery() {
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   className="object-contain p-3 sm:p-4 4k:p-6 drop-shadow-xl drop-shadow-black/80"
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* VECTOR COLUMN */}
-          <div className="
+          <motion.div
+            variants={groupVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="
             grid 
             grid-cols-2 
             sm:grid-cols-3 
             lg:grid-cols-2 
             4k:grid-cols-3
             gap-4 sm:gap-6 4k:gap-10
-          ">
+          "
+          >
             {vectorImages.map((image) => (
-              <div
+              <motion.div
                 key={image.id}
+                variants={vectorCardVariants}
                 className="
                   relative aspect-square rounded-2xl 4k:rounded-3xl 
                   overflow-hidden border border-primary 
@@ -111,9 +155,9 @@ export default function ShowcaseGallery() {
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   className="object-contain p-3 sm:p-4 4k:p-6"
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
 

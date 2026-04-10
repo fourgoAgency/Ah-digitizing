@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import {  ChevronsLeft, ChevronsRight } from "lucide-react";
-import { motion, useInView, type PanInfo } from "framer-motion";
+import { motion, type PanInfo } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const services = [
   { id: 1, title: "Embroidery Digitizing", image: "/embriodery.png" },
@@ -13,10 +14,42 @@ const services = [
   { id: 5, title: "Raster to Vector", image: "/vector.png" },
 ];
 
-export default function ServicesCarousel() {
+const trainArrival = {
+  hidden: {
+    opacity: 0,
+    x: -180,
+  },
+  visible: {
+    opacity: 1,
+    x: [ -180, 18, 0 ],
+    transition: {
+      duration: 1.05,
+      ease: [0.16, 1, 0.3, 1] as const,
+      times: [0, 0.78, 1],
+    },
+  },
+};
+
+const carriageVariants = {
+  hidden: {
+    opacity: 0,
+    x: -64,
+    scale: 0.94,
+  },
+  visible: (offset: number) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      delay: 0.14 + offset * 0.08,
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  }),
+};
+
+export default function ServicesCarousel({ inTransition = false }: { inTransition?: boolean }) {
   const [index, setIndex] = useState(1);
-  const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true });
 
   const prev = () =>
     setIndex((index - 1 + services.length) % services.length);
@@ -34,18 +67,41 @@ export default function ServicesCarousel() {
 
   return (
     <motion.section
-      ref={ref}
-      className="relative z-10 rounded-t-[2rem] bg-white px-4 pt-28 pb-20 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] sm:px-6 lg:pt-32"
-      initial={{ opacity: 0, y: 90 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+      className={cn(
+        "relative z-10 bg-white px-4 sm:px-6",
+        inTransition
+          ? "flex h-full flex-col justify-center overflow-hidden rounded-[2rem] px-4 py-8 shadow-none sm:px-6 lg:px-8"
+          : "rounded-t-[2rem] pt-28 pb-20 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] lg:pt-32"
+      )}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white via-white/92 to-transparent" />
-      <h2 className="text-center text-5xl font-bold mb-10">
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-white via-white/92 to-transparent",
+          inTransition ? "h-12" : "h-20"
+        )}
+      />
+      <div
+        className={cn(
+          "mx-auto max-w-5xl text-center",
+          inTransition ? "mb-5 pt-2" : "mb-8 pt-2"
+        )}
+      >
+        <h2 className={cn("text-center font-bold", inTransition ? "mb-6 text-3xl sm:text-4xl" : "mb-10 text-5xl")}>
         Services we Offered
       </h2>
+        <p className={cn("mx-auto text-pretty text-slate-600", inTransition ? "mt-2 max-w-2xl text-sm sm:text-base" : "mt-3 max-w-3xl text-base sm:text-lg")}>
+          Swipe through our core services and open the category that fits your next digitizing, vector, or custom artwork job.
+        </p>
+      </div>
 
-      <div className="relative mx-auto max-w-7xl">
+      <motion.div
+        variants={trainArrival}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.35 }}
+        className="relative mx-auto max-w-7xl"
+      >
+        <div className="pointer-events-none absolute left-0 right-0 top-[42%] hidden h-px -translate-y-1/2 bg-gradient-to-r from-primary/10 via-primary/40 to-primary/10 lg:block" />
 
         {/* Slider */}
         <motion.div
@@ -91,7 +147,11 @@ export default function ServicesCarousel() {
                 dragMomentum={false}
                 onDragEnd={handleDragEnd}
               >
-                <div className="relative w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white pointer-events-none">
+                <motion.div
+                  custom={offset}
+                  variants={carriageVariants}
+                  className="relative w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white pointer-events-none"
+                >
                   <Image
                     src={`/home-page${service.image}`}
                     alt={service.title}
@@ -106,35 +166,45 @@ export default function ServicesCarousel() {
                       {service.title}
                     </div>
                   )}
-                </div>
+                </motion.div>
               </motion.div>
             );
           })}
         </motion.div>
 
         {/* Bottom Center Arrows */}
-        <div className="flex justify-center mt-6 gap-6">
-          <button
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ delay: 0.55, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="flex justify-center mt-4 sm:mt-6 gap-4 sm:gap-6"
+        >
+          <motion.button
             onClick={prev}
-            className="w-15 h-10 flex text-center items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
+            whileHover={{ y: -2, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="h-11 min-w-11 px-4 flex text-center items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
           >
             <ChevronsLeft 
              width="50"
              size="xl"
              fontWeight={900}/>
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={next}
-            className="w-15 h-10 text-center flex items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
+            whileHover={{ y: -2, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="h-11 min-w-11 px-4 text-center flex items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
           >
             <ChevronsRight
              width="50"
              size="xl"
              fontWeight={900} 
 />
-          </button>
-        </div>
-      </div>
+          </motion.button>
+        </motion.div>
+      </motion.div>
     </motion.section>
   );
 }

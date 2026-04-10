@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import AnimatedSectionHeading from "./AnimatedSectionHeading";
 
 import faqsData from "../../data/faqs.json";
 
@@ -69,7 +70,9 @@ export default function WhyChooseAndFAQ() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Side - Why Choose Us */}
           <div>
-            <h2 className="text-4xl font-bold mb-6">Why Choose Us</h2>
+            <AnimatedSectionHeading className="mb-6 text-4xl font-bold">
+              Why Choose Us
+            </AnimatedSectionHeading>
             <p className="text-gray-300 mb-8 leading-relaxed">
               {whyText}
             </p>
@@ -98,7 +101,9 @@ export default function WhyChooseAndFAQ() {
 
           {/* Right Side - FAQ */}
           <div>
-            <h2 className="text-4xl font-bold mb-6">Frequently Asked Questions</h2>
+            <AnimatedSectionHeading className="mb-6 text-4xl font-bold">
+              Frequently Asked Questions
+            </AnimatedSectionHeading>
 
             <div className="space-y-4">
               {typedFaqs.map((faq: FAQ) => (

@@ -80,7 +80,7 @@ export default function Banner() {
     return (
         <section
         ref={sectionRef}
-        className="relative z-30 mx-4 mb-0 mt-7 overflow-hidden rounded-[2rem] bg-linear-to-b from-primary via-primary to-gray-800 px-5 pt-8 pb-28 drop-shadow-xl drop-shadow-black lg:pb-36"
+        className="relative z-30 mx-4 mb-0 mt-7 overflow-hidden rounded-[2rem] bg-linear-to-b from-primary via-primary to-gray-800 px-5 pt-8 drop-shadow-xl drop-shadow-black"
         >
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent via-primary/20 to-slate-950/85" />
 
