@@ -10,13 +10,16 @@ type ProductCardProps = {
   product: Product;
   imageVariant?: "default" | "largeSquare";
   showDescription?: boolean;
+  showSoldBadge?: boolean;
 };
 
 export default function ProductCard({
   product,
   imageVariant = "default",
+  showSoldBadge = false,
 }: ProductCardProps) {
   const { openCart, addItem } = useCartSidebar();
+  const soldLabel = `${product.totalSold}+ sold`;
 
   const articleClass =
     imageVariant === "largeSquare"
@@ -37,6 +40,11 @@ export default function ProductCard({
     <article className={articleClass}>
       <div className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-radial from-transparent via-5% to-primary/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100" />
       <div className="absolute inset-0 transition-all duration-300 ease-out group-hover:translate-y-3 group-hover:opacity-0 group-focus-within:translate-y-3 group-focus-within:opacity-0">
+            {showSoldBadge ? (
+              <div className="absolute left-1/5 top-0 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-md">
+                {soldLabel}
+              </div>
+            ) : null}
         <Link href={`/shop/${product.slug}`} className={restImageClass}>
           <div className="relative h-full w-full bg-white">
             <Image
@@ -78,6 +86,11 @@ export default function ProductCard({
       <div className="absolute inset-0 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <Link href={`/shop/${product.slug}`} className={hoverImageClass}>
           <div className="relative h-full w-full">
+            {showSoldBadge ? (
+              <div className="absolute left-1/2 top-1 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-md">
+                {soldLabel}
+              </div>
+            ) : null}
             <Image
               src={product.heroImage}
               alt={product.title}
@@ -113,4 +126,3 @@ export default function ProductCard({
     </article>
   );
 }
-

@@ -5,8 +5,14 @@ import { useRouter } from 'next/navigation';
 
 import faqsData from "../../data/faqs.json";
 
-const faqs = (faqsData as any).faqs || [];
-const whyText = (faqsData as any).whyChooseUs || "";
+type FaqDataShape = {
+  faqs?: FAQ[];
+  whyChooseUs?: string;
+};
+
+const typedFaqData = faqsData as FaqDataShape;
+const faqs = typedFaqData.faqs || [];
+const whyText = typedFaqData.whyChooseUs || "";
 
 const features = [
   {
@@ -58,7 +64,7 @@ export default function WhyChooseAndFAQ() {
   };
 
   return (
-    <section className="py-20 bg-[#050A44] text-white relative pb-36">
+    <section id="home-quote" className="scroll-mt-32 py-20 bg-[#050A44] text-white relative pb-36">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Side - Why Choose Us */}

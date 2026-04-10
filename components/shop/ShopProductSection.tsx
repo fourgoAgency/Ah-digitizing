@@ -7,12 +7,14 @@ type ShopProductSectionProps = {
   title: string;
   description: string;
   products: Product[];
+  showSoldBadge?: boolean;
 };
 
 export default function ShopProductSection({
   title,
   description,
   products,
+  showSoldBadge = false,
 }: ShopProductSectionProps) {
   return (
     <section className="">
@@ -21,7 +23,12 @@ export default function ShopProductSection({
 
       <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {products.map((product) => (
-          <ProductCard key={`${title}-${product.id}`} product={product} imageVariant="largeSquare" />
+          <ProductCard
+            key={`${title}-${product.id}`}
+            product={product}
+            imageVariant="largeSquare"
+            showSoldBadge={showSoldBadge}
+          />
         ))}
       </div>
     </section>

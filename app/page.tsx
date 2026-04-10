@@ -1,4 +1,3 @@
-import Hero from "@/components/home/Hero";
 import Banner from "@/components/home/Banner";
 import Pricing from "@/components/home/Pricing";
 import Services from "@/components/home/Services";
@@ -10,9 +9,11 @@ import BeforeAfterGrid from "@/components/home/BeforeAfter";
 import FeaturesSection from "@/components/home/FeaturedSection";
 export default function Page() {
   return (
-    <main>
+    <main className="overflow-x-clip bg-white">
       <Banner />
-      <Services />
+      <div className="relative z-0 -mt-20 sm:-mt-24 lg:-mt-32">
+        <Services />
+      </div>
       <BeforeAfterGrid/>
       <Pricing />
       <Portfolio />

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import {  ChevronsLeft, ChevronsRight } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type PanInfo } from "framer-motion";
 
 const services = [
   { id: 1, title: "Embroidery Digitizing", image: "/embriodery.png" },
@@ -15,7 +15,7 @@ const services = [
 
 export default function ServicesCarousel() {
   const [index, setIndex] = useState(1);
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement | null>(null);
   const isInView = useInView(ref, { once: true });
 
   const prev = () =>
@@ -25,7 +25,7 @@ export default function ServicesCarousel() {
 
   const swipeThreshold = 100;
 
-  const handleDragEnd = (_: any, info: any) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const { offset, velocity } = info;
 
     if (offset.x < -swipeThreshold || velocity.x < -500) next();
@@ -35,16 +35,17 @@ export default function ServicesCarousel() {
   return (
     <motion.section
       ref={ref}
-      className="py-20 bg-white"
-      initial={{ opacity: 0, y: 50 }}
+      className="relative z-10 rounded-t-[2rem] bg-white px-4 pt-28 pb-20 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] sm:px-6 lg:pt-32"
+      initial={{ opacity: 0, y: 90 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white via-white/92 to-transparent" />
       <h2 className="text-center text-5xl font-bold mb-10">
         Services we Offered
       </h2>
 
-      <div className="relative max-w-7xl mx-auto px-4">
+      <div className="relative mx-auto max-w-7xl">
 
         {/* Slider */}
         <motion.div

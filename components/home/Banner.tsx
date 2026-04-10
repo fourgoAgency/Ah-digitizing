@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import TextType from "@/components/TextType";
@@ -14,10 +15,9 @@ export default function Banner() {
     const contentRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
-    const [textStyle, setTextStyle] = useState({});
     const h2Ref = useRef<HTMLHeadingElement>(null);
     const [h2Text, setH2Text] = useState("Raster to Vector");
-    const [hoveredButton, setHoveredButton] = useState<'shop' | 'quote' | null>(null);
+    const [hoveredButton, setHoveredButton] = useState<'contact' | 'login' | null>(null);
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -80,8 +80,9 @@ export default function Banner() {
     return (
         <section
         ref={sectionRef}
-        className="relative rounded-3xl mx-4 my-7 drop-shadow-xl drop-shadow-black bg-linear-to-b from-primary via-primary to-gray-800 overflow-hidden justify-center items-center pt-8 pb-2 px-5"
+        className="relative z-30 mx-4 mb-0 mt-7 overflow-hidden rounded-[2rem] bg-linear-to-b from-primary via-primary to-gray-800 px-5 pt-8 pb-28 drop-shadow-xl drop-shadow-black lg:pb-36"
         >
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent via-primary/20 to-slate-950/85" />
 
 
             <div className="max-w-full pl-9 ">
@@ -110,30 +111,32 @@ export default function Banner() {
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <Button
+                                asChild
                                 className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
-                                    hoveredButton === 'shop'
+                                    hoveredButton === 'contact'
                                         ? 'bg-secondary text-white border-secondary'
-                                        : hoveredButton === 'quote'
+                                        : hoveredButton === 'login'
                                         ? 'bg-white text-secondary border-white'
                                         : 'border-white text-white'
                                 }`}
-                                onMouseEnter={() => setHoveredButton('shop')}
+                                onMouseEnter={() => setHoveredButton('contact')}
                                 onMouseLeave={() => setHoveredButton(null)}
                             >
-                                Shop Now
+                                <Link href="/contact-us">Contact</Link>
                             </Button>
                             <Button
+                                asChild
                                 className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
-                                    hoveredButton === 'quote'
-                                        ? 'bg-white text-white border-white'
-                                        : hoveredButton === 'shop'
+                                    hoveredButton === 'login'
+                                        ? 'bg-white text-primary border-white'
+                                        : hoveredButton === 'contact'
                                         ? 'bg-white text-secondary border-white'
                                         : 'bg-white text-primary border-white'
                                 }`}
-                                onMouseEnter={() => setHoveredButton('quote')}
+                                onMouseEnter={() => setHoveredButton('login')}
                                 onMouseLeave={() => setHoveredButton(null)}
                             >
-                                Get Quote
+                                <Link href="/login">Login</Link>
                             </Button>
                         </div>
 

@@ -17,6 +17,7 @@ export type Product = {
   price: number;
   turnaround: string;
   revisions: string;
+  totalSold: number;
   heroImage: string;
   gallery: string[];
   tags: string[];
@@ -37,7 +38,7 @@ function createPortfolioProduct({
   revisions,
   imageIndex,
   tags,
-}: Omit<Product, "heroImage" | "gallery"> & { imageIndex: number }): Product {
+}: Omit<Product, "heroImage" | "gallery" | "totalSold"> & { imageIndex: number }): Product {
   const heroImage = portfolioPageImages[imageIndex % portfolioPageImages.length];
   const gallery = [
     heroImage,
@@ -56,6 +57,7 @@ function createPortfolioProduct({
     price,
     turnaround,
     revisions,
+    totalSold: 120 + id * 7,
     heroImage,
     gallery,
     tags,
@@ -76,6 +78,7 @@ export const products: Product[] = [
     price: 25,
     turnaround: "6-10 Hours",
     revisions: "Unlimited minor revisions",
+    totalSold: 248,
     heroImage: "/home-page/portfolio-embroidery/2nd.png",
     gallery: [
       "/home-page/products picture/2.png",
@@ -97,6 +100,7 @@ export const products: Product[] = [
     price: 35,
     turnaround: "8-14 Hours",
     revisions: "Unlimited minor revisions",
+    totalSold: 312,
     heroImage: "/home-page/portfolio-embroidery/5th.png",
     gallery: [
       "/home-page/products picture/5.png",

@@ -13,6 +13,7 @@ export default function BestSellingProducts() {
       title="Top Selling Products"
       description="Browse ten standout products curated to feel like top performers, with stronger premium-value and feature-rich options."
       products={bestSellingProducts}
+      showSoldBadge
     />
   );
 }

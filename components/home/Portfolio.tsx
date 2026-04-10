@@ -11,10 +11,16 @@ type ImageItem = {
   alt: string;
 };
 
+type PortfolioData = {
+  embroidery?: ImageItem[];
+  vector?: ImageItem[];
+};
+
+const typedPortfolioData = portfolioData as PortfolioData;
 const embroideryImages: ImageItem[] =
-  (portfolioData as any).embroidery?.slice(0, 4) || [];
+  typedPortfolioData.embroidery?.slice(0, 4) || [];
 const vectorImages: ImageItem[] =
-  (portfolioData as any).vector?.slice(0, 4) || [];
+  typedPortfolioData.vector?.slice(0, 4) || [];
 
 export default function ShowcaseGallery() {
   return (
@@ -69,6 +75,7 @@ export default function ShowcaseGallery() {
                   src={image.src}
                   alt={image.alt}
                   fill
+                  unoptimized
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   className="object-contain p-3 sm:p-4 4k:p-6 drop-shadow-xl drop-shadow-black/80"
                 />
@@ -100,6 +107,7 @@ export default function ShowcaseGallery() {
                   src={image.src}
                   alt={image.alt}
                   fill
+                  unoptimized
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   className="object-contain p-3 sm:p-4 4k:p-6"
                 />

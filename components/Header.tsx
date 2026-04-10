@@ -4,58 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logo from "@/public/logo.png";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaXTwitter,
-  FaPinterest,
-  FaYoutube,
-  FaUser,
-} from "react-icons/fa6";
+import logo from "@/public/150x150.png";
+import { FaUser } from "react-icons/fa6";
 import { ChevronDown, Menu } from "lucide-react";
-import { PiCarThin } from "react-icons/pi";
 import { BiCart } from "react-icons/bi";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useCartSidebar } from "@/components/shop/CartSidebarContext";
 
-/* ================= TOP NAVBAR ================= */
-function TopNavbar() {
-  return (
-    <nav className="border-b border-gray-100 flex justify-between items-center px-16 py-2">
-      <ul className="flex gap-4">
-        <li><FaFacebook className="text-blue-800" /></li>
-        <li><FaInstagram className="text-blue-800" /></li>
-        <li><FaXTwitter className="text-blue-800" /></li>
-        <li><FaPinterest className="text-blue-800" /></li>
-        <li><FaYoutube className="text-blue-800" /></li>
-      </ul>
-
-
-    </nav>
-  );
-}
-
 /* ================= DESKTOP MENU ================= */
-
-const embroideryItems = [
-  { label: "Logo Embroidery Digitizing", href: "/services/embroidery/logo" },
-  { label: "Left Chest Embroidery Digitizing", href: "/services/embroidery/left-chest" },
-  { label: "Cap Embroidery Digitizing", href: "/services/embroidery/cap" },
-  { label: "3D Puff Embroidery Digitizing", href: "/services/embroidery/3d-puff" },
-  { label: "Jacket Embroidery Digitizing", href: "/services/embroidery/jacket" },
-  { label: "Applique Embroidery Digitizing", href: "/services/embroidery/applique" },
-  { label: "Image Embroidery Digitizing", href: "/services/embroidery/image" },
-  { label: "Towel Embroidery Digitizing", href: "/services/embroidery/towel" },
-];
-
-const rasterToVectorItems = [
-  { label: "Raster To Vector Services", href: "/services/raster-to-vector" },
-  { label: "Silhouette Art", href: "/services/raster-to-vector/silhouette" },
-  { label: "Stencil Art", href: "/services/raster-to-vector/stencil" },
-  { label: "Color Separation", href: "/services/raster-to-vector/color-separation" },
-];
 
 function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; onCartClick: () => void; cartCount: number }) {
   return (
@@ -68,20 +25,17 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           ? "0 10px 30px rgba(0,0,0,0.15)"
           : "0 0 0 rgba(0,0,0,0)",
         scale: isSticky ? 0.9999 : 1,
-        marginLeft: isSticky ? "1rem" : "0rem",
-        marginRight: isSticky ? "1rem" : "0rem",
+        marginLeft: "0rem",
+        marginRight: "0rem",
       }}
       transition={{
-        duration: isSticky ? 1 : 2,
+        duration: isSticky ? 0.5 : 0.7,
         ease: [0.22, 1, 0.36, 1],
       }}
 
       className="
-        p-2 px-18
-        rounded-lg
-        bg-primary
-        border border-gray-600
         w-full
+        bg-primary
         md:flex
         justify-between
         gap-8
@@ -90,6 +44,10 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         text-white
         will-change-transform
       "
+      style={{
+        borderRadius: isSticky ? 0 : 24,
+        padding: isSticky ? "0.1rem 3rem" : "0rem 3rem",
+      }}
     >
 
 
@@ -106,7 +64,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         className="w-45 shrink-0"
       >
         <Link href="/" className="flex items-center gap-1 text-3xl">
-          <p className="font-bold text-black text-4xl">AH</p>
+          <p className="font-bold text-black text-4xl">𝓐𝓗</p>
           <p
             className="font-bold"
           >
@@ -268,10 +226,10 @@ function MobileMenu({ cartCount }: { cartCount: number }) {
             {/* BUTTONS */}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
               <Button asChild className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
-                <Link href="/free">Get Free Quote</Link>
+                <Link href="/#home-quote">Get Free Quote</Link>
               </Button>
               <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
-                <Link href="/get-quote">Get Quote</Link>
+                <Link href="/get-quote">Order Now</Link>
               </Button>
             </div>
             {/* ADDITIONAL LINKS */}
@@ -384,7 +342,7 @@ function MobileMenu({ cartCount }: { cartCount: number }) {
 export default function Header() {
   const { openCart, items } = useCartSidebar();
   const cartCount = items.reduce((sum, item) => sum + item.qty, 0);
-  const [hoveredButton, setHoveredButton] = useState<'free' | 'quote' | null>(null);
+  const [hoveredButton, setHoveredButton] = useState<'free' | 'order' | null>(null);
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
@@ -413,40 +371,45 @@ export default function Header() {
 
   return (
     <>
-      {/* <TopNavbar /> */}
-
-      <header className="relative z-[100] bg-white">
+      <header className="relative z-[100] border-b border-slate-100 bg-white/95 backdrop-blur">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
-        <div className="flex justify-between items-center px-6">
-          <Image src={logo} alt="Logo" width={150} />
+        <div className="flex items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+          <Link href="/" aria-label="AH Digitizing home" className="shrink-0">
+            <Image
+              src={logo}
+              alt="AH Digitizing"
+              priority
+              className="h-16 w-auto object-contain sm:h-20"
+            />
+          </Link>
 
           <div className="hidden lg:flex gap-4">
             <Button
               asChild
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'free'
                 ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'quote'
+                : hoveredButton === 'order'
                   ? 'bg-white text-primary border-primary'
                   : 'border-accent text-accent'
                 }`}
               onMouseEnter={() => setHoveredButton('free')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <Link href="/get-free-quote">Free Quote</Link>
+              <Link href="/#home-quote">Get Free Quote</Link>
             </Button>
 
             <Button
               asChild
-              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'quote'
+              className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'order'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'free'
                   ? 'bg-white text-primary border-primary'
                   : 'bg-primary text-white border-primary'
                 }`}
-              onMouseEnter={() => setHoveredButton('quote')}
+              onMouseEnter={() => setHoveredButton('order')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <Link href="/get-quote">Get Quote</Link>
+              <Link href="/get-quote">Order Now</Link>
             </Button>
           </div>
 
@@ -456,7 +419,7 @@ export default function Header() {
 
       </header>
 
-      <div className="hidden md:flex sticky top-0 z-50 justify-center bg-white">
+      <div className="sticky top-0 z-50 hidden md:flex">
         <DesktopMenu isSticky={isSticky} onCartClick={openCart} cartCount={cartCount} />
       </div>
     </>
