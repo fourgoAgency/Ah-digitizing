@@ -16,9 +16,6 @@ const categories = [
 ];
 
 const sectionVariants = {
-  hidden: {
-    x: -140,
-  },
   visible: {
     x: 0,
     transition: {
@@ -30,7 +27,7 @@ const sectionVariants = {
 
 const cardVariants = {
   hidden: {
-    x: -56,
+    x: -156,
   },
   visible: (index: number) => ({
     x: 0,
@@ -51,19 +48,18 @@ export default function ServicesCarousel() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="flex flex-col gap-8 items-stretch lg:flex-row"
+          className="flex flex-col gap-8 z-10 items-stretch lg:flex-row"
         >
 
           {/* LEFT SIDEBAR */}
-          <div className="hidden w-80 shrink-0 lg:flex">
+          <div className="hidden w-80 shrink-0 z-10 lg:flex">
             <div className="bg-primary p-8 shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)] shadow-black/50 flex flex-col justify-center h-full w-full rounded-r-2xl">
               <div>
-                <AnimatedSectionHeading
-                  as="h3"
+                <h3
                   className="mb-4 text-5xl font-bold text-white"
                 >
                   Shop By<br />Category
-                </AnimatedSectionHeading>
+                </h3>
                 <p className="text-gray-100 text-xl mb-6">
                   Explore our wide range of services tailored to meet your design and digitizing needs.
                 </p>
