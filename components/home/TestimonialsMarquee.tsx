@@ -113,11 +113,10 @@ export default function TestimonialsMarquee() {
 
         <div
           className="relative cursor-grab overflow-hidden touch-pan-y active:cursor-grabbing"
-          onPointerDown={pause}
-          onPointerUp={resume}
           onPointerCancel={resume}
-          onTouchStart={pause}
           onTouchEnd={resume}
+          onPointerCancelCapture={pause}
+          onTouchStart={pause}
           tabIndex={0}
           aria-label="Scrolling testimonials. Hover or hold to pause the motion."
         >
