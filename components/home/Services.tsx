@@ -54,7 +54,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
       className={cn(
         "relative z-10 bg-white px-4 sm:px-6",
         inTransition
-          ? "flex min-h-full flex-col justify-start overflow-visible rounded-[2rem] px-4 pt-8 pb-24 lg:pt-10 xl:pt-12 shadow-none sm:px-6 lg:px-8"
+          ? "flex min-h-[220vh] flex-col justify-start overflow-visible rounded-[2rem] px-4 pt-8 pb-24 lg:pt-10 xl:pt-12 shadow-none sm:px-6 lg:px-8"
           : "rounded-t-[2rem] pt-24 pb-24 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] md:pt-32 lg:pt-44 lg:pb-28 xl:pt-48 xl:pb-28 2xl:pt-40"
       )}
     >
