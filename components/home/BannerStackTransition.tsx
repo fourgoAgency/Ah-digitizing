@@ -39,9 +39,9 @@ export default function BannerStackTransition() {
         perspective: "1600px",
       }}
     >
-      <div className="sticky top-0 h-svh overflow-hidden">
+      <div className="sticky top-0 h-svh overflow-visible flex flex-col">
         <motion.div
-          className="absolute inset-0 z-10 will-change-transform"
+          className="absolute inset-0 z-10 pt-5 will-change-transform"
           style={{
             opacity: servicesOpacity,
             scale: servicesScale,
@@ -49,10 +49,10 @@ export default function BannerStackTransition() {
             transformOrigin: "50% 50%",
           }}
         >
-          <motion.div
-            className="pointer-events-none absolute inset-x-0 top-0 z-20 h-24 bg-gradient-to-b from-primary/35 via-primary/10 to-transparent"
+          {/* <motion.div
+            className="pointer-events-none absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-primary/35 via-primary/10 to-transparent"
             style={{ opacity: servicesOverlayOpacity }}
-          />
+          /> */}
           <Services inTransition />
         </motion.div>
 

@@ -96,6 +96,8 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 export default function TestimonialsMarquee() {
   const [isPaused, setIsPaused] = useState(false);
+  const pause = () => setIsPaused(true);
+  const resume = () => setIsPaused(false);
 
   return (
     <section className="overflow-hidden bg-white py-16 sm:py-20">
@@ -111,13 +113,11 @@ export default function TestimonialsMarquee() {
 
         <div
           className="relative cursor-grab overflow-hidden touch-pan-y active:cursor-grabbing"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onPointerDown={() => setIsPaused(true)}
-          onPointerUp={() => setIsPaused(false)}
-          onPointerCancel={() => setIsPaused(false)}
-          onFocus={() => setIsPaused(true)}
-          onBlur={() => setIsPaused(false)}
+          onPointerDown={pause}
+          onPointerUp={resume}
+          onPointerCancel={resume}
+          onTouchStart={pause}
+          onTouchEnd={resume}
           tabIndex={0}
           aria-label="Scrolling testimonials. Hover or hold to pause the motion."
         >

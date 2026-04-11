@@ -14,22 +14,6 @@ const services = [
   { id: 5, title: "Raster to Vector", image: "/vector.png" },
 ];
 
-const trainArrival = {
-  hidden: {
-    opacity: 0,
-    x: -180,
-  },
-  visible: {
-    opacity: 1,
-    x: [ -180, 18, 0 ],
-    transition: {
-      duration: 1.05,
-      ease: [0.16, 1, 0.3, 1] as const,
-      times: [0, 0.78, 1],
-    },
-  },
-};
-
 const carriageVariants = {
   hidden: {
     opacity: 0,
@@ -70,42 +54,39 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
       className={cn(
         "relative z-10 bg-white px-4 sm:px-6",
         inTransition
-          ? "flex h-full flex-col justify-center overflow-hidden rounded-[2rem] px-4 py-8 shadow-none sm:px-6 lg:px-8"
-          : "rounded-t-[2rem] pt-28 pb-20 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] lg:pt-32"
+          ? "flex min-h-full flex-col justify-start overflow-visible rounded-[2rem] px-4 pt-8 pb-24 lg:pt-10 xl:pt-12 shadow-none sm:px-6 lg:px-8"
+          : "rounded-t-[2rem] pt-24 pb-24 shadow-[0_-28px_70px_rgba(15,23,42,0.22)] sm:rounded-t-[2.5rem] md:pt-32 lg:pt-44 lg:pb-28 xl:pt-48 xl:pb-28 2xl:pt-40"
       )}
     >
-      <div
+      {/* <div
         className={cn(
           "pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-white via-white/92 to-transparent",
           inTransition ? "h-12" : "h-20"
         )}
-      />
+      /> */}
       <div
         className={cn(
-          "mx-auto max-w-5xl text-center",
+          "relative z-20 mx-auto max-w-5xl text-center",
           inTransition ? "mb-5 pt-2" : "mb-8 pt-2"
         )}
       >
-        <h2 className={cn("text-center font-bold", inTransition ? "mb-6 text-3xl sm:text-4xl" : "mb-10 text-5xl")}>
+        <h1 className={cn("text-center font-bold", inTransition ? "mb-6 text-3xl sm:text-4xl" : "mb-10 text-5xl")}>
         Services we Offered
-      </h2>
+      </h1>
         <p className={cn("mx-auto text-pretty text-slate-600", inTransition ? "mt-2 max-w-2xl text-sm sm:text-base" : "mt-3 max-w-3xl text-base sm:text-lg")}>
           Swipe through our core services and open the category that fits your next digitizing, vector, or custom artwork job.
         </p>
       </div>
 
-      <motion.div
-        variants={trainArrival}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.35 }}
-        className="relative mx-auto max-w-7xl"
-      >
+      <div className="relative mx-auto max-w-7xl">
         <div className="pointer-events-none absolute left-0 right-0 top-[42%] hidden h-px -translate-y-1/2 bg-gradient-to-r from-primary/10 via-primary/40 to-primary/10 lg:block" />
 
         {/* Slider */}
         <motion.div
-          className="flex items-center justify-center gap-0 sm:gap-1 md:gap-2 overflow-hidden py-8 cursor-grab active:cursor-grabbing"
+          className={cn(
+            "flex items-center justify-center gap-0 sm:gap-1 md:gap-2 overflow-hidden cursor-grab active:cursor-grabbing",
+            inTransition ? "py-4" : "py-8"
+          )}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.25}
@@ -150,7 +131,12 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
                 <motion.div
                   custom={offset}
                   variants={carriageVariants}
-                  className="relative w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80 rounded-xl overflow-hidden shadow-md border border-accent bg-white pointer-events-none"
+                  className={cn(
+                    "relative rounded-xl overflow-hidden shadow-md border border-accent bg-white pointer-events-none",
+                    inTransition
+                      ? "w-24 h-32 sm:w-32 sm:h-44 md:w-40 md:h-56 lg:w-48 lg:h-64 xl:w-52 xl:h-72"
+                      : "w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80"
+                  )}
                 >
                   <Image
                     src={`/home-page${service.image}`}
@@ -162,7 +148,10 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
 
                   {/* Bottom Name Bar (Only Center Card) */}
                   {distance === 0 && (
-                    <div className="absolute bottom-0 left-0 rounded-t-lg w-full bg-primary text-white text-center py-2 text-xl font-semibold">
+                    <div className={cn(
+                      "absolute bottom-0 left-0 rounded-t-lg w-full bg-primary text-white text-center font-semibold",
+                      inTransition ? "py-1.5 text-base" : "py-2 text-xl"
+                    )}>
                       {service.title}
                     </div>
                   )}
@@ -178,7 +167,10 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ delay: 0.55, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="flex justify-center mt-4 sm:mt-6 gap-4 sm:gap-6"
+          className={cn(
+            "flex justify-center gap-4 sm:gap-6",
+            inTransition ? "mt-4 sm:mt-6" : "mt-4 sm:mt-6"
+          )}
         >
           <motion.button
             onClick={prev}
@@ -204,7 +196,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
 />
           </motion.button>
         </motion.div>
-      </motion.div>
+      </div>
     </motion.section>
   );
 }

@@ -2,8 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useAnimationControls, useInView } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 
 import pricing from "@/data/price.json";
 import portfolio from "@/data/portfolio.json";
@@ -51,6 +50,35 @@ const accents = [
     button: "bg-primary hover:bg-secondary",
   },
 ];
+
+const headingVariants = {
+  hidden: { y: 40, opacity: 0, scale: 1.02 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+const cardsContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 48 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
 
 function PriceCard({
   plan,
@@ -109,17 +137,6 @@ function PriceCard({
 }
 
 export default function Pricing() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {
-    once: true,
-    amount: 0.15,
-    margin: "0px 0px -12% 0px",
-  });
-  const headingControls = useAnimationControls();
-  const cardsControls = useAnimationControls();
-  const [sequenceStarted, setSequenceStarted] = useState(false);
-  const [cardsVisible, setCardsVisible] = useState(false);
-  const [visibleOnMount, setVisibleOnMount] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [activeService, setActiveService] = useState<keyof PortfolioData | null>(null);
@@ -155,6 +172,8 @@ export default function Pricing() {
     );
   }, [activeService, maxPreviewItems, portfolioData]);
 
+  const viewportOpts = { once: true, amount: 0.2 };
+
   const openPopup = (service: Plan["service"]) => {
     setActiveService(service.toLowerCase() as keyof PortfolioData);
     setOpen(true);
@@ -168,107 +187,6 @@ export default function Pricing() {
       setActiveService(null);
     }, 250);
   };
-
-  const shouldRunImmediateCards = visibleOnMount && !sequenceStarted;
-  const shouldShowCards = cardsVisible || shouldRunImmediateCards;
-
-  useEffect(() => {
-    if (sequenceStarted) return;
-
-    const checkIfVisible = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const isVisible =
-        rect.top <= viewportHeight * 0.9 &&
-        rect.bottom >= viewportHeight * 0.15;
-
-      if (isVisible) {
-        setVisibleOnMount(true);
-      }
-    };
-
-    checkIfVisible();
-
-    const rafId = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(checkIfVisible);
-    });
-
-    window.addEventListener("load", checkIfVisible);
-
-    return () => {
-      window.cancelAnimationFrame(rafId);
-      window.removeEventListener("load", checkIfVisible);
-    };
-  }, [sequenceStarted]);
-
-  useEffect(() => {
-    if ((!isInView && !visibleOnMount) || sequenceStarted) return;
-
-    let cancelled = false;
-
-    const runSequence = async () => {
-      setSequenceStarted(true);
-
-      if (visibleOnMount) {
-        setCardsVisible(true);
-      }
-
-      await headingControls.start({
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
-      });
-
-      if (cancelled) return;
-
-      await headingControls.start({
-        x: [0, -16, 16, -10, 10, -6, 6, 0],
-        rotate: [0, -1.8, 1.8, -1.2, 1.2, -0.6, 0.6, 0],
-        transition: { duration: 1, ease: "easeInOut" },
-      });
-
-      if (cancelled) return;
-
-      setCardsVisible(true);
-
-      await cardsControls.start({
-        y: 0,
-        opacity: 1,
-        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-      });
-
-      if (cancelled) return;
-
-      await cardsControls.start({
-        x: [0, -10, 10, -6, 6, 0],
-        rotate: [0, -0.6, 0.6, -0.35, 0.35, 0],
-        transition: { duration: 0.35, ease: "easeInOut" },
-      });
-    };
-
-    runSequence();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [cardsControls, headingControls, isInView, sequenceStarted, visibleOnMount]);
-
-  useEffect(() => {
-    if (sequenceStarted) return;
-
-    const fallbackTimer = window.setTimeout(() => {
-      setSequenceStarted(true);
-      setCardsVisible(true);
-      headingControls.set({ y: 0, opacity: 1, scale: 1, x: 0, rotate: 0 });
-      cardsControls.set({ opacity: 1, y: 0, x: 0, rotate: 0 });
-    }, 1800);
-
-    return () => window.clearTimeout(fallbackTimer);
-  }, [cardsControls, headingControls, sequenceStarted]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
@@ -307,22 +225,18 @@ export default function Pricing() {
   }, [open]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden bg-slate-100 py-16 sm:py-20"
-    >
+    <section className="relative overflow-hidden bg-slate-100 py-16 sm:py-20">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.12),_transparent_45%),linear-gradient(180deg,_rgba(255,255,255,0.5),_rgba(241,245,249,0.95))]" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col px-4">
         <motion.div
-          initial={{ minHeight: 260 }}
-          animate={{ minHeight: sequenceStarted ? 0 : 260 }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           className="flex items-center justify-center overflow-hidden"
         >
           <motion.div
-            initial={{ y: 140, opacity: 0, scale: 1.06 }}
-            animate={headingControls}
+            variants={headingVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOpts}
             className="text-center"
           >
             <h2 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -335,24 +249,16 @@ export default function Pricing() {
         </motion.div>
 
         <motion.div
-          initial={shouldRunImmediateCards ? { opacity: 1, y: 0 } : { opacity: 0, y: 96 }}
-          animate={shouldRunImmediateCards ? { opacity: 1, y: 0 } : cardsControls}
+          variants={cardsContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOpts}
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4"
         >
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
-              variants={{
-                hidden: { opacity: 0, y: 90 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              initial={shouldRunImmediateCards ? "visible" : "hidden"}
-              animate={shouldShowCards ? "visible" : "hidden"}
-              transition={{
-                duration: 0.7,
-                ease: [0.22, 1, 0.36, 1],
-                delay: index * 0.12,
-              }}
+              variants={cardVariants}
             >
               <PriceCard
                 plan={plan}
