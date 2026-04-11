@@ -27,7 +27,7 @@ const sectionVariants = {
 
 const cardVariants = {
   hidden: {
-    x: -156,
+    x: -560,
   },
   visible: (index: number) => ({
     x: 0,
