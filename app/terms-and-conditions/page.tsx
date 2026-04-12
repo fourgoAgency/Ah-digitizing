@@ -83,11 +83,12 @@ export default function DisclaimersPage() {
             >
               {section.title && (
 <h2
-  className={`font-bold text-blue-600 mb-4 ${
+  className={`font-bold mb-4 ${
     section.id === "website-disclaimers"
       ? "text-3xl sm:text-4xl lg:text-5xl"
       : "text-2xl sm:text-3xl lg:text-3xl"
   }`}
+  style={{ color: "#0A21C0" }}
 >
   {section.title}
 </h2>
