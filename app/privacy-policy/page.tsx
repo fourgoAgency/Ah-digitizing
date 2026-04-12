@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 
 // Privacy Policy Data
@@ -49,8 +49,22 @@ const privacyData = [
 ];
 
 export default function PrivacyPolicyPage() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
+
+      {/* Scroll Progress Bar */}
+      <motion.div
+        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-[#0A21C0] origin-left z-50"
+      />
+
       {/* Privacy Policy Content */}
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
@@ -59,18 +73,42 @@ export default function PrivacyPolicyPage() {
               key={section.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.01 }}
-              className={section.title ? "mb-10" : "mb-6"}>
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className={section.title ? "mb-10" : "mb-6"}
+            >
               {section.title && (
-                <h2 className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-4">
-                  {section.title}
-                </h2>
+                <>
+                  <motion.h2
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
+                    className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-4"
+                  >
+                    {section.title}
+                  </motion.h2>
+
+                  {/* Animated underline beneath each heading */}
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
+                    className="h-[2px] w-12 bg-[#0A21C0] origin-left rounded-full mb-4"
+                  />
+                </>
               )}
 
-              <div className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.05 + 0.2 }}
+                className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line"
+              >
                 {section.content}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
