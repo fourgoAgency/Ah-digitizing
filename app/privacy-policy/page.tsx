@@ -64,28 +64,29 @@ export default function PrivacyPolicyPage() {
               className={section.title ? "mb-10" : "mb-6"}
             >
               {section.title && (
-                <div className="mb-4">
-                  <motion.h2
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
-                    className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-2"
-                  >
-                    {section.title}
-                  </motion.h2>
+  <div className="mb-4">
+    <div className="inline-block">
+      <motion.h2
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
+        className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-2"
+      >
+        {section.title}
+      </motion.h2>
 
-                  {/* Underline covers 50% of the heading width */}
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
-                    className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2"
-                  />
-                </div>
-              )}
-
+      {/* Underline covers 50% of the actual text width */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
+        className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2"
+      />
+    </div>
+  </div>
+)}
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
