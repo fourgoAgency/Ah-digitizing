@@ -69,7 +69,7 @@ const disclaimersData = [
 export default function DisclaimersPage() {
   return (
     <>
-      {/* ================= DISCLAMERS ================= */}
+      {/* ================= DISCLAIMERS ================= */}
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {disclaimersData.map((section, index) => (
@@ -77,28 +77,49 @@ export default function DisclaimersPage() {
               key={section.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.01 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
               className={section.title ? "mb-10" : "mb-6"}
             >
               {section.title && (
-<h2
-  className={`font-bold mb-4 ${
-    section.id === "website-disclaimers"
-      ? "text-3xl sm:text-4xl lg:text-5xl"
-      : "text-2xl sm:text-3xl lg:text-3xl"
-  }`}
-  style={{ color: "#0A21C0" }}
->
-  {section.title}
-</h2>
+                <div className="mb-4">
+                  <div className="inline-block">
+                    <motion.h2
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
+                      className={`font-bold mb-2 ${
+                        section.id === "website-disclaimers"
+                          ? "text-3xl sm:text-4xl lg:text-5xl"
+                          : "text-2xl sm:text-3xl lg:text-3xl"
+                      }`}
+                      style={{ color: "#0A21C0" }}
+                    >
+                      {section.title}
+                    </motion.h2>
 
+                    {/* Underline covers 50% of the actual text width */}
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
+                      className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2"
+                    />
+                  </div>
+                </div>
               )}
 
-              <div className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line">
-
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.05 + 0.2 }}
+                className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line"
+              >
                 {section.content}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
