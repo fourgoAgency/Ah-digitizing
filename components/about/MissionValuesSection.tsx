@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Lightbulb, Shield, Award } from "lucide-react";
 import React from "react";
 
@@ -18,23 +18,23 @@ const getIconComponent = (iconName: string) => {
   }
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   rest: { y: 0, boxShadow: "0 0px 0px rgba(10, 33, 192, 0)" },
   hover: {
     y: -8,
     boxShadow: "0 20px 40px rgba(10, 33, 192, 0.12)",
-    transition: { duration: 0.3, ease: "easeOut" },
+    transition: { duration: 0.3, ease: "easeOut" as const },
   },
 };
 
-const iconVariants = {
+const iconVariants: Variants = {
   rest: { rotate: 0, scale: 1 },
   hover: { rotate: 10, scale: 1.1, transition: { duration: 0.3 } },
 };
 
-const lineVariants = {
+const lineVariants: Variants = {
   rest: { scaleX: 0 },
-  hover: { scaleX: 1, transition: { duration: 0.3, ease: "easeOut" } },
+  hover: { scaleX: 1, transition: { duration: 0.3, ease: "easeOut" as const } },
 };
 
 export default function MissionValuesSection({ values }: { values: Value[] }) {
