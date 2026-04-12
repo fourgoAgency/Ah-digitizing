@@ -18,6 +18,25 @@ const getIconComponent = (iconName: string) => {
   }
 };
 
+const cardVariants = {
+  rest: { y: 0, boxShadow: "0 0px 0px rgba(10, 33, 192, 0)" },
+  hover: {
+    y: -8,
+    boxShadow: "0 20px 40px rgba(10, 33, 192, 0.12)",
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+};
+
+const iconVariants = {
+  rest: { rotate: 0, scale: 1 },
+  hover: { rotate: 10, scale: 1.1, transition: { duration: 0.3 } },
+};
+
+const lineVariants = {
+  rest: { scaleX: 0 },
+  hover: { scaleX: 1, transition: { duration: 0.3, ease: "easeOut" } },
+};
+
 export default function MissionValuesSection({ values }: { values: Value[] }) {
   return (
     <section className="bg-white text-black py-16 lg:py-24">
@@ -49,18 +68,15 @@ export default function MissionValuesSection({ values }: { values: Value[] }) {
                   delay: index * 0.15,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                whileHover={{
-                  y: -8,
-                  boxShadow: "0 20px 40px rgba(10, 33, 192, 0.12)",
-                  transition: { duration: 0.3, ease: "easeOut" },
-                }}
-                className="bg-gray-50 p-8 rounded-xl space-y-4 cursor-default"
+                variants={cardVariants}
+                whileHover="hover"
+                animate="rest"
+                className="bg-gray-50 p-8 rounded-xl space-y-4 cursor-pointer"
               >
-                {/* Icon circle */}
+                {/* Icon */}
                 <div className="flex justify-center">
                   <motion.div
-                    whileHover={{ rotate: 10, scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
+                    variants={iconVariants}
                     className="bg-white p-4 rounded-full shadow-sm"
                   >
                     <IconComponent className="w-8 h-8 text-[#0A21C0]" />
@@ -70,11 +86,9 @@ export default function MissionValuesSection({ values }: { values: Value[] }) {
                 <h3 className="text-xl font-bold">{v.title}</h3>
                 <p className="text-gray-600">{v.desc}</p>
 
-                {/* Bottom accent line on hover */}
+                {/* Bottom accent line */}
                 <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  variants={lineVariants}
                   className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2 mx-auto"
                 />
               </motion.div>
