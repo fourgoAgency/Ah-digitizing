@@ -1,5 +1,5 @@
 "use client";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 // Privacy Policy Data
@@ -49,22 +49,8 @@ const privacyData = [
 ];
 
 export default function PrivacyPolicyPage() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
   return (
     <div className="min-h-screen bg-gray-50">
-
-      {/* Scroll Progress Bar */}
-      <motion.div
-        style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-[3px] bg-[#0A21C0] origin-left z-50"
-      />
-
       {/* Privacy Policy Content */}
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
@@ -78,26 +64,26 @@ export default function PrivacyPolicyPage() {
               className={section.title ? "mb-10" : "mb-6"}
             >
               {section.title && (
-                <>
+                <div className="mb-4">
                   <motion.h2
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
-                    className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-4"
+                    className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-2"
                   >
                     {section.title}
                   </motion.h2>
 
-                  {/* Animated underline beneath each heading */}
+                  {/* Underline covers 50% of the heading width */}
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
-                    className="h-[2px] w-12 bg-[#0A21C0] origin-left rounded-full mb-4"
+                    className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2"
                   />
-                </>
+                </div>
               )}
 
               <motion.div
