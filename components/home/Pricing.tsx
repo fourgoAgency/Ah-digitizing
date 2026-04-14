@@ -124,6 +124,12 @@ function PriceCard({
             {plan.description}
           </p>
         </div>
+        <Button
+        asChild
+        className={`mx-auto mt-8 w-full max-w-44 rounded-full text-xs font-semibold uppercase text-white ${accent.button}`}
+      >
+        <Link href="/pricing">View Pricing</Link>
+      </Button>
       </div>
     </div>
   );
@@ -261,16 +267,6 @@ export default function Pricing() {
             </motion.div>
           ))}
         </motion.div>
-
-        <div className="mt-10 text-center">
-          <Button
-            asChild
-            variant="outline"
-            className="rounded-full border-primary px-6 text-primary hover:bg-primary hover:text-white"
-          >
-            <Link href="/pricing">Compare All Pricing</Link>
-          </Button>
-        </div>
       </div>
 
       {open && activeService && (

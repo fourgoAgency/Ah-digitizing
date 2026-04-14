@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logo from "@/public/150x150.png";
+import logo from "@/public/ahlogobgremove.png";
 import { FaUser } from "react-icons/fa6";
 import { ChevronDown, Menu } from "lucide-react";
 import { BiCart } from "react-icons/bi";
@@ -373,13 +373,13 @@ export default function Header() {
     <>
       <header className="relative z-[100] border-b border-slate-100 bg-white/95 backdrop-blur">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
-        <div className="flex items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between px-4 pt-4 sm:px-6 lg:px-8">
           <Link href="/" aria-label="AH Digitizing home" className="shrink-0">
             <Image
               src={logo}
               alt="AH Digitizing"
               priority
-              className="h-16 w-auto object-contain sm:h-20"
+              className="object-contain sm:w-20 lg:w-40 h-full"
             />
           </Link>
 

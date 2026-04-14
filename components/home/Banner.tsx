@@ -128,7 +128,7 @@ export default function Banner() {
                                 asChild
                                 className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
                                     hoveredButton === 'login'
-                                        ? 'bg-white text-primary border-white'
+                                        ? 'bg-white text-white border-white'
                                         : hoveredButton === 'contact'
                                         ? 'bg-white text-secondary border-white'
                                         : 'bg-white text-primary border-white'

@@ -115,9 +115,10 @@ const Card = ({ before, after }: CardProps) => {
               <Image
                 src={after}
                 alt="After Full"
-                width={900}
-                height={900}
-                className="w-auto max-w-[85vw] h-auto max-h-[50vh] object-contain rounded-xl"
+                width={2000}
+                height={2000}
+                className="object-contain"
+                style={{ width: "75vw", height: "75vh", borderRadius:"1.5rem"}}
               />
             </motion.div>
           </motion.div>
@@ -129,7 +130,10 @@ const Card = ({ before, after }: CardProps) => {
 };
 
 export default function BeforeAfterGrid() {
-  const items = Array.from({ length: 6 });
+  const items = [
+    { before: "/home-page/1B.png", after: "/home-page/1A.png" },
+    { before: "/home-page/2B.png", after: "/home-page/2A.png" },
+    { before: "/home-page/4B.png", after: "/home-page/4A.png" },];
 
   return (
     <section className="max-w-fit mx-auto px-4 py-16">
@@ -141,8 +145,8 @@ export default function BeforeAfterGrid() {
         {items.map((_, i) => (
           <Card
             key={i}
-            before="/home-page/tiger.png"
-            after="/home-page/after.jpeg"
+            before={items[i].before}
+            after={items[i].after}
           />
         ))}
       </div>

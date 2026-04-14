@@ -89,6 +89,7 @@
 //   );
 // }
 import Image from "next/image";
+import logo from "@/public/ahlogobgremove.png"
 import Link from "next/link";
 import {
   FaFacebookF,
@@ -189,7 +190,7 @@ export default function Footer() {
 
           {/* BRAND + NEWSLETTER */}
           <div className="">
-            <Image src="/logo.jpeg" alt="AHdigitizing" width={120} height={40} />
+            <Image src={logo} alt="AHdigitizing" width={120} height={40} className="bg-white p-" />
 
 
             <div className="flex gap-4 mt-4 text-lg">
