@@ -18,14 +18,14 @@ export default function BannerStackTransition() {
     mass: 0.28,
   });
 
-  const transitionWindow = useTransform(smoothProgress, [0, 0.12, 0.42, 0.72], [0, 0.1, 1, 1]);
+  const transitionWindow = useTransform(smoothProgress, [0, 0.25, 0.35, 0.48, 0.58, 0.65], [0, 0, 0.4, 0.4, 1, 1]);
   const revealPercent = useTransform(transitionWindow, [0, 1], [0, 100]);
   const bannerOpacity = useTransform(transitionWindow, [0, 0.74, 1], [1, 0.97, 0.08]);
   const bannerScale = useTransform(transitionWindow, [0, 1], [1, 0.985]);
   const bannerY = useTransform(transitionWindow, [0, 1], [0, -16]);
-  const servicesRevealTop = useTransform(transitionWindow, [0, 1], [86, 0]);
+  const servicesRevealTop = useTransform(transitionWindow, [0, 1], [50, 0]);
   const servicesOpacity = useTransform(transitionWindow, [0, 0.5, 1], [0.35, 0.78, 1]);
-  const servicesScale = useTransform(transitionWindow, [0, 1], [0.94, 1]);
+  const servicesScale = useTransform(transitionWindow, [0, 1], [0.54, 1]);
   const servicesOverlayOpacity = useTransform(transitionWindow, [0, 0.32, 1], [0.5, 0.16, 0]);
 
   const bannerClipPath = useMotionTemplate`inset(0% 0% ${revealPercent}% 0% round 2rem)`;
@@ -34,12 +34,12 @@ export default function BannerStackTransition() {
   return (
     <section
       ref={wrapperRef}
-      className="relative h-[220svh] bg-white"
+      className="relative h-[400svh] bg-white"
       style={{
         perspective: "1600px",
       }}
     >
-      <div className="sticky top-0 h-svh overflow-visible flex flex-col">
+      <div className="sticky top-0 h-svh overflow-hidden flex flex-col">
         <motion.div
           className="absolute inset-0 z-10 pt-5 will-change-transform"
           style={{
@@ -49,10 +49,10 @@ export default function BannerStackTransition() {
             transformOrigin: "50% 50%",
           }}
         >
-          {/* <motion.div
-            className="pointer-events-none absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-primary/35 via-primary/10 to-transparent"
+          <motion.div
+            className="pointer-events-none absolute inset-x-0 top-20 z-20 bg-linear-to-b from-primary/35 via-primary/10 to-transparent"
             style={{ opacity: servicesOverlayOpacity }}
-          /> */}
+          />
           <Services inTransition />
         </motion.div>
 

@@ -68,7 +68,7 @@ export default function ShowcaseGallery() {
         </div>
 
         {/* TABS (STATIC UI) */}
-        <div className="mx-auto mb-10 grid w-full max-w-3xl grid-cols-2 gap-3 sm:gap-4">
+        <div className="mx-auto mb-10 grid w-full grid-cols-2 gap-10 lg:gap-16 4k:gap-24">
           <span className="text-center py-2 sm:py-3 font-medium bg-primary text-white rounded-2xl border-2 border-primary transition hover:bg-primary/90">
             Embroidery
           </span>

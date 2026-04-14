@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
 import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
 import BestSellingProducts from "@/components/shop/BestSellingProducts";
@@ -20,11 +21,33 @@ type FilterSubcategoryOption = {
 };
 
 export default function AllProductsCatalog() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Read initial categories from URL: ?category=vector&category=custom
+  const urlCategories = useMemo(() => {
+    return searchParams.getAll("category") as ProductCategory[];
+  }, [searchParams]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("relevance");
-  const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>(urlCategories);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
   const allProductsGridRef = useRef<HTMLElement | null>(null);
+
+  // Sync URL → state when URL changes (e.g. back/forward or external link)
+  useEffect(() => {
+    setSelectedCategories(urlCategories);
+    setSelectedSubcategories([]);
+  }, [searchParams]);
+
+  // Sync state → URL when categories change
+  const updateCategoriesInURL = (categories: ProductCategory[]) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("category");
+    categories.forEach((cat) => params.append("category", cat));
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   const categoryOptions = useMemo(() => {
     return shopCategoryDefinitions.map(({ slug, label }) => ({
@@ -38,7 +61,9 @@ export default function AllProductsCatalog() {
     const baseOptions =
       selectedCategories.length === 0
         ? []
-        : shopSubcategoryDefinitions.filter((option) => selectedCategories.includes(option.category));
+        : shopSubcategoryDefinitions.filter((option) =>
+            selectedCategories.includes(option.category)
+          );
 
     return baseOptions.map((option) => ({
       href: option.href,
@@ -72,7 +97,6 @@ export default function AllProductsCatalog() {
     if (sortOption === "price-low-to-high") {
       nextProducts = [...nextProducts].sort((a, b) => a.price - b.price);
     }
-
     if (sortOption === "price-high-to-low") {
       nextProducts = [...nextProducts].sort((a, b) => b.price - a.price);
     }
@@ -80,22 +104,23 @@ export default function AllProductsCatalog() {
     return nextProducts;
   }, [searchQuery, selectedCategories, selectedSubcategories, sortOption]);
 
-  const activeFilterCount = selectedCategories.length + selectedSubcategories.length + (searchQuery.trim() ? 1 : 0);
+  const activeFilterCount =
+    selectedCategories.length +
+    selectedSubcategories.length +
+    (searchQuery.trim() ? 1 : 0);
+
   const shouldShowFeaturedSections = selectedCategories.length === 0;
 
   useEffect(() => {
-    if (selectedCategories.length === 0) {
-      return;
-    }
-
+    if (selectedCategories.length === 0) return;
     allProductsGridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [selectedCategories]);
 
   const clearAllFilters = () => {
     setSearchQuery("");
-    setSelectedCategories([]);
     setSelectedSubcategories([]);
     setSortOption("relevance");
+    updateCategoriesInURL([]);
   };
 
   const toggleCategory = (slug: ProductCategory) => {
@@ -111,6 +136,7 @@ export default function AllProductsCatalog() {
         })
       );
 
+      updateCategoriesInURL(nextCategories);
       return nextCategories;
     });
   };
@@ -155,6 +181,3 @@ export default function AllProductsCatalog() {
     </>
   );
 }
-
-
-

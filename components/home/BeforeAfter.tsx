@@ -29,7 +29,7 @@ const Card = ({ before, after }: CardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative bg-secondary text-white rounded-3xl w-full h-full flex gap-4 sm:gap-6 shadow-xl p-4 sm:p-0"
+      className="relative bg-gray-100 text-secondary rounded-3xl w-full h-full flex gap-4 sm:gap-6 shadow-xl p-4 sm:p-0"
     >
 
       {/* Left: Before */}
@@ -133,7 +133,7 @@ export default function BeforeAfterGrid() {
 
   return (
     <section className="max-w-fit mx-auto px-4 py-16">
-      <AnimatedSectionHeading className="mb-12 text-center text-4xl font-bold lg:text-5xl">
+      <AnimatedSectionHeading className="mb-12 text-center text-4xl font-bold lg:text-5xl fade-in-up">
         Before & After
       </AnimatedSectionHeading>
 

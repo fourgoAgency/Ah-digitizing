@@ -55,11 +55,11 @@ export default function ServicesCarousel() {
           <div className="hidden w-80 shrink-0 z-10 lg:flex">
             <div className="bg-primary p-8 shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)] shadow-black/50 flex flex-col justify-center h-full w-full rounded-r-2xl">
               <div>
-                <h3
+                <AnimatedSectionHeading 
                   className="mb-4 text-5xl font-bold text-white"
                 >
                   Shop By<br />Category
-                </h3>
+                </AnimatedSectionHeading>
                 <p className="text-gray-100 text-xl mb-6">
                   Explore our wide range of services tailored to meet your design and digitizing needs.
                 </p>
@@ -85,10 +85,7 @@ export default function ServicesCarousel() {
       variants={cardVariants}
       className="w-full"
     >
-      <Link
-        href={`/shop/${category.slug}`}
-        className="block h-full w-full"
-      >
+      <Link href={`/shop?category=${category.slug}`} className="block h-full w-full">
         <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
 
           {/* IMAGE WRAPPER */}
@@ -123,6 +120,7 @@ export default function ServicesCarousel() {
 <div className="lg:flex hidden justify-center">
   <Button
     variant="outline"
+    onClick={() => window.location.href = "/shop"}
     className="my-8 px-9 rounded-full text-md border-primary text-primary hover:bg-primary hover:text-white transition-colors"
   >
     View More

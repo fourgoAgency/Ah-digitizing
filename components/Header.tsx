@@ -45,7 +45,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         will-change-transform
       "
       style={{
-        borderRadius: isSticky ? 0 : 24,
+        borderRadius: isSticky ? 0 : 10,
         padding: isSticky ? "0.1rem 3rem" : "0rem 3rem",
       }}
     >

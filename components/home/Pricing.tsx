@@ -102,7 +102,7 @@ function PriceCard({
       </button>
 
       <div className="flex flex-1 flex-col">
-        <div className="mb-4 flex min-h-10 items-start justify-center text-[10px] uppercase tracking-[0.45em] text-slate-400">
+        <div className="mb-4 flex items-start justify-center text-[13px] uppercase tracking-[0.45em] text-slate-400">
           <div>
             {plan.title.toUpperCase()}
             <br />
@@ -125,13 +125,6 @@ function PriceCard({
           </p>
         </div>
       </div>
-
-      <Button
-        asChild
-        className={`mx-auto mt-8 w-full max-w-44 rounded-full text-xs font-semibold uppercase text-white ${accent.button}`}
-      >
-        <Link href="/pricing">View Pricing</Link>
-      </Button>
     </div>
   );
 }
