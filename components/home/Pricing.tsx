@@ -128,7 +128,7 @@ function PriceCard({
         asChild
         className={`mx-auto mt-8 w-full max-w-44 rounded-full text-xs font-semibold uppercase text-white ${accent.button}`}
       >
-        <Link href="/pricing">View Pricing</Link>
+        <Link href={`/pricing/${plan.service.toLowerCase()}`}>View Pricing</Link>
       </Button>
       </div>
     </div>

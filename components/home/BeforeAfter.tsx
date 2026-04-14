@@ -133,6 +133,9 @@ export default function BeforeAfterGrid() {
   const items = [
     { before: "/home-page/1B.png", after: "/home-page/1A.png" },
     { before: "/home-page/2B.png", after: "/home-page/2A.png" },
+    { before: "/home-page/4B.png", after: "/home-page/4A.png" },
+  { before: "/home-page/1B.png", after: "/home-page/1A.png" },
+    { before: "/home-page/2B.png", after: "/home-page/2A.png" },
     { before: "/home-page/4B.png", after: "/home-page/4A.png" },];
 
   return (
