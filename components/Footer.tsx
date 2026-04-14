@@ -190,7 +190,7 @@ export default function Footer() {
 
           {/* BRAND + NEWSLETTER */}
           <div className="">
-            <Image src={logo} alt="AHdigitizing" width={120} height={40} className="bg-white p-" />
+            <Image src={logo} alt="AHdigitizing" width={120} height={40} className="bg-white py-5" />
 
 
             <div className="flex gap-4 mt-4 text-lg">
