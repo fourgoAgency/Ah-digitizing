@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 export default function OurStorySection() {
@@ -6,7 +8,13 @@ export default function OurStorySection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Image */}
-          <div className="relative">
+          <motion.div
+            initial={{ opacity: 0, x: -60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative"
+          >
             <Image
               width={500}
               height={500}
@@ -14,10 +22,16 @@ export default function OurStorySection() {
               alt="Modern office workspace"
               className="rounded-lg shadow-lg w-full h-auto"
             />
-          </div>
+          </motion.div>
 
           {/* Right Content */}
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="space-y-6"
+          >
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Our Story: Crafting Digital Excellence
             </h2>
@@ -27,10 +41,9 @@ export default function OurStorySection() {
             <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-md font-semibold">
               Founded in 2010
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
-
 }
