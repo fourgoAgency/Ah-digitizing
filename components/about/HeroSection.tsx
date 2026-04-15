@@ -11,7 +11,7 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, x: -60 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 4, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-6 flex flex-col justify-center order-2 lg:order-1"
           >
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight text-center lg:text-left">
@@ -29,7 +29,7 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 4, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
             className="relative order-1 lg:order-2"
           >
             <Image
