@@ -12,7 +12,7 @@ export default function OurStorySection() {
             initial={{ opacity: 0, x: -60 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
             <Image
@@ -29,7 +29,7 @@ export default function OurStorySection() {
             initial={{ opacity: 0, x: 60 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-6"
           >
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
