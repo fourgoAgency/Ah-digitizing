@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
 
 type TransformationExample = {
   id: number;
@@ -11,7 +13,23 @@ type TransformationExample = {
   beforeImage: string;
   afterImage: string;
 };
+const leftVariants = {
+  hidden: { opacity: 0, x: -72 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
 
+const rightVariants = {
+  hidden: { opacity: 0, x: 72 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
 type ServiceTransformationExamplesProps = {
   title: string;
   description: string;
@@ -43,9 +61,9 @@ export default function ServiceTransformationExamples({
       <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <AnimatedSectionHeading className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             {title}
-          </h2>
+          </AnimatedSectionHeading>
           <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             {description}
           </p>
@@ -60,15 +78,20 @@ export default function ServiceTransformationExamples({
             >
               {/* Left: Title and Description */}
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                <AnimatedSectionHeading className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                   {example.title}
-                </h3>
+                </AnimatedSectionHeading>
                 <p className="text-sm sm:text-base text-gray-600 mb-6">
                   {example.description}
                 </p>
 
-                {/* Before */}
-                <div className="text-center mt-4">
+                <motion.div
+                  variants={leftVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="text-center mt-4"
+                >
                   <div className="bg-white rounded-lg h-40 sm:h-48 flex items-center justify-center mb-3 overflow-hidden shadow-md shadow-gray-700">
                     <img
                       src={example.beforeImage}
@@ -76,7 +99,7 @@ export default function ServiceTransformationExamples({
                       alt="Before"
                     />
                   </div>
-                </div>
+                </motion.div>
 
                 <div className="flex justify-center mt-6">
                   <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
@@ -87,6 +110,13 @@ export default function ServiceTransformationExamples({
 
               {/* After */}
               <div className="text-center mr-6">
+                <motion.div
+                  variants={rightVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="text-center mt-4"
+                >
                 <div
                   className="bg-white rounded-lg w-full h-56 sm:h-64 md:h-72 lg:h-80 
              flex items-center justify-center overflow-hidden 
@@ -101,6 +131,7 @@ export default function ServiceTransformationExamples({
                     height={900}
                   />
                 </div>
+                </motion.div>
               </div>
             </div>
           ))}

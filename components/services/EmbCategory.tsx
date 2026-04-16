@@ -1,7 +1,8 @@
 "use client";
-
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
 
 const embroideryCategories = [
   { id: 1, label: "Logo Embroidery Digitizing", href: "/services/embroidery/logo" },
@@ -16,11 +17,18 @@ export default function EmbCategory() {
   return (
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
-        <h3 className="text-center text-5xl font-bold mb-8">Embroidery Digitizing</h3>
+         <AnimatedSectionHeading className="mb-12 text-center text-4xl font-bold lg:text-5xl fade-in-up">
+        Embroidery Digitizing
+      </AnimatedSectionHeading>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {embroideryCategories.map((category) => (
-            <div key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+            <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.35 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                 key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
               <div className="aspect-4/3 bg-gray-100 overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center">
                   <svg className="w-24 h-24 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -39,7 +47,7 @@ export default function EmbCategory() {
                   </Link>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

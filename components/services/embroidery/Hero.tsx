@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="w-full bg-linear-to-r from-primary to-secondary py-32 px-6 mt-4">
+    <section className="w-full bg-linear-to-r from-primary to-secondary py-36 px-6 my-4">
       <div className="max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-9">
           Transform Your Designs into Perfect Embroidery
         </h1>
         

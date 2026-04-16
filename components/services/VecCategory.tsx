@@ -1,6 +1,7 @@
 "use client";
-
+import { motion } from "framer-motion";
 import Link from "next/link";
+import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
 
 const vectorCategories = [
   { id: 1, label: "Raster To Vector Services", href: "/services/raster-to-vector" },
@@ -12,9 +13,16 @@ export default function VecCategory() {
   return (
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
-        <h3 className="text-center text-2xl font-semibold mb-8">Vector Conversion Services</h3>
+        <AnimatedSectionHeading className="mb-12 text-center text-4xl font-bold lg:text-5xl fade-in-up">
+          Vector Conversion Services
+        </AnimatedSectionHeading>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {vectorCategories.map((category) => (
             <div key={category.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="aspect-4/3 bg-gray-100 overflow-hidden">
@@ -37,8 +45,8 @@ export default function VecCategory() {
               </div>
             </div>
           ))}
-        </div>
+    </motion.div>
       </div>
-    </section>
+    </section >
   );
 }
