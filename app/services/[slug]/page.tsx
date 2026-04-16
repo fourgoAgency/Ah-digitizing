@@ -1,5 +1,3 @@
-import CTABanner from "@/components/home/CTA";
-import Pricing from "@/components/home/Pricing";
 import ServiceHero from "@/components/services/ServiceHero";
 import ServicePricing from "@/components/services/ServicePricing";
 import ServiceTestimonials from "@/components/services/ServiceTestimonials";
