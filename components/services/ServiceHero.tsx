@@ -21,7 +21,7 @@ export default function ServiceHero({ title, description, quoteParam }: ServiceH
         </p>
 
         <Link
-          href={`/account?quote=${quoteParam}`}
+          href={`/get-free-quote?orderType=${quoteParam}`}
           className="inline-block px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-gray-100 hover:text-primary hover:border hover:border-primary transition-colors"
         >
           Get a Quote

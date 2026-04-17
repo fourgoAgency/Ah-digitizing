@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GetQuoteForm } from "./components/GetQuoteForm";
 import { GetQuoteLivePreview } from "./components/GetQuoteLivePreview";
 import {
@@ -398,6 +398,7 @@ export default function GetQuotePage() {
               : "grid grid-cols-1 items-start gap-6"
           }
         >
+          <Suspense>
           <GetQuoteForm
             formData={formData}
             errors={errors}
@@ -410,7 +411,8 @@ export default function GetQuotePage() {
             onFilesDropAction={handleFilesDrop}
             onFileRemoveAction={handleFileRemove}
             onSubmitAction={handleSubmit}
-          />
+            />
+            </Suspense>
           {hasOrderType && <GetQuoteLivePreview formData={formData} previewFileUrl={previewFileUrl} />}
         </div>
       </section>

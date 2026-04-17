@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,8 @@ export default function ProductCard({
 
   const articleClass =
     imageVariant === "largeSquare"
-      ? "group relative flex h-full min-h-[24rem] overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md focus-within:-translate-y-1 focus-within:shadow-md"
-      : "group relative flex h-full min-h-[22rem] overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md focus-within:-translate-y-1 focus-within:shadow-md";
+      ? "group relative flex h-full min-h-[24rem] overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+      : "group relative flex h-full min-h-[22rem] overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm";
 
   const restImageClass =
     imageVariant === "largeSquare"
@@ -37,7 +38,21 @@ export default function ProductCard({
       : "absolute inset-x-4 top-2 bottom-32 z-10 block overflow-hidden rounded-[1.25rem] ";
 
   return (
-    <article className={articleClass}>
+    <motion.article
+      className={articleClass}
+      whileHover={{ y: -8, scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 280, damping: 22 }}
+      style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.08), 0 5px 15px rgba(0,0,0,0.05)" }}
+    >
+      {/* Hover glow border */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-10"
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.25 }}
+        style={{ boxShadow: "inset 0 0 0 1.5px rgba(99,102,241,0.6), 0 0 28px rgba(99,102,241,0.12)" }}
+      />
       <div className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-radial from-transparent via-5% to-primary/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100" />
       <div className="absolute inset-0 transition-all duration-300 ease-out group-hover:translate-y-3 group-hover:opacity-0 group-focus-within:translate-y-3 group-focus-within:opacity-0">
             {showSoldBadge ? (
@@ -123,6 +138,6 @@ export default function ProductCard({
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

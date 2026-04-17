@@ -38,7 +38,8 @@
           "beforeImage": "/services/2 Cap Before.png",
           "afterImage": "/services/cap.svg"
         }
-      ]
+      ],
+      "quoteParam":"embroidery"
     },
     "testimonials": [
       {
@@ -70,6 +71,7 @@
     },
     "transformation": {
       "title": "See the Transformation: Raster to Vector Examples",
+      "quoteParam":"vector",
       "description": "Witness the dramatic improvement in quality and detail our skilled digitizers bring to every image.",
       "examples": [
         {

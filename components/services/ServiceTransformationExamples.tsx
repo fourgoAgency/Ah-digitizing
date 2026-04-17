@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
+import { useRouter } from "next/navigation";
 
 type TransformationExample = {
   id: number;
@@ -34,15 +35,18 @@ type ServiceTransformationExamplesProps = {
   title: string;
   description: string;
   examples: TransformationExample[];
+  quoteParam: string;
 };
 
 export default function ServiceTransformationExamples({
   title,
   description,
   examples,
+  quoteParam
 }: ServiceTransformationExamplesProps) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
-
+  const router = useRouter();
+  
   useEffect(() => {
     if (!activeImage) return;
 
@@ -102,9 +106,12 @@ export default function ServiceTransformationExamples({
                 </motion.div>
 
                 <div className="flex justify-center mt-6">
-                  <Button className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border">
-                    Order Now
-                  </Button>
+<Button
+  onClick={() => router.push(`/get-free-quote?orderType=${quoteParam}`)}
+  className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border"
+>
+  Order Now
+</Button>
                 </div>
               </div>
 

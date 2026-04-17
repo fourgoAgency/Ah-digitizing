@@ -16,6 +16,9 @@ import {
   MAX_FILE_SIZE_BYTES,
   MAX_FILES_COUNT,
 } from "../get-quote/lib/quote-form";
+import { useSearchParams } from "next/navigation";
+
+// inside GetQoutePage()
 
 const fieldValidationOrder = [
   "fullName",
@@ -88,7 +91,14 @@ export default function GetQoutePage() {
   const [otpError, setOtpError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
 
+  useEffect(() => {
+    const orderType = searchParams.get("orderType");
+    if (orderType === "embroidery" || orderType === "vector") {
+      setFormData((prev) => ({ ...prev, orderType }));
+    }
+  }, [searchParams]);
   const previewFileUrl = useMemo(() => {
     const file = formData.files[0];
     if (!file || !file.type.startsWith("image/")) return "";
@@ -265,12 +275,12 @@ export default function GetQoutePage() {
   const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "proportional" : "");
   const hasDesignSpecSelection = Boolean(
     formData.orderType ||
-      formData.designName.trim() ||
-      formData.numberOfColors.trim() ||
-      formData.unitType ||
-      formData.width?.trim() ||
-      formData.height?.trim() ||
-      formData.additionalNotes?.trim()
+    formData.designName.trim() ||
+    formData.numberOfColors.trim() ||
+    formData.unitType ||
+    formData.width?.trim() ||
+    formData.height?.trim() ||
+    formData.additionalNotes?.trim()
   );
 
   if (showSuccess) {
@@ -312,315 +322,312 @@ export default function GetQoutePage() {
         >
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="overflow-visible rounded-lg border border-gray-200 bg-white">
-            <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
-              Your Contact Information
-            </h2>
-            <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
-              <div>
-                <label htmlFor="full-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                  Name *
-                </label>
-                <input
-                  id="full-name"
-                  name="fullName"
-                  className="input"
-                  placeholder="eg:John Doe"
-                  value={formData.fullName}
-                  onChange={handleFieldChange}
-                  required
-                />
-                {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="company-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                  Company Name
-                </label>
-                <input
-                  id="company-name"
-                  name="companyName"
-                  className="input"
-                  placeholder="eg:Your Company Inc."
-                  value={formData.companyName}
-                  onChange={handleFieldChange}
-                />
-                {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="email" className="mb-1 block text-sm font-semibold text-gray-700">
-                  Email *
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  className="input"
-                  placeholder="eg:john.doe@example.com"
-                  value={formData.email}
-                  onChange={handleFieldChange}
-                  required
-                />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-              </div>
-
-              <div className="sm:col-span-2">
-                <QuoteContactFields
-                  defaultCountry={formData.country}
-                  defaultPhone={formData.contactNumber}
-                  onValuesChangeAction={handleContactValuesChange}
-                />
-                {errors.contactNumber && <p className="mt-1 text-sm text-red-600">{errors.contactNumber}</p>}
-                {errors.country && <p className="mt-1 text-sm text-red-600">{errors.country}</p>}
-              </div>
-            </div>
-            </div>
-
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-            <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
-              Design Specifications
-            </h2>
-            <div className="space-y-4 p-5">
-              <div>
-                <p className="mb-2 block text-sm font-semibold text-gray-700">Order Type Select *</p>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <label
-                    htmlFor="order-type-embroidery"
-                    className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${
-                      formData.orderType === "embroidery"
-                        ? "border-primary bg-primary text-white"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
-                    }`}
-                  >
-                    <input
-                      id="order-type-embroidery"
-                      type="radio"
-                      name="orderType"
-                      value="embroidery"
-                      checked={formData.orderType === "embroidery"}
-                      onChange={handleFieldChange}
-                      className="sr-only"
-                      required
-                    />
-                    Embroidery Digitizing
-                  </label>
-                  <label
-                    htmlFor="order-type-vector"
-                    className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${
-                      formData.orderType === "vector"
-                        ? "border-primary bg-primary text-white"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
-                    }`}
-                  >
-                    <input
-                      id="order-type-vector"
-                      type="radio"
-                      name="orderType"
-                      value="vector"
-                      checked={formData.orderType === "vector"}
-                      onChange={handleFieldChange}
-                      className="sr-only"
-                      required
-                    />
-                    Vector Conversion
-                  </label>
-                </div>
-                {errors.orderType && <p className="mt-1 text-sm text-red-600">{errors.orderType}</p>}
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
+                Your Contact Information
+              </h2>
+              <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="design-name" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Design Name *
+                  <label htmlFor="full-name" className="mb-1 block text-sm font-semibold text-gray-700">
+                    Name *
                   </label>
                   <input
-                    id="design-name"
-                    name="designName"
+                    id="full-name"
+                    name="fullName"
                     className="input"
-                    placeholder="Enter design name"
-                    value={formData.designName}
+                    placeholder="eg:John Doe"
+                    value={formData.fullName}
                     onChange={handleFieldChange}
                     required
                   />
-                  {errors.designName && <p className="mt-1 text-sm text-red-600">{errors.designName}</p>}
+                  {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="number-of-colors" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Numbers of colors *
+                  <label htmlFor="company-name" className="mb-1 block text-sm font-semibold text-gray-700">
+                    Company Name
                   </label>
-                  <CustomDropdown
-                    id="number-of-colors"
-                    placeholder="Select or type number of color"
-                    options={numberOfColorOptions}
-                    value={formData.numberOfColors}
-                    onSelectAction={(selected) => emitFieldChange("numberOfColors", selected)}
+                  <input
+                    id="company-name"
+                    name="companyName"
+                    className="input"
+                    placeholder="eg:Your Company Inc."
+                    value={formData.companyName}
+                    onChange={handleFieldChange}
                   />
-                  {errors.numberOfColors && <p className="mt-1 text-sm text-red-600">{errors.numberOfColors}</p>}
+                  {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="mb-1 block text-sm font-semibold text-gray-700">
+                    Email *
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    className="input"
+                    placeholder="eg:john.doe@example.com"
+                    value={formData.email}
+                    onChange={handleFieldChange}
+                    required
+                  />
+                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                 </div>
 
                 <div className="sm:col-span-2">
-                  <p className="mb-2 block text-sm font-semibold text-gray-700">Unit Type *</p>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    {["inches", "centimeter", "millimeter"].map((unit) => (
-                      <label
-                        key={unit}
-                        htmlFor={`unit-type-${unit}`}
-                        className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${
-                          formData.unitType === unit
-                            ? "border-primary bg-primary text-white"
-                            : "border-gray-300 bg-white text-gray-700 hover:border-primary"
-                        }`}
-                      >
-                        <input
-                          id={`unit-type-${unit}`}
-                          type="radio"
-                          name="unitType"
-                          value={unit}
-                          checked={formData.unitType === unit}
-                          onChange={handleFieldChange}
-                          className="sr-only"
-                          required
-                        />
-                        {unit.charAt(0).toUpperCase() + unit.slice(1)}
-                      </label>
-                    ))}
-                  </div>
-                  {errors.unitType && <p className="mt-1 text-sm text-red-600">{errors.unitType}</p>}
-                </div>
-
-                <div>
-                  <label htmlFor="width" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Width
-                  </label>
-                  <input
-                    id="width"
-                    name="width"
-                    type="number"
-                    step="any"
-                    min="0"
-                    className="input"
-                    placeholder="proportional to height"
-                    value={formData.width}
-                    onChange={handleFieldChange}
+                  <QuoteContactFields
+                    defaultCountry={formData.country}
+                    defaultPhone={formData.contactNumber}
+                    onValuesChangeAction={handleContactValuesChange}
                   />
-                  {errors.width && <p className="mt-1 text-sm text-red-600">{errors.width}</p>}
-                </div>
-
-                <div>
-                  <label htmlFor="height" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Height
-                  </label>
-                  <input
-                    id="height"
-                    name="height"
-                    type="number"
-                    step="any"
-                    min="0"
-                    className="input"
-                    placeholder="eg:proportional to width"
-                    value={formData.height}
-                    onChange={handleFieldChange}
-                  />
-                  {errors.height && <p className="mt-1 text-sm text-red-600">{errors.height}</p>}
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label htmlFor="additional-notes" className="mb-1 block text-sm font-semibold text-gray-700">
-                    Additional Notes
-                  </label>
-                  <textarea
-                    id="additional-notes"
-                    name="additionalNotes"
-                    className="input h-24 resize-none"
-                    placeholder="Additional notes or instructions for your quote (optional)"
-                    value={formData.additionalNotes || ""}
-                    onChange={handleFieldChange}
-                  />
+                  {errors.contactNumber && <p className="mt-1 text-sm text-red-600">{errors.contactNumber}</p>}
+                  {errors.country && <p className="mt-1 text-sm text-red-600">{errors.country}</p>}
                 </div>
               </div>
             </div>
-            </div>
 
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-            <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">File Upload *</h2>
-            <div className="p-5">
-              <label
-                htmlFor="file-upload"
-                className="block cursor-pointer rounded-lg border border-dashed border-gray-300 p-10 text-center transition-colors hover:border-primary"
-                onDragOver={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onDrop={handleFilesDrop}
-              >
-                <UploadCloud className="mx-auto mb-2 text-gray-500" />
-                <p className="text-gray-700">Drag &amp; drop your design here, or click to browse</p>
-                <p className="mt-1 text-sm text-gray-500">Accepted: JPG, PNG, JPEG, PDF, AI, EPS, SVG, PSD & more</p>
-                <p className="mt-1 text-sm text-gray-500">Up to 10 files, max 50MB each.</p>
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="image/*,.pdf,.doc,.docx,.ai,.eps,.ps,.psd,.svg,.emb,.dst,.pes,.ngs,.pxf,.hus,.vp3,.jef,.cnd,.art,.csd,.xxx,.pec,.omf"
-                  multiple
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleFilesChange}
-                  required={formData.files.length === 0}
-                />
-              </label>
-              {formData.files.length > 0 && (
-                <ul className="mt-3 space-y-2">
-                  {formData.files.map((file, index) => (
-                    <li
-                      key={`${file.name}-${file.lastModified}-${index}`}
-                      className="inline-flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+              <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
+                Design Specifications
+              </h2>
+              <div className="space-y-4 p-5">
+                <div>
+                  <p className="mb-2 block text-sm font-semibold text-gray-700">Order Type Select *</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label
+                      htmlFor="order-type-embroidery"
+                      className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.orderType === "embroidery"
+                          ? "border-primary bg-primary text-white"
+                          : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                        }`}
                     >
-                      <span className="truncate pr-3">{file.name}</span>
-                      <button
-                        type="button"
-                        className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
-                        onClick={() => handleFileRemove(index)}
-                        aria-label={`Remove ${file.name}`}
-                      >
-                        <X size={16} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <span className="mt-2 block">
-                <h3 className="font-semibold">Note:</h3>
-                <p className="text-sm text-gray-600">
-                  Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
-                  <Link href="/privacy-policy#file-validation" className="font-semibold text-primary underline">
-                    Learn more about uploading files
-                  </Link>
-                  .
-                </p>
-              </span>
+                      <input
+                        id="order-type-embroidery"
+                        type="radio"
+                        name="orderType"
+                        value="embroidery"
+                        checked={formData.orderType === "embroidery"}
+                        onChange={handleFieldChange}
+                        className="sr-only"
+                        required
+                      />
+                      Embroidery Digitizing
+                    </label>
+                    <label
+                      htmlFor="order-type-vector"
+                      className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.orderType === "vector"
+                          ? "border-primary bg-primary text-white"
+                          : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                        }`}
+                    >
+                      <input
+                        id="order-type-vector"
+                        type="radio"
+                        name="orderType"
+                        value="vector"
+                        checked={formData.orderType === "vector"}
+                        onChange={handleFieldChange}
+                        className="sr-only"
+                        required
+                      />
+                      Vector Conversion
+                    </label>
+                  </div>
+                  {errors.orderType && <p className="mt-1 text-sm text-red-600">{errors.orderType}</p>}
+                </div>
 
-              {errors.files && <p className="mt-2 text-sm text-red-600">{errors.files}</p>}
-            </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="design-name" className="mb-1 block text-sm font-semibold text-gray-700">
+                      Design Name *
+                    </label>
+                    <input
+                      id="design-name"
+                      name="designName"
+                      className="input"
+                      placeholder="Enter design name"
+                      value={formData.designName}
+                      onChange={handleFieldChange}
+                      required
+                    />
+                    {errors.designName && <p className="mt-1 text-sm text-red-600">{errors.designName}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="number-of-colors" className="mb-1 block text-sm font-semibold text-gray-700">
+                      Numbers of colors *
+                    </label>
+                    <CustomDropdown
+                      id="number-of-colors"
+                      placeholder="Select or type number of color"
+                      options={numberOfColorOptions}
+                      value={formData.numberOfColors}
+                      onSelectAction={(selected) => emitFieldChange("numberOfColors", selected)}
+                    />
+                    {errors.numberOfColors && <p className="mt-1 text-sm text-red-600">{errors.numberOfColors}</p>}
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <p className="mb-2 block text-sm font-semibold text-gray-700">Unit Type *</p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      {["inches", "centimeter", "millimeter"].map((unit) => (
+                        <label
+                          key={unit}
+                          htmlFor={`unit-type-${unit}`}
+                          className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.unitType === unit
+                              ? "border-primary bg-primary text-white"
+                              : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                            }`}
+                        >
+                          <input
+                            id={`unit-type-${unit}`}
+                            type="radio"
+                            name="unitType"
+                            value={unit}
+                            checked={formData.unitType === unit}
+                            onChange={handleFieldChange}
+                            className="sr-only"
+                            required
+                          />
+                          {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                        </label>
+                      ))}
+                    </div>
+                    {errors.unitType && <p className="mt-1 text-sm text-red-600">{errors.unitType}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="width" className="mb-1 block text-sm font-semibold text-gray-700">
+                      Width
+                    </label>
+                    <input
+                      id="width"
+                      name="width"
+                      type="number"
+                      step="any"
+                      min="0"
+                      className="input"
+                      placeholder="proportional to height"
+                      value={formData.width}
+                      onChange={handleFieldChange}
+                    />
+                    {errors.width && <p className="mt-1 text-sm text-red-600">{errors.width}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="height" className="mb-1 block text-sm font-semibold text-gray-700">
+                      Height
+                    </label>
+                    <input
+                      id="height"
+                      name="height"
+                      type="number"
+                      step="any"
+                      min="0"
+                      className="input"
+                      placeholder="eg:proportional to width"
+                      value={formData.height}
+                      onChange={handleFieldChange}
+                    />
+                    {errors.height && <p className="mt-1 text-sm text-red-600">{errors.height}</p>}
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label htmlFor="additional-notes" className="mb-1 block text-sm font-semibold text-gray-700">
+                      Additional Notes
+                    </label>
+                    <textarea
+                      id="additional-notes"
+                      name="additionalNotes"
+                      className="input h-24 resize-none"
+                      placeholder="Additional notes or instructions for your quote (optional)"
+                      value={formData.additionalNotes || ""}
+                      onChange={handleFieldChange}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-            <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
-              Continue via WhatsApp? *
-            </h2>
-            <div className="p-5">
-              <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  name="whatsappOptIn"
-                  checked={formData.whatsappOptIn}
-                  onChange={handleFieldChange}
-                  required
-                />
-                I would like to receive updates and discuss my quote via WhatsApp.
-              </label>
-              {errors.whatsappOptIn && <p className="mt-2 text-sm text-red-600">{errors.whatsappOptIn}</p>}
+              <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">File Upload *</h2>
+              <div className="p-5">
+                <label
+                  htmlFor="file-upload"
+                  className="block cursor-pointer rounded-lg border border-dashed border-gray-300 p-10 text-center transition-colors hover:border-primary"
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                  onDrop={handleFilesDrop}
+                >
+                  <UploadCloud className="mx-auto mb-2 text-gray-500" />
+                  <p className="text-gray-700">Drag &amp; drop your design here, or click to browse</p>
+                  <p className="mt-1 text-sm text-gray-500">Accepted: JPG, PNG, JPEG, PDF, AI, EPS, SVG, PSD & more</p>
+                  <p className="mt-1 text-sm text-gray-500">Up to 10 files, max 50MB each.</p>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*,.pdf,.doc,.docx,.ai,.eps,.ps,.psd,.svg,.emb,.dst,.pes,.ngs,.pxf,.hus,.vp3,.jef,.cnd,.art,.csd,.xxx,.pec,.omf"
+                    multiple
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFilesChange}
+                    required={formData.files.length === 0}
+                  />
+                </label>
+                {formData.files.length > 0 && (
+                  <ul className="mt-3 space-y-2">
+                    {formData.files.map((file, index) => (
+                      <li
+                        key={`${file.name}-${file.lastModified}-${index}`}
+                        className="inline-flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+                      >
+                        <span className="truncate pr-3">{file.name}</span>
+                        <button
+                          type="button"
+                          className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                          onClick={() => handleFileRemove(index)}
+                          aria-label={`Remove ${file.name}`}
+                        >
+                          <X size={16} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <span className="mt-2 block">
+                  <h3 className="font-semibold">Note:</h3>
+                  <p className="text-sm text-gray-600">
+                    Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
+                    <Link href="/privacy-policy#file-validation" className="font-semibold text-primary underline">
+                      Learn more about uploading files
+                    </Link>
+                    .
+                  </p>
+                </span>
+
+                {errors.files && <p className="mt-2 text-sm text-red-600">{errors.files}</p>}
+              </div>
             </div>
+
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+              <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">
+                Continue via WhatsApp? *
+              </h2>
+              <div className="p-5">
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    name="whatsappOptIn"
+                    checked={formData.whatsappOptIn}
+                    onChange={handleFieldChange}
+                    required
+                  />
+                  I would like to receive updates and discuss my quote via WhatsApp.
+                </label>
+                {errors.whatsappOptIn && <p className="mt-2 text-sm text-red-600">{errors.whatsappOptIn}</p>}
+              </div>
             </div>
 
             {submitMessage && (

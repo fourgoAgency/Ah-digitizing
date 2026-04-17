@@ -1,5 +1,5 @@
 "use client";
-
+import {motion} from  "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
@@ -164,12 +164,29 @@ export default function AllProductsCatalog() {
         />
         <section className="mb-6 flex flex-col gap-6">
           {shouldShowFeaturedSections ? (
-            <>
-              <BestSellingProducts />
-              <BulkProducts />
-              <FreeProducts />
-            </>
-          ) : null}
+            <motion.div
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+          }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="flex flex-col gap-6"
+        >
+              {[<BestSellingProducts />, <BulkProducts />, <FreeProducts />].map((Component, i) => (
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 24 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+              }}
+            >
+              {Component}
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : null}
           <section ref={allProductsGridRef} className="scroll-mt-24">
             <AllProductsGrid
               filteredProducts={filteredProducts}

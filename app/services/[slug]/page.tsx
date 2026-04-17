@@ -22,6 +22,7 @@ type ServiceData = {
       beforeImage: string;
       afterImage: string;
     }[];
+quoteParam:string;
   };
   testimonials: {
     id: number;

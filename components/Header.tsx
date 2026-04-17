@@ -77,9 +77,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
 
         {/* SERVICES */}
         <div className="relative group">
-          <Link href="/services">
-            <span className="cursor-pointer flex">Services<ChevronDown className=" text-lg" /></span></Link>
-
+            <span className="cursor-pointer flex">Services<ChevronDown className=" text-lg" /></span>
           {/* Main dropdown */}
           <div className="absolute left-0 top-full mt-3 opacity-0 invisible
                         group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -395,7 +393,7 @@ export default function Header() {
               onMouseEnter={() => setHoveredButton('free')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <Link href="/#home-quote">Get Free Quote</Link>
+              <Link href="/get-free-quote">Get Free Quote</Link>
             </Button>
 
             <Button

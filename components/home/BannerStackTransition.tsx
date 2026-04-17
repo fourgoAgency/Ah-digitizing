@@ -12,13 +12,18 @@ export default function BannerStackTransition() {
     offset: ["start start", "end end"],
   });
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 26,
-    mass: 0.28,
-  });
+// Tighter spring — less overshoot lag
+const smoothProgress = useSpring(scrollYProgress, {
+  stiffness: 160,
+  damping: 30,
+  mass: 0.2,
+});
 
-  const transitionWindow = useTransform(smoothProgress, [0, 0.25, 0.35, 0.48, 0.58, 0.65], [0, 0, 0.4, 0.4, 1, 1]);
+const transitionWindow = useTransform(
+  smoothProgress,
+  [0, 0.20, 0.28, 0.36, 0.42, 0.45],
+  [0, 0,    0.4,  0.4,  1,    1]
+);
   const revealPercent = useTransform(transitionWindow, [0, 1], [0, 100]);
   const bannerOpacity = useTransform(transitionWindow, [0, 0.74, 1], [1, 0.97, 0.08]);
   const bannerScale = useTransform(transitionWindow, [0, 1], [1, 0.985]);
@@ -34,7 +39,7 @@ export default function BannerStackTransition() {
   return (
     <section
       ref={wrapperRef}
-      className="relative h-[400svh] bg-white"
+      className="relative h-[300svh] bg-white"
       style={{
         perspective: "1600px",
       }}

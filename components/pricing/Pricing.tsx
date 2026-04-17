@@ -3,7 +3,32 @@
 import { useEffect, useMemo, useState } from "react";
 import pricing from "@/data/price.json";
 import portfolio from "@/data/portfolio.json";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+const headingVariants = {
+  hidden: { y: 40, opacity: 0, scale: 1.02 },
+  visible: {
+    y: 0, opacity: 1, scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
 
+const cardsContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 48 },
+  visible: {
+    opacity: 1, y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+const viewportOpts = { once: true, amount: 0.2 };
 type Plan = {
   id: string;
   title: string;
@@ -49,7 +74,7 @@ export default function Pricing({ slug }: { slug: string }) {
   const data = pricing as PriceData;
   const category = (slug in data ? slug : "embroidery") as keyof PriceData;
   const plans = data[category];
-
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
@@ -121,13 +146,18 @@ export default function Pricing({ slug }: { slug: string }) {
 
   return (
     <section className="relative py-24 bg-slate-100 overflow-hidden">
-      <div className="container mx-auto 2xl:px-28 px-4">
-        <div className="grid lg:gap-12 gap-6 sm:grid-cols-1 md:grid-cols-3 items-center justify-center">
-          {plans.map((plan, index) => {
-            const accent = accents[index % accents.length];
-            const isActive = activePlanId === plan.id;
-
-            return (
+      <motion.div
+        variants={cardsContainerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOpts}
+        className="grid lg:gap-12 gap-6 sm:grid-cols-1 md:grid-cols-3 items-center justify-center"
+      >
+        {plans.map((plan, index) => {
+          const accent = accents[index % accents.length];
+          const isActive = activePlanId === plan.id;
+          return (
+            <motion.div key={plan.id} variants={cardVariants}>
               <div
                 key={plan.id}
                 className={`relative flex w-96 h-103 flex-col rounded-4xl bg-white px-4 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
@@ -136,17 +166,17 @@ export default function Pricing({ slug }: { slug: string }) {
                 style={
                   isActive && open
                     ? {
-                        position: "fixed",
-                        right: "0",
-                        top: "50%",
-                        width: "20%",
-                        transform: active
-                          ? "translateY(-50%) translateX(0)"
-                          : "translateY(-50%) translateX(-40px)",
-                        transition: "transform 300ms ease",
-                        zIndex: 50,
-                        marginRight: 40,
-                      }
+                      position: "fixed",
+                      right: "0",
+                      top: "50%",
+                      width: "20%",
+                      transform: active
+                        ? "translateY(-50%) translateX(0)"
+                        : "translateY(-50%) translateX(-40px)",
+                      transition: "transform 300ms ease",
+                      zIndex: 50,
+                      marginRight: 40,
+                    }
                     : undefined
                 }
               >
@@ -161,7 +191,7 @@ export default function Pricing({ slug }: { slug: string }) {
 
                 {/* Price */}
                 <div className="mb-4 text-[10px] uppercase tracking-[0.45em] text-slate-400">
-                  {plan.title.toUpperCase()}<br/>
+                  {plan.title.toUpperCase()}<br />
                   {category}
                 </div>
 
@@ -183,15 +213,17 @@ export default function Pricing({ slug }: { slug: string }) {
                 </ul>
 
                 <button
+                 onClick={() => router.push(`/get-free-quote?orderType=${slug}`)}
                   className={`mx-auto w-40 rounded-full py-2.5 text-xs font-semibold uppercase text-white ${accent.button}`}
                 >
                   Buy Now
                 </button>
               </div>
-            );
-          })}
-        </div>
-      </div>
+
+            </motion.div>
+          )
+        })}
+      </motion.div>
 
       {/* POPUP */}
       {open && (
