@@ -23,7 +23,7 @@ export default function PricingPage() {
       <Pricing slug={category} />
       <FAQs />
       <section className="py-20 px-6">
-        <div className="w-full lg:max-w-7xl mx-auto">
+        <div className="w-full mx-auto">
           <div className="text-left">
             <h4 className="text-lg font-bold text-gray-900 mb-2">NOTE *</h4>
             <p className="text-gray-600">

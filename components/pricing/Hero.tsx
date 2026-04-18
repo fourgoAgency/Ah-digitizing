@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
 export default function Hero() {
+  const router = useRouter();
   const [hoveredButton, setHoveredButton] = useState<'contact' | 'pricing' | null>(null);
   return (
     <section className="w-full bg-white py-32 px-6">
@@ -27,6 +29,7 @@ export default function Hero() {
                 }`}
               onMouseEnter={() => setHoveredButton('contact')}
               onMouseLeave={() => setHoveredButton(null)}
+              onClick={() => router.push(`/contact-us`)}
             >
               Contact Sales
             </Button>
@@ -40,6 +43,7 @@ export default function Hero() {
                 }`}
               onMouseEnter={() => setHoveredButton('pricing')}
               onMouseLeave={() => setHoveredButton(null)}
+              onClick={()=> router.refresh}
             >
               View Pricing
             </Button>
