@@ -39,6 +39,7 @@ const numberOfColorOptions = ["According to Logo"];
 
 const focusInvalidField = (field: string) => {
   const selectorsByField: Record<string, string[]> = {
+   if (typeof document === "undefined") return;
     fullName: ["#full-name", "[name='fullName']"],
     email: ["#email", "[name='email']"],
     country: ["#country-input", "[name='country']"],
@@ -91,14 +92,16 @@ export default function GetQoutePage() {
   const [otpError, setOtpError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const searchParams = useSearchParams();
+  const searchParams = typeof window !== "undefined" ? useSearchParams() : null;
 
   useEffect(() => {
-    const orderType = searchParams.get("orderType");
-    if (orderType === "embroidery" || orderType === "vector") {
-      setFormData((prev) => ({ ...prev, orderType }));
-    }
-  }, [searchParams]);
+  if (!searchParams) return;
+
+  const orderType = searchParams.get("orderType");
+  if (orderType === "embroidery" || orderType === "vector") {
+    setFormData((prev) => ({ ...prev, orderType }));
+  }
+}, [searchParams]);
   const previewFileUrl = useMemo(() => {
     const file = formData.files[0];
     if (!file || !file.type.startsWith("image/")) return "";
