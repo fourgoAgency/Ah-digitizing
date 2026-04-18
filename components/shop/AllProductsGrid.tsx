@@ -2,7 +2,7 @@
 
 import ProductCard from "@/components/shop/ProductCard";
 import { Product } from "@/data/products";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export type SortOption = "relevance" | "price-low-to-high" | "price-high-to-low";
 
@@ -11,7 +11,7 @@ type AllProductsGridProps = {
   onClearAllAction: () => void;
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,
@@ -19,7 +19,7 @@ const cardVariants = {
     transition: {
       delay: i * 0.08,
       duration: 0.45,
-      ease: "easeOut",
+      ease: [0.25, 0.1, 0.25, 1] as const, // cubic-bezier instead of string
     },
   }),
 };
