@@ -102,11 +102,13 @@ export default function GetQoutePage() {
     setFormData((prev) => ({ ...prev, orderType }));
   }
 }, [searchParams]);
-  const previewFileUrl = useMemo(() => {
-    const file = formData.files[0];
-    if (!file || !file.type.startsWith("image/")) return "";
-    return URL.createObjectURL(file);
-  }, [formData.files]);
+ const previewFileUrl = useMemo(() => {
+  if (typeof window === "undefined") return "";
+
+  const file = formData.files[0];
+  if (!file || !file.type.startsWith("image/")) return "";
+  return URL.createObjectURL(file);
+}, [formData.files]);
 
   useEffect(() => {
     return () => {
