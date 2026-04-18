@@ -2,7 +2,7 @@
 
 import { UploadCloud, X } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CustomDropdown } from "../get-quote/components/CustomDropdown";
 import { QuoteContactFields } from "../get-quote/components/QuoteContactFields";
 import { countryOptions } from "../get-quote/lib/country-options";
@@ -16,7 +16,7 @@ import {
   MAX_FILE_SIZE_BYTES,
   MAX_FILES_COUNT,
 } from "../get-quote/lib/quote-form";
-import { useSearchParams } from "next/navigation";
+import GetQuoteSearchParams from "./component/GetQouteParams";
 
 // inside GetQoutePage()
 
@@ -81,7 +81,6 @@ const getCountryName = (countryCode?: string) => {
   if (!code) return "Not set";
   return countryOptions.find((country) => country.code === code)?.name ?? code;
 };
-
 export default function GetQoutePage() {
   const [formData, setFormData] = useState<GetQouteFormState>(initialGetQouteFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -91,14 +90,7 @@ export default function GetQoutePage() {
   const [otpError, setOtpError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const orderType = searchParams.get("orderType");
-    if (orderType === "embroidery" || orderType === "vector") {
-      setFormData((prev) => ({ ...prev, orderType }));
-    }
-  }, [searchParams]);
   const previewFileUrl = useMemo(() => {
     const file = formData.files[0];
     if (!file || !file.type.startsWith("image/")) return "";
@@ -305,6 +297,9 @@ export default function GetQoutePage() {
 
   return (
     <main className="relative bg-slate-100 px-4 py-14 sm:px-6">
+      <Suspense fallback={null}>
+        <GetQuoteSearchParams setFormData={setFormData} />
+      </Suspense>
       <section className="relative z-10 mx-auto max-w-7xl">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Request a Free Quote</h1>
@@ -397,8 +392,8 @@ export default function GetQoutePage() {
                     <label
                       htmlFor="order-type-embroidery"
                       className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.orderType === "embroidery"
-                          ? "border-primary bg-primary text-white"
-                          : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                         }`}
                     >
                       <input
@@ -416,8 +411,8 @@ export default function GetQoutePage() {
                     <label
                       htmlFor="order-type-vector"
                       className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.orderType === "vector"
-                          ? "border-primary bg-primary text-white"
-                          : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                         }`}
                     >
                       <input
@@ -475,8 +470,8 @@ export default function GetQoutePage() {
                           key={unit}
                           htmlFor={`unit-type-${unit}`}
                           className={`cursor-pointer rounded-md border px-4 py-2 text-center text-sm font-semibold transition-colors ${formData.unitType === unit
-                              ? "border-primary bg-primary text-white"
-                              : "border-gray-300 bg-white text-gray-700 hover:border-primary"
+                            ? "border-primary bg-primary text-white"
+                            : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                             }`}
                         >
                           <input
