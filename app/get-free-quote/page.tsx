@@ -38,6 +38,7 @@ const fieldValidationOrder = [
 const numberOfColorOptions = ["According to Logo"];
 
 const focusInvalidField = (field: string) => {
+  if (typeof document === "undefined") return; // ✅ moved here, before the object literal
   const selectorsByField: Record<string, string[]> = {
     fullName: ["#full-name", "[name='fullName']"],
     email: ["#email", "[name='email']"],
@@ -92,6 +93,8 @@ export default function GetQoutePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const previewFileUrl = useMemo(() => {
+    if (typeof window === "undefined") return "";
+
     const file = formData.files[0];
     if (!file || !file.type.startsWith("image/")) return "";
     return URL.createObjectURL(file);
@@ -762,5 +765,3 @@ export default function GetQoutePage() {
     </main>
   );
 }
-
-
