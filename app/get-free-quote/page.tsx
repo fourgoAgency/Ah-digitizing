@@ -38,8 +38,8 @@ const fieldValidationOrder = [
 const numberOfColorOptions = ["According to Logo"];
 
 const focusInvalidField = (field: string) => {
+  if (typeof document === "undefined") return; // ✅ moved here, before the object literal
   const selectorsByField: Record<string, string[]> = {
-   if (typeof document === "undefined") return;
     fullName: ["#full-name", "[name='fullName']"],
     email: ["#email", "[name='email']"],
     country: ["#country-input", "[name='country']"],
@@ -92,23 +92,24 @@ export default function GetQoutePage() {
   const [otpError, setOtpError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const searchParams = typeof window !== "undefined" ? useSearchParams() : null;
+  const searchParams = useSearchParams(); // ✅ hooks must be called unconditionally
 
   useEffect(() => {
-  if (!searchParams) return;
+    if (!searchParams) return;
 
-  const orderType = searchParams.get("orderType");
-  if (orderType === "embroidery" || orderType === "vector") {
-    setFormData((prev) => ({ ...prev, orderType }));
-  }
-}, [searchParams]);
- const previewFileUrl = useMemo(() => {
-  if (typeof window === "undefined") return "";
+    const orderType = searchParams.get("orderType");
+    if (orderType === "embroidery" || orderType === "vector") {
+      setFormData((prev) => ({ ...prev, orderType }));
+    }
+  }, [searchParams]);
 
-  const file = formData.files[0];
-  if (!file || !file.type.startsWith("image/")) return "";
-  return URL.createObjectURL(file);
-}, [formData.files]);
+  const previewFileUrl = useMemo(() => {
+    if (typeof window === "undefined") return "";
+
+    const file = formData.files[0];
+    if (!file || !file.type.startsWith("image/")) return "";
+    return URL.createObjectURL(file);
+  }, [formData.files]);
 
   useEffect(() => {
     return () => {
@@ -772,5 +773,3 @@ export default function GetQoutePage() {
     </main>
   );
 }
-
-
