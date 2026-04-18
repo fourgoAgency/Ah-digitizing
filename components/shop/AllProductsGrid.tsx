@@ -2,7 +2,7 @@
 
 import ProductCard from "@/components/shop/ProductCard";
 import { Product } from "@/data/products";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 
 export type SortOption = "relevance" | "price-low-to-high" | "price-high-to-low";
 
@@ -11,42 +11,10 @@ type AllProductsGridProps = {
   onClearAllAction: () => void;
 };
 
-// Each ROW fades in as a group when it scrolls into view
-const rowVariants: Variants = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-// Each CARD inside the row fades up individually (staggered by the row)
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
-// Split a flat array into rows of `size`
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  return arr.reduce<T[][]>((acc, _, i) => {
-    if (i % size === 0) acc.push(arr.slice(i, i + size));
-    return acc;
-  }, []);
-}
-
 export default function AllProductsGrid({
   filteredProducts,
   onClearAllAction,
 }: AllProductsGridProps) {
-  // 5 columns max (matches your xl/2xl grid), so chunk by 5
-  const rows = chunkArray(filteredProducts, 5);
-
   return (
     <div>
       <h1 className="text-5xl font-black text-secondary text-center mt-4">
@@ -56,22 +24,16 @@ export default function AllProductsGrid({
         Browse our complete catalog of ready-to-order digitizing and vector services.
       </p>
 
-      <div className="mt-5 space-y-6">
-        {rows.map((row, rowIdx) => (
+      <div className="mt-5 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {filteredProducts.map((product) => (
           <motion.div
-            key={rowIdx}
-            className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-            variants={rowVariants}
-            initial="hidden"
-            whileInView="show"
-            // Each row triggers independently when it enters the viewport
-            viewport={{ once: true, amount: 0.15 }}
+            key={product.id}
+            initial={{ opacity: 0, y: 36 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            {row.map((product) => (
-              <motion.div key={product.id} variants={cardVariants}>
-                <ProductCard product={product} imageVariant="largeSquare" />
-              </motion.div>
-            ))}
+            <ProductCard product={product} imageVariant="largeSquare" />
           </motion.div>
         ))}
       </div>
