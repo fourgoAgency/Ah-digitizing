@@ -10,18 +10,6 @@ type AllProductsGridProps = {
   onClearAllAction: () => void;
 };
 
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  return arr.reduce<T[][]>((acc, _, i) => {
-    if (i % size === 0) acc.push(arr.slice(i, i + size));
-    return acc;
-  }, []);
-}
-
-const rowVariants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
-};
-
 const cardVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.96, filter: "blur(4px)" },
   show: {
@@ -37,8 +25,6 @@ export default function AllProductsGrid({
   filteredProducts,
   onClearAllAction,
 }: AllProductsGridProps) {
-  const rows = chunkArray(filteredProducts, 5);
-
   return (
     <div>
       <h1 className="text-5xl font-black text-secondary text-center mt-4">
@@ -48,21 +34,16 @@ export default function AllProductsGrid({
         Browse our complete catalog of ready-to-order digitizing and vector services.
       </p>
 
-      <div className="mt-5 space-y-6">
-        {rows.map((row, rowIdx) => (
+      <div className="mt-5 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {filteredProducts.map((product) => (
           <motion.div
-            key={rowIdx}
-            className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-            variants={rowVariants}
+            key={product.id}
+            variants={cardVariants}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.15 }}
           >
-            {row.map((product) => (
-              <motion.div key={product.id} variants={cardVariants}>
-                <ProductCard product={product} imageVariant="largeSquare" />
-              </motion.div>
-            ))}
+            <ProductCard product={product} imageVariant="largeSquare" />
           </motion.div>
         ))}
       </div>
