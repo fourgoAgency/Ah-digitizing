@@ -1,8 +1,7 @@
 "use client";
-
+import { motion } from "framer-motion";
 import ProductCard from "@/components/shop/ProductCard";
 import { Product } from "@/data/products";
-import { motion } from "framer-motion";
 
 export type SortOption = "relevance" | "price-low-to-high" | "price-high-to-low";
 
@@ -11,10 +10,35 @@ type AllProductsGridProps = {
   onClearAllAction: () => void;
 };
 
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  return arr.reduce<T[][]>((acc, _, i) => {
+    if (i % size === 0) acc.push(arr.slice(i, i + size));
+    return acc;
+  }, []);
+}
+
+const rowVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.96, filter: "blur(4px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
+
 export default function AllProductsGrid({
   filteredProducts,
   onClearAllAction,
 }: AllProductsGridProps) {
+  const rows = chunkArray(filteredProducts, 5);
+
   return (
     <div>
       <h1 className="text-5xl font-black text-secondary text-center mt-4">
@@ -24,16 +48,21 @@ export default function AllProductsGrid({
         Browse our complete catalog of ready-to-order digitizing and vector services.
       </p>
 
-      <div className="mt-5 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {filteredProducts.map((product) => (
+      <div className="mt-5 space-y-6">
+        {rows.map((row, rowIdx) => (
           <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 48 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            key={rowIdx}
+            className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+            variants={rowVariants}
+            initial="hidden"
+            whileInView="show"
             viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ProductCard product={product} imageVariant="largeSquare" />
+            {row.map((product) => (
+              <motion.div key={product.id} variants={cardVariants}>
+                <ProductCard product={product} imageVariant="largeSquare" />
+              </motion.div>
+            ))}
           </motion.div>
         ))}
       </div>
