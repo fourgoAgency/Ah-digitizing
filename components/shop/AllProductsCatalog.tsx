@@ -1,5 +1,4 @@
 "use client";
-import {motion} from  "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AllProductsFilter from "@/components/shop/AllProductsFilter";
@@ -24,7 +23,6 @@ export default function AllProductsCatalog() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Read initial categories from URL: ?category=vector&category=custom
   const urlCategories = useMemo(() => {
     return searchParams.getAll("category") as ProductCategory[];
   }, [searchParams]);
@@ -35,13 +33,11 @@ export default function AllProductsCatalog() {
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
   const allProductsGridRef = useRef<HTMLElement | null>(null);
 
-  // Sync URL → state when URL changes (e.g. back/forward or external link)
   useEffect(() => {
     setSelectedCategories(urlCategories);
     setSelectedSubcategories([]);
   }, [searchParams]);
 
-  // Sync state → URL when categories change
   const updateCategoriesInURL = (categories: ProductCategory[]) => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("category");
@@ -64,7 +60,6 @@ export default function AllProductsCatalog() {
         : shopSubcategoryDefinitions.filter((option) =>
             selectedCategories.includes(option.category)
           );
-
     return baseOptions.map((option) => ({
       href: option.href,
       label: option.label,
@@ -74,7 +69,6 @@ export default function AllProductsCatalog() {
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase();
-
     let nextProducts = products.filter((product) => {
       const categoryMatch =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
@@ -90,7 +84,6 @@ export default function AllProductsCatalog() {
         product.categoryLabel.toLowerCase().includes(normalizedSearch) ||
         product.category.toLowerCase().includes(normalizedSearch) ||
         product.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch));
-
       return categoryMatch && subcategoryMatch && searchMatch;
     });
 
@@ -100,7 +93,6 @@ export default function AllProductsCatalog() {
     if (sortOption === "price-high-to-low") {
       nextProducts = [...nextProducts].sort((a, b) => b.price - a.price);
     }
-
     return nextProducts;
   }, [searchQuery, selectedCategories, selectedSubcategories, sortOption]);
 
@@ -128,14 +120,12 @@ export default function AllProductsCatalog() {
       const nextCategories = previous.includes(slug)
         ? previous.filter((item) => item !== slug)
         : [...previous, slug];
-
       setSelectedSubcategories((previousSubcategories) =>
         previousSubcategories.filter((subcategoryHref) => {
           const option = shopSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
           return option ? nextCategories.includes(option.category) : false;
         })
       );
-
       updateCategoriesInURL(nextCategories);
       return nextCategories;
     });
@@ -163,30 +153,14 @@ export default function AllProductsCatalog() {
           onToggleSubcategory={toggleSubcategory}
         />
         <section className="mb-6 flex flex-col gap-6">
-          {shouldShowFeaturedSections ? (
-            <motion.div
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-          }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="flex flex-col gap-6"
-        >
-              {[<BestSellingProducts />, <BulkProducts />, <FreeProducts />].map((Component, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 24 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
-              }}
-            >
-              {Component}
-            </motion.div>
-          ))}
-        </motion.div>
-      ) : null}
+          {/* ShopProductSection handles all per-card animations internally — no wrapper needed */}
+          {shouldShowFeaturedSections && (
+            <>
+              <BestSellingProducts />
+              <BulkProducts />
+              <FreeProducts />
+            </>
+          )}
           <section ref={allProductsGridRef} className="scroll-mt-24">
             <AllProductsGrid
               filteredProducts={filteredProducts}
