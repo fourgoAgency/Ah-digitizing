@@ -133,11 +133,11 @@ export default function Footer() {
               <li><Link href="#">Custom Design</Link></li>
               <li><Link href="#">Pricing</Link></li>
               {rasterToVectorItems.map((item) => (
-                <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
+                <li className="hidden sm:block" key={item.href}><Link href={item.href}>{item.label}</Link></li>
               ))}
             </ul>
           </div>
-          <div className="">
+          <div className="hidden sm:block">
             <ul className="space-y-2 text-sm mt-9 text-gray-300">
               {embroideryItems.map((item) => (
                 <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
@@ -166,11 +166,11 @@ export default function Footer() {
               <li><Link href="/write-a-review">Write a Review</Link></li>
               <li><Link href="#">News & Updates</Link></li>
             </ul>
-            <div className="mt-6 col-span-2 ">
+            <div className="mt-6 col-span-2 sm:flex hidden">
               <p className="mb-2 text-sm font-medium">
               Get exclusive offers & updates
               </p>
-              <div className="flex gap-2">
+              <div className="sm:flex gap-2 hidden">
               <input
                 type="email"
                 placeholder="Email Address"
@@ -190,7 +190,7 @@ export default function Footer() {
 
           {/* BRAND + NEWSLETTER */}
           <div className="">
-            <Image src={logo} alt="AHdigitizing" width={120} height={40} className="bg-white py-5" />
+            <Image src={logo} alt="AHdigitizing" width={120} height={40} className="bg-white py-5 hidden sm:flex" />
 
 
             <div className="flex gap-4 mt-4 text-lg">

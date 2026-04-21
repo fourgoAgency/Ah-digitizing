@@ -21,31 +21,12 @@ export default function Hero() {
 
          <div className="flex gap-4 justify-center items-center">
             <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent  ${hoveredButton === 'contact'
-                ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'pricing'
-                  ? 'bg-transparent text-primary border-primary'
-                  : 'border-white text-primary'
-                }`}
+              className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-primary text-white border-primary`}
               onMouseEnter={() => setHoveredButton('contact')}
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => router.push(`/contact-us`)}
             >
               Contact Sales
-            </Button>
-
-            <Button
-              className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'pricing'
-                ? 'bg-primary text-white border-primary'
-                : hoveredButton === 'contact'
-                  ? 'bg-transparent text-primary border-primary'
-                  : 'bg-primary text-white border-primary'
-                }`}
-              onMouseEnter={() => setHoveredButton('pricing')}
-              onMouseLeave={() => setHoveredButton(null)}
-              onClick={()=> router.refresh}
-            >
-              View Pricing
             </Button>
           </div>
       </div>

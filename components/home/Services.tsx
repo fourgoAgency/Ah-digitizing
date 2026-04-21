@@ -94,7 +94,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
               Math.abs(i - index),
               services.length - Math.abs(i - index)
             );
-
+            const isVisible = distance === 0 || (distance === 1 && typeof window !== 'undefined' && window.innerWidth >= 640);
             const scale = distance === 0 ? 1.05 : distance === 1 ? 0.88 : 0.8;
             const opacity = distance === 0 ? 1 : distance === 1 ? 0.75 : 0.5;
             const translateX = distance === 2 ? (offset < 2 ? 35 : -35) : 0;
@@ -106,7 +106,11 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
                   transform: `scale(${scale}) translateX(${translateX}px)`,
                   opacity,
                 }}
-                className="transition-all duration-500 ease-in-out shrink-0 cursor-grab active:cursor-grabbing"
+                className={cn(
+                  "transition-all duration-500 ease-in-out shrink-0 cursor-grab active:cursor-grabbing",
+                  distance >= 1 && "hidden sm:block",
+                  distance >= 2 && "block -z-10"
+                )}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragMomentum={false}
@@ -119,7 +123,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
                     "relative rounded-xl overflow-hidden shadow-md border border-accent bg-white pointer-events-none",
                     inTransition
                       ? "w-32 h-44 sm:w-40 sm:h-56 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-60 xl:h-80"
-                      : "w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80"
+                      : "w-60 h-72 sm:w-44 sm:h-56 md:w-48 md:h-64 lg:w-56 lg:h-72 xl:w-64 xl:h-80"
                   )}
                 >
                   <Image

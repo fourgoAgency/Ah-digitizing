@@ -85,7 +85,7 @@ export default function Banner() {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent via-primary/20 to-slate-950/85" />
 
 
-            <div className="max-w-full pl-9 ">
+            <div className="max-w-full pl-0 md:pl-9 ">
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 justify-center items-center min-h-125">
                     {/* Left Content */}

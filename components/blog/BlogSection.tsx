@@ -5,14 +5,20 @@ import BlogGrid from "./BlogGrid";
 import BlogPagination from "./BlogPagination";
 import BlogToolbar from "./BlogToolbar";
 import { blogPosts } from "../../data/blogData";
-
+import { motion } from "framer-motion";
 const POSTS_PER_PAGE = 8;
 
 function toTimestamp(dateText: string) {
   const value = new Date(dateText).getTime();
   return Number.isNaN(value) ? 0 : value;
 }
-
+const headingVariants = {
+  hidden: { y: 40, opacity: 0, scale: 1.02 },
+  visible: {
+    y: 0, opacity: 1, scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
 export default function BlogSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -84,9 +90,10 @@ export default function BlogSection() {
   return (
     <section className="bg-[#f3f4f6] py-10 sm:py-12 2xl:py-16 4k:py-24">
       <div className="mx-auto w-full max-w-350 px-4 sm:px-6 lg:px-8 2xl:max-w-420 2xl:px-10 4k:max-w-[2200px] 4k:px-16">
-        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl 2xl:text-[34px] 4k:text-4xl">
+        <motion.h1   initial="hidden"
+  animate="visible" variants={headingVariants} className="text-2xl font-bold text-slate-900 sm:text-3xl 2xl:text-[34px] 4k:text-4xl">
           Latest Articles
-        </h1>
+        </motion.h1>
         <div className="mt-5">
           <BlogToolbar
             searchTerm={searchTerm}

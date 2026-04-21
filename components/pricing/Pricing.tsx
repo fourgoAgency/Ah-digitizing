@@ -163,6 +163,21 @@ export default function Pricing({ slug }: { slug: string }) {
                 className={`relative flex w-84 2xl:w-96 h-103 flex-col rounded-4xl bg-white px-4 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
                   ${open && !isActive ? "opacity-0" : "opacity-100"}
                 `}
+                style={
+                  isActive && open
+                    ? {
+                        position: "fixed",
+                        right: "0",
+                        top: "50%",
+                        width: "20%",
+                        transform: active
+                          ? "translateY(-50%) translateX(0)"
+                          : "translateY(-50%) translateX(-40px)",
+                        transition: "transform 300ms ease",
+                        zIndex: 50,
+                        marginRight: 40,
+                      }
+                    : undefined}
               >
                 {/* Side Label */}
                 <button
@@ -212,6 +227,7 @@ export default function Pricing({ slug }: { slug: string }) {
       {/* POPUP */}
       {open && (
         <div className="fixed inset-0 z-40">
+          
           <div
             className="fixed inset-0 bg-slate-900/50"
             onClick={closePopup}

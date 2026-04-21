@@ -73,10 +73,14 @@ export default function ServicesCarousel() {
               </Link> */}
             </div>
           </div>
-
+                <AnimatedSectionHeading 
+                  className="text-5xl text-center font-bold text-primary sm:hidden block"
+                >
+                  Shop By Category
+                </AnimatedSectionHeading>
           {/* SERVICES GRID */}
           <div className="flex-1 flex flex-col">
-<div className="grid grid-cols-1 gap-6 px-2 mr-7 sm:grid-cols-2 md:px-4 lg:grid-cols-3">
+<div className="grid grid-cols-2 gap-4 px-4 sm:grid-cols-2 md:px-4 lg:grid-cols-3">
   
   {categories.map((category, index) => (
     <motion.div
@@ -89,12 +93,7 @@ export default function ServicesCarousel() {
         <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
 
           {/* IMAGE WRAPPER */}
-          <div className="
-          w-full 
-          h-48 sm:h-52 md:h-56 
-          flex items-center justify-center rounded-t-2xl  drop-shadow-xl drop-shadow-black/70
-          shadow-[12px_0_20px_-6px_rgba(0,0,0,0.25)]
-        ">
+          <div className="w-full h-36 sm:h-52 md:h-56 flex items-center justify-center rounded-t-2xl drop-shadow-xl drop-shadow-black/70">
             <Image
               src={category.image}
               alt={category.name}
