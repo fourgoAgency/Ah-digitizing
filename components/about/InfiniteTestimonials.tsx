@@ -22,7 +22,7 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.visibility = 'hidden';
-        tempContainer.className = 'relative w-90';
+        tempContainer.className = 'relative w-full';
         document.body.appendChild(tempContainer);
 
         const width = tempContainer.offsetWidth || 360;
@@ -64,7 +64,7 @@ export default function InfiniteTestimonials({ testimonials }: { testimonials: T
   });
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden w-full">
       <motion.div
         ref={containerRef}
         className="flex gap-6 w-max cursor-grab"

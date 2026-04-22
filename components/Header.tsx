@@ -188,10 +188,10 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
                 <button
           type="button"
           onClick={onCartClick}
-          className="relative transition hover:text-white/90"
+          className="relative transition hover:text-white/90 cursor-pointer"
           aria-label="Open cart"
         >
-          <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
+          <span className="absolute -right-3 -top-2 min-w-[1.1rem]  rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
           <BiCart size={24} />
         </button>
         <Link href="/login" className="">
@@ -217,7 +217,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
       <button
           type="button"
           onClick={onCartClick}
-          className="relative transition hover:text-white/90"
+          className="relative transition cursor-pointer hover:text-white/90"
           aria-label="Open cart"
         >
           <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-primary px-1 text-[10px] font-semibold text-white">{cartCount}</span>
@@ -326,7 +326,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
               )}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
               <Button asChild className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
-                <Link href="/#home-quote">Get Free Quote</Link>
+                <Link href="/get-free-quote">Get Free Quote</Link>
               </Button>
               <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
                 <Link href="/get-quote">Order Now</Link>

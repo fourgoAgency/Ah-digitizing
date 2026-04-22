@@ -124,26 +124,28 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-10">
 
           {/* SHOP */}
-          <div>
-            <h4 className="font-semibold mb-4 uppercase text-sm">Shop</h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/shop">All Products</Link></li>
-              <li><Link href="#">Embroidery Digitizing</Link></li>
-              <li><Link href="#">Raster to Vector</Link></li>
-              <li><Link href="#">Custom Design</Link></li>
-              <li><Link href="#">Pricing</Link></li>
-              {rasterToVectorItems.map((item) => (
-                <li className="hidden sm:block" key={item.href}><Link href={item.href}>{item.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div className="hidden sm:block">
-            <ul className="space-y-2 text-sm mt-9 text-gray-300">
-              {embroideryItems.map((item) => (
-                <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
-              ))}
-            </ul>
-          </div>
+<div>
+  <h4 className="font-semibold mb-4 uppercase text-sm">Shop</h4>
+  <ul className="space-y-2 text-sm text-gray-300">
+    <li><Link href="/shop">All Products</Link></li>
+    <li><Link href="/shop?category=embroidery-digitizing">Embroidery Digitizing</Link></li>
+    <li><Link href="/services/raster-to-vector">Raster to Vector</Link></li>
+    <li><Link href="/shop?category=custom-patches">Custom Design</Link></li>
+    <li><Link href="/pricing/embroidery-digitizing">Embroidery Pricing</Link></li>
+    <li><Link href="/pricing/raster-to-vector">Vector Pricing</Link></li>
+    {embroideryItems.slice(0, 2).map((item) => (
+  <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
+))}
+  </ul>
+</div>
+
+<div className="hidden sm:block">
+  <ul className="space-y-2 text-sm mt-9 text-gray-300">
+    {embroideryItems.slice(2).map((item) => (
+      <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
+    ))}
+  </ul>
+</div>
 
           {/* HELP */}
           <div>
@@ -164,10 +166,10 @@ export default function Footer() {
               <li><Link href="/about-us">About Us</Link></li>
               <li><Link href="/portfolio">Portfolio</Link></li>
               <li><Link href="/write-a-review">Write a Review</Link></li>
-              <li><Link href="#">News & Updates</Link></li>
+              <li><Link href="/blogs">News & Updates</Link></li>
             </ul>
-            <div className="mt-6 col-span-2 sm:flex hidden">
-              <p className="mb-2 text-sm font-medium">
+            <div className="mt-6 col-span-2">
+              <p className="mb-2 text-sm font-medium hidden sm:flex">
               Get exclusive offers & updates
               </p>
               <div className="sm:flex gap-2 hidden">
@@ -184,9 +186,7 @@ export default function Footer() {
           </div>
 
           {/* DIVIDER */}
-          <div className="hidden lg:flex justify-center">
-            <div className="w-0.5 bg-white h-full" />
-          </div>
+          <div className="hidden lg:flex justify-center"/>
 
           {/* BRAND + NEWSLETTER */}
           <div className="">
