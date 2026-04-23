@@ -21,7 +21,7 @@ export default function Hero() {
 
          <div className="flex gap-4 justify-center items-center">
             <Button
-              className={`border shadow-xl rounded-2xl py-5 px-8 transition-all duration-200 bg-primary text-lg text-white border-primary`}
+              className={`border shadow-xl rounded-2xl py-5 px-8 transition-all cursor-pointer duration-200 bg-primary text-lg text-white border-primary`}
               onMouseEnter={() => setHoveredButton('contact')}
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => router.push(`/contact-us`)}

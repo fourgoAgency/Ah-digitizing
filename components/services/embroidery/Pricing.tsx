@@ -190,17 +190,17 @@ const embroideryPlans: Plan[] = ((pricesData as { embroidery: PlanData[] }).embr
         </div>
 
         {/* Compare button */}
-        <div className="text-center mt-12">
-          <Button
-            variant="outline"
-            className="px-6 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-colors"
-          >
           <Link
             href="/pricing">
+        <div className="text-center mt-12 cursor-pointer">
+          <Button
+            variant="outline"
+            className="px-6 rounded-full border-primary cursor-pointer text-primary hover:bg-primary hover:text-white transition-colors"
+          >
             Compare All Pricings
-          </Link>
           </Button>
         </div>
+          </Link>
       </div>
     </section>
   );

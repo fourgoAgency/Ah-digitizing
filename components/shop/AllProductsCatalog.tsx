@@ -153,7 +153,7 @@ export default function AllProductsCatalog() {
           onToggleSubcategory={toggleSubcategory}
         />
         <section className="mb-6 flex flex-col gap-6">
-          {/* ShopProductSection handles all per-card animations internally — no wrapper needed */}
+          {/* ShopProductSection handles all per-card animations internally , no wrapper needed */}
           {shouldShowFeaturedSections && (
             <>
               <BestSellingProducts />

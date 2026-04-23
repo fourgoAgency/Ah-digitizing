@@ -35,7 +35,7 @@ export default function CheckoutPage() {
             </div>
             <Link
               href="/cart"
-              className="rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+              className="rounded-full border border-primary px-5 py-2 text-sm font-semibold cursor-pointer text-primary transition hover:bg-primary hover:text-white"
             >
               Back to Cart
             </Link>
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
 
               <button
                 type="button"
-                className="w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
+                className="w-full rounded-full cursor-pointer bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
                 Place Order
               </button>
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                   />
                   <button
                     type="button"
-                    className="rounded-xl border border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                    className="rounded-xl border cursor-pointer border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
                   >
                     Apply
                   </button>

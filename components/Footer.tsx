@@ -127,14 +127,14 @@ export default function Footer() {
 <div>
   <h4 className="font-semibold mb-4 uppercase text-sm">Shop</h4>
   <ul className="space-y-2 text-sm text-gray-300">
-    <li><Link href="/shop">All Products</Link></li>
-    <li><Link href="/shop?category=embroidery-digitizing">Embroidery Digitizing</Link></li>
-    <li><Link href="/services/raster-to-vector">Raster to Vector</Link></li>
-    <li><Link href="/shop?category=custom-patches">Custom Design</Link></li>
-    <li><Link href="/pricing/embroidery-digitizing">Embroidery Pricing</Link></li>
-    <li><Link href="/pricing/raster-to-vector">Vector Pricing</Link></li>
+    <li><Link className="cursor-pointer" href="/shop">All Products</Link></li>
+    <li><Link className="cursor-pointer" href="/shop?category=embroidery-digitizing">Embroidery Digitizing</Link></li>
+    <li><Link className="cursor-pointer" href="/services/raster-to-vector">Raster to Vector</Link></li>
+    <li><Link className="cursor-pointer" href="/shop?category=custom-patches">Custom Design</Link></li>
+    <li><Link className="cursor-pointer" href="/pricing/embroidery-digitizing">Embroidery Pricing</Link></li>
+    <li><Link className="cursor-pointer" href="/pricing/raster-to-vector">Vector Pricing</Link></li>
     {embroideryItems.slice(0, 2).map((item) => (
-  <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
+  <li key={item.href}><Link className="cursor-poi" href={item.href}>{item.label}</Link></li>
 ))}
   </ul>
 </div>
@@ -142,7 +142,7 @@ export default function Footer() {
 <div className="hidden sm:block">
   <ul className="space-y-2 text-sm mt-9 text-gray-300">
     {embroideryItems.slice(2).map((item) => (
-      <li key={item.href}><Link href={item.href}>{item.label}</Link></li>
+      <li key={item.href}><Link className="cursor-pointer" href={item.href}>{item.label}</Link></li>
     ))}
   </ul>
 </div>
@@ -151,11 +151,11 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 uppercase text-sm">Help</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/blogs">Blogs</Link></li>
-              <li><Link href="/FAQs">FAQs</Link></li>
-              <li><Link href="/privacy-policy">Privacy Policy</Link></li>
-              <li><Link href="/terms-and-conditions">Terms & Conditions</Link></li>
-              <li><Link href="/contact-us">Contact Us</Link></li>
+              <li><Link className="cursor-pointer" href="/blogs">Blogs</Link></li>
+              <li><Link className="cursor-pointer" href="/FAQs">FAQs</Link></li>
+              <li><Link className="cursor-pointer" href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link className="cursor-pointer" href="/terms-and-conditions">Terms & Conditions</Link></li>
+              <li><Link className="cursor-pointer" href="/contact-us">Contact Us</Link></li>
             </ul>
                 </div>
 
@@ -163,10 +163,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 uppercase text-sm">Company</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/about-us">About Us</Link></li>
-              <li><Link href="/portfolio">Portfolio</Link></li>
-              <li><Link href="/write-a-review">Write a Review</Link></li>
-              <li><Link href="/blogs">News & Updates</Link></li>
+              <li><Link className="cursor-pointer" href="/about-us">About Us</Link></li>
+              <li><Link className="cursor-pointer" href="/portfolio">Portfolio</Link></li>
+              <li><Link className="cursor-pointer" href="/write-a-review">Write a Review</Link></li>
+              <li><Link className="cursor-pointer" href="/blogs">News & Updates</Link></li>
             </ul>
             <div className="mt-6 col-span-2">
               <p className="mb-2 text-sm font-medium hidden sm:flex">
@@ -178,7 +178,7 @@ export default function Footer() {
                 placeholder="Email Address"
                 className="flex-1 px-4 pr-18 py-2 rounded-full text-sm text-white border border-white bg-transparent placeholder-gray-300"
                 />
-              <button className="bg-white text-primary px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors">
+              <button className="bg-white cursor-pointer text-primary px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors">
                 Submit
               </button>
               </div>

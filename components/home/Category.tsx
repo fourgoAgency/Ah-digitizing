@@ -90,7 +90,7 @@ export default function ServicesCarousel() {
       className="w-full"
     >
       <Link href={`/shop?category=${category.slug}`} className="block h-full w-full">
-        <div className="bg-white rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
+        <div className="bg-white cursor-pointer rounded-2xl hover:border-primary hover:border hover:-translate-y-1 transition-all h-full flex flex-col">
 
           {/* IMAGE WRAPPER */}
           <div className="w-full h-36 sm:h-52 md:h-56 flex items-center justify-center rounded-t-2xl drop-shadow-xl drop-shadow-black/70">
@@ -120,7 +120,7 @@ export default function ServicesCarousel() {
   <Button
     variant="outline"
     onClick={() => window.location.href = "/shop"}
-    className="my-8 px-9 rounded-full text-md border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+    className="my-8 px-9 rounded-full text-md border-primary cursor-pointer text-primary hover:bg-primary hover:text-white transition-colors"
   >
     View More
   </Button>
@@ -129,7 +129,7 @@ export default function ServicesCarousel() {
         </motion.div>
 
         {/* MOBILE CTA */}
-        <div className="lg:hidden mt-10 text-center">
+        <div className="lg:hidden mt-10 text-center cursor-pointer">
           <Link
             href="/shop"
             className="inline-block px-8 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors"

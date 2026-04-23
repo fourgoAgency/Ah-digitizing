@@ -86,7 +86,7 @@ export default function CartSidebar({
               </div>
               <button
                 onClick={onClose}
-                className="rounded-full border border-gray-200 px-3 py-1 text-sm font-semibold text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
+                className="rounded-full border border-gray-200 px-3 py-1 text-sm font-semibold text-gray-600 transition hover:border-gray-400 cursor-pointer hover:text-gray-900"
                 aria-label="Close cart sidebar"
               >
                 Close
@@ -103,7 +103,7 @@ export default function CartSidebar({
                     href={`/shop/${item.product.slug}`}
                     onClick={onClose}
                     aria-label={`View ${item.product.title}`}
-                    className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+                    className="relative block h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-gray-100"
                   >
                     <Image
                       src={item.product.heroImage}
@@ -119,7 +119,7 @@ export default function CartSidebar({
                         <Link
                           href={`/shop/${item.product.slug}`}
                           onClick={onClose}
-                          className="wrap-break-word text-sm font-semibold text-gray-900 transition hover:text-gray-700"
+                          className="wrap-break-word text-sm cursor-pointer font-semibold text-gray-900 transition hover:text-gray-700"
                         >
                           {item.product.title.split(" ").slice(0, 2).join(" ")}
                         </Link>
@@ -135,7 +135,7 @@ export default function CartSidebar({
                       <div className="flex items-center rounded-full border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700">
                         <button
                           type="button"
-                          className="h-6 w-6 rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
+                          className="h-6 w-6 rounded-full border cursor-pointer border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
                           aria-label="Decrease quantity"
                           onClick={() => decreaseQty(item.product.id)}
                         >
@@ -146,7 +146,7 @@ export default function CartSidebar({
                         </span>
                         <button
                           type="button"
-                          className="h-6 w-6 rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
+                          className="h-6 w-6 rounded-full border cursor-pointer border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
                           aria-label="Increase quantity"
                           onClick={() => increaseQty(item.product.id)}
                         >
@@ -155,7 +155,7 @@ export default function CartSidebar({
                       </div>
                       <button
                         type="button"
-                        className="text-xs font-semibold text-gray-500 transition hover:text-gray-900"
+                        className="text-xs font-semibold cursor-pointer text-gray-500 transition hover:text-gray-900"
                         onClick={() => deleteItem(item.product.id)}
                       >
                         <Trash size={14} />
@@ -182,14 +182,14 @@ export default function CartSidebar({
               <div className="mt-4 flex gap-3">
                 <Link
                   href="/cart"
-                  className="flex-1 rounded-full border border-primary px-4 py-2 text-center text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                  className="flex-1 rounded-full border cursor-pointer border-primary px-4 py-2 text-center text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
                   onClick={onClose}
                 >
                   View Cart
                 </Link>
                 <Link
                   href="/checkout"
-                  className="flex-1 rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
+                  className="flex-1 rounded-full bg-primary cursor-pointer px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
                   onClick={onClose}
                 >
                   Checkout

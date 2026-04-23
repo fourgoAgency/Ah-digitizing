@@ -20,7 +20,7 @@ export default function BlogPagination({
         type="button"
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#dfe3ea] bg-white text-sm text-slate-500 transition hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-[#dfe3ea] bg-white text-sm text-slate-500 transition hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
       >
         {"<"}
       </button>
@@ -32,7 +32,7 @@ export default function BlogPagination({
             key={page}
             type="button"
             onClick={() => onPageChange(page)}
-            className={`inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm transition ${
+            className={`inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border text-sm transition ${
               isActive
                 ? "border-primary bg-primary text-white"
                 : "border-[#dfe3ea] bg-white text-slate-500 hover:text-primary"
@@ -47,7 +47,7 @@ export default function BlogPagination({
         type="button"
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#dfe3ea] bg-white text-sm text-slate-500 transition hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex h-8 w-8 items-center cursor-pointer justify-center rounded-md border border-[#dfe3ea] bg-white text-sm text-slate-500 transition hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
       >
         {">"}
       </button>

@@ -166,7 +166,7 @@ export default function ShowcaseGallery() {
           <Button
             variant="outline"
             className="
-              text-primary border-primary rounded-full 
+              text-primary border-primary rounded-full cursor-pointer
               hover:bg-primary hover:text-white 
               px-6 py-2 
               sm:px-8 sm:py-3 

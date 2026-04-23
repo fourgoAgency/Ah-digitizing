@@ -61,7 +61,7 @@ export default function ProductCard({
               </div>
             ) : null}
         <Link href={`/shop/${product.slug}`} className={restImageClass}>
-          <div className="relative h-full w-full bg-white">
+          <div className="relative h-full w-full bg-white cursor-pointer">
             <Image
               src={product.heroImage}
               alt={product.title}
@@ -74,7 +74,7 @@ export default function ProductCard({
 
         <div className="absolute inset-x-4 bottom-4 z-20 rounded-[1.25rem] bg-white p-4">
           <Link href={`/shop/${product.slug}`} className="block">
-            <h3 className="min-h-12 text-base font-semibold text-gray-900 line-clamp-2">
+            <h3 className="cursor-pointer min-h-12 text-base font-semibold text-gray-900 line-clamp-2">
               {product.title}
             </h3>
           </Link>
@@ -82,7 +82,7 @@ export default function ProductCard({
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
             <Button
               asChild
-              className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="h-8 rounded-md px-3 text-sm cursor-pointer font-semibold hover:bg-white/90 hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               <button
                 type="button"
@@ -100,7 +100,7 @@ export default function ProductCard({
 
       <div className="absolute inset-0 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <Link href={`/shop/${product.slug}`} className={hoverImageClass}>
-          <div className="relative h-full w-full">
+          <div className="cursor-pointer relative h-full w-full">
             {showSoldBadge ? (
               <div className="absolute left-1/2 top-1 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-md">
                 {soldLabel}
@@ -118,13 +118,13 @@ export default function ProductCard({
 
         <div className="absolute inset-x-4 bottom-4 z-20 rounded-[1.25rem] bg-white/95 p-4 shadow-lg ring-1 ring-black/5 backdrop-blur-sm">
           <Link href={`/shop/${product.slug}`} className="block">
-            <h3 className="min-h-12 text-base font-semibold text-gray-900 line-clamp-2">
+            <h3 className="cursor-pointer min-h-12 text-base font-semibold text-gray-900 line-clamp-2">
               {product.title}
             </h3>
           </Link>
           <div className="mt-3 flex items-end justify-between gap-3">
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
-            <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+            <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 cursor-pointer hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
               <button
                 type="button"
                 onClick={() => {

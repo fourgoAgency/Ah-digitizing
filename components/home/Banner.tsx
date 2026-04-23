@@ -112,7 +112,7 @@ export default function Banner() {
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <Button
                                 asChild
-                                className={`border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${
+                                className={`border shadow-xl cursor-pointer rounded-full px-10 transition-all duration-200 bg-transparent ${
                                     hoveredButton === 'contact'
                                         ? 'bg-secondary text-white border-secondary'
                                         : hoveredButton === 'login'
@@ -126,7 +126,7 @@ export default function Banner() {
                             </Button>
                             <Button
                                 asChild
-                                className={`border shadow-xl rounded-full px-10 transition-all duration-200 ${
+                                className={`border shadow-xl cursor-pointer rounded-full px-10 transition-all duration-200 ${
                                     hoveredButton === 'login'
                                         ? 'bg-white text-white border-white'
                                         : hoveredButton === 'contact'

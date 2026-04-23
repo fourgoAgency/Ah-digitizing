@@ -101,7 +101,7 @@ function PriceCard({
       <button
         type="button"
         onClick={() => onOpenSample(plan.service)}
-        className={`absolute left-0 hidden -translate-x-3/5 -rotate-90 rounded-t-md px-5 py-2 text-[10px] tracking-[0.35em] text-white sm:inline-flex top-20 ${accent.chip}`}
+        className={`absolute cursor-pointer left-0 hidden -translate-x-3/5 -rotate-90 rounded-t-md px-5 py-2 text-[10px] tracking-[0.35em] text-white sm:inline-flex top-20 ${accent.chip}`}
       >
         VIEW SAMPLE
       </button>
@@ -132,7 +132,7 @@ function PriceCard({
 
         <Button
           asChild
-          className={`mx-auto mt-8 w-full max-w-44 rounded-full text-xs font-semibold uppercase text-white ${accent.button}`}
+          className={`mx-auto mt-8 w-full max-w-44 rounded-full text-xs cursor-pointer font-semibold uppercase text-white ${accent.button}`}
         >
           <Link href={`/pricing/${plan.service.toLowerCase()}`}>View Pricing</Link>
         </Button>
@@ -292,7 +292,7 @@ export default function Pricing({ serviceKey, serviceLabel }: PricingProps = {})
             type="button"
             aria-label="Close sample preview"
             onClick={closePopup}
-            className="absolute inset-0 bg-slate-900/55"
+            className="absolute inset-0 cursor-pointer bg-slate-900/55"
           />
 
           <div
@@ -313,7 +313,7 @@ export default function Pricing({ serviceKey, serviceLabel }: PricingProps = {})
               <button
                 type="button"
                 onClick={closePopup}
-                className="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 transition-colors hover:bg-slate-200"
+                className="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 transition-colors hover:bg-slate-200 cursor-pointer"
               >
                 Close
               </button>

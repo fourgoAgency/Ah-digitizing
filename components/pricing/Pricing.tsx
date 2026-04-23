@@ -183,7 +183,7 @@ export default function Pricing({ slug }: { slug: string }) {
                 <button
                   type="button"
                   onClick={() => openPopup(plan.id)}
-                  className={`absolute -left-1.5 hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${category === "vector" ? "bottom-20" : "top-20"} ${accent.chip}`}
+                  className={`absolute -left-1.5 cursor-pointer hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${category === "vector" ? "bottom-20" : "top-20"} ${accent.chip}`}
                 >
                   VIEW SAMPLE
                 </button>
@@ -213,7 +213,7 @@ export default function Pricing({ slug }: { slug: string }) {
 
                 <button
                  onClick={() => router.push(`/get-free-quote?orderType=${slug}`)}
-                  className={`mx-auto w-40 rounded-full py-2.5 text-xs font-semibold uppercase text-white ${accent.button}`}
+                  className={`mx-auto w-40 rounded-full py-2.5 text-xs font-semibold uppercase cursor-pointer text-white ${accent.button}`}
                 >
                   Buy Now
                 </button>
@@ -240,7 +240,7 @@ export default function Pricing({ slug }: { slug: string }) {
           >
             <button
               onClick={closePopup}
-              className="absolute right-4 top-4 rounded-full bg-slate-100 px-3 py-1 text-xs"
+              className="absolute right-4 top-4 rounded-full bg-slate-100 cursor-pointer px-3 py-1 text-xs"
             >
               Close
             </button>

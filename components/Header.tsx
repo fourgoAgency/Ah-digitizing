@@ -63,7 +63,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         }}
         className="w-45 shrink-0"
       >
-        <Link href="/" className="flex items-center gap-1 text-3xl">
+        <Link href="/" className="flex items-center gap-1 text-3xl cursor-pointer">
           <p className="font-bold text-black text-4xl">𝓐𝓗</p>
           <p
             className="font-bold"
@@ -73,7 +73,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         </Link>
       </motion.div>
       <div className="flex items-center justify-between gap-8">
-        <Link href="/">Home</Link>
+        <Link className="cursor-pointer" href="/">Home</Link>
 
         {/* SERVICES */}
         <div className="relative group">
@@ -154,9 +154,9 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           </div>
         </div>
 
-        <Link href="/portfolio">Portfolio</Link>
-        <Link href="/shop">Store</Link>
-        <Link href="/blogs">Blogs</Link>
+        <Link className="cursor-pointer" href="/portfolio">Portfolio</Link>
+        <Link className="cursor-pointer" href="/shop">Store</Link>
+        <Link className="cursor-pointer" href="/blogs">Blogs</Link>
 
         {/* ABOUT */}
         <div className="relative group">
@@ -194,7 +194,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           <span className="absolute -right-3 -top-2 min-w-[1.1rem]  rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
           <BiCart size={24} />
         </button>
-        <Link href="/login" className="">
+        <Link href="/login" className="cursor-pointer">
           <FaUser />
         </Link>
       </div>
@@ -223,7 +223,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
           <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-primary px-1 text-[10px] font-semibold text-white">{cartCount}</span>
           <BiCart size={24} />
         </button>
-      <button onClick={() => setOpen(!open)} className="text-sm font-medium pl-5">
+      <button onClick={() => setOpen(!open)} className="text-sm font-medium pl-5 cursor-pointer">
         <Menu />
       </button>
 
@@ -251,7 +251,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
             <div className="border-b border-blue-700">
               <button
                 onClick={() => toggleAccordion('services')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary cursor-pointer transition-colors"
               >
                 <span className="font-semibold text-white">Services</span>
                 <ChevronDown
@@ -278,7 +278,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
             <div className="border-b border-primary">
               <button
                 onClick={() => toggleAccordion('pricing')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
+                className="w-full px-6 py-4 cursor-pointer text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
                 <span className="font-semibold text-white">Pricing</span>
                 <ChevronDown
@@ -302,7 +302,7 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
             <div>
               <button
                 onClick={() => toggleAccordion('about')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
+                className="w-full px-6 cursor-pointer py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
               >
                 <span className="font-semibold text-white">About</span>
 
@@ -325,10 +325,10 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
                 </div>
               )}
             <div className="px-6 py-4 space-y-2 border-b border-blue-700">
-              <Button asChild className="w-full bg-white text-primary border border-primary rounded-full px-10 py-2">
+              <Button asChild className="w-full bg-white text-primary border cursor-pointer border-primary rounded-full px-10 py-2">
                 <Link href="/get-free-quote">Get Free Quote</Link>
               </Button>
-              <Button asChild className="w-full bg-primary text-white border border-white rounded-full px-10 py-2">
+              <Button asChild className="w-full bg-primary text-white border cursor-pointer border-white rounded-full px-10 py-2">
                 <Link href="/get-quote">Order Now</Link>
               </Button>
             </div>
@@ -393,7 +393,7 @@ export default function Header() {
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 bg-transparent ${hoveredButton === 'free'
                 ? 'bg-primary text-white border-primary'
                 : hoveredButton === 'order'
-                  ? 'bg-white text-primary border-primary'
+                  ? 'bg-white cursor-pointer text-primary border-primary'
                   : 'border-accent text-accent'
                 }`}
               onMouseEnter={() => setHoveredButton('free')}
@@ -405,7 +405,7 @@ export default function Header() {
             <Button
               asChild
               className={`btn-ring border shadow-xl rounded-full px-10 transition-all duration-200 ${hoveredButton === 'order'
-                ? 'bg-primary text-white border-primary'
+                ? 'bg-primary text-white cursor-pointer border-primary'
                 : hoveredButton === 'free'
                   ? 'bg-white text-primary border-primary'
                   : 'bg-primary text-white border-primary'

@@ -14,7 +14,7 @@ export default function Hero() {
           Convert your raster graphics into high-quality, scalable vector files. Perfect for logos, illustrations, and designs that need to be resized without losing quality.
         </p>
 
-        <Link href="/account?quote=vector" className="inline-block px-8 py-3 bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        <Link href="/account?quote=vector" className="inline-block px-8 py-3 cursor-pointer bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
           Get a Quote
         </Link>
       </div>

@@ -12,7 +12,7 @@ export default function BannerStackTransition() {
     offset: ["start start", "end end"],
   });
 
-// Tighter spring — less overshoot lag
+// Tighter spring , less overshoot lag
 const smoothProgress = useSpring(scrollYProgress, {
   stiffness: 160,
   damping: 30,

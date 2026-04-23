@@ -55,13 +55,13 @@ export default function EmbHero() {
             <div className="flex gap-3">
               <Link
                 href="/portfolio"
-                className="inline-block px-5 py-2 bg-primary text-white rounded-md font-medium hover:bg-transparent hover:border-primary hover:text-primary hover:border transition-colors"
+                className="inline-block px-5 py-2 bg-primary cursor-pointer text-white rounded-md font-medium hover:bg-transparent hover:border-primary hover:text-primary hover:border transition-colors"
               >
                 Portfolio
               </Link>
               <Link
                 href="/pricing/embroidery-digitizing"
-                className="inline-block px-5 py-2 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                className="inline-block px-5 py-2 border cursor-pointer border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors"
               >
                 Pricing
               </Link>

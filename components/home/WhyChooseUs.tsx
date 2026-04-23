@@ -94,7 +94,7 @@ export default function WhyChooseAndFAQ() {
             </div>
 
             {/* CTA Button */}
-            <button onClick={() => router.push('/get-quote')} className="bg-primary hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition-colors">
+            <button onClick={() => router.push('/get-quote')} className="bg-primary hover:bg-blue-700 text-white cursor-pointer px-8 py-3 rounded-full font-semibold transition-colors">
               Get Quote
             </button>
           </div>
@@ -113,7 +113,7 @@ export default function WhyChooseAndFAQ() {
                 >
                     <button
                         onClick={() => toggleFaq(faq.id)}
-                        className="w-full px-6 py-4 flex items-center rounded-full justify-between text-left hover:bg-gray-50 transition-colors"
+                        className="w-full px-6 py-4 flex items-center cursor-pointer rounded-full justify-between text-left hover:bg-gray-50 transition-colors"
                     >
                         <span className="font-semibold pr-4">{faq.question}</span>
                         <svg

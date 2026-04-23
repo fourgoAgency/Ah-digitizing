@@ -369,7 +369,7 @@ export default function GetQuotePage() {
             <p className="mt-3 text-gray-600">We have received your quote request. Our team will get back to you soon.</p>
             <button
               type="button"
-              className="mt-6 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              className="mt-6 rounded-full bg-primary cursor-pointer px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
               onClick={() => setShowSuccess(false)}
             >
               Submit Another Quote
@@ -424,7 +424,7 @@ export default function GetQuotePage() {
               <h2 className="text-lg font-semibold text-gray-900">Verify Your Email</h2>
               <button
                 type="button"
-                className="text-sm font-semibold text-gray-500 hover:text-gray-900"
+                className="text-sm font-semibold text-gray-500 cursor-pointer hover:text-gray-900"
                 onClick={() => setShowOtp(false)}
               >
                 Close
@@ -448,7 +448,7 @@ export default function GetQuotePage() {
               {otpError && <p className="text-sm text-red-600">{otpError}</p>}
               <button
                 type="submit"
-                className="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+                className="w-full cursor-pointer rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
                 Verify &amp; Submit
               </button>

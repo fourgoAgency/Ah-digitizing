@@ -18,7 +18,7 @@ function SocialButtons() {
             <button
               type="button"
               aria-label={option.label}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/80 transition hover:border-primary hover:text-primary"
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-border cursor-pointer text-foreground/80 transition hover:border-primary hover:text-primary"
             >
               {option.icon}
             </button>
@@ -66,13 +66,13 @@ export default function AuthSlider() {
                 <Input type="password" placeholder="Enter Password" />
                 <button
                   type="button"
-                  className="block w-full text-center text-base text-foreground/80 transition hover:text-primary"
+                  className="block w-full cursor-pointer text-center text-base text-foreground/80 transition hover:text-primary"
                 >
                   Forget Password?
                 </button>
                 <button
                   type="submit"
-                  className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90"
+                  className="mx-auto block cursor-pointer w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90"
                 >
                   Sign In
                 </button>
@@ -94,7 +94,7 @@ export default function AuthSlider() {
                 <Input type="password" placeholder="Enter Password" />
                 <button
                   type="submit"
-                  className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90"
+                  className="mx-auto block w-40 rounded-xl bg-primary py-3 cursor-pointer text-base font-bold text-primary-foreground transition hover:bg-primary/90"
                 >
                   Sign Up
                 </button>
@@ -119,7 +119,7 @@ export default function AuthSlider() {
                   <button
                     type="button"
                     onClick={() => setIsSignup(false)}
-                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base cursor-pointer font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
                   >
                     Sign In
                   </button>
@@ -133,7 +133,7 @@ export default function AuthSlider() {
                   <button
                     type="button"
                     onClick={() => setIsSignup(true)}
-                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base cursor-pointer font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
                   >
                     Sign Up
                   </button>
@@ -148,7 +148,7 @@ export default function AuthSlider() {
             <button
               type="button"
               onClick={() => setIsSignup(false)}
-              className={`py-2 text-sm font-semibold transition ${
+              className={`py-2 text-sm font-semibold transition cursor-pointer ${
                 !isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
               }`}
             >
@@ -157,7 +157,7 @@ export default function AuthSlider() {
             <button
               type="button"
               onClick={() => setIsSignup(true)}
-              className={`py-2 text-sm font-semibold transition ${
+              className={`py-2 text-sm font-semibold cursor-pointer transition ${
                 isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
               }`}
             >
@@ -174,7 +174,7 @@ export default function AuthSlider() {
               <button className="block w-full text-center text-base text-foreground/80 transition hover:text-primary" type="button">
                 Forget Password?
               </button>
-              <button type="submit" className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
+              <button type="submit" className="mx-auto block w-40 rounded-xl cursor-pointer bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
                 Sign In
               </button>
             </form>
@@ -185,7 +185,7 @@ export default function AuthSlider() {
               <Input placeholder="Enter Name" />
               <Input type="email" placeholder="Enter E-mail" />
               <Input type="password" placeholder="Enter Password" />
-              <button type="submit" className="mx-auto block w-40 rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
+              <button type="submit" className="mx-auto block w-40 cursor-pointer rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground cursor-pointer transition hover:bg-primary/90">
                 Sign Up
               </button>
             </form>

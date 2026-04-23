@@ -446,7 +446,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 transition={{ duration: 0.4, ease: "easeOut" }}
               />
             </div>
-            {/* Close button — spins in on mount */}
+            {/* Close button , spins in on mount */}
             <motion.button
               onClick={onClose}
               initial={{ opacity: 0, rotate: -90, scale: 0.7 }}
@@ -472,7 +472,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
         >
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full justify-center">
 
-            {/* Desktop-only left nav — height tracks image width */}
+            {/* Desktop-only left nav , height tracks image width */}
             <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
               <NavButton direction="prev" enabled={hasPrev} onClick={onPrev} />
             </div>
@@ -522,7 +522,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 hidden md:block ${hasNext ? "cursor-pointer" : ""}`} />
             </div>
 
-            {/* Desktop-only right nav — height tracks image height */}
+            {/* Desktop-only right nav , height tracks image height */}
             <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
               <NavButton direction="next" enabled={hasNext} onClick={onNext} />
             </div>
@@ -536,7 +536,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </div>
         </div>
 
-        {/* THUMBNAIL STRIP — shorter height + tighter padding */}
+        {/* THUMBNAIL STRIP , shorter height + tighter padding */}
         <div
           className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-2 pb-4 hidden md:block"
           onClick={(e) => e.stopPropagation()}
@@ -580,7 +580,7 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
     transition={{ type: "spring", stiffness: 280, damping: 22 }}
     style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.45), 0 5px 15px rgba(0,0,0,0.3)" }}
   >
-    {/* Hover glow border — unchanged */}
+    {/* Hover glow border , unchanged */}
     <motion.div
       className="absolute inset-0 rounded-2xl pointer-events-none z-10"
       initial={{ opacity: 0 }}
@@ -628,7 +628,7 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
         </span>
       </div>
  
-      {/* Shine sweep — unchanged */}
+      {/* Shine sweep , unchanged */}
       <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-xl">
         <div
           className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
@@ -683,7 +683,7 @@ const ProductGrid = ({
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  BOTTOM LAYER — Fixed banners with animated floating blobs
+//  BOTTOM LAYER , Fixed banners with animated floating blobs
 // ═══════════════════════════════════════════════════════════════════════════════
 const FloatingBlob = ({ className, delay = 0 }: { className: string; delay?: number }) => (
   <motion.div
@@ -703,7 +703,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         animate={{ opacity: i === activeBannerIndex ? 1 : 0 }}
         transition={{ duration: 0 }}
       >
-        {/* Ghost watermark — scales in */}
+        {/* Ghost watermark , scales in */}
         <div className="absolute inset-0 flex items-center justify-center select-none" aria-hidden="true">
           <motion.span
             className="text-white/[0.05] font-black uppercase tracking-tighter leading-none"
@@ -721,7 +721,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
         <FloatingBlob className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/[0.025] blur-3xl" delay={1.2} />
         <FloatingBlob className="absolute top-1/4 right-1/4 w-52 h-52 rounded-full bg-indigo-400/5 blur-2xl" delay={3.5} />
 
-        {/* Banner text — staggered slide-up per category */}
+        {/* Banner text , staggered slide-up per category */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <motion.p
             className="text-white/50 text-sm font-semibold uppercase tracking-[0.3em] mb-3"
@@ -751,7 +751,7 @@ const BottomBannerLayer = ({ activeBannerIndex }: { activeBannerIndex: number })
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  TOP LAYER — Category section
+//  TOP LAYER , Category section
 // ═══════════════════════════════════════════════════════════════════════════════
 const CategorySection = ({
   config,
@@ -786,7 +786,7 @@ const CategorySection = ({
         style={{ boxShadow: "0 -48px 80px rgba(0,0,0,0.55), 0 -8px 24px rgba(0,0,0,0.3)" }}
       >
         <div className="max-w-6xl mx-auto">
-          {/* Section header — slides in from left */}
+          {/* Section header , slides in from left */}
           <motion.div
             className="mb-10"
             initial={{ opacity: 0, x: -28 }}
@@ -888,7 +888,7 @@ export default function PortfolioSection() {
     <div className="relative">
       <BottomBannerLayer activeBannerIndex={activeBannerIndex} />
       <div className="relative z-10">
-        {/* ── Hero — staggered entrance ── */}
+        {/* ── Hero , staggered entrance ── */}
         <section className="min-h-[60vh] flex items-center justify-center bg-white relative">
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
           <motion.div
@@ -913,7 +913,7 @@ export default function PortfolioSection() {
             />
             <motion.p variants={fadeUp} className="text-gray-500 max-w-xl mx-auto text-lg">
               Explore our diverse collection of digitized embroidery, vector art, raster conversions,
-              and custom patches — crafted with precision for every client.
+              and custom patches , crafted with precision for every client.
             </motion.p>
           </motion.div>
         </section>

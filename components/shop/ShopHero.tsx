@@ -22,10 +22,10 @@ export default function ShopHero() {
           files with fast turnaround and production-ready output.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild className="rounded-full px-7">
-            <Link href="/services">Explore Services</Link>
+          <Button asChild className="rounded-full px-7 cursor-pointer">
+            <Link href="/portfolio">Show Our Work</Link>
           </Button>
-          <Button asChild variant="outline" className="rounded-full border-white bg-white/10 px-7 text-white hover:bg-white hover:text-primary">
+          <Button asChild variant="outline" className="rounded-full cursor-pointer border-white bg-white/10 px-7 text-white hover:bg-white hover:text-primary">
             <Link href="/get-quote">Get Custom Quote</Link>
           </Button>
         </div>

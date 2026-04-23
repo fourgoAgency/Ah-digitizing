@@ -14,7 +14,7 @@ export default function Hero() {
           Achieve exceptional stitch quality and precision with our expert embroidery digitizing services. Perfect for logos, apparel, patches, and creative designs of any complexity.
         </p>
 
-        <Link href="/account?quote=embroidery" className="inline-block px-8 py-3 bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        <Link href="/account?quote=embroidery" className="cursor-pointer inline-block px-8 py-3 bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
           Get a Quote
         </Link>
       </div>

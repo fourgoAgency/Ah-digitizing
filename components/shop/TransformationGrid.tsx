@@ -57,7 +57,7 @@ export default function TransformationGrid() {
                   <button
                     type="button"
                     onClick={() => setActiveImage(example.afterImage)}
-                    className="relative h-52 w-full overflow-hidden rounded-md bg-gray-100"
+                    className="relative h-52 w-full overflow-hidden rounded-md cursor-pointer bg-gray-100"
                     aria-label={`Open ${example.title} after image`}
                   >
                     <Image
@@ -88,7 +88,7 @@ export default function TransformationGrid() {
           <button
             type="button"
             onClick={() => setActiveImage(null)}
-            className="absolute right-3 top-2 text-2xl font-bold text-gray-700 hover:text-black"
+            className="absolute right-3 top-2 text-2xl cursor-pointer font-bold text-gray-700 hover:text-black"
             aria-label="Close image preview"
           >
             &times;

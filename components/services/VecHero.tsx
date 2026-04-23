@@ -10,11 +10,11 @@ export default function VecHero() {
           {/* Left - Text */}
           <div>
             <h2 className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-4">Professional vector conversion with precision and clarity.</h2>
-            <p className="text-gray-600 mb-6">Transform your raster images into scalable vector graphics. Our expert team converts artwork, logos, and designs into clean, editable vector files suitable for any medium—print, web, or signage.</p>
+            <p className="text-gray-600 mb-6">Transform your raster images into scalable vector graphics. Our expert team converts artwork, logos, and designs into clean, editable vector files suitable for any medium,print, web, or signage.</p>
 
             <div className="flex gap-3">
-              <Link href="/portfolio" className="inline-block px-5 py-2 bg-primary text-white rounded-md font-medium hover:bg-transparent hover:border-primary hover:border hover:text-primary transition-colors">Portfolio</Link>
-              <Link href="/pricing/raster-to-vector" className="inline-block px-5 py-2 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors">Pricing</Link>
+              <Link href="/portfolio" className="inline-block px-5 py-2 bg-primary text-white rounded-md font-medium cursor-pointer hover:bg-transparent hover:border-primary hover:border hover:text-primary transition-colors">Portfolio</Link>
+              <Link href="/pricing/raster-to-vector" className="inline-block px-5 py-2 border border-gray-300 cursor-pointer text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors">Pricing</Link>
             </div>
           </div>
 

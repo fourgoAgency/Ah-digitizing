@@ -128,7 +128,7 @@ export default function TransformationExamples() {
           onClick={() => setActiveImage(null)}
         >
           <button
-            className="absolute top-3 right-3 text-white hover:text-black text-2xl"
+            className="absolute top-3 right-3 cursor-pointer text-white hover:text-black text-2xl"
             onClick={() => setActiveImage(null)}
           >
             &times;

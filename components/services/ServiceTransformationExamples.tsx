@@ -108,7 +108,7 @@ export default function ServiceTransformationExamples({
                 <div className="flex justify-center mt-6">
 <Button
   onClick={() => router.push(`/get-free-quote?orderType=${quoteParam}`)}
-  className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border"
+  className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border cursor-pointer"
 >
   Order Now
 </Button>
@@ -150,7 +150,7 @@ export default function ServiceTransformationExamples({
           onClick={() => setActiveImage(null)}
         >
           <button
-            className="absolute top-3 right-3 text-white hover:text-black text-2xl"
+            className="absolute top-3 right-3 text-white hover:text-black text-2xl cursor-pointer"
             onClick={() => setActiveImage(null)}
           >
             &times;

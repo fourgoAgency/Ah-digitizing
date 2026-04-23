@@ -49,7 +49,7 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
         <button
           type="button"
           onClick={() => setActiveModalImage(currentImage)}
-          className="relative h-[360px] w-full overflow-hidden rounded-xl bg-gray-100 sm:h-[440px]"
+          className="relative h-[360px] w-full overflow-hidden rounded-xl cursor-pointer bg-gray-100 sm:h-[440px]"
           aria-label={`Open ${title} image preview`}
         >
           <Image
@@ -71,7 +71,7 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
               key={`${title}-${index}`}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative h-32 overflow-hidden rounded-lg border bg-white ${
+              className={`relative h-32 overflow-hidden rounded-lg cursor-pointer border bg-white ${
                 isActive ? "border-primary ring-2 ring-primary/20" : "border-gray-200"
               }`}
               aria-label={`Show ${title} image ${index + 1}`}
@@ -100,7 +100,7 @@ export default function ProductImageGallery({ title, heroImage, gallery }: Produ
             <button
               type="button"
               onClick={() => setActiveModalImage(null)}
-              className="absolute right-3 top-2 text-2xl font-bold text-gray-700 hover:text-black"
+              className="absolute right-3 cursor-pointer top-2 text-2xl font-bold text-gray-700 hover:text-black"
               aria-label="Close image preview"
             >
               &times;

@@ -13,7 +13,7 @@ export default function AllProductsPage() {
       <section className="mx-auto w-full max-w-7xl px-4">
         <AllProductsCatalog />
         <div className="mt-10 text-center">
-          <Link href="/get-quote" className="text-sm font-semibold text-primary hover:underline">
+          <Link href="/get-quote" className="text-sm font-semibold text-primary cursor-pointer hover:underline">
             Need custom work? Request a quote
           </Link>
         </div>

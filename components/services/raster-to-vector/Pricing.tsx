@@ -93,17 +93,17 @@ const vectorPlans: Plan[] = ((pricesData as { vector: PlanData[] }).vector.slice
         </div>
 
         {/* Compare button */}
-        <div className="text-center mt-12">
-          <Button
-            variant="outline"
-            className="px-6 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-colors"
-          >
           <Link
             href="/pricing">
+        <div className="cursor-pointer text-center mt-12">
+          <Button
+            variant="outline"
+            className="px-6 rounded-full cursor-pointer border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+          >
             Compare All Pricings
-          </Link>
           </Button>
         </div>
+          </Link>
       </div>
     </section>
   );

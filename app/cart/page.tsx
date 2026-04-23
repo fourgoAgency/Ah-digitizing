@@ -59,7 +59,7 @@ export default function CartPage() {
             </div>
             <Link
               href="/shop"
-              className="rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+              className="rounded-full border cursor-pointer border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
             >
               Continue Shopping
             </Link>
@@ -103,18 +103,18 @@ export default function CartPage() {
                       <div className="flex items-center gap-2 rounded-full border border-gray-200 px-2 py-1 text-sm font-semibold text-gray-700">
                         <button
                           type="button"
-                          className="h-7 w-7 rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
+                          className="h-7 w-7 cursor-pointer rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
                           aria-label="Decrease quantity"
                           onClick={() => decreaseQty(item.product.id)}
                         >
                           -
                         </button>
-                        <span className="min-w-[1.5rem] text-center text-sm font-semibold text-gray-700">
+                        <span className="min-w-6 text-center text-sm font-semibold text-gray-700">
                           {item.qty}
                         </span>
                         <button
                           type="button"
-                          className="h-7 w-7 rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
+                          className="h-7 w-7 cursor-pointer rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-400 hover:text-gray-900"
                           aria-label="Increase quantity"
                           onClick={() => increaseQty(item.product.id)}
                         >
@@ -123,7 +123,7 @@ export default function CartPage() {
                       </div>
                       <button
                         type="button"
-                        className="text-sm font-semibold text-gray-500 transition hover:text-gray-900"
+                        className="text-sm font-semibold cursor-pointer text-gray-500 transition hover:text-gray-900"
                         onClick={() => deleteItem(item.product.id)}
                       >
                         Delete
@@ -162,13 +162,13 @@ export default function CartPage() {
               <div className="mt-6 space-y-3">
                 <Link
                   href="/checkout"
-                  className="block rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
+                  className="block rounded-full bg-primary px-4 py-2 cursor-pointer text-center text-sm font-semibold text-white transition hover:bg-primary/90"
                 >
                   Proceed to Checkout
                 </Link>
                 <Link
                   href="/get-free-quote"
-                  className="block rounded-full border border-primary px-4 py-2 text-center text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                  className="block rounded-full border border-primary cursor-pointer px-4 py-2 text-center text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
                 >
                   Request Free Quote
                 </Link>

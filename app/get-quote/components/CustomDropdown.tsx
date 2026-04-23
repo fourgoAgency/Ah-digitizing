@@ -87,7 +87,7 @@ export function CustomDropdown({
         type="button"
         disabled={disabled}
         aria-label="Toggle options"
-        className="absolute inset-y-0 right-0 inline-flex w-10 items-center justify-center rounded-r-md border-l border-gray-300 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+        className="absolute inset-y-0 cursor-pointer right-0 inline-flex w-10 items-center justify-center rounded-r-md border-l border-gray-300 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-100"
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => setOpen((prev) => !prev)}
       >
@@ -100,7 +100,7 @@ export function CustomDropdown({
             <li key={option}>
               <button
                 type="button"
-                className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-slate-100"
+                className="w-full px-3 py-2 text-left cursor-pointer text-sm text-gray-700 hover:bg-slate-100"
                 onClick={() => {
                   onSelectAction(option);
                   setQuery("");

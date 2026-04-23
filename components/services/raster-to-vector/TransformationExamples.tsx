@@ -80,7 +80,7 @@ export default function TransformationExamples() {
                 </div>
               </div>
               <div className="flex justify-center items-center mt-6">
-                <Button className="rounded-full px-9 hover:bg-transparent hover:border-primary hover:text-primary hover:border">Order Now</Button>
+                <Button className="rounded-full cursor-pointer px-9 hover:bg-transparent hover:border-primary hover:text-primary hover:border">Order Now</Button>
               </div>
             </div>
           ))}

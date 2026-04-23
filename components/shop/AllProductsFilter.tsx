@@ -64,7 +64,7 @@ export default function AllProductsFilter({
           <button
             type="button"
             onClick={onClearAll}
-            className="text-xs font-semibold text-black hover:underline"
+            className="text-xs font-semibold cursor-pointer text-black hover:underline"
           >
             Clear all
           </button>
@@ -127,7 +127,7 @@ export default function AllProductsFilter({
                   variant="outline"
                   size="sm"
                   onClick={() => setShowAllSubcategories((previous) => !previous)}
-                  className="mt-3 border-white bg-primary text-white hover:bg-white/90 hover:shadow-2xl hover:text-primary hover:border-primary"
+                  className="mt-3 cursor-pointer border-white bg-primary text-white hover:bg-white/90 hover:shadow-2xl hover:text-primary hover:border-primary"
                 >
                   {showAllSubcategories ? "Less" : "View all"}
                 </Button>

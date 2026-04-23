@@ -26,7 +26,10 @@ export default function BlogCard({ post }: BlogCardProps) {
   return (
     <motion.article   initial="hidden"
   animate="visible" variants={cardVariants} className="overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
-      <div className="relative h-44 w-full">
+      <Link
+            href={`/blogs/${post.slug}`}
+            className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary"
+          ><div className="relative h-44 w-full">
         <Image
           src={post.image}
           alt={post.title}
@@ -43,16 +46,13 @@ export default function BlogCard({ post }: BlogCardProps) {
           {post.description}
         </p>
 
+          
         <div className="mt-4 flex items-center justify-between gap-3">
           <span className="text-xs text-slate-400">{post.date}</span>
-          <Link
-            href={`/blogs/${post.slug}`}
-            className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary"
-          >
             Read More
-          </Link>
         </div>
       </div>
+          </Link>
     </motion.article>
   );
 }

@@ -29,7 +29,7 @@ export default async function BlogDetailPage({
       <article className="mx-auto w-full max-w-245 px-4 sm:px-6 lg:px-8 2xl:max-w-300 4k:max-w-[1500px]">
         <Link
           href="/blogs"
-          className="inline-flex rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
+          className="inline-flex rounded-md border cursor-pointer border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Go Back
@@ -75,7 +75,7 @@ export default async function BlogDetailPage({
               {previousPost ? (
                 <Link
                   href={`/blogs/${previousPost.slug}`}
-                  className="inline-flex items-center rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
+                  className="inline-flex items-center rounded-md border cursor-pointer border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Previous
@@ -90,7 +90,7 @@ export default async function BlogDetailPage({
               {nextPost ? (
                 <Link
                   href={`/blogs/${nextPost.slug}`}
-                  className="inline-flex items-center rounded-md border border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
+                  className="inline-flex items-center rounded-md border cursor-pointer border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
                 >
                   Next
                   <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />

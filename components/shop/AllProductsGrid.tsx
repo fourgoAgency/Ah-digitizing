@@ -56,7 +56,7 @@ export default function AllProductsGrid({
           <button
             type="button"
             onClick={onClearAllAction}
-            className="mt-3 text-sm font-semibold text-primary hover:underline"
+            className="mt-3 cursor-pointer text-sm font-semibold text-primary hover:underline"
           >
             Reset filters
           </button>

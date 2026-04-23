@@ -287,7 +287,7 @@ export default function GetQoutePage() {
             <p className="mt-3 text-gray-600">We have received your quote request. Our team will get back to you soon.</p>
             <button
               type="button"
-              className="mt-6 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              className="mt-6 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition cursor-pointer hover:bg-primary/90"
               onClick={() => setShowSuccess(false)}
             >
               Submit Another Quote
@@ -584,7 +584,7 @@ export default function GetQoutePage() {
                         <span className="truncate pr-3">{file.name}</span>
                         <button
                           type="button"
-                          className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                          className="rounded p-1 cursor-pointer text-gray-500 hover:bg-gray-100 hover:text-red-600"
                           onClick={() => handleFileRemove(index)}
                           aria-label={`Remove ${file.name}`}
                         >
@@ -598,7 +598,7 @@ export default function GetQoutePage() {
                   <h3 className="font-semibold">Note:</h3>
                   <p className="text-sm text-gray-600">
                     Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
-                    <Link href="/privacy-policy#file-validation" className="font-semibold text-primary underline">
+                    <Link href="/privacy-policy#file-validation" className="font-semibold text-primary cursor-pointer underline">
                       Learn more about uploading files
                     </Link>
                     .
@@ -634,7 +634,7 @@ export default function GetQoutePage() {
               </p>
             )}
 
-            <button type="submit" className="btn">
+            <button type="submit" className="btn cursor-pointer">
               Submit Quote
             </button>
           </form>
@@ -730,7 +730,7 @@ export default function GetQoutePage() {
               <h2 className="text-lg font-semibold text-gray-900">Verify Your Email</h2>
               <button
                 type="button"
-                className="text-sm font-semibold text-gray-500 hover:text-gray-900"
+                className="text-sm cursor-pointer font-semibold text-gray-500 hover:text-gray-900"
                 onClick={() => setShowOtp(false)}
               >
                 Close
@@ -754,7 +754,7 @@ export default function GetQoutePage() {
               {otpError && <p className="text-sm text-red-600">{otpError}</p>}
               <button
                 type="submit"
-                className="w-full rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+                className="w-full cursor-pointer rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
                 Verify &amp; Submit
               </button>

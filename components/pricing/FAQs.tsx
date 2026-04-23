@@ -52,7 +52,7 @@ export default function FAQs() {
                     >
                         <button
                             onClick={() => toggleFaq(faq.id)}
-                            className="w-full px-6 py-4 flex items-center rounded-full justify-between text-left "
+                            className="w-full px-6 py-4 flex items-center rounded-full cursor-pointer justify-between text-left "
                         >
                             <span className="font-semibold pr-4">{faq.question}</span>
                             <motion.svg

@@ -426,7 +426,7 @@ export function GetQuoteForm({
                         {format}
                         <button
                           type="button"
-                          className="rounded p-0.5 hover:bg-primary/15"
+                          className="rounded p-0.5 cursor-pointer hover:bg-primary/15"
                           aria-label={`Remove ${format}`}
                           onClick={() => removeOutputFormatTag(format)}
                         >
@@ -455,7 +455,7 @@ export function GetQuoteForm({
                         <button
                           key={format}
                           type="button"
-                          className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors ${active
+                          className={`rounded-md cursor-pointer border px-3 py-1.5 text-sm font-semibold transition-colors ${active
                             ? "border-primary bg-primary text-white"
                             : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                             }`}
@@ -532,7 +532,7 @@ export function GetQuoteForm({
                         {color}
                         <button
                           type="button"
-                          className="rounded p-0.5 hover:bg-primary/15"
+                          className="rounded p-0.5 hover:bg-primary/15 cursor-pointer"
                           aria-label={`Remove ${color}`}
                           onClick={() => removeColorNameTag(color)}
                         >
@@ -643,7 +643,7 @@ export function GetQuoteForm({
                       {format}
                       <button
                         type="button"
-                        className="rounded p-0.5 hover:bg-primary/15"
+                        className="rounded p-0.5 cursor-pointer hover:bg-primary/15"
                         aria-label={`Remove ${format}`}
                         onClick={() => removeOutputFormatTag(format)}
                       >
@@ -673,7 +673,7 @@ export function GetQuoteForm({
                       <button
                         key={format}
                         type="button"
-                        className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors ${active
+                        className={`rounded-md border cursor-pointer px-3 py-1.5 text-sm font-semibold transition-colors ${active
                           ? "border-primary bg-primary text-white"
                           : "border-gray-300 bg-white text-gray-700 hover:border-primary"
                           }`}
@@ -751,7 +751,7 @@ export function GetQuoteForm({
                   <span className="truncate pr-3">{file.name}</span>
                   <button
                     type="button"
-                    className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                    className="rounded p-1 cursor-pointer text-gray-500 hover:bg-gray-100 hover:text-red-600"
                     onClick={() => onFileRemoveAction(index)}
                     aria-label={`Remove ${file.name}`}
                   >
@@ -765,7 +765,7 @@ export function GetQuoteForm({
             <h3 className="font-semibold">Note:</h3>
             <p className="text-sm text-gray-600">
               Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
-              <Link href="/privacy-policy#file-validation" className="font-semibold text-primary underline">
+              <Link href="/privacy-policy#file-validation" className="font-semibold text-primary cursor-pointer underline">
                 Learn more about uploading files
               </Link>
               .
@@ -796,7 +796,7 @@ export function GetQuoteForm({
         <p className="rounded-md border border-green-200 bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">{submitMessage}</p>
       )}
 
-      <button type="submit" className="btn">
+      <button type="submit" className="btn cursor-pointer">
         Submit Quote
       </button>
 
@@ -809,7 +809,7 @@ export function GetQuoteForm({
         >
           <button
             type="button"
-            className="absolute right-3 top-3 rounded p-1 text-red-700 hover:bg-red-100"
+            className="absolute right-3 cursor-pointer top-3 rounded p-1 text-red-700 hover:bg-red-100"
             aria-label="Close error message"
             onClick={() => errorToastRef.current?.classList.add("hidden")}
           >

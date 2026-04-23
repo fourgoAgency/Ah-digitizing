@@ -101,7 +101,7 @@ const Card = ({ before, after }: CardProps) => {
           >
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-5 right-5 text-white text-3xl font-bold"
+              className="absolute top-5 right-5 text-white text-3xl font-bold cursor-pointer"
             >
               &times;
             </button>

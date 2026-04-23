@@ -46,8 +46,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 lg:grid-cols-2">
         <div>
           <p className="text-sm text-gray-500">
-            <Link href="/shop" className="hover:text-primary">Shop</Link> /{" "}
-            <Link href="/shop" className="hover:text-primary">All Products</Link> /{" "}
+            <Link href="/shop" className="cursor-pointer hover:text-primary">Shop</Link> /{" "}
+            <Link href="/shop" className="cursor-pointer hover:text-primary">All Products</Link> /{" "}
             <span className="font-medium text-gray-700">{product.title}</span>
           </p>
 
@@ -80,10 +80,10 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild className="rounded-full px-7">
+            <Button asChild className="rounded-full cursor-pointer px-7">
               <Link href="/get-quote">Order This Service</Link>
             </Button>
-            <Button asChild variant="outline" className="rounded-full px-7">
+            <Button asChild variant="outline" className="rounded-full cursor-pointer px-7">
               <Link href="/shop">Back to Catalog</Link>
             </Button>
           </div>
@@ -98,7 +98,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               <Link
                 key={item.slug}
                 href={`/shop/${item.slug}`}
-                className="rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary"
+                className="rounded-xl border cursor-pointer border-gray-200 bg-white p-4 transition hover:border-primary"
               >
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{item.categoryLabel}</p>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{item.title}</p>

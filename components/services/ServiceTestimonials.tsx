@@ -124,12 +124,12 @@ export default function ServiceTestimonials({ testimonials }: ServiceTestimonial
               </motion.div>
             </AnimatePresence>
 
-            {/* Buttons outside AnimatePresence — they don't re-animate on slide */}
+            {/* Buttons outside AnimatePresence , they don't re-animate on slide */}
             <div className="absolute right-6 bottom-6 flex gap-4 z-10">
               <button
                 onClick={prev}
                 aria-label="Previous"
-                className="w-12 h-12 rounded-full bg-blue-700 bg-opacity-80 flex items-center justify-center hover:bg-opacity-100 transition"
+                className="w-12 h-12 cursor-pointer rounded-full bg-blue-700 bg-opacity-80 flex items-center justify-center hover:bg-opacity-100 transition"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -138,7 +138,7 @@ export default function ServiceTestimonials({ testimonials }: ServiceTestimonial
               <button
                 onClick={next}
                 aria-label="Next"
-                className="w-12 h-12 rounded-full bg-blue-700 bg-opacity-80 flex items-center justify-center hover:bg-opacity-100 transition"
+                className="w-12 h-12 rounded-full cursor-pointer bg-blue-700 bg-opacity-80 flex items-center justify-center hover:bg-opacity-100 transition"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
