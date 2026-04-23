@@ -28,7 +28,6 @@ export default function BlogCard({ post }: BlogCardProps) {
   animate="visible" variants={cardVariants} className="overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
       <Link
             href={`/blogs/${post.slug}`}
-            className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary"
           ><div className="relative h-44 w-full">
         <Image
           src={post.image}
@@ -48,8 +47,10 @@ export default function BlogCard({ post }: BlogCardProps) {
 
           
         <div className="mt-4 flex items-center justify-between gap-3">
+          <div className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary">
           <span className="text-xs text-slate-400">{post.date}</span>
             Read More
+          </div>
         </div>
       </div>
           </Link>
