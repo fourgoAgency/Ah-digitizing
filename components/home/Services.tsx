@@ -163,7 +163,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
             onClick={prev}
             whileHover={{ y: -2, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="h-11 min-w-11 px-4 flex text-center items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
+            className="h-11 min-w-11 px-4 flex text-center items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition cursor-pointer"
           >
             <ChevronsLeft width="50" size="xl" fontWeight={900} />
           </motion.button>
@@ -171,7 +171,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
             onClick={next}
             whileHover={{ y: -2, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="h-11 min-w-11 px-4 text-center flex items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition"
+            className="h-11 min-w-11 px-4 text-center flex items-center text-white border-2 border-primary justify-center rounded-full shadow-lg bg-primary hover:bg-transparent hover:text-primary transition cursor-pointer"
           >
             <ChevronsRight width="50" size="xl" fontWeight={900} />
           </motion.button>

@@ -47,8 +47,8 @@ export default function BlogCard({ post }: BlogCardProps) {
 
           
         <div className="mt-4 flex items-center justify-between gap-3">
-          <div className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary">
           <span className="text-xs text-slate-400">{post.date}</span>
+          <div className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-secondary">
             Read More
           </div>
         </div>

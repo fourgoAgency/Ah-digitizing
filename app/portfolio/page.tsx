@@ -183,7 +183,7 @@ const NavButton = ({
       onClick={onClick}
       disabled={!enabled}
       whileTap={enabled ? { scale: 0.93 } : {}}
-      className="relative shrink-0 overflow-hidden rounded-xl flex items-center justify-center border outline-none"
+      className="relative shrink-0 overflow-hidden rounded-xl flex items-center cursor-pointer justify-center border outline-none"
       style={{
         width: "clamp(36px, 3vw, 50px)",
         height: IMG_HEIGHT,
@@ -247,7 +247,7 @@ const MobileNavButton = ({
       disabled={!enabled}
       whileTap={enabled ? { scale: 0.9 } : {}}
       whileHover={enabled ? { scale: 1.08, backgroundColor: "rgba(255,255,255,0.22)" } : {}}
-      className="flex items-center justify-center rounded-full outline-none border"
+      className="flex items-center justify-center rounded-full outline-none border cursor-pointer"
       style={{
         width: 44,
         height: 44,

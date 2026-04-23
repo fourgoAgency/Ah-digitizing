@@ -53,7 +53,7 @@ export default function ContactCTASection() {
               whileTap={{ scale: 0.95 }}
               className="border-2 border-white text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full
                          hover:bg-white hover:text-[#0A21C0] transition text-sm sm:text-base
-                         font-medium w-full sm:w-auto shadow-xl"
+                         font-medium w-full sm:w-auto shadow-xl cursor-pointer"
             >
               CALL NOW
             </motion.button>
@@ -63,7 +63,7 @@ export default function ContactCTASection() {
               whileTap={{ scale: 0.95 }}
               className="bg-white text-[#0A21C0] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full
                          hover:bg-blue-50 transition text-sm sm:text-base
-                         font-medium w-full sm:w-auto"
+                         font-medium w-full sm:w-auto cursor-pointer"
             >
               LET&apos;S TALK
             </motion.button>
