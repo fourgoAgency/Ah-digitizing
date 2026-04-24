@@ -13,7 +13,7 @@ import TestimonialsSection from "@/components/home/TestimonialsMarquee";
 
 import values from "@/data/about-values.json";
 import timeline from "@/data/about-timeline.json";
-import testimonials from "@/data/about-testimonials.json";
+//import testimonials from "@/data/about-testimonials.json";
 
 type Value = {
   title: string;
@@ -26,11 +26,11 @@ type TimelineItem = {
   desc: string;
 };
 
-type Testimonial = {
-  name: string;
-  role: string;
-  text: string;
-};
+//type Testimonial = {
+//  name: string;
+//  role: string;
+//  text: string;
+//};
 
 export default function DigitizingLandingPage() {
   return (
@@ -40,7 +40,7 @@ export default function DigitizingLandingPage() {
       <MissionValuesSection values={values} />
       <ServicesSection />
       <JourneySection timeline={timeline} />
-      <TestimonialsSection testimonials={testimonials} />
+      <TestimonialsSection />
     </div>
   );
 
