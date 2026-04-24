@@ -5,7 +5,7 @@ import OurStorySection from "@/components/about/OurStorySection";
 import MissionValuesSection from "@/components/about/MissionValuesSection";
 import ServicesSection from "@/components/about/ServicesSection";
 import JourneySection from "@/components/about/JourneySection";
-import TestimonialsSection from "@/components/about/TestimonialsSection";
+import TestimonialsSection from "@/components/home/TestimonialsMarquee.tsx";
 
 /* =======================
    DATA
