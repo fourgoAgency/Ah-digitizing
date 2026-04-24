@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from 'next/link'
 
 export default function HeroSection() {
   return (
@@ -20,9 +21,12 @@ export default function HeroSection() {
             <p className="text-gray-600 text-xl lg:text-lg text-center lg:text-left">
               Artdigitizing transforms your designs into flawless embroidery files, crisp vector art, and captivating custom creations.
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 cursor-pointer rounded-md transition-colors duration-200">
-              Get Started Today
-            </button>
+            <Link 
+  href="/get-free-quote"
+  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 cursor-pointer rounded-md transition-colors duration-200"
+>
+  Get Started Today
+</Link>
           </motion.div>
 
           {/* Right Image */}
