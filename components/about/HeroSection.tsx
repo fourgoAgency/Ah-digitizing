@@ -22,8 +22,8 @@ export default function HeroSection() {
               Artdigitizing transforms your designs into flawless embroidery files, crisp vector art, and captivating custom creations.
             </p>
             <Link 
-  href="/get-free-quote"
-  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 cursor-pointer rounded-md transition-colors duration-200"
+                  href="/get-free-quote"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-center px-8 py-3 cursor-pointer rounded-md transition-colors duration-200"
 >
   Get Started Today
 </Link>
