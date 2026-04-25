@@ -122,7 +122,7 @@ export default function ProductCard({
               {product.title}
             </h3>
           </Link>
-          <div className="mt-3 flex items-end justify-between gap-3">
+          <div className="mt-3 grid grid-cols-2 md:grid-cols-4 items-end justify-between gap-3">
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
             <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 cursor-pointer hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
               <button

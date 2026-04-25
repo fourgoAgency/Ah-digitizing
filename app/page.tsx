@@ -6,6 +6,8 @@ import TestimonialsMarquee from "@/components/home/TestimonialsMarquee";
 import BeforeAfterGrid from "@/components/home/BeforeAfter";
 import FeaturesSection from "@/components/home/FeaturedSection";
 import BannerStackTransition from "@/components/home/BannerStackTransition";
+import Banner from "@/components/home/Banner";
+import ServicesCarousel from "@/components/home/Services";
 const LazyPricing = dynamic(() => import("@/components/home/Pricing"), {
   loading: () => (
     <section className="relative overflow-hidden bg-slate-100 py-16 sm:py-20">
@@ -32,7 +34,13 @@ const LazyPricing = dynamic(() => import("@/components/home/Pricing"), {
 export default function Page() {
   return (
     <main className="overflow-x-clip bg-white">
+      <div className="md:block hidden">
   <BannerStackTransition />
+      </div>
+      <div className="block md:hidden">
+        <Banner/>
+        <ServicesCarousel/>
+      </div>
       <BeforeAfterGrid />
       <LazyPricing />
       <Portfolio />

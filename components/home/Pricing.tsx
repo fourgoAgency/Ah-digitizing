@@ -139,32 +139,36 @@ export default function Pricing() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [activeService, setActiveService] = useState<keyof PortfolioData | null>(null);
+  
   const [maxPreviewItems, setMaxPreviewItems] = useState(() => {
     if (typeof window === "undefined") return 8;
     return window.innerWidth < 1024 ? 4 : 8;
   });
 
+  const [visibleCount, setVisibleCount] = useState(() => {
+    if (typeof window === "undefined") return 2;
+    return window.innerWidth < 640 ? 1 : 2;
+  });
+
   const plans = useMemo(() => {
     const data = pricing as PriceData;
-    const embroideryPlans = data.embroidery.slice(0, 2).map((plan) => ({
+    const embroideryPlans = data.embroidery.slice(0, visibleCount).map((plan) => ({
       ...plan,
       service: "Embroidery" as const,
     }));
-    const vectorPlans = data.vector.slice(0, 2).map((plan) => ({
+    const vectorPlans = data.vector.slice(0, visibleCount).map((plan) => ({
       ...plan,
       service: "Vector" as const,
     }));
 
     return [...embroideryPlans, ...vectorPlans];
-  }, []);
+  }, [visibleCount]);
 
   const portfolioData = portfolio as PortfolioData;
   const previewItems = useMemo(() => {
     if (!activeService) return [];
-
     const items = portfolioData[activeService] ?? [];
     if (items.length === 0) return [];
-
     return Array.from(
       { length: maxPreviewItems },
       (_, index) => items[index % items.length]
@@ -187,30 +191,29 @@ export default function Pricing() {
     }, 250);
   };
 
+  // Preview items count
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
-    const updateMaxItems = () => {
-      setMaxPreviewItems(media.matches ? 8 : 4);
-    };
+    const update = () => setMaxPreviewItems(media.matches ? 8 : 4);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
-    updateMaxItems();
-
-    if (typeof media.addEventListener === "function") {
-      media.addEventListener("change", updateMaxItems);
-      return () => media.removeEventListener("change", updateMaxItems);
-    }
-
-    media.addListener(updateMaxItems);
-    return () => media.removeListener(updateMaxItems);
+  // Visible plan count
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 640px)");
+    const update = () => setVisibleCount(media.matches ? 2 : 1);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
 
   useEffect(() => {
     if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closePopup();
-      }
+      if (event.key === "Escape") closePopup();
     };
 
     const previousOverflow = document.body.style.overflow;
@@ -228,9 +231,7 @@ export default function Pricing() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.12),_transparent_45%),linear-gradient(180deg,_rgba(255,255,255,0.5),_rgba(241,245,249,0.95))]" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col px-4">
-        <motion.div
-          className="flex items-center justify-center overflow-hidden"
-        >
+        <motion.div className="flex items-center justify-center overflow-hidden">
           <motion.div
             variants={headingVariants}
             initial="hidden"
@@ -252,13 +253,12 @@ export default function Pricing() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOpts}
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4"
+          className={`grid grid-cols-1 gap-6 sm:grid-cols-2 ${
+            visibleCount === 2 ? "xl:grid-cols-4" : ""
+          }`}
         >
           {plans.map((plan, index) => (
-            <motion.div
-              key={plan.id}
-              variants={cardVariants}
-            >
+            <motion.div key={plan.id} variants={cardVariants}>
               <PriceCard
                 plan={plan}
                 index={index}
