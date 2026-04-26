@@ -906,9 +906,9 @@ export default function PortfolioSection() {
             {/* Animated gradient underline */}
             <motion.div
               className="mx-auto mb-6 h-1 rounded-full"
-              style={{ background: "linear-gradient(90deg, #3b82f6, #6366f1, #a855f7)" }}
+              style={{ background: "linear-gradient(90deg, #181818, #3b82f6,)" }}
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "80px", opacity: 1 }}
+              animate={{ width: "100px", opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             />
             <motion.p variants={fadeUp} className="text-gray-500 max-w-xl mx-auto text-lg">
