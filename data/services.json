@@ -12,31 +12,99 @@
       "examples": [
         {
           "id": 1,
-          "title": "Logo Embroidery Perfection",
+          "title": "Logo Embroidery Digitizing",
           "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
           "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg"
+          "afterImage": "/services/cap.svg",
+          "placementArea":"Logo"
         },
         {
           "id": 2,
-          "title": "Detailed Design Digitizing",
+          "title": "Left Chest Logo Digitizing",
           "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
           "beforeImage": "/services/3D PUFF Before.png",
-          "afterImage": "/services/3D PUFF after.svg"
+          "afterImage": "/services/3D PUFF after.svg",
+          "placementArea":"Left Chest Logo"
         },
         {
           "id": 3,
-          "title": "Apparel Image Enhancement",
+          "title": "Cap & Hat Digitizing",
           "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
           "beforeImage": "/services/outline.png",
-          "afterImage": "/services/OUTLINE.svg"
+          "afterImage": "/services/OUTLINE.svg",
+          "placementArea":"Cap & Hat"
         },
         {
           "id": 4,
-          "title": "Complex Artwork Conversion",
+          "title": "Visor Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
           "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg"
+          "afterImage": "/services/cap.svg",
+          "placementArea":"Visor"
+        },
+        {
+          "id": 5,
+          "title": "3D Puff Digitizing",
+          "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "placementArea":"3D Puff"
+        },
+        {
+          "id": 6, 
+          "title": "Patch Embroidery Digitizing",
+          "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
+          "beforeImage": "/services/3D PUFF Before.png",
+          "afterImage": "/services/3D PUFF after.svg",
+          "placementArea":"Patch"
+        },
+        {
+          "id": 7,
+          "title": "Applique Design Digitizing",
+          "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
+          "beforeImage": "/services/outline.png",
+          "afterImage": "/services/OUTLINE.svg",
+          "placementArea":"Applique"
+        },
+        {
+          "id": 8,
+          "title": "Outline / Line Art Embroidery Digitizing",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "placementArea":"Outline / Line Art"
+        },
+        {
+          "id": 9,
+          "title": "Jacket Back Digitizing",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "placementArea":"Jacket Back"
+        },
+        {
+          "id": 10,
+          "title": "NGS Wings XP",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "outputFormat":"NGS"
+        },
+        {
+          "id": 11,
+          "title": "PXF Pulse",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "outputFormat":"PXF"
+        },
+        {
+          "id": 12,
+          "title": "Custom Digitizing (Any Design You Need)",
+          "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
+          "placementArea":"Customized"
         }
       ],
       "quoteParam":"embroidery"

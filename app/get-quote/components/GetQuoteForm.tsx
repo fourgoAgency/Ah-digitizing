@@ -14,6 +14,7 @@ import {
   vectorOutputFormats,
   type QuoteFormState,
 } from "../lib/quote-form";
+import { useSearchParams } from "next/navigation";
 
 const turnaroundOptions = ["12 to 24 hours", "4 to 8 hours", "1 to 4 hours"] as const;
 const appliqueOptions = ["Yes", "No"] as const;
@@ -92,6 +93,42 @@ export function GetQuoteForm({
       return true;
     });
   }, [customFormats, predefinedFormats]);
+  const searchParams = useSearchParams();
+
+useEffect(() => {
+  const orderType = searchParams.get("orderType");
+  const placementArea = searchParams.get("placementArea");
+  const outputFormat = searchParams.get("outputFormat");
+
+  if (orderType === "embroidery" || orderType === "vector") {
+    onFieldChangeAction({
+      target: { name: "orderType", value: orderType, type: "radio" },
+    } as ChangeEvent<HTMLInputElement>);
+  }
+
+  if (placementArea) {
+    const slug = placementArea.toLowerCase().replace(/\s+/g, "-");
+    const matched = placementAreas.find(
+      (area) => area.toLowerCase().replace(/\s+/g, "-") === slug
+    );
+    if (matched) emitFieldChange("placementArea", slug);
+  }
+
+  if (outputFormat) {
+    const normalized = outputFormat.trim().toUpperCase();
+    const isPredefined = availableOutputFormats
+      .filter((f) => f !== "other")
+      .some((f) => f.toLowerCase() === normalized.toLowerCase());
+
+    if (isPredefined) {
+      onOutputFormatToggleAction(normalized);
+    } else {
+      // Custom format like NGS, PXF — add via custom formats path
+      onOutputFormatToggleAction("other"); // mark "other" active
+      emitFieldChange("outputFormatOther", normalized);
+    }
+  }
+}, []); 
   const selectedOutputFormatLookup = useMemo(
     () => new Set(selectedOutputFormats.map((format) => format.toLowerCase())),
     [selectedOutputFormats]
@@ -106,12 +143,12 @@ export function GetQuoteForm({
   );
 
   const emitFieldChange = (name: string, value: string) => {
-    onFieldChangeAction({
-      target: { name, value, type: "text" },
-    } as ChangeEvent<HTMLInputElement>);
-  };
+  onFieldChangeAction({
+    target: { name, value, type: "text" },
+  } as ChangeEvent<HTMLInputElement>);
+};
 
-  const updateCustomFormats = (nextCustomFormats: string[]) => {
+ const updateCustomFormats = (nextCustomFormats: string[])  => {
     const unique = parseCustomFormats(nextCustomFormats.join(","));
     const hasOther = formData.outputFormats.includes("other");
 

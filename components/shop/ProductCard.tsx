@@ -54,7 +54,7 @@ export default function ProductCard({
         style={{ boxShadow: "inset 0 0 0 1.5px rgba(99,102,241,0.6), 0 0 28px rgba(99,102,241,0.12)" }}
       />
       <div className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-radial from-transparent via-5% to-primary/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100" />
-      <div className="absolute inset-0 transition-all duration-300 ease-out group-hover:translate-y-3 group-hover:opacity-0 group-focus-within:translate-y-3 group-focus-within:opacity-0">
+      <div className="absolute inset-0 transition-all duration-300 ease-out group-hover:translate-y-4 group-hover:opacity-0 group-focus-within:translate-y-3 group-focus-within:opacity-0">
             {showSoldBadge ? (
               <div className="absolute left-1/5 top-0 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-md">
                 {soldLabel}
@@ -122,7 +122,7 @@ export default function ProductCard({
               {product.title}
             </h3>
           </Link>
-          <div className="mt-3 grid grid-cols-2 md:grid-cols-4 items-end justify-between gap-3">
+          <div className="mt-3 flex items-end justify-between gap-3">
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
             <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 cursor-pointer hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
               <button

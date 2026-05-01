@@ -7,12 +7,12 @@ import AnimatedSectionHeading from "./AnimatedSectionHeading";
 import { Button } from "../ui/button";
 
 const categories = [
-  { id: 1, name: "Embroidery Digitizing", slug: "embroidery-digitizing", image: "/home-page/portfolio-embroidery/1st.png" },
-  { id: 2, name: "Vector Conversion", slug: "vector-conversion", image: "/home-page/portfolio-embroidery/2nd.png" },
-  { id: 3, name: "Custom Patches", slug: "custom-patches", image: "/home-page/portfolio-embroidery/3rd.png" },
-  { id: 4, name: "Logo Design", slug: "logo-design", image: "/home-page/portfolio-embroidery/1st.png" },
-  { id: 5, name: "3D Puff", slug: "3d-puff", image: "/home-page/portfolio-embroidery/5th.png" },
-  { id: 6, name: "Applique", slug: "applique", image: "/home-page/portfolio-embroidery/3rd.png" },
+  { id: 1, name: "Animal Designs", slug: "embroidery-digitizing", image: "/home-page/portfolio-embroidery/1st.png" },
+  { id: 2, name: "Birds Designs", slug: "vector-conversion", image: "/home-page/portfolio-embroidery/2nd.png" },
+  { id: 3, name: "Flower Designs", slug: "custom-patches", image: "/home-page/portfolio-embroidery/3rd.png" },
+  { id: 4, name: "Sports Designs", slug: "logo-design", image: "/home-page/portfolio-embroidery/1st.png" },
+  { id: 5, name: "Flag & Miltry", slug: "3d-puff", image: "/home-page/portfolio-embroidery/5th.png" },
+  { id: 6, name: "Birthday Designs", slug: "applique", image: "/home-page/portfolio-embroidery/3rd.png" },
 ];
 
 const sectionVariants = {

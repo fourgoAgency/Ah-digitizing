@@ -4,7 +4,7 @@ import { countryOptions } from "./country-options";
 
 export const outputFormats = ["DST", "PES", "JEF", "EXP", "OFM", "XXX", "CSD", "HUS", "CND", "ART", "VP3", "NGS", "PXF"] as const;
 export const vectorOutputFormats = ["AI", "PNG", "SVG", "EPS", "PDF"] as const;
-export const placementAreas = ["Cap", "Left Chest", "Jacket Back"] as const;
+export const placementAreas = ["Logo","Left Chest Logo","Cap & Hat","Visor","3D Puff","Patch","Applique","Outline / Line Art","Jacket Back","Customized"] as const;
 export const fabricTypes = [
   "Beanie",
   "Cotton",

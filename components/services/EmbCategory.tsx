@@ -6,11 +6,17 @@ import AnimatedSectionHeading from "../home/AnimatedSectionHeading";
 
 const embroideryCategories = [
   { id: 1, label: "Logo Embroidery Digitizing", href: "/services/embroidery/logo" },
-  { id: 2, label: "Left Chest Embroidery Digitizing", href: "/services/embroidery/left-chest" },
-  { id: 3, label: "Cap Embroidery Digitizing", href: "/services/embroidery/cap" },
-  { id: 4, label: "3D Puff Embroidery Digitizing", href: "/services/embroidery/3d-puff" },
-  { id: 5, label: "Jacket Embroidery Digitizing", href: "/services/embroidery/jacket" },
-  { id: 6, label: "Applique Embroidery Digitizing", href: "/services/embroidery/applique" }
+  { id: 2, label: "Left Chest Logo Digitizing", href: "/services/embroidery/left-chest" },
+  { id: 3, label: "Cap & Hat Digitizing", href: "/services/embroidery/cap" },
+  { id: 4, label: "Visor Digitizing", href: "/services/embroidery/logo" },
+  { id: 5, label: "3D Puff Digitizing", href: "/services/embroidery/3d-puff" },
+  { id: 6, label: "Patch Embroidery Digitizing", href: "/services/embroidery/left-chest" },
+  { id: 7, label: "Applique Design Digitizing", href: "/services/embroidery/jacket" },
+  { id: 8, label: "Outline / Line Art Embroidery Digitizing", href: "/services/embroidery/applique" },
+  { id: 9, label: "Jacket Back Digitizing", href: "/services/embroidery/jacket" },
+  { id: 10, label: "NGS Wings XP", href: "/services/embroidery/cap" },
+  { id: 10, label: "PXF Pulse", href: "/services/embroidery/3d-puff" },
+  { id: 12, label: "Custom Digitizing (Any Design You Need)", href: "/services/embroidery/applique" }
 ];
 
 export default function EmbCategory() {

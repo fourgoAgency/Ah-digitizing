@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/public/ahlogobgremove.png";
 import { FaUser } from "react-icons/fa6";
@@ -204,25 +204,33 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
 
 
 /* ================= MOBILE MENU ================= */
-function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick: () => void; }) {
+function MobileMenu({ cartCount, onCartClick }: { cartCount: number; onCartClick: () => void }) {
   const [open, setOpen] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleAccordion = (section: string) => {
     setActiveAccordion(activeAccordion === section ? null : section);
   };
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const close = () => setOpen(false);
+
   return (
-    <div className="md:hidden relative">
-      <button
-          type="button"
-          onClick={onCartClick}
-          className="relative transition cursor-pointer hover:text-white/90"
-          aria-label="Open cart"
-        >
-          <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-primary px-1 text-[10px] font-semibold text-white">{cartCount}</span>
-          <BiCart size={24} />
-        </button>
+    <div ref={menuRef} className="md:hidden relative">
+      <button type="button" onClick={onCartClick} className="relative transition cursor-pointer hover:text-white/90" aria-label="Open cart">
+        <span className="absolute -right-3 -top-2 min-w-[1.1rem] rounded-full bg-primary px-1 text-[10px] font-semibold text-white">{cartCount}</span>
+        <BiCart size={24} />
+      </button>
       <button onClick={() => setOpen(!open)} className="text-sm font-medium pl-5 cursor-pointer">
         <Menu />
       </button>
@@ -230,111 +238,64 @@ function MobileMenu({ cartCount,onCartClick }: { cartCount: number, onCartClick:
       {open && (
         <div className="absolute right-0 top-full mt-2 w-64 bg-primary shadow-xl rounded-lg z-50">
           <div className="py-2">
-            {/* BUTTONS */}
-            {/* ADDITIONAL LINKS */}
             <div className="px-6 py-4 space-y-2 border-t border-blue-700">
-              <Link href="/" className="block py-2 text-sm font-medium text-white hover:text-muted">
-                Home
-              </Link>
-              <Link href="/portfolio" className="block py-2 text-sm font-medium text-white hover:text-muted">
-                Portfolio
-              </Link>
-              <Link href="/shop" className="block py-2 text-sm font-medium text-white hover:text-muted">
-                Store
-              </Link>
-                
-              <Link href="/blogs" className="block py-2 text-sm font-medium text-white hover:text-muted">
-                Blogs
-              </Link>
+              <Link href="/" onClick={close} className="block py-2 text-sm font-medium text-white hover:text-muted">Home</Link>
+              <Link href="/portfolio" onClick={close} className="block py-2 text-sm font-medium text-white hover:text-muted">Portfolio</Link>
+              <Link href="/shop" onClick={close} className="block py-2 text-sm font-medium text-white hover:text-muted">Store</Link>
+              <Link href="/blogs" onClick={close} className="block py-2 text-sm font-medium text-white hover:text-muted">Blogs</Link>
             </div>
+
             {/* SERVICES ACCORDION */}
             <div className="border-b border-blue-700">
-              <button
-                onClick={() => toggleAccordion('services')}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary cursor-pointer transition-colors"
-              >
+              <button onClick={() => toggleAccordion('services')} className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-primary cursor-pointer transition-colors">
                 <span className="font-semibold text-white">Services</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'services' ? 'rotate-180' : ''
-                    }`}
-                />
+                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'services' ? 'rotate-180' : ''}`} />
               </button>
               {activeAccordion === 'services' && (
-                <div className="px-6 pb-4 space-y-2 z-999">
-                  <Link href="/services/embroidery/left-chest" className="block py-2 text-sm text-white hover:text-muted">
-                    Embroidery Digitizing
-                  </Link>
-                  <Link href="/services/raster-to-vector/silhouette" className="block py-2 text-sm text-white hover:text-muted">
-                    Raster to Vector
-                  </Link>
-                  <Link href="/services/custom-patches" className="block py-2 text-sm text-white hover:text-muted">
-                    Custom Patches
-                  </Link>
+                <div className="px-6 pb-4 space-y-2">
+                  <Link href="/services/embroidery/left-chest" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Embroidery Digitizing</Link>
+                  <Link href="/services/raster-to-vector/silhouette" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Raster to Vector</Link>
+                  <Link href="/services/custom-patches" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Custom Patches</Link>
                 </div>
               )}
             </div>
 
             {/* PRICING ACCORDION */}
             <div className="border-b border-primary">
-              <button
-                onClick={() => toggleAccordion('pricing')}
-                className="w-full px-6 py-4 cursor-pointer text-left flex justify-between items-center hover:bg-primary transition-colors"
-              >
+              <button onClick={() => toggleAccordion('pricing')} className="w-full px-6 py-4 cursor-pointer text-left flex justify-between items-center hover:bg-primary transition-colors">
                 <span className="font-semibold text-white">Pricing</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'pricing' ? 'rotate-180' : ''
-                    }`}
-                />
+                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'pricing' ? 'rotate-180' : ''}`} />
               </button>
               {activeAccordion === 'pricing' && (
-                <div className="px-6 pb-4 space-y-2 z-999">
-                  <Link href="/pricing/embroidery-digitizing" className="block py-2 text-sm text-white hover:text-muted">
-                    Embroidery Pricing
-                  </Link>
-                  <Link href="/pricing/raster-to-vector" className="block py-2 text-sm text-white hover:text-muted">
-                    Raster Pricing
-                  </Link>
+                <div className="px-6 pb-4 space-y-2">
+                  <Link href="/pricing/embroidery-digitizing" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Embroidery Pricing</Link>
+                  <Link href="/pricing/raster-to-vector" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Raster Pricing</Link>
                 </div>
               )}
             </div>
 
             {/* ABOUT ACCORDION */}
             <div>
-              <button
-                onClick={() => toggleAccordion('about')}
-                className="w-full px-6 cursor-pointer py-4 text-left flex justify-between items-center hover:bg-primary transition-colors"
-              >
+              <button onClick={() => toggleAccordion('about')} className="w-full px-6 cursor-pointer py-4 text-left flex justify-between items-center hover:bg-primary transition-colors">
                 <span className="font-semibold text-white">About</span>
-
-                <ChevronDown
-                  className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'about' ? 'rotate-180' : ''
-                    }`}
-                />
+                <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 ${activeAccordion === 'about' ? 'rotate-180' : ''}`} />
               </button>
               {activeAccordion === 'about' && (
-                <div className="px-6 pb-4 space-y-2 z-999">
-                  <Link href="/about/write-a-review" className="block py-2 text-sm text-white hover:text-muted">
-                    Write a Review
-                  </Link>
-                  <Link href="/contact-us" className="block py-2 text-sm text-white hover:text-muted">
-                    Contact
-                  </Link>
-                  <Link href="/FAQs" className="block py-2 text-sm text-white hover:text-muted">
-                    FAQs
-                  </Link>
+                <div className="px-6 pb-4 space-y-2">
+                  <Link href="/about/write-a-review" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Write a Review</Link>
+                  <Link href="/contact-us" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Contact</Link>
+                  <Link href="/FAQs" onClick={close} className="block py-2 text-sm text-white hover:text-muted">FAQs</Link>
                 </div>
               )}
-            <div className="px-6 py-4 space-y-2 border-b border-blue-700">
-              <Button asChild className="w-full bg-white text-primary border cursor-pointer border-primary rounded-full px-10 py-2">
-                <Link href="/get-free-quote">Get Free Quote</Link>
-              </Button>
-              <Button asChild className="w-full bg-primary text-white border cursor-pointer border-white rounded-full px-10 py-2">
-                <Link href="/get-quote">Order Now</Link>
-              </Button>
+              <div className="px-6 py-4 space-y-2 border-b border-blue-700">
+                <Button asChild className="w-full bg-white text-primary border cursor-pointer border-primary rounded-full px-10 py-2">
+                  <Link href="/get-free-quote" onClick={close}>Get Free Quote</Link>
+                </Button>
+                <Button asChild className="w-full bg-primary text-white border cursor-pointer border-white rounded-full px-10 py-2">
+                  <Link href="/get-quote" onClick={close}>Order Now</Link>
+                </Button>
+              </div>
             </div>
-            </div>
-
-
           </div>
         </div>
       )}

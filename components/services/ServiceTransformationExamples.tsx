@@ -13,6 +13,8 @@ type TransformationExample = {
   description: string;
   beforeImage: string;
   afterImage: string;
+  placementArea?: string;
+  outputFormat?: string;
 };
 const leftVariants = {
   hidden: { opacity: 0, x: -72 },
@@ -42,11 +44,11 @@ export default function ServiceTransformationExamples({
   title,
   description,
   examples,
-  quoteParam
+  quoteParam,
 }: ServiceTransformationExamplesProps) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const router = useRouter();
-  
+
   useEffect(() => {
     if (!activeImage) return;
 
@@ -106,12 +108,17 @@ export default function ServiceTransformationExamples({
                 </motion.div>
 
                 <div className="flex justify-center mt-6">
-<Button
-  onClick={() => router.push(`/get-free-quote?orderType=${quoteParam}`)}
-  className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border cursor-pointer"
->
-  Order Now
-</Button>
+                  <Button
+                    onClick={() => {
+                      const params = new URLSearchParams({ orderType: quoteParam });
+                      if (example.placementArea) params.set("placementArea", example.placementArea);
+                      if (example.outputFormat) params.set("outputFormat", example.outputFormat);
+                      router.push(`/get-quote?${params.toString()}`);
+                    }}
+                    className="rounded-full px-8 py-2 text-sm sm:text-base hover:bg-transparent hover:border-primary hover:text-primary hover:border cursor-pointer"
+                  >
+                    Order Now
+                  </Button>
                 </div>
               </div>
 
@@ -124,20 +131,20 @@ export default function ServiceTransformationExamples({
                   viewport={{ once: true, amount: 0.3 }}
                   className="text-center mt-4"
                 >
-                <div
-                  className="bg-white rounded-lg w-full h-56 sm:h-64 md:h-72 lg:h-80 
+                  <div
+                    className="bg-white rounded-lg w-full h-56 sm:h-64 md:h-72 lg:h-80 
              flex items-center justify-center overflow-hidden 
              shadow-md shadow-gray-700 cursor-pointer hover:shadow-lg hover:shadow-gray-600 transition-shadow duration-300"
-                  onClick={() => setActiveImage(example.afterImage)}
-                >
-                  <Image
-                    src={example.afterImage}
-                    alt="After"
-                    className="w-full h-full hover:scale-105 transition-transform duration-300 object-contain"
-                    width={900}
-                    height={900}
-                  />
-                </div>
+                    onClick={() => setActiveImage(example.afterImage)}
+                  >
+                    <Image
+                      src={example.afterImage}
+                      alt="After"
+                      className="w-full h-full hover:scale-105 transition-transform duration-300 object-contain"
+                      width={900}
+                      height={900}
+                    />
+                  </div>
                 </motion.div>
               </div>
             </div>

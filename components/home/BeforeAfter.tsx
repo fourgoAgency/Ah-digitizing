@@ -53,7 +53,7 @@ const Card = ({ before, after }: CardProps) => {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6"
+            className="fixed inset-0 z-50 bg-black/80 flex items-center gap-0 justify-center p-6"
             onClick={() => setOpen(false)}
           >
             <button onClick={() => setOpen(false)} className="absolute top-5 right-5 text-white text-3xl font-bold cursor-pointer">&times;</button>
@@ -61,8 +61,9 @@ const Card = ({ before, after }: CardProps) => {
               initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.45, ease: "easeInOut" }}
               onClick={(e) => e.stopPropagation()}
+              className=""
             >
-              <Image src={after} alt="After Full" width={2000} height={2000} className="object-contain" style={{ width: "75vw", height: "75vh", borderRadius: "1.5rem" }} />
+              <Image src={after} alt="After Full" width={2000} height={2000} className="object-contain w-8/10 rounded-2xl" />
             </motion.div>
           </motion.div>
         )}
@@ -74,10 +75,10 @@ const Card = ({ before, after }: CardProps) => {
 const ALL_ITEMS = [
   { before: "/home-page/1B.png", after: "/home-page/1A.png" },
   { before: "/home-page/2B.png", after: "/home-page/2A.png" },
-  { before: "/home-page/4B.png", after: "/home-page/4A.png" },
+  { before: "/home-page/3B.png", after: "/home-page/3A.png" },
   { before: "/home-page/1B.png", after: "/home-page/1A.png" },
   { before: "/home-page/2B.png", after: "/home-page/2A.png" },
-  { before: "/home-page/4B.png", after: "/home-page/4A.png" },
+  { before: "/home-page/3B.png", after: "/home-page/3A.png" },
 ];
 
 export default function BeforeAfterGrid() {

@@ -21,6 +21,7 @@ type ServiceData = {
       description: string;
       beforeImage: string;
       afterImage: string;
+      placementArea?: string;
     }[];
 quoteParam:string;
   };
@@ -40,7 +41,6 @@ quoteParam:string;
 type ServicesMap = Record<string, ServiceData>;
 
 export function generateStaticParams() {
-  console.log("Generating static params for services...", Object.keys(servicesData as ServicesMap).map((slug) => ({ slug })));
   return Object.keys(servicesData as ServicesMap).map((slug) => ({ slug }));
 }
 
