@@ -14,89 +14,89 @@
           "id": 1,
           "title": "Logo Embroidery Digitizing",
           "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/home-page/5_before.png",
+          "afterImage": "/home-page/5_after.png",
           "placementArea":"Logo"
         },
         {
           "id": 2,
           "title": "Left Chest Logo Digitizing",
           "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
-          "beforeImage": "/services/3D PUFF Before.png",
-          "afterImage": "/services/3D PUFF after.svg",
+          "beforeImage": "/home-page/6_before.png",
+          "afterImage": "/home-page/6_after.png",
           "placementArea":"Left Chest Logo"
         },
         {
           "id": 3,
           "title": "Cap & Hat Digitizing",
           "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
-          "beforeImage": "/services/outline.png",
-          "afterImage": "/services/OUTLINE.svg",
+          "beforeImage": "/services/2 Cap Before.png",
+          "afterImage": "/services/cap.svg",
           "placementArea":"Cap & Hat"
         },
         {
           "id": 4,
           "title": "Visor Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/home-page/1_before.png",
+          "afterImage": "/home-page/1_after.png",
           "placementArea":"Visor"
         },
         {
           "id": 5,
           "title": "3D Puff Digitizing",
           "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/services/3D PUFF Before.png",
+          "afterImage": "/services/3D PUFF after.svg",
           "placementArea":"3D Puff"
         },
         {
           "id": 6, 
           "title": "Patch Embroidery Digitizing",
           "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
-          "beforeImage": "/services/3D PUFF Before.png",
-          "afterImage": "/services/3D PUFF after.svg",
+          "beforeImage": "/home-page/avatars/2 Patch Embroidery Design for Sweater.png",
+          "afterImage": "/home-page/avatars/2 Patch Embroidery Design for Sweater.png",
           "placementArea":"Patch"
         },
         {
           "id": 7,
           "title": "Applique Design Digitizing",
           "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
-          "beforeImage": "/services/outline.png",
-          "afterImage": "/services/OUTLINE.svg",
+          "beforeImage": "/home-page/avatars/3 Left Chest Logo Rugby Club Shirt.png",
+          "afterImage": "/home-page/avatars/3 Left Chest Logo Rugby Club Shirt.png",
           "placementArea":"Applique"
         },
         {
           "id": 8,
           "title": "Outline / Line Art Embroidery Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/services/outline.png",
+          "afterImage": "/services/OUTLINE.svg",
           "placementArea":"Outline / Line Art"
         },
         {
           "id": 9,
           "title": "Jacket Back Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/home-page/avatars/4 Left Chest logo Puffer Jacket.png",
+          "afterImage": "/home-page/avatars/4 Left Chest logo Puffer Jacket.png",
           "placementArea":"Jacket Back"
         },
         {
           "id": 10,
           "title": "NGS Wings XP",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/home-page/avatars/5 Left Chest for Polo Shirt.png",
+          "afterImage": "/home-page/avatars/5 Left Chest for Polo Shirt.png",
           "outputFormat":"NGS"
         },
         {
           "id": 11,
           "title": "PXF Pulse",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
-          "outputFormat":"PXF"
+          "beforeImage": "/home-page/avatars/1 Left Chest Logo for Polyester Pique Shirt.png",
+          "afterImage": "/home-page/avatars/1 Left Chest Logo for Polyester Pique Sh/",
+         "outputFormat":"PXF"
         },
         {
           "id": 12,
@@ -146,29 +146,29 @@
           "id": 1,
           "title": "Logo Refinement",
           "description": "Transforming pixelated company logos into a clean, scalable vector format suitable for all branding needs.",
-          "beforeImage": "/home-page/portfolio-vector/1st.jpg",
-          "afterImage": "/home-page/portfolio-vector/2nd.jpg"
+          "beforeImage": "/home-page/3_before.png",
+          "afterImage": "/home-page/3_after.png"
         },
         {
           "id": 2,
           "title": "Intricate Illustration Cleanup",
           "description": "Converting a hand-drawn or scanned illustration into a sharp vector graphic, preserving all artistic nuances.",
-          "beforeImage": "/home-page/portfolio-vector/2nd.jpg",
-          "afterImage": "/home-page/portfolio-vector/3rd.jpg"
+          "beforeImage": "/home-page/1_before.png",
+          "afterImage": "/home-page/1_after.png"
         },
         {
           "id": 3,
           "title": "Product Image Enhancement",
           "description": "Perfecting product images for e-commerce by converting them to vector, ensuring high-quality display at any size.",
-          "beforeImage": "/home-page/portfolio-vector/3rd.jpg",
-          "afterImage": "/home-page/portfolio-vector/4th.jpg"
+          "beforeImage": "/home-page/2_before.png",
+          "afterImage": "/home-page/2_after.png"
         },
         {
           "id": 4,
           "title": "Detailed Artwork Conversion",
           "description": "Bringing old or complex artwork to life in a scalable vector format, ideal for large-scale prints and digital applications.",
-          "beforeImage": "/home-page/portfolio-vector/4th.jpg",
-          "afterImage": "/home-page/portfolio-vector/1st.jpg"
+          "beforeImage": "/home-page/4_before.png",
+          "afterImage": "/home-page/4_after.png"
         }
       ]
     },

@@ -1,11 +1,15 @@
 "use client";
 
 import ShopProductSection from "@/components/shop/ShopProductSection";
-import { products } from "@/data/products";
+import { Product } from "@/data/products";
 
-const freeProducts = [...products].sort((a, b) => a.price - b.price).slice(0, 10);
+type FreeProductsProps = {
+  products: Product[];
+};
 
-export default function FreeProducts() {
+export default function FreeProducts({ products }: FreeProductsProps) {
+  const freeProducts = [...products].sort((a, b) => a.price - b.price).slice(0, 10);
+
   return (
     <ShopProductSection
       title="Free Products"

@@ -1,8 +1,10 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import CartSidebar from "@/components/shop/CartSidebar";
 import type { Product } from "@/data/products";
+
+const CART_STORAGE_KEY = "cart_items";
 
 export type CartLine = {
   product: Product;
@@ -14,6 +16,10 @@ type CartSidebarContextValue = {
   closeCart: () => void;
   items: CartLine[];
   addItem: (product: Product, qty?: number) => void;
+  increaseQty: (id: number) => void;
+  decreaseQty: (id: number) => void;
+  deleteItem: (id: number) => void;
+  clearCart: () => void;
 };
 
 const CartSidebarContext = createContext<CartSidebarContextValue | null>(null);
@@ -21,6 +27,27 @@ const CartSidebarContext = createContext<CartSidebarContextValue | null>(null);
 export function CartSidebarProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<CartLine[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as CartLine[];
+      if (Array.isArray(parsed)) {
+        queueMicrotask(() => setItems(parsed));
+      }
+    } catch {
+      // ignore invalid storage data
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // silently ignore storage write failures
+    }
+  }, [items]);
 
   const openCart = useCallback(() => setOpen(true), []);
   const closeCart = useCallback(() => setOpen(false), []);
@@ -61,14 +88,20 @@ export function CartSidebarProvider({ children }: { children: React.ReactNode })
     setItems((prev) => prev.filter((item) => item.product.id !== id));
   }, []);
 
+  const clearCart = useCallback(() => setItems([]), []);
+
   const value = useMemo(
     () => ({
       openCart,
       closeCart,
       items,
       addItem,
+      increaseQty,
+      decreaseQty,
+      deleteItem,
+      clearCart,
     }),
-    [openCart, closeCart, items, addItem]
+    [openCart, closeCart, items, addItem, increaseQty, decreaseQty, deleteItem, clearCart]
   );
 
   return (

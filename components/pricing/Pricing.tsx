@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import pricing from "@/data/price.json";
-import portfolio from "@/data/portfolio.json";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 const headingVariants = {
@@ -70,10 +68,15 @@ const accents = [
   },
 ];
 
-export default function Pricing({ slug }: { slug: string }) {
-  const data = pricing as PriceData;
-  const category = (slug in data ? slug : "embroidery") as keyof PriceData;
-  const plans = data[category];
+type PricingProps = {
+  slug: string;
+  plans: Plan[];
+  portfolioItems: PortfolioItem[];
+  loading: boolean;
+};
+
+export default function Pricing({ slug, plans, portfolioItems, loading }: PricingProps) {
+  const category = slug === "vector" ? "vector" : "embroidery";
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
@@ -83,18 +86,7 @@ export default function Pricing({ slug }: { slug: string }) {
     return window.innerWidth < 1024 ? 4 : 10;
   });
 
-  const portfolioData = portfolio as PortfolioData;
-  const items = useMemo(
-    () => portfolioData[category] ?? [],
-    [category]
-  );
-  const previewItems = useMemo(() => {
-    if (items.length === 0) return [];
-    return Array.from(
-      { length: maxPreviewItems },
-      (_, index) => items[index % items.length]
-    );
-  }, [items, maxPreviewItems]);
+  const previewItems = portfolioItems.slice(0, maxPreviewItems);
 
   const openPopup = (planId: string) => {
     setActivePlanId(planId);
@@ -144,20 +136,31 @@ export default function Pricing({ slug }: { slug: string }) {
     };
   }, [open]);
 
+  useEffect(() => {
+  setOpen(false);
+  setActive(false);
+  setActivePlanId(null);
+}, [slug]);
+
   return (
     <section className="relative flex justify-center py-24 bg-slate-100 overflow-hidden">
       <motion.div
+        key={category}
         initial="hidden"
-        whileInView="visible"
+        animate="visible"
         variants={cardsContainerVariants}
-        viewport={viewportOpts}
         className="grid sm:grid-cols-1 md:grid-cols-3 gap-20 2xl:gap-50"
       >
         {plans.map((plan, index) => {
           const accent = accents[index % accents.length];
           const isActive = activePlanId === plan.id;
           return (
-            <motion.div key={plan.id} variants={cardVariants}>
+            <motion.div
+              key={`${category}-${plan.id}`}
+              initial="hidden"
+              animate="visible"
+              variants={cardVariants}
+            >
               <div
                 key={plan.id}
                 className={`relative flex w-84 2xl:w-96 h-103 flex-col rounded-4xl bg-white px-4 pb-10 pt-12 text-center shadow-xl transition-opacity duration-300
@@ -166,17 +169,17 @@ export default function Pricing({ slug }: { slug: string }) {
                 style={
                   isActive && open
                     ? {
-                        position: "fixed",
-                        right: "0",
-                        top: "50%",
-                        width: "20%",
-                        transform: active
-                          ? "translateY(-50%) translateX(0)"
-                          : "translateY(-50%) translateX(-40px)",
-                        transition: "transform 300ms ease",
-                        zIndex: 50,
-                        marginRight: 40,
-                      }
+                      position: "fixed",
+                      right: "0",
+                      top: "50%",
+                      width: "20%",
+                      transform: active
+                        ? "translateY(-50%) translateX(0)"
+                        : "translateY(-50%) translateX(-40px)",
+                      transition: "transform 300ms ease",
+                      zIndex: 50,
+                      marginRight: 40,
+                    }
                     : undefined}
               >
                 {/* Side Label */}
@@ -212,7 +215,7 @@ export default function Pricing({ slug }: { slug: string }) {
                 </ul>
 
                 <button
-                 onClick={() => router.push(`/get-free-quote?orderType=${slug}`)}
+                  onClick={() => router.push(`/get-free-quote?orderType=${slug}`)}
                   className={`mx-auto w-40 rounded-full py-2.5 text-xs font-semibold uppercase cursor-pointer text-white ${accent.button}`}
                 >
                   Buy Now
@@ -227,7 +230,7 @@ export default function Pricing({ slug }: { slug: string }) {
       {/* POPUP */}
       {open && (
         <div className="fixed inset-0 z-40">
-          
+
           <div
             className="fixed inset-0 bg-slate-900/50"
             onClick={closePopup}

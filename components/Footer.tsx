@@ -201,7 +201,7 @@ export default function Footer() {
               <FaXTwitter />
             </div>
             <div className="mt-6 text-sm text-gray-300">
-              <p className="font-medium text-white">We're here to help.</p>
+              <p className="font-medium text-white">We&apos;re here to help.</p>
               <p>Call Us: <span className="text-white">021 111 176 646</span></p>
               <p>Email: <span className="text-white">support@ahdigitizing.com</span></p>
             </div>
@@ -214,7 +214,7 @@ export default function Footer() {
       {/* BOTTOM */}
       <div className="text-center mt-4 text-xs text-gray-400 flex flex-col md:flex-row justify-between items-center gap-2">
         <span></span>
-        © 2025 AHdigitizing. All rights reserved. <span className="text-right text-amber-100">Designed by Fourgo Team</span>
+        &copy; 2025 AHdigitizing. All rights reserved. <span className="text-right text-amber-100">Designed by Fourgo Team</span>
       </div>
     </footer>
   );

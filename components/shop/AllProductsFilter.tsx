@@ -59,10 +59,6 @@ export default function AllProductsFilter({
     return () => media.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    if (!hasSelectedCategory) setShowAllSubcategories(false);
-  }, [hasSelectedCategory]);
-
   const filterContent = (
     <div>
       <input

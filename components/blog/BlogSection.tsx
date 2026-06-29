@@ -1,11 +1,13 @@
  "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import BlogGrid from "./BlogGrid";
 import BlogPagination from "./BlogPagination";
 import BlogToolbar from "./BlogToolbar";
-import { blogPosts } from "../../data/blogData";
 import { motion } from "framer-motion";
+import type { BlogPost } from "../../data/blogData";
+import { getDocuments } from "../../lib/firebase";
+import { blogPosts as fallbackBlogPosts } from "../../data/blogData";
 const POSTS_PER_PAGE = 8;
 
 function toTimestamp(dateText: string) {
@@ -20,15 +22,49 @@ const headingVariants = {
   },
 };
 export default function BlogSection() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchBlogPosts() {
+      try {
+        setIsLoading(true);
+        const fetchedPosts = await getDocuments<BlogPost>("blogs");
+        if (!isMounted) return;
+        setPosts(
+          fetchedPosts.map((post) => ({
+            ...post,
+            id: String(post.id),
+          }))
+        );
+      } catch (fetchError) {
+        if (!isMounted) return;
+        console.error("Failed to fetch blog posts from Firestore:", fetchError);
+        setError("Unable to load posts right now. Showing default content.");
+        setPosts(fallbackBlogPosts);
+      } finally {
+        if (!isMounted) return;
+        setIsLoading(false);
+      }
+    }
+
+    fetchBlogPosts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredAndSortedPosts = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
-    const filtered = blogPosts.filter((post) => {
+    const filtered = posts.filter((post) => {
       const matchesCategory =
         selectedCategory === "All" || post.category === selectedCategory;
       const matchesSearch =
@@ -50,7 +86,7 @@ export default function BlogSection() {
       }
       return toTimestamp(b.date) - toTimestamp(a.date);
     });
-  }, [searchTerm, selectedCategory, sortBy]);
+  }, [searchTerm, selectedCategory, sortBy, posts]);
 
   const totalPages = Math.max(
     1,
@@ -106,7 +142,16 @@ export default function BlogSection() {
             onToggleSortDirection={toggleSortDirection}
           />
         </div>
-        {visiblePosts.length > 0 ? (
+        {error ? (
+          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-center text-rose-700">
+            {error}
+          </div>
+        ) : null}
+        {isLoading ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-[#dfe3ea] bg-white p-8 text-center text-slate-500">
+            Loading posts...
+          </div>
+        ) : visiblePosts.length > 0 ? (
           <BlogGrid posts={visiblePosts} />
         ) : (
           <div className="mt-8 rounded-2xl border border-dashed border-[#dfe3ea] bg-white p-8 text-center text-slate-500">

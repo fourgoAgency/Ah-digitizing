@@ -9,9 +9,13 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "flagcdn.com",
-      }
-    ],
-  },
-};
+      },
+    {
+      protocol: "https",
+      hostname: "firebasestorage.googleapis.com",
+    },
+  ],
+},
+}
 
 module.exports = nextConfig;

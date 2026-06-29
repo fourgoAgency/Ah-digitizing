@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import faqsData from "../../data/faqs.json";
 import { useState } from "react";
 import { FAQ } from '@/components/home/WhyChooseUs';
@@ -25,9 +25,8 @@ const headingVariants = {
     },
 };
 export default function FAQs() {
-
-    const faqs = (faqsData as any).faqs || [];
-    const typedFaqs: FAQ[] = faqs;
+    const faqs = Array.isArray((faqsData as { faqs?: unknown[] }).faqs) ? (faqsData as { faqs?: unknown[] }).faqs : [];
+    const typedFaqs: FAQ[] = faqs as FAQ[];
     const [openFaq, setOpenFaq] = useState<number | null>(1);
     const toggleFaq = (id: number) => {
         setOpenFaq(openFaq === id ? null : id);
@@ -83,7 +82,7 @@ export default function FAQs() {
                         </motion.div>
                     </motion.div>
                 ))}
-                </motion.div>
+            </motion.div>
         </div>
     )
 };

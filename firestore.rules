@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function hasRole(role) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && (
+          request.auth.token.admin == true
+          || request.auth.token.email in ['admin@ahdigitizing.com', 'fourgo.agency@gmail.com']
+          || hasRole('admin')
+        );
+    }
+
+    function isStaff() {
+      return isAdmin() || hasRole('designer');
+    }
+
+    function quoteCanBeFinalized() {
+      return resource.data.status == 'pending_verification'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['files', 'status', 'submittedAt'])
+        && request.resource.data.status == 'new';
+    }
+
+    // users collection: allow read to owner and staff; writes via server/admin only
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isStaff());
+      allow write: if false; // write only via admin SDK (server)
+    }
+
+    // Checkout creates orders publicly; dashboard management is staff/admin only.
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if isStaff();
+      allow update, delete: if isAdmin();
+    }
+
+    // Quote form starts public, then finalizes the same pending quote after OTP.
+    match /quotes/{quoteId} {
+      allow create: if true;
+      allow read: if isStaff();
+      allow update: if isAdmin() || quoteCanBeFinalized();
+      allow delete: if isAdmin();
+    }
+
+    // Free-quote form writes standalone quote requests.
+    match /quoteRequests/{quoteRequestId} {
+      allow create: if true;
+      allow read, update, delete: if isStaff();
+    }
+
+    // Dashboard data and admin notification bell.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /category/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isStaff();
+      allow update: if isStaff()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow create, delete: if isAdmin();
+    }
+
+    // By default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -36,7 +36,7 @@ export default function OurStorySection() {
               Our Story: Crafting Digital Excellence
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              Founded in 2010, Artdigitizing emerged from a passion for bringing designs to life with precision and creativity. What began with a commitment to mastering the art of embroidery digitizing, evolved into a service that perfectly captured the client's vision. Over the years, we expanded our expertise, embracing raster-to-vector conversions, and bespoke design services to become a comprehensive hub for digital artistry. Today, we stand on continuous innovation, unwavering quality, and a deep dedication to our client's success.
+              Founded in 2010, Artdigitizing emerged from a passion for bringing designs to life with precision and creativity. What began with a commitment to mastering the art of embroidery digitizing, evolved into a service that perfectly captured the client&apos;s vision. Over the years, we expanded our expertise, embracing raster-to-vector conversions, and bespoke design services to become a comprehensive hub for digital artistry. Today, we stand on continuous innovation, unwavering quality, and a deep dedication to our client&apos;s success.
             </p>
             <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-md font-semibold">
               Founded in 2010

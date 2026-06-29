@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
+import { getDocuments } from "@/lib/firebase";
 import AnimatedSectionHeading from "./AnimatedSectionHeading";
 
 type Testimonial = {
@@ -14,46 +15,33 @@ type Testimonial = {
   avatar: string;
 };
 
-const testimonials: Testimonial[] = [
-  {
-    id: 1,
-    name: "James Cooper",
-    role: "Apparel Brand Owner",
-    rating: 5,
-    text:
-      "Clean digitizing, fast replies, and the files stitched smoothly on our caps without the usual cleanup round.",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 2,
-    name: "Maria Lewis",
-    role: "Print Shop Manager",
-    rating: 5,
-    text:
-      "Their vector conversion saved a messy client logo. The artwork came back crisp, organized, and ready for production.",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 3,
-    name: "Owen Patel",
-    role: "Freelance Designer",
-    rating: 4,
-    text:
-      "Turnaround was quick and the team handled revision notes clearly. It felt easy to move from proof to final file.",
-    avatar: "/avatar.png",
-  },
-  {
-    id: 4,
-    name: "Sarah Bennett",
-    role: "Uniform Supplier",
-    rating: 5,
-    text:
-      "We sent multiple logos at once and every file was consistent. That made our production week much smoother.",
-    avatar: "/avatar.png",
-  },
-];
+// ─── Skeleton ──────────────────────────────────────────────────────────────────
 
-const marqueeTestimonials = [...testimonials, ...testimonials];
+function SkeletonCard() {
+  return (
+    <div className="relative mt-16 w-[280px] shrink-0 rounded-[28px] border border-gray-200 bg-white p-6 pt-16 shadow-xl sm:w-[320px] animate-pulse">
+      <div className="absolute right-6 -top-10 h-20 w-20 rounded-full bg-gray-200 border-4 border-gray-100" />
+      <div className="absolute left-[-20px] top-0">
+        <div className="relative rounded-tl-[26px] rounded-tr-[26px] rounded-br-[26px] bg-gray-200 px-10 py-3 w-36 h-12" />
+      </div>
+      <div className="mt-6 flex gap-4">
+        <div className="w-1 rounded-full bg-gray-200" />
+        <div className="flex-1 space-y-3">
+          <div className="flex gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-4 w-4 rounded bg-gray-200" />
+            ))}
+          </div>
+          <div className="h-3 w-full rounded bg-gray-200" />
+          <div className="h-3 w-5/6 rounded bg-gray-200" />
+          <div className="h-3 w-4/6 rounded bg-gray-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Card ──────────────────────────────────────────────────────────────────────
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
@@ -64,6 +52,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           alt={t.name}
           width={80}
           height={80}
+          unoptimized
           className="h-[72px] w-[72px] rounded-full object-cover"
         />
       </div>
@@ -94,10 +83,25 @@ function TestimonialCard({ t }: { t: Testimonial }) {
   );
 }
 
+// ─── Main ──────────────────────────────────────────────────────────────────────
+
 export default function TestimonialsMarquee() {
   const [isPaused, setIsPaused] = useState(false);
-  const pause = () => setIsPaused(true);
-  const resume = () => setIsPaused(false);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getDocuments<Testimonial>("testimonials")
+      .then((docs) => {
+        const sorted = docs.sort((a, b) => a.id - b.id);
+        setTestimonials(sorted);
+      })
+      .catch((err) => console.error("Failed to fetch testimonials:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const marqueeItems = [...testimonials, ...testimonials];
+  const skeletons = Array.from({ length: 5 });
 
   return (
     <section className="overflow-hidden bg-white py-16 sm:py-20">
@@ -113,10 +117,10 @@ export default function TestimonialsMarquee() {
 
         <div
           className="relative overflow-hidden touch-pan-y cursor-grab"
-          onPointerDown={pause}
-          onPointerUp={resume}
-          onTouchStart={pause}
-          onTouchEnd={resume}
+          onPointerDown={() => setIsPaused(true)}
+          onPointerUp={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
           tabIndex={0}
           aria-label="Scrolling testimonials. Hold to pause the motion."
         >
@@ -126,25 +130,26 @@ export default function TestimonialsMarquee() {
           <div
             className="flex w-max gap-6 py-14 will-change-transform"
             style={{
-              animation: "home-testimonials-marquee 34s linear infinite",
+              animationName: loading ? "none" : "home-testimonials-marquee",
+              animationDuration: "34s",
+              animationTimingFunction: "linear",
+              animationIterationCount: "infinite",
               animationPlayState: isPaused ? "paused" : "running",
             }}
           >
-            {marqueeTestimonials.map((item, index) => (
-              <TestimonialCard key={`${item.id}-${index}`} t={item} />
-            ))}
+            {loading
+              ? skeletons.map((_, i) => <SkeletonCard key={i} />)
+              : marqueeItems.map((item, index) => (
+                <TestimonialCard key={`${item.id}-${index}`} t={item} />
+              ))}
           </div>
         </div>
       </div>
 
       <style jsx>{`
         @keyframes home-testimonials-marquee {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
         }
       `}</style>
     </section>

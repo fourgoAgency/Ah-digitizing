@@ -1,5 +1,5 @@
 import { Funnel, Search, SlidersHorizontal } from "lucide-react";
-import { CustomDropdown } from "@/app/get-quote/components/CustomDropdown";
+import { CustomDropdown } from "@/app/(main)/get-quote/components/CustomDropdown";
 
 type BlogToolbarProps = {
   searchTerm: string;

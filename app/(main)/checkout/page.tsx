@@ -1,0 +1,361 @@
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { serverTimestamp } from "firebase/firestore";
+import { formatPrice } from "@/data/products";
+import { useCartSidebar } from "@/components/shop/CartSidebarContext";
+import { createDocument } from "@/lib/firebase";
+
+type PaymentMethod = "card" | "paypal";
+
+export default function CheckoutPage() {
+  const { items, clearCart } = useCartSidebar();
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [couponCode, setCouponCode] = useState("");
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const [customerDetails, setCustomerDetails] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    deliveryEmail: "",
+    instructions: "",
+  });
+
+  const subtotal = useMemo(
+    () => items.reduce((sum, item) => sum + item.product.price * item.qty, 0),
+    [items]
+  );
+  const total = subtotal;
+
+  async function handlePlaceOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (items.length === 0) {
+      setStatusMessage("Your cart is empty. Add products before placing an order.");
+      return;
+    }
+
+    setPlacingOrder(true);
+    setStatusMessage(null);
+
+    try {
+      const orderNo = `WS${String(Math.floor(100000 + Math.random() * 900000))}`;
+      const customerName = `${customerDetails.firstName} ${customerDetails.lastName}`.trim();
+
+      const orderId = await createDocument("orders", {
+        orderNo,
+        customerName,
+        customerEmail: customerDetails.email,
+        company: customerDetails.company || null,
+        deliveryEmail: customerDetails.deliveryEmail || customerDetails.email,
+        instructions: customerDetails.instructions || null,
+        paymentMethod,
+        paymentStatus: "Pending",
+        orderStatus: "Ready",
+        subtotal,
+        total,
+        items: items.map((item) => ({
+          productId: item.product.id,
+          slug: item.product.slug,
+          title: item.product.title,
+          price: item.product.price,
+          qty: item.qty,
+          lineTotal: item.product.price * item.qty,
+          image: item.product.heroImage,
+        })),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      try {
+        await fetch("/api/order/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "order_placed",
+            orderId,
+            customerEmail: customerDetails.email,
+            orderType: paymentMethod,
+          }),
+        });
+      } catch {
+        // Notification failure should not block checkout.
+      }
+
+      clearCart();
+      setCustomerDetails({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        deliveryEmail: "",
+        instructions: "",
+      });
+      setStatusMessage(`Thank you! Your order ${orderNo} has been placed.`);
+    } catch {
+      setStatusMessage("We could not place your order. Please try again.");
+    } finally {
+      setPlacingOrder(false);
+    }
+  }
+
+  return (
+    <main className="bg-[#f1f2f4] pb-16">
+      <section className="mx-auto w-full max-w-7xl px-4 pt-10">
+        <div className="rounded-3xl bg-white p-8 shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-400">
+                Checkout
+              </p>
+              <h1 className="text-3xl font-bold text-gray-900">Secure Checkout</h1>
+            </div>
+            <Link
+              href="/cart"
+              className="rounded-full border border-primary px-5 py-2 text-sm font-semibold cursor-pointer text-primary transition hover:bg-primary hover:text-white"
+            >
+              Back to Cart
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <form className="space-y-8" onSubmit={handlePlaceOrder}>
+              <div className="rounded-2xl border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900">Customer Details</h2>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">First Name</label>
+                    <input
+                      required
+                      type="text"
+                      value={customerDetails.firstName}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, firstName: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: Jason"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">Last Name</label>
+                    <input
+                      required
+                      type="text"
+                      value={customerDetails.lastName}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, lastName: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: Smith"
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-sm font-semibold text-gray-700">Email</label>
+                    <input
+                      required
+                      type="email"
+                      value={customerDetails.email}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, email: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: you@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-sm font-semibold text-gray-700">Company</label>
+                    <input
+                      type="text"
+                      value={customerDetails.company}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, company: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: AH Digitizing"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900">Project Details</h2>
+                <div className="mt-4 grid gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">Delivery Email</label>
+                    <input
+                      type="email"
+                      value={customerDetails.deliveryEmail}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, deliveryEmail: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: delivery@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">Instructions</label>
+                    <textarea
+                      rows={4}
+                      value={customerDetails.instructions}
+                      onChange={(event) => setCustomerDetails((current) => ({ ...current, instructions: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                      placeholder="eg: Thread colors, sizes, format preferences..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900">Payment Method</h2>
+                <div className="mt-4 grid gap-3">
+                  <label className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === "card"}
+                      onChange={() => setPaymentMethod("card")}
+                    />
+                    Credit / Debit Card
+                  </label>
+                  <label className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === "paypal"}
+                      onChange={() => setPaymentMethod("paypal")}
+                    />
+                    PayPal
+                  </label>
+                </div>
+
+                {paymentMethod === "card" && (
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2 sm:col-span-2">
+                      <label className="text-sm font-semibold text-gray-700">Card Number</label>
+                      <input
+                        type="text"
+                        className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                        placeholder="eg: 1234 5678 9012 3456"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Expiry Date</label>
+                      <input
+                        type="text"
+                        className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                        placeholder="MM/YY"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">CCV</label>
+                      <input
+                        type="text"
+                        className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                        placeholder="eg: 123"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {paymentMethod === "paypal" && (
+                  <div className="mt-5 rounded-2xl border border-dashed border-gray-200 p-4 text-center">
+                    <p className="text-sm font-semibold text-gray-700">Scan PayPal QR</p>
+                    <div className="mt-3 flex justify-center">
+                      <Image
+                        src="/checkout/paypal-qr.svg"
+                        alt="PayPal QR"
+                        width={180}
+                        height={180}
+                      />
+                    </div>
+                    <p className="mt-3 text-xs text-gray-500">
+                      Open PayPal app and scan to complete payment.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {statusMessage ? (
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
+                  {statusMessage}
+                </div>
+              ) : null}
+              <button
+                type="submit"
+                disabled={placingOrder}
+                className="w-full rounded-full cursor-pointer bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {placingOrder ? "Placing Order..." : "Place Order"}
+              </button>
+            </form>
+
+            <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
+              <div className="mt-4 space-y-4">
+                {items.length > 0 ? (
+                  items.map((item) => (
+                    <div key={item.product.id} className="flex items-center gap-3">
+                      <div className="relative h-14 w-14 overflow-hidden rounded-lg bg-gray-100">
+                        <Image
+                          src={item.product.heroImage}
+                          alt={item.product.title}
+                          fill
+                          className="object-cover"
+                          sizes="56px"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {item.product.title}
+                        </p>
+                        <p className="text-xs text-gray-500">Qty {item.qty}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {formatPrice(item.product.price * item.qty)}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-600">
+                    Your cart is empty. Add products to continue checkout.
+                  </div>
+                )}
+              </div>
+              <div className="mt-6 rounded-2xl border border-gray-200 p-4">
+                <label className="text-sm font-semibold text-gray-900">Coupon Code</label>
+                <div className="mt-3 flex gap-3">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(event) => setCouponCode(event.target.value)}
+                    placeholder="Enter coupon code"
+                    className="flex-1 rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    className="rounded-xl border cursor-pointer border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+              <div className="mt-6 space-y-3 text-sm text-gray-600">
+                <div className="flex items-center justify-between">
+                  <span>Subtotal</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatPrice(subtotal)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Processing</span>
+                  <span className="font-semibold text-gray-900">$0.00</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-base font-semibold text-gray-900">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+              </div>
+              <p className="mt-4 text-xs text-gray-500">
+                We will confirm details by email before production begins.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

@@ -6,11 +6,13 @@ import AllProductsGrid, { SortOption } from "@/components/shop/AllProductsGrid";
 import BestSellingProducts from "@/components/shop/BestSellingProducts";
 import BulkProducts from "@/components/shop/BulkProducts";
 import FreeProducts from "@/components/shop/FreeProducts";
+import { getDocuments } from "@/lib/firebase";
 import {
   ProductCategory,
-  products,
-  shopCategoryDefinitions,
-  shopSubcategoryDefinitions,
+  Product,
+  ShopCategoryDefinition,
+  ShopSubcategoryDefinition,
+  ProductType
 } from "@/data/products";
 
 type FilterSubcategoryOption = {
@@ -19,9 +21,12 @@ type FilterSubcategoryOption = {
   count: number;
 };
 
+
 export default function AllProductsCatalog() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<ShopCategoryDefinition[]>([]);
 
   const urlCategories = useMemo(() => {
     return searchParams.getAll("category") as ProductCategory[];
@@ -34,10 +39,50 @@ export default function AllProductsCatalog() {
   const allProductsGridRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    setSelectedCategories(urlCategories);
-    setSelectedSubcategories([]);
-  }, [searchParams]);
+    let isMounted = true;
 
+    async function loadProducts() {
+      try {
+        const [fetchedProducts, fetchedCategories] = await Promise.all([
+          getDocuments<Product>("products"),
+          getDocuments<ShopCategoryDefinition>("category"),
+        ]);
+        if (!isMounted) return;
+        if (fetchedProducts && fetchedProducts.length > 0) {
+          setProducts(fetchedProducts as Product[]);
+        }
+        if (fetchedCategories && fetchedCategories.length > 0) {
+          setCategories(
+            fetchedCategories
+              .map((category) => ({
+                ...category,
+                subcategories: category.subcategories ?? [],
+              }))
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+          );
+        }
+      } catch (error) {
+        if (!isMounted) return;
+        console.error("Failed to load products or categories from Firestore:", error);
+      }
+    }
+
+    loadProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+  const bestSellingProducts = products.filter(
+    (product) => product.productType === "top-selling"
+  );
+
+  const bulkProducts = products.filter(
+    (product) => product.productType === "bulk"
+  );
+
+  const freeProducts = products.filter(
+    (product) => product.productType === "free"
+  );
   const updateCategoriesInURL = (categories: ProductCategory[]) => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("category");
@@ -46,26 +91,37 @@ export default function AllProductsCatalog() {
   };
 
   const categoryOptions = useMemo(() => {
-    return shopCategoryDefinitions.map(({ slug, label }) => ({
+    return categories.map(({ slug, label }) => ({
       slug,
       label,
       count: products.filter((product) => product.category === slug).length,
     }));
-  }, []);
+  }, [categories, products]);
+
+  const activeSubcategoryDefinitions = useMemo<ShopSubcategoryDefinition[]>(() => {
+    return categories.flatMap((category) =>
+      (category.subcategories ?? [])
+        .map((subcategory) => ({
+          ...subcategory,
+          category: category.slug,
+        }))
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    );
+  }, [categories]);
 
   const subcategoryOptions = useMemo<FilterSubcategoryOption[]>(() => {
     const baseOptions =
       selectedCategories.length === 0
         ? []
-        : shopSubcategoryDefinitions.filter((option) =>
-            selectedCategories.includes(option.category)
-          );
+        : activeSubcategoryDefinitions.filter((option) =>
+          selectedCategories.includes(option.category)
+        );
     return baseOptions.map((option) => ({
       href: option.href,
       label: option.label,
       count: products.filter((product) => product.category === option.category).length,
     }));
-  }, [selectedCategories]);
+  }, [activeSubcategoryDefinitions, selectedCategories, products]);
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase();
@@ -75,7 +131,7 @@ export default function AllProductsCatalog() {
       const subcategoryMatch =
         selectedSubcategories.length === 0 ||
         selectedSubcategories.some((subcategoryHref) => {
-          const option = shopSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
+          const option = activeSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
           return option ? option.category === product.category : false;
         });
       const searchMatch =
@@ -94,7 +150,7 @@ export default function AllProductsCatalog() {
       nextProducts = [...nextProducts].sort((a, b) => b.price - a.price);
     }
     return nextProducts;
-  }, [searchQuery, selectedCategories, selectedSubcategories, sortOption]);
+  }, [activeSubcategoryDefinitions, searchQuery, selectedCategories, selectedSubcategories, sortOption, products]);
 
   const activeFilterCount =
     selectedCategories.length +
@@ -110,25 +166,25 @@ export default function AllProductsCatalog() {
 
   const clearAllFilters = () => {
     setSearchQuery("");
+    setSelectedCategories([]);
     setSelectedSubcategories([]);
     setSortOption("relevance");
     updateCategoriesInURL([]);
   };
 
   const toggleCategory = (slug: ProductCategory) => {
-    setSelectedCategories((previous) => {
-      const nextCategories = previous.includes(slug)
-        ? previous.filter((item) => item !== slug)
-        : [...previous, slug];
-      setSelectedSubcategories((previousSubcategories) =>
-        previousSubcategories.filter((subcategoryHref) => {
-          const option = shopSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
-          return option ? nextCategories.includes(option.category) : false;
-        })
-      );
-      updateCategoriesInURL(nextCategories);
-      return nextCategories;
-    });
+    const nextCategories = selectedCategories.includes(slug)
+      ? selectedCategories.filter((item) => item !== slug)
+      : [...selectedCategories, slug];
+
+    setSelectedCategories(nextCategories);
+    setSelectedSubcategories((previousSubcategories) =>
+      previousSubcategories.filter((subcategoryHref) => {
+        const option = activeSubcategoryDefinitions.find((item) => item.href === subcategoryHref);
+        return option ? nextCategories.includes(option.category) : false;
+      })
+    );
+    updateCategoriesInURL(nextCategories);
   };
 
   const toggleSubcategory = (slug: string) => {
@@ -156,9 +212,9 @@ export default function AllProductsCatalog() {
           {/* ShopProductSection handles all per-card animations internally , no wrapper needed */}
           {shouldShowFeaturedSections && (
             <>
-              <BestSellingProducts />
-              <BulkProducts />
-              <FreeProducts />
+              <BestSellingProducts products={bestSellingProducts} />
+              <BulkProducts products={bulkProducts} />
+              <FreeProducts products={freeProducts} />
             </>
           )}
           <section ref={allProductsGridRef} className="scroll-mt-24">

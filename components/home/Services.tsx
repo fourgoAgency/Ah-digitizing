@@ -7,11 +7,11 @@ import { motion, type PanInfo } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const services = [
-  { id: 1, title: "Embroidery Digitizing", image: "/embriodery.png" },
-  { id: 2, title: "Vector Art", image: "/vector.png" },
-  { id: 3, title: "Custom Design", image: "/Custom.png" },
-  { id: 4, title: "Raster to Vector", image: "/vector.png" },
-  { id: 5, title: "Raster to Vector", image: "/vector.png" },
+  { id: 1, title: "Left Chest Logo", image: "/1_Left_Chest_Logo.png" },
+  { id: 2, title: "Hat/Cap Logo", image: "/2_Hat_Cap_Logo.png" },
+  { id: 3, title: "Jacket Back Logo", image: "/3_Jacket_Back_Logo.png" },
+  { id: 4, title: "3d Puff Logo", image: "/4_3D_Puff_Logo.png" },
+  { id: 5, title: "Outline Design", image: "/5_Outline_Design.png" },
 ];
 
 const carriageVariants = {

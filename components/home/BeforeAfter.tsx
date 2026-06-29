@@ -73,20 +73,21 @@ const Card = ({ before, after }: CardProps) => {
 };
 
 const ALL_ITEMS = [
-  { before: "/home-page/1B.png", after: "/home-page/1A.png" },
-  { before: "/home-page/2B.png", after: "/home-page/2A.png" },
-  { before: "/home-page/3B.png", after: "/home-page/3A.png" },
-  { before: "/home-page/1B.png", after: "/home-page/1A.png" },
-  { before: "/home-page/2B.png", after: "/home-page/2A.png" },
-  { before: "/home-page/3B.png", after: "/home-page/3A.png" },
+  { before: "/home-page/1_before.png", after: "/home-page/1_after.png" },
+  { before: "/home-page/2_before.png", after: "/home-page/2_after.png" },
+  { before: "/home-page/3_before.png", after: "/home-page/3_after.png" },
+  { before: "/home-page/4_before.png", after: "/home-page/4_after.png" },
+  { before: "/home-page/5_before.png", after: "/home-page/5_after.png" },
+  { before: "/home-page/6_before.png", after: "/home-page/6_after.png" },
 ];
 
 export default function BeforeAfterGrid() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window === "undefined" ? false : window.matchMedia("(max-width: 639px)").matches
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 639px)"); // matches Tailwind's `sm` breakpoint
-    setIsMobile(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);

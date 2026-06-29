@@ -1,11 +1,15 @@
 "use client";
 
 import ShopProductSection from "@/components/shop/ShopProductSection";
-import { products } from "@/data/products";
+import { Product } from "@/data/products";
 
-const bulkProducts = products.slice(0, 10);
+type BulkProductsProps = {
+  products: Product[];
+};
 
-export default function BulkProducts() {
+export default function BulkProducts({ products }: BulkProductsProps) {
+  const bulkProducts = products.slice(0, 10);
+
   return (
     <ShopProductSection
       title="Bulk Products"
