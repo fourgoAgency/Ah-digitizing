@@ -27,11 +27,11 @@ type SidebarProps = {
 }
 
 const navItems = [
-	{ label: "Home", href: "/dashboard", icon: FiHome },
-	{ label: "Orders", href: "/dashboard/orders", icon: FiList },
-	{ label: "Products", href: "/dashboard/products", icon: FiTag },
-	{ label: "Categories", href: "/dashboard/categories", icon: FiFolder },
-	{ label: "Coupons", href: "/dashboard/coupons", icon: FiStar },
+	{ label: "Home", href: "/admin", icon: FiHome },
+	{ label: "Orders", href: "/admin/orders", icon: FiList },
+	{ label: "Products", href: "/admin/products", icon: FiTag },
+	{ label: "Categories", href: "/admin/categories", icon: FiFolder },
+	{ label: "Coupons", href: "/admin/coupons", icon: FiStar },
 ]
 
 
@@ -55,7 +55,7 @@ export default function Sidebar({ ordersCount = 16 }: SidebarProps) {
 	}, [collapsed])
 
 	function isActive(href: string) {
-		if (href === "/dashboard") return pathname === href
+		if (href === "/admin") return pathname === href
 		return pathname === href || pathname.startsWith(href + "/")
 	}
 
