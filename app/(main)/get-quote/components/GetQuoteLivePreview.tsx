@@ -41,8 +41,8 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
                 <img
                   src={
                     formData.orderType === "embroidery"
-                      ? "/home-page/portfolio-embroidery/2nd.jpg"
-                      : "/home-page/portfolio-vector/2nd.jpg"
+                      ? "/home-page/embroidery.png"
+                      : "/home-page/vector.png"
                   }
                   alt={formData.orderType === "embroidery" ? "Embroidery preview" : "Vector preview"}
                   className="h-full w-full rounded-md object-contain"

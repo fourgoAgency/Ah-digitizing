@@ -8,7 +8,7 @@ export default function ShopHero() {
         className="relative overflow-hidden rounded-2xl border border-gray-200 px-6 py-16 text-white sm:px-10"
         style={{
           backgroundImage:
-            "linear-gradient(120deg, rgba(5,10,68,0.82), rgba(10,33,192,0.25)), url('/home-page/portfolio-vector/1st.jpg')",
+            "linear-gradient(120deg, rgba(5,10,68,0.82), rgba(10,33,192,0.25)), url('/home-page/vector.png')",
           backgroundPosition: "center",
           backgroundSize: "cover",
         }}

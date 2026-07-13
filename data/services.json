@@ -14,16 +14,16 @@
           "id": 1,
           "title": "Logo Embroidery Digitizing",
           "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
-          "beforeImage": "/home-page/5_before.png",
-          "afterImage": "/home-page/5_after.png",
+          "beforeImage": "/services/logo 1.png",
+          "afterImage": "/services/logo 2.png",
           "placementArea":"Logo"
         },
         {
           "id": 2,
           "title": "Left Chest Logo Digitizing",
           "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
-          "beforeImage": "/home-page/6_before.png",
-          "afterImage": "/home-page/6_after.png",
+          "beforeImage": "/services/left chest 1.png",
+          "afterImage": "/services/Left chest 2.png",
           "placementArea":"Left Chest Logo"
         },
         {
@@ -38,8 +38,8 @@
           "id": 4,
           "title": "Visor Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/home-page/1_before.png",
-          "afterImage": "/home-page/1_after.png",
+          "beforeImage": "/services/visor 1.png",
+          "afterImage": "/services/visor 2.png",
           "placementArea":"Visor"
         },
         {
@@ -47,23 +47,23 @@
           "title": "3D Puff Digitizing",
           "description": "Transforming pixelated company logos into crisp, embroidery-ready files suitable for all branding needs.",
           "beforeImage": "/services/3D PUFF Before.png",
-          "afterImage": "/services/3D PUFF after.svg",
+          "afterImage": "/services/3D puff.png",
           "placementArea":"3D Puff"
         },
         {
           "id": 6, 
           "title": "Patch Embroidery Digitizing",
           "description": "Converting hand-drawn or scanned designs into precise stitch files, preserving all artistic details.",
-          "beforeImage": "/home-page/avatars/2 Patch Embroidery Design for Sweater.png",
-          "afterImage": "/home-page/avatars/2 Patch Embroidery Design for Sweater.png",
+          "beforeImage": "/services/Patch 1.png",
+          "afterImage": "/services/Patch 2.png",
           "placementArea":"Patch"
         },
         {
           "id": 7,
           "title": "Applique Design Digitizing",
           "description": "Perfecting product images and photos for embroidery by digitizing them for consistent stitch quality.",
-          "beforeImage": "/home-page/avatars/3 Left Chest Logo Rugby Club Shirt.png",
-          "afterImage": "/home-page/avatars/3 Left Chest Logo Rugby Club Shirt.png",
+          "beforeImage": "/services/applique 1.png",
+          "afterImage": "/services/applique 2.png",
           "placementArea":"Applique"
         },
         {
@@ -78,32 +78,32 @@
           "id": 9,
           "title": "Jacket Back Digitizing",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/home-page/avatars/4 Left Chest logo Puffer Jacket.png",
-          "afterImage": "/home-page/avatars/4 Left Chest logo Puffer Jacket.png",
+          "beforeImage": "/services/jacket back 1.png",
+          "afterImage": "/services/jacket back 2.png",
           "placementArea":"Jacket Back"
         },
         {
           "id": 10,
           "title": "NGS Wings XP",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/home-page/avatars/5 Left Chest for Polo Shirt.png",
-          "afterImage": "/home-page/avatars/5 Left Chest for Polo Shirt.png",
+          "beforeImage": "/services/ngs 1.png",
+          "afterImage": "/services/ngs 2.png",
           "outputFormat":"NGS"
         },
         {
           "id": 11,
           "title": "PXF Pulse",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/home-page/avatars/1 Left Chest Logo for Polyester Pique Shirt.png",
-          "afterImage": "/home-page/avatars/1 Left Chest Logo for Polyester Pique Sh/",
-         "outputFormat":"PXF"
+          "beforeImage": "/services/pxf 1.png",
+          "afterImage": "/services/pxf 2.png",
+          "outputFormat":"PXF"
         },
         {
           "id": 12,
           "title": "Custom Digitizing (Any Design You Need)",
           "description": "Bringing intricate or complex artwork to life in embroidery format, ideal for large-scale projects and garments.",
-          "beforeImage": "/services/2 Cap Before.png",
-          "afterImage": "/services/cap.svg",
+          "beforeImage": "/services/custom 1.png",
+          "afterImage": "/services/custom 2.png",
           "placementArea":"Customized"
         }
       ],
@@ -115,14 +115,14 @@
         "name": "Anna Fernandez",
         "country": "USA",
         "text": "The ring itself is stunning, with a beautiful design that catches the light and sparkles from every angle. The quality of the materials used is evident, as the ring feels substantial and durable. The gemstone is exquisite, with a vibrant color and exceptional clarity.",
-        "image": "/home-page/portfolio-embroidery/2nd.jpg"
+        "image": "/home-page/embroidery.png"
       },
       {
         "id": 2,
         "name": "Mark Johnson",
         "country": "UK",
         "text": "Outstanding service -- fast turnaround and precise digitizing. Our embroidered logos look crisp across every garment.",
-        "image": "/home-page/portfolio-embroidery/1st.jpg"
+        "image": "/home-page/embroidery.png"
       }
     ],
     "pricing": {

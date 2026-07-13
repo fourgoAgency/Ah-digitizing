@@ -20,6 +20,7 @@ import {
 	FiX,
 	FiChevronLeft,
 	FiChevronRight,
+	FiBook,
 } from "react-icons/fi"
 
 type SidebarProps = {
@@ -27,11 +28,13 @@ type SidebarProps = {
 }
 
 const navItems = [
-	{ label: "Home", href: "/dashboard", icon: FiHome },
-	{ label: "Orders", href: "/dashboard/orders", icon: FiList },
-	{ label: "Products", href: "/dashboard/products", icon: FiTag },
-	{ label: "Categories", href: "/dashboard/categories", icon: FiFolder },
-	{ label: "Coupons", href: "/dashboard/coupons", icon: FiStar },
+	{ label: "Home", href: "/admin", icon: FiHome },
+	{ label: "Orders", href: "/admin/orders", icon: FiList },
+	{ label: "Products", href: "/admin/products", icon: FiTag },
+	{ label: "Blogs", href: "/admin/blog", icon: FiBook },
+	{ label: "Categories", href: "/admin/categories", icon: FiFolder },
+	{ label: "Coupons", href: "/admin/coupons", icon: FiStar },
+	
 ]
 
 
@@ -122,11 +125,7 @@ export default function Sidebar({ ordersCount = 16 }: SidebarProps) {
 									>
 										<Icon className="h-5 w-5 shrink-0" />
 										<span className={`min-w-0 flex-1 truncate ${collapsedTextClass}`}>{item.label}</span>
-										{item.label === "Orders" && (
-											<span className={`ml-2 inline-flex h-6 min-w-7 items-center justify-center rounded-full px-2 text-xs ${active ? "bg-[#1F2A4A] text-white" : "bg-[#0F1724] text-white/90"} ${collapsedTextClass}`}>
-												{ordersCount}
-											</span>
-										)}
+										
 									</Link>
 								</li>
 							)

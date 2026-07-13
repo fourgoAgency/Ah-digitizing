@@ -3,26 +3,29 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/shop/ProductImageGallery";
-import { getDocuments } from "@/lib/firebase";
+import { getServerDocuments } from "@/lib/firebaseAdmin"; // Use the Admin SDK function
 import { formatPrice } from "@/data/products";
+import OrderButton from "@/components/shop/OrderBotton";
+
+export const dynamic = "force-dynamic";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({
-  params,
-}: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
-
-  const allProducts = await getDocuments("products");
-
+// Quick helper to fetch individual items or keep your filter setup stable
+async function getProductData(slug: string) {
+  const allProducts = await getServerDocuments("products");
   const product = allProducts.find((item) => item.slug === slug);
+  return { product, allProducts };
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const { product } = await getProductData(slug);
 
   if (!product) {
-    return {
-      title: "Product Not Found | AH Digitizing",
-    };
+    return { title: "Product Not Found | AH Digitizing" };
   }
 
   return {
@@ -33,25 +36,16 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
-
-  // Firestore se saare products fetch
-  const allProducts = await getDocuments("products");
-
-  // Slug ke hisaab se current product
-  const product = allProducts.find((item) => item.slug === slug);
+  const { product, allProducts } = await getProductData(slug);
 
   if (!product) {
     notFound();
   }
-
-  // Related products
+  const serializedProduct = JSON.parse(JSON.stringify(product));
   const relatedProducts = allProducts
-    .filter(
-      (item) =>
-        item.category === product.category &&
-        item.slug !== product.slug
-    )
+    .filter((item) => item.category === product.category && item.slug !== product.slug)
     .slice(0, 3);
+
   return (
     <main className="bg-[#f7f8fb] py-10">
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 lg:grid-cols-2">
@@ -91,9 +85,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild className="rounded-full cursor-pointer px-7">
-              <Link href="/get-quote">Order This Service</Link>
-            </Button>
+            <OrderButton product={serializedProduct} />
             <Button asChild variant="outline" className="rounded-full cursor-pointer px-7">
               <Link href="/shop">Back to Catalog</Link>
             </Button>

@@ -7,6 +7,7 @@ export type BlogPost = {
   date: string;
   image: string;
   category: "Embroidery" | "Vector" | "Reviews";
+  isPublished?: boolean;
 };
 
 export const blogPosts: BlogPost[] = [
@@ -22,7 +23,7 @@ export const blogPosts: BlogPost[] = [
       "If your design includes gradients or very fine effects, send a marked version showing priority elements. This helps digitizers protect key brand details while adjusting what cannot be stitched reliably. A strong prep process reduces revisions and improves first-run quality.",
     ],
     date: "January 15, 2025",
-    image: "/home-page/portfolio-embroidery/3rd.jpg",
+    image: "/home-page/embroidery.png",
     category: "Embroidery",
   },
   {
@@ -37,7 +38,7 @@ export const blogPosts: BlogPost[] = [
       "Sequence planning matters too. We aim for smoother run paths and fewer hard jumps, which lowers stress on thread tension. The result is a file that runs cleaner, saves operator time, and improves final consistency across batch jobs.",
     ],
     date: "February 22, 2025",
-    image: "/home-page/portfolio-embroidery/2nd.png",
+    image: "/home-page/embroidery.png",
     category: "Embroidery",
   },
   {
@@ -52,7 +53,7 @@ export const blogPosts: BlogPost[] = [
       "When possible, include brand color codes and font names. This helps maintain consistency during conversion. Choosing the right source format reduces correction cycles and ensures your final print or cut file behaves correctly in downstream software.",
     ],
     date: "March 8, 2025",
-    image: "/home-page/portfolio-vector/4th.jpg",
+    image: "/home-page/vector.png",
     category: "Vector",
   },
   {
@@ -97,7 +98,7 @@ export const blogPosts: BlogPost[] = [
       "Clean pathing also helps teams scale design libraries. When every asset follows predictable standards, updates are faster, handoffs are cleaner, and outputs remain consistent across different products and print processes.",
     ],
     date: "June 17, 2025",
-    image: "/home-page/portfolio-vector/3rd.jpg",
+    image: "/home-page/vector.png",
     category: "Vector",
   },
   {
@@ -127,7 +128,7 @@ export const blogPosts: BlogPost[] = [
       "When text is too small for safe stitching, we advise simplified alternatives that keep brand intent while improving legibility. The goal is a design that looks good on screen and performs reliably on the machine.",
     ],
     date: "August 1, 2025",
-    image: "/home-page/portfolio-embroidery/3rd.jpg",
+    image: "/home-page/embroidery.png",
     category: "Embroidery",
   },
 ];

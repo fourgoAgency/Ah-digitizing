@@ -22,9 +22,15 @@ export async function generateStaticParams() {
     if (adminFirestore) {
       const snapshot = await adminFirestore.collection("blogs").get();
       return snapshot.docs
-        .map((d) => d.get("slug"))
-        .filter((slug): slug is string => typeof slug === "string")
-        .map((slug) => ({ slug }));
+        .map((d) => {
+          const data = d.data();
+          const slug = d.get("slug")
+          const isPublished = d.get("isPublished")
+          return { slug, isPublished }
+        })
+        .filter((item): item is { slug: string; isPublished: unknown } => typeof item.slug === "string")
+        .filter((item) => item.isPublished !== false)
+        .map((item) => ({ slug: item.slug }));
     }
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -49,6 +55,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
       const postQuery = await adminFirestore
         .collection("blogs")
         .where("slug", "==", slug)
+        .where("isPublished", "==", true)
         .limit(1)
         .get();
 
@@ -58,7 +65,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         post = { ...data, id: doc.id };
       }
 
-      const snapshot = await adminFirestore.collection("blogs").get();
+      const snapshot = await adminFirestore
+        .collection("blogs")
+        .where("isPublished", "==", true)
+        .get();
       allPosts = snapshot.docs.map((d) => {
         const data = d.data() as Omit<BlogPost, "id">;
         return { ...data, id: d.id };

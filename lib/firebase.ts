@@ -25,6 +25,8 @@ import {
   setDoc,
   addDoc,
   updateDoc,
+  query, 
+  where,
 } from 'firebase/firestore';
 import { serverTimestamp } from 'firebase/firestore';
 import {
@@ -224,7 +226,41 @@ async function updateUserProfile(profile: { displayName?: string; photoURL?: str
 function onAuthStateChange(listener: (user: User | null) => void): () => void {
   return onAuthStateChanged(auth, listener);
 }
+async function getProductDocument<T = DocumentData>(productId: string): Promise<(T & { id: string }) | null> {
+  return getDocument<T>('products', productId);
+}
 
+
+async function fetchActiveCoupon(code: string): Promise<DocumentData | null> {
+  if (!code || !code.trim()) return null;
+  
+  const couponsRef = collection(firestore, 'coupons');
+  const querySnapshot = await getDocs(
+    query(couponsRef, where('code', '==', code.trim()))
+  );
+
+  if (querySnapshot.empty) return null;
+
+  const docSnap = querySnapshot.docs[0];
+  const data = docSnap.data();
+
+  if (data.isActive === false) return null;
+
+  if (data.expiryDate) {
+    const expiry = data.expiryDate.toDate();
+    if (new Date() > expiry) return null;
+  }
+
+  return {
+    id: docSnap.id,
+    ...data,
+  };
+}
+
+
+function getServerTimestamp() {
+  return serverTimestamp();
+}
 export {
   app,
   auth,
@@ -232,6 +268,9 @@ export {
   storage,
   getDocuments,
   getDocument,
+  getProductDocument, 
+  fetchActiveCoupon,   
+  getServerTimestamp,
   getUserByEmail,
   createDocument,
   setDocument,

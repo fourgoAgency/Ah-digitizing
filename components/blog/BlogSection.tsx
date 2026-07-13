@@ -39,10 +39,12 @@ export default function BlogSection() {
         const fetchedPosts = await getDocuments<BlogPost>("blogs");
         if (!isMounted) return;
         setPosts(
-          fetchedPosts.map((post) => ({
-            ...post,
-            id: String(post.id),
-          }))
+          fetchedPosts
+            .map((post) => ({
+              ...post,
+              id: String(post.id),
+            }))
+            .filter((post) => post.isPublished !== false)
         );
       } catch (fetchError) {
         if (!isMounted) return;

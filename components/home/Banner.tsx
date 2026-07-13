@@ -151,7 +151,7 @@ export default function Banner() {
                         <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">
 
                             <Image
-                                src={currentTextIndex === 0 ? "/home-page/portfolio-vector/1st.jpg" : "/home-page/portfolio-embroidery/1st.jpg"}
+                                src={currentTextIndex === 0 ? "/home-page/vector.png" : "/home-page/embroidery.png"}
                                 alt="Premium Digitizing Product"
                                 width={600}
                                 height={500}
