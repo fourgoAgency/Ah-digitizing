@@ -58,7 +58,7 @@ export default function Sidebar({ ordersCount = 16 }: SidebarProps) {
 	}, [collapsed])
 
 	function isActive(href: string) {
-		if (href === "/dashboard") return pathname === href
+		if (href === "/admin") return pathname === href
 		return pathname === href || pathname.startsWith(href + "/")
 	}
 
