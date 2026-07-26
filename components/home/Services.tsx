@@ -131,7 +131,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
                     alt={service.title}
                     width={256}
                     height={320}
-                    className="w-full h-full object-top object-contain pb-10"
+                    className="w-full h-full object-center object-contain "
                   />
                   {distance === 0 && (
                     <div

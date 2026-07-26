@@ -54,6 +54,7 @@ type GetQuoteFormProps = {
   formData: QuoteFormState;
   errors: Record<string, string>;
   submitMessage: string;
+  otpSentMessage: string;
   fileInputRef: RefObject<HTMLInputElement | null>;
   onFieldChangeAction: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   onOutputFormatToggleAction: (format: string) => void;
@@ -68,6 +69,7 @@ export function GetQuoteForm({
   formData,
   errors,
   submitMessage,
+  otpSentMessage,
   fileInputRef,
   onFieldChangeAction,
   onOutputFormatToggleAction,
@@ -859,6 +861,11 @@ const selectedOutputFormatLookup = useMemo(
 
       {submitMessage && (
         <p className="rounded-md border border-green-200 bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">{submitMessage}</p>
+      )}
+      {otpSentMessage && (
+        <p className="rounded-md border border-blue-200 bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700">
+          {otpSentMessage}
+        </p>
       )}
 
       <button type="submit" className="btn cursor-pointer">

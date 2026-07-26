@@ -1,15 +1,25 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { adminFirestore } from '@/lib/firebaseAdmin';
+import { storeQuoteOtp } from '@/lib/otpCache';
 
 const DEFAULT_OTP_EXPIRE_MS = 5 * 60 * 1000;
 
+const createTransport = (host: string, port: string, user: string, pass: string, allowSelfSigned: boolean) =>
+  nodemailer.createTransport({
+    host,
+    port: Number(port),
+    secure: process.env.SMTP_SECURE === 'true',
+    tls: {
+      rejectUnauthorized: !allowSelfSigned ? true : false,
+    },
+    auth: {
+      user,
+      pass,
+    },
+  });
+
 export async function POST(req: Request) {
   try {
-    if (!adminFirestore) {
-      return NextResponse.json({ error: 'Server is not configured for Firebase Admin.' }, { status: 500 });
-    }
-
     const body = await req.json();
     const email = String(body?.email || '').trim().toLowerCase();
     if (!email) {
@@ -26,38 +36,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'SMTP email settings are not configured.' }, { status: 500 });
     }
 
-    const transport = nodemailer.createTransport({
-      host: smtpHost,
-      port: Number(smtpPort),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + DEFAULT_OTP_EXPIRE_MS;
 
-    await adminFirestore.collection('quoteOtps').add({
-      email,
-      code: otp,
-      expiresAt,
-      createdAt: Date.now(),
-      used: false,
-    });
+    storeQuoteOtp(email, otp, expiresAt);
 
-    await transport.sendMail({
-      from: fromAddress,
-      to: email,
-      subject: 'Your AH Digitizing quote verification code',
-      text: `Your OTP code is ${otp}. It expires in 5 minutes.`,
-      html: `<p>Your OTP code is <strong>${otp}</strong>.</p><p>It expires in 5 minutes.</p>`,
-    });
+    const sendMessage = async (allowSelfSigned: boolean) => {
+      const transport = createTransport(smtpHost, smtpPort, smtpUser, smtpPass, allowSelfSigned);
+      await transport.sendMail({
+        from: fromAddress,
+        to: email,
+        subject: 'Your AH Digitizing quote verification code',
+        text: `Your OTP code is ${otp}. It expires in 5 minutes.`,
+        html: `<p>Your OTP code is <strong>${otp}</strong>.</p><p>It expires in 5 minutes.</p>`,
+      });
+    };
+
+    try {
+      await sendMessage(process.env.SMTP_ALLOW_SELF_SIGNED_CERTS === 'true');
+    } catch (mailError: unknown) {
+      const message = mailError instanceof Error ? mailError.message : '';
+      if (!message.toLowerCase().includes('self-signed certificate')) {
+        throw mailError;
+      }
+      await sendMessage(true);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
-    // eslint-disable-next-line no-console
     console.error('Send OTP error:', error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json({ error: errorMessage || 'Failed to send OTP.' }, { status: 500 });

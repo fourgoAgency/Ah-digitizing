@@ -3,7 +3,7 @@
 import { UploadCloud, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createDocument } from "@/lib/firebase";
+import { createDocument, uploadFile } from "@/lib/firebase";
 import { CustomDropdown } from "../get-quote/components/CustomDropdown";
 import { QuoteContactFields } from "../get-quote/components/QuoteContactFields";
 import { countryOptions } from "../get-quote/lib/country-options";
@@ -296,6 +296,23 @@ export default function GetQoutePage() {
         throw new Error(verifyResult?.error || "OTP verification failed.");
       }
 
+      const quoteId = `free_quote_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const uploadedFiles = await Promise.all(
+        formData.files.map(async (file, index) => {
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+          const storagePath = `quoteRequests/${quoteId}/${index + 1}-${safeName}`;
+          const downloadURL = await uploadFile(file, storagePath);
+          return {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            downloadURL,
+            storagePath,
+          };
+        })
+      );
+
       const quoteData = {
         fullName: formData.fullName,
         companyName: formData.companyName,
@@ -310,13 +327,10 @@ export default function GetQoutePage() {
         height: formData.height,
         additionalNotes: formData.additionalNotes,
         whatsappOptIn: formData.whatsappOptIn,
-        files: formData.files.map((file) => ({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          lastModified: file.lastModified,
-        })),
+        files: uploadedFiles,
+        createdAt: new Date().toISOString(),
         submittedAt: new Date().toISOString(),
+        verifiedAt: new Date().toISOString(),
         status: "pending",
       };
 
@@ -329,7 +343,6 @@ export default function GetQoutePage() {
       setOtpSentMessage("");
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: unknown) {
-      // eslint-disable-next-line no-console
       console.error("Failed to submit quote request:", error);
       setOtpError(error instanceof Error ? error.message : "Unable to submit your quote. Please try again later.");
       return;

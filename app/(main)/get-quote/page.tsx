@@ -11,7 +11,7 @@ import {
   quoteFormSchema,
   type QuoteFormState,
 } from "./lib/quote-form";
-import { createDocument, updateDocument } from "../../../lib/firebase";
+import { createDocument, uploadFile } from "@/lib/firebase";
 
 
 const fieldValidationOrder = [
@@ -85,13 +85,13 @@ export default function GetQuotePage() {
   const [formData, setFormData] = useState<QuoteFormState>(initialQuoteFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
+  const [otpSentMessage, setOtpSentMessage] = useState("");
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [otpError, setOtpError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [pendingQuote, setPendingQuote] = useState<QuoteFormState | null>(null);
-  const [pendingDocId, setPendingDocId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFieldChange = (
@@ -341,22 +341,29 @@ export default function GetQuotePage() {
           };
 
     setSubmitting(true);
+    setSubmitMessage("");
+    setOtpSentMessage("");
+    setOtpError("");
     try {
-      const docId = await createDocument("quotes", {
-        ...sanitizedData,
-        files: [],
-        status: "pending_verification",
-        createdAt: new Date().toISOString(),
-      });
-      setPendingDocId(docId);
       setPendingQuote(sanitizedData);
+
+      const otpResponse = await fetch("/api/quote/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: sanitizedData.email.trim().toLowerCase() }),
+      });
+      const otpResult = await otpResponse.json();
+      if (!otpResponse.ok) {
+        throw new Error(otpResult?.error || "Unable to send OTP to email.");
+      }
+
       setShowOtp(true);
       setOtpCode("");
       setOtpError("");
+      setOtpSentMessage("OTP has been sent to your email. Please enter the code below.");
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
-      setSubmitMessage("Failed to start quote submission. Please try again.");
+      setSubmitMessage(err instanceof Error ? err.message : "Failed to start quote submission. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -365,8 +372,8 @@ export default function GetQuotePage() {
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const normalized = otpCode.trim();
-    if (normalized !== "123456") {
-      setOtpError("Invalid code. Please enter 123456.");
+    if (!normalized) {
+      setOtpError("Please enter the OTP sent to your email.");
       return;
     }
 
@@ -375,24 +382,44 @@ export default function GetQuotePage() {
       return;
     }
 
-    if (!pendingDocId) {
-      setOtpError("No quote record found. Please submit the form again.");
-      setSubmitting(false);
-      return;
-    }
-
     setSubmitting(true);
     setOtpError("");
 
     try {
-      // Save file metadata only (no uploads)
-      const filesMeta = pendingQuote.files.map((f) => ({ name: f.name, size: f.size, type: f.type }));
+      const verifyResponse = await fetch("/api/quote/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: pendingQuote.email.trim().toLowerCase(), otp: normalized }),
+      });
+      const verifyResult = await verifyResponse.json();
+      if (!verifyResponse.ok) {
+        throw new Error(verifyResult?.error || "OTP verification failed.");
+      }
 
-      // update existing quote document with file metadata and final status
-      await updateDocument("quotes", pendingDocId, {
-        files: filesMeta,
+      const quoteId = `quote_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const uploadedFiles = await Promise.all(
+        pendingQuote.files.map(async (file, index) => {
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const storagePath = `quotes/${quoteId}/${index + 1}-${safeName}`;
+          const downloadURL = await uploadFile(file, storagePath);
+          return {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            downloadURL,
+            storagePath,
+          };
+        })
+      );
+
+      // Create verified quote only after OTP success
+      const docId = await createDocument("quotes", {
+        ...pendingQuote,
+        files: uploadedFiles,
         status: "new",
+        createdAt: new Date().toISOString(),
         submittedAt: new Date().toISOString(),
+        verifiedAt: new Date().toISOString(),
       });
 
       // Create notification for admin (server-side)
@@ -400,7 +427,7 @@ export default function GetQuotePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          quoteId: pendingDocId,
+          quoteId: docId,
           email: pendingQuote.email,
           orderType: pendingQuote.orderType,
         }),
@@ -415,10 +442,10 @@ export default function GetQuotePage() {
       setFormData(initialQuoteFormState);
       setErrors({});
       setSubmitMessage("Quote submitted successfully.");
+      setOtpSentMessage("");
       setPendingQuote(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
       setOtpError("Failed to submit quote. Please try again.");
     } finally {
@@ -471,6 +498,7 @@ export default function GetQuotePage() {
             formData={formData}
             errors={errors}
             submitMessage={submitMessage}
+            otpSentMessage={otpSentMessage}
             fileInputRef={fileInputRef}
             onFieldChangeAction={handleFieldChange}
             onOutputFormatToggleAction={handleOutputFormatToggle}
@@ -499,7 +527,7 @@ export default function GetQuotePage() {
               </button>
             </div>
             <p className="mt-2 text-sm text-gray-600">Enter the 6-digit code sent to your email.</p>
-            <p className="mt-1 text-xs text-gray-400">Use 123456 for now.</p>
+            {otpSentMessage && <p className="mt-2 text-sm text-green-600">{otpSentMessage}</p>}
             <form className="mt-4 space-y-3" onSubmit={handleOtpSubmit}>
               <input
                 inputMode="numeric"

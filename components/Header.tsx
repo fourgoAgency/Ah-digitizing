@@ -194,9 +194,6 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           <span className="absolute -right-3 -top-2 min-w-[1.1rem]  rounded-full bg-white px-1 text-[10px] font-semibold text-primary">{cartCount}</span>
           <BiCart size={24} />
         </button>
-        <Link href="/login" className="cursor-pointer">
-          <FaUser />
-        </Link>
       </div>
     </motion.nav>
   );
@@ -255,8 +252,7 @@ function MobileMenu({ cartCount, onCartClick }: { cartCount: number; onCartClick
                 <div className="px-6 pb-4 space-y-2">
                   <Link href="/services/embroidery/left-chest" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Embroidery Digitizing</Link>
                   <Link href="/services/raster-to-vector/silhouette" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Raster to Vector</Link>
-                  <Link href="/services/custom-patches" onClick={close} className="block py-2 text-sm text-white hover:text-muted">Custom Patches</Link>
-                </div>
+                  </div>
               )}
             </div>
 

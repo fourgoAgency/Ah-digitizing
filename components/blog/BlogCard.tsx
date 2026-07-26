@@ -1,7 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { BlogPost } from "../../data/blogData";
+
 import { motion } from "framer-motion";
+type BlogPost = {
+  id: string | number;
+  slug: string;
+  title: string;
+  description: string;
+  content: string[];
+  date: string;
+  image: string;
+  category: "Embroidery" | "Vector" | "Reviews";
+  isPublished?: boolean;
+};
 const headingVariants = {
   hidden: { y: 40, opacity: 0, scale: 1.02 },
   visible: {

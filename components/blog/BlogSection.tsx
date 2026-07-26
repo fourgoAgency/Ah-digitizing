@@ -5,11 +5,19 @@ import BlogGrid from "./BlogGrid";
 import BlogPagination from "./BlogPagination";
 import BlogToolbar from "./BlogToolbar";
 import { motion } from "framer-motion";
-import type { BlogPost } from "../../data/blogData";
 import { getDocuments } from "../../lib/firebase";
-import { blogPosts as fallbackBlogPosts } from "../../data/blogData";
 const POSTS_PER_PAGE = 8;
-
+type BlogPost = {
+  id: string | number;
+  slug: string;
+  title: string;
+  description: string;
+  content: string[];
+  date: string;
+  image: string;
+  category: "Embroidery" | "Vector" | "Reviews";
+  isPublished?: boolean;
+};
 function toTimestamp(dateText: string) {
   const value = new Date(dateText).getTime();
   return Number.isNaN(value) ? 0 : value;
@@ -50,7 +58,7 @@ export default function BlogSection() {
         if (!isMounted) return;
         console.error("Failed to fetch blog posts from Firestore:", fetchError);
         setError("Unable to load posts right now. Showing default content.");
-        setPosts(fallbackBlogPosts);
+        setPosts([]);
       } finally {
         if (!isMounted) return;
         setIsLoading(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth, onAuthStateChange } from '@/lib/firebase';
+import { onAuthStateChange } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 
 type CustomUser = { email: string; role: string; id: string } | null;
@@ -10,6 +10,7 @@ type AuthContextValue = {
   adminUser: User | null;
   customUser: CustomUser;
   loading: boolean;
+  customLoading: boolean;
   signInCustom: (email: string, password: string) => Promise<{ ok?: boolean; error?: string; role?: string }>;
   signOutCustom: () => Promise<void>;
 };
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [adminUser, setAdminUser] = useState<User | null>(null);
   const [customUser, setCustomUser] = useState<CustomUser>(null);
   const [loading, setLoading] = useState(true);
+  const [customLoading, setCustomLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange((u) => {
@@ -34,8 +36,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (j?.authenticated && j.user) {
           setCustomUser(j.user);
         }
-      } catch (e) {
+      } catch {
         // ignore
+      } finally {
+        setCustomLoading(false);
       }
     })();
 
@@ -62,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ adminUser, customUser, loading, signInCustom, signOutCustom }}>
+    <AuthContext.Provider value={{ adminUser, customUser, loading, customLoading, signInCustom, signOutCustom }}>
       {children}
     </AuthContext.Provider>
   );
