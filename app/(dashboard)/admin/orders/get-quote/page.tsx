@@ -9,7 +9,12 @@ import { countryOptions } from "@/app/(main)/get-quote/lib/country-options";
 type QuoteDocument = Record<string, unknown> & { id: string };
 type Designer = { id: string; email: string; name: string };
 
-const quoteStatuses = ["Pending", "Assigned to Designer", "Completed"] as const;
+const quoteStatuses = [
+  "Pending",
+  "Assigned to Designer",
+  "Submitted",
+  "Completed"
+] as const;
 
 function getString(document: QuoteDocument, keys: string[], fallback = "") {
   for (const key of keys) {
@@ -197,7 +202,29 @@ export default function GetQuoteAdminPage() {
       setAssigningDesigner(false);
     }
   }
+  const designerSubmission = activeQuote
+    ? asRecord(activeQuote.designerSubmission)
+    : null;
 
+  const submissionUrl =
+    activeQuote &&
+      typeof activeQuote.designerSubmissionUrl === "string"
+      ? activeQuote.designerSubmissionUrl
+      : typeof designerSubmission?.downloadURL === "string"
+        ? designerSubmission.downloadURL
+        : "";
+
+  const submissionFileName =
+    typeof designerSubmission?.fileName === "string"
+      ? designerSubmission.fileName
+      : "submission";
+  const extension = submissionFileName.split(".").pop()?.toLowerCase() ?? "";
+
+  const imageTypes = ["png", "jpg", "jpeg", "gif", "webp"];
+  const pdfTypes = ["pdf"];
+
+  const isImage = imageTypes.includes(extension);
+  const isPdf = pdfTypes.includes(extension);
   return (
     <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -328,13 +355,79 @@ export default function GetQuoteAdminPage() {
                 {assignmentMessage ? <p className={`mt-3 text-xs font-semibold ${assignmentMessage.includes("success") ? "text-emerald-600" : "text-rose-500"}`}>{assignmentMessage}</p> : null}
               </section>
 
+              {submissionUrl && (
+                <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+
+                  <h4 className="text-sm font-bold">
+                    Designer Submission
+                  </h4>
+
+                  <p className="mt-2 text-sm font-medium">
+                    {submissionFileName}
+                  </p>
+
+                  {isImage && (
+                    <img
+                      src={submissionUrl}
+                      alt={submissionFileName}
+                      className="mt-4 max-h-72 rounded border object-contain"
+                    />
+                  )}
+
+                  {isPdf && (
+                    <iframe
+                      src={submissionUrl}
+                      className="mt-4 h-[500px] w-full rounded border"
+                    />
+                  )}
+
+                  {!isImage && !isPdf && (
+                    <div className="mt-4 rounded border bg-white p-8 text-center">
+                      <p className="font-semibold">
+                        Preview is not available for this file type.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-4 flex gap-3">
+
+                    <a
+                      href={submissionUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded bg-blue-600 px-4 py-2 text-white"
+                    >
+                      Open
+                    </a>
+
+                    <a
+                      href={submissionUrl}
+                      download={submissionFileName}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded bg-green-600 px-4 py-2 text-white"
+                    >
+                      Download
+                    </a>
+
+                  </div>
+
+                </section>
+              )}
               <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote)
                     .filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone"].includes(key))
                     .filter(([, value]) => value !== null && value !== undefined && value !== "")
-                    .map(([key, value]) => {
+                    .filter(([key]) =>
+                      ![
+                        "designerSubmission",
+                        "designerSubmissionUrl",
+                        "designerSubmissionPath",
+                        "designerSubmittedAt",
+                      ].includes(key)
+                    ).map(([key, value]) => {
                       if (Array.isArray(value)) {
                         return (
                           <div key={key} className="md:col-span-2 lg:col-span-3">
@@ -379,7 +472,7 @@ export default function GetQuoteAdminPage() {
                 </div>
               </section>
 
-              
+
             </div>
 
             <div className="border-t border-slate-100 px-5 py-4">
