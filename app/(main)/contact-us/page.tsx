@@ -215,7 +215,7 @@ const ContactInfoWhite: React.FC = () => {
     {
       icon: '📧',
       label: 'Email',
-      value: 'yourcompany@email.com'
+      value: 'ahdigitizing@gmail.com'
     },
     {
       icon: '📞',
