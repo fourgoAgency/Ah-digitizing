@@ -2,11 +2,31 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 // FAQ Data Structure
-const faqData = [
+type FAQButton = {
+  label: string;
+  href: string;
+};
+
+type FAQItem = {
+  id: number;
+  question: string;
+  answer: string;
+  button?: FAQButton;
+  note?: string;
+  contactUsLink?: boolean;
+};
+
+const faqData: {
+  id: string;
+  title: string;
+  subtitle: string;
+  questions: FAQItem[];
+}[] = [
   {
     id: "general-enquiries",
     title: "General Enquiries",
@@ -14,31 +34,119 @@ const faqData = [
     questions: [
       {
         id: 1,
-        question:
-          "On What Criteria Do We Charge Each Digitised Embroidery Design?",
+        question: "What's your turnaround time?",
         answer:
-          "We charge based on the complexity, size, and stitch count of your design. Simple logos are more affordable than intricate designs with multiple colors and details.",
+          "Simple designs are typically delivered within 4–12 hours, while more complex designs may take up to 24 hours. For urgent requirements, we offer rush delivery within 2–6 hours and super rush delivery within 1–4 hours, depending on the design's complexity.",
+        button: { label: "Order Now", href: "/get-quote" },
+        note: "For further guidance regarding turnaround time, feel free to contact our team.",
       },
       {
         id: 2,
-        question:
-          "What are the charges of Your Embroidery Digitizing Services?",
+        question: "How do you ensure quality?",
         answer:
-          "Our pricing starts from $10 for simple designs. Complex designs may range from $20-$50 depending on size and detail. Contact us for a custom quote.",
+          "Every design is digitized by our experienced professional digitizers who understand embroidery machines inside and out, including the right density and underlay settings needed for high-quality results. Quality is our top priority, and we never compromise on it. You can trust us to deliver excellent results every time.",
+        button: { label: "Order Now", href: "/get-quote" },
       },
       {
         id: 3,
-        question:
-          "Which type of artwork format do you accept for digitizing any embroidery design?",
+        question: "Do you charge based on stitches or a flat rate?",
         answer:
-          "We accept multiple formats including: AI, CDR, EPS, PDF, JPG, PNG, BMP, GIF, TIFF, PSD, and more. Vector formats (AI, EPS, PDF) are preferred for best results.",
+          "We offer flat rate pricing. No confusing per-stitch charges. Just simple, straightforward pricing.",
       },
       {
         id: 4,
-        question:
-          "In what file formats will my digitized designs be delivered?",
+        question: "Which type of artwork format do you accept for digitizing?",
         answer:
-          "CND, CSD, DSB, DST, DSZ, EMB, EXP, HUS, JEF, PCS, PES, SEW, SHV, VIP, VP3, XXX and more. We deliver in all major embroidery machine formats.",
+          "We accept AI, CDR, EPS, PDF, JPG, PNG, BMP, GIF, TIFF, and PSD. Vector formats (AI, EPS, PDF) give the best results. Have a different format? Just contact us before ordering.",
+        contactUsLink: true,
+      },
+      {
+        id: 5,
+        question: "What format will my digitized design be delivered in?",
+        answer:
+          "We can deliver your file in any format you need. Just tell us your machine's brand/model or the specific format (DST, PES, EXP, JEF, VP3, etc.), and we'll provide it accordingly.",
+        button: { label: "Order Now", href: "/get-quote" },
+      },
+      {
+        id: 6,
+        question: "Do you offer a free quote?",
+        answer:
+          "Yes, we do. Simply share your design details or requirements with us, and we'll provide you with a free quote within 5 minutes—no obligations.",
+        button: { label: "Get Free Quote", href: "/get-free-quote" },
+      },
+      {
+        id: 7,
+        question: "How will I receive my file?",
+        answer:
+          "Your file will be delivered via email, or you can create an account on our website to download it directly. Need a different delivery method? Just let us know.",
+      },
+      {
+        id: 8,
+        question: "Will my digitized design work on any fabric?",
+        answer:
+          "We digitize designs for standard fabric by default. Different fabrics (like stretchy, thick, fleece, towel, sweatshirt, or delicate materials) may require specific adjustments to ensure the best stitching quality. Just let us know your fabric type, and we'll digitize your design accordingly.",
+        button: { label: "Order Now", href: "/get-quote" },
+      },
+      {
+        id: 9,
+        question: "Can I get a special discount on a bulk order?",
+        answer:
+          "Yes, we offer special discounts on bulk orders! Just send us your design files, and we'll provide you with a customized discount quote.",
+        button: { label: "Get Free Quote", href: "/get-free-quote" },
+      },
+      {
+        id: 10,
+        question: "What size should I choose for my logo?",
+        answer:
+          "Logo size depends on placement (e.g., left chest, cap, sleeve, back). Let us know your placement, and we'll recommend the best size or share your custom size if you already have one in mind. Feel free to contact us for more details.",
+        contactUsLink: true,
+      },
+      {
+        id: 11,
+        question: "Do you offer custom design sizes?",
+        answer:
+          "Yes, we can create your design in any custom size you require. Simply share your preferred dimensions with us, and we'll prepare your design accordingly.",
+        button: { label: "Get Free Quote", href: "/get-free-quote" },
+      },
+      {
+        id: 12,
+        question: "Do you keep backups of my design files?",
+        answer:
+          "Yes, we keep backups of your design files. Registered users can log in and download their files directly. If you can't find it there, just contact us with your design details, and we'll send it over.",
+        note: "Still have questions? Reach out to our support team — we're available 24/7 to help.",
+      },
+      {
+        id: 13,
+        question:
+          "Do I need to send a reference file or screenshot if I want to match an existing design or one I've seen elsewhere?",
+        answer:
+          "Yes, sharing a reference file or screenshot helps us match your design as closely as possible to what you have in mind. Without a reference, we'll create the design based only on the artwork you provide.",
+      },
+      {
+        id: 14,
+        question: "What happens if I don't share a reference file?",
+        answer:
+          "If you request changes afterward, small edits will be done free of charge. However, if major changes are needed, additional charges will apply, and if the design needs to be completely redone, full payment will be required.",
+      },
+      {
+        id: 15,
+        question:
+          "What if I don't like my digitized design? Will I still have to pay?",
+        answer:
+          "No, we'll send you a preview of your digitized design before requesting payment. If you're not happy with it, you won't need to pay until you're fully satisfied with the result.",
+      },
+      {
+        id: 16,
+        question: "Do you sell my design to anyone else?",
+        answer:
+          "No, your design belongs only to you. We never resell any customer's design to another customer. This ensures your privacy and exclusivity are always protected.",
+      },
+      {
+        id: 17,
+        question: "Can I get my design digitized from just a screenshot?",
+        answer:
+          "Yes, we can create your design from a screenshot. Just share it with us.",
+        button: { label: "Get a free quote now", href: "/get-free-quote" },
       },
     ],
   },
@@ -48,29 +156,29 @@ const faqData = [
     subtitle: "About Our Embroidery Digitizing Services",
     questions: [
       {
-        id: 5,
-        question:
-          "How can I place an order for custom digitizing of logos or designs?",
+        id: 18,
+        question: "How do I place an order for digitizing?",
         answer:
-          "Simply upload your design through our website, fill in the order form with your requirements, and submit. You'll receive a quote within 24 hours. Once approved, we'll start digitizing your design.",
+          "Very simple. Go to the homepage, visit the Services section, and select the service you need. You'll be taken to the order page where you can fill out the order form with your design details and requirements so we can digitize your design exactly the way you want. If you'd like a free quote before placing your order, simply click Get Free Quote and submit your details. We'll get back to you with a quote within 5 minutes.",
       },
       {
-        id: 6,
-        question: "What are the modes of payments?",
+        id: 19,
+        question: "Can I place a direct order, or get a quote directly?",
         answer:
-          "We accept multiple payment methods including Credit/Debit Cards, PayPal, Bank Transfer, and major digital wallets. All transactions are secure and encrypted.",
+          "Yes, both options are available! On our website's header, you'll find the Order Now and Get Free Quote buttons. Simply click on either one to place a direct order or get a quote right away.",
       },
       {
-        id: 7,
-        question: "How Can I track the Progress of My Order?",
+        id: 20,
+        question: "Can I place an order via email or any other method?",
         answer:
-          "After placing your order, you'll receive a unique tracking ID. Login to your account dashboard to view real-time updates, or check your email for status notifications at each stage of production.",
+          "Yes! In addition to placing your order directly on our website, you can order via email or WhatsApp. Just share your design details and requirements with us, and we'll get started on your order right away.",
+        button: { label: "Email Us", href: "mailto:ahdigitizing@gmail.com" },
       },
       {
-        id: 8,
-        question: "What is the typical turnaround time for orders?",
+        id: 21,
+        question: "How can I track the progress of my order?",
         answer:
-          "Standard turnaround is 2-3 business days for simple designs and 3-5 business days for complex projects. Rush services are available for an additional fee with same-day or 24-hour delivery options.",
+          "Once you place your order, you'll receive a unique tracking ID. You can log in to your account dashboard anytime to view real-time progress, or reach out to us via email or contact our team directly for updates on your design's progress.",
       },
     ],
   },
@@ -80,28 +188,29 @@ const faqData = [
     subtitle: "About Our Embroidery Digitizing Services",
     questions: [
       {
-        id: 9,
-        question: "How to get Register at AHDigitizing?",
+        id: 22,
+        question: "What are the benefits of registering at AH Digitizing?",
         answer:
-          "Click on the 'Register' button in the top navigation, fill in your basic details including name, email, and password. Verify your email address through the link sent to your inbox, and you're all set!",
+          "Registering with us gives you access to exclusive benefits, including real-time order tracking to monitor your order's progress, easy access to your complete order history, a faster checkout process by skipping repetitive steps on future orders, special member-only discounts, and priority support for quicker responses from our team.",
       },
       {
-        id: 10,
-        question: "Why Should I get Register at AHDigitizing?",
+        id: 23,
+        question: "Can I place an order without registering?",
         answer:
-          "Registration provides exclusive benefits including: Order tracking, Access to your order history, Faster checkout process, Special discounts for members, Priority customer support, and Saved payment methods for quick orders.",
+          "Yes, you can place an order using just your email address — no account creation required. However, registering gives you access to order tracking, order history, and other exclusive benefits.",
+        button: { label: "Email Us", href: "mailto:ahdigitizing@gmail.com" },
       },
       {
-        id: 11,
-        question: "Is registration free or paid?",
+        id: 24,
+        question: "Is my personal information safe and secure?",
         answer:
-          "Registration is completely free! You can create an account at no cost and start placing orders immediately. Premium membership options with additional benefits are available but entirely optional.",
+          "Yes, we take your privacy seriously. Your personal information is securely stored and never shared with third parties without your consent.",
       },
       {
-        id: 12,
-        question: "Can I have multiple users under one account?",
+        id: 25,
+        question: "How do I reset my password?",
         answer:
-          "Yes! Business accounts can have multiple team members with different access levels. Contact our support team to set up a multi-user business account with customized permissions for your team.",
+          "Simply click on \"Forgot Password\" on the login page, enter your registered email address, and we'll send you a link to reset your password.",
       },
     ],
   },
@@ -111,32 +220,64 @@ const faqData = [
     subtitle: "About Our Embroidery Digitizing Services",
     questions: [
       {
-        id: 13,
-        question: "Can I request changes to my digitized design?",
+        id: 26,
+        question: "How many revisions do you provide?",
         answer:
-          "Yes! We offer free revisions within 7 days of delivery. Simply let us know what changes you need, and we'll modify the design according to your requirements.",
+          "We provide unlimited revisions until your design is exactly the way you want it, free of charge, with no extra fees.",
       },
       {
-        id: 14,
-        question: "How many revisions are included in the price?",
+        id: 27,
+        question: "Do you charge for design editing?",
         answer:
-          "We include 2 free revisions with every order. Additional revisions may incur a small fee depending on the complexity of changes requested.",
+          "No, we don't charge for standard editing. However, if you'd like to add something new to your design, a small additional charge may apply.",
+      },
+    ],
+  },
+  {
+    id: "payment",
+    title: "Payment",
+    subtitle: "About Our Embroidery Digitizing Services",
+    questions: [
+      {
+        id: 28,
+        question: "What payment methods do you accept?",
+        answer:
+          "We accept payments through PayPal and Stripe, so you can pay via PayPal or debit/credit card. If you face any issues with payment, just contact us. We'll help you find an alternative way to pay. All transactions are secure and encrypted.",
       },
       {
-        id: 15,
-        question: "What if I need major changes after the revision limit?",
+        id: 29,
+        question: "Do you offer a refund policy?",
         answer:
-          "For major changes beyond the included revisions, we offer discounted modification rates. Our team will provide a quote before proceeding, so you always know the cost upfront.",
+          "Yes, we offer a refund if we're unable to adjust the design according to your requirements or fail to deliver the expected quality.",
       },
       {
-        id: 16,
-        question: "Can I edit my order after it has been placed?",
+        id: 30,
+        question: "Do I have to pay before digitizing?",
         answer:
-          "Yes, you can request order modifications within 2 hours of placing it at no cost. After production begins, changes may incur additional charges depending on the progress of your order.",
+          "No, you don't need to pay upfront. Once your design is ready, we'll send you a preview before you make any payment.",
       },
     ],
   },
 ];
+
+function renderAnswer(answer: string, contactUsLink?: boolean) {
+  if (!contactUsLink) return answer;
+
+  const parts = answer.split(/\b(contact us)\b/i);
+  if (parts.length < 3) return answer;
+
+  return (
+    <>
+      {parts[0]}
+      <Link
+        href="/contact-us"
+        className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700">
+        contact us
+      </Link>
+      {parts[2]}
+    </>
+  );
+}
 
 function FAQSection({ section }: { section: (typeof faqData)[0] }) {
   const [openItem, setOpenItem] = useState<number | null>(null);
@@ -153,8 +294,8 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
       transition={{ duration: 0.5 }}
       className="mb-16">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 pl-4 lg:pl-8">
-        {/* Left Side - Heading (Sticky & Centered) */}
-        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-center">
+        {/* Left Side - Heading (Sticky & Top-Aligned) */}
+        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-start mt-10">
           <div className="relative">
             <div className="absolute left-0 top-0 w-1 h-20 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-3 pl-5">
@@ -226,8 +367,20 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
                         <div className="px-6 pb-5 pt-1 pl-[4.5rem]">
                           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
                             <p className="text-gray-600 text-base lg:text-[17px] leading-relaxed lg:leading-7">
-                              {item.answer}
+                              {renderAnswer(item.answer, item.contactUsLink)}
                             </p>
+                            {item.button && (
+                              <Link
+                                href={item.button.href}
+                                className="mt-3 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-lg hover:shadow-blue-200/50">
+                                {item.button.label}
+                              </Link>
+                            )}
+                            {item.note && (
+                              <p className="mt-3 text-sm font-medium text-blue-700/80 leading-relaxed">
+                                {item.note}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </motion.div>
