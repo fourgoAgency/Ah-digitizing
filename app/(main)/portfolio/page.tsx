@@ -512,23 +512,8 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
       />
 
       {/* Gradient overlay — sits BEHIND the image now, so it never darkens the artwork */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent
         opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      {/* Magnify icon — above the image so it stays readable */}
-      <div className="absolute inset-x-0 bottom-4 flex justify-center pointer-events-none z-30
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <span className="flex items-center justify-center w-11 h-11 rounded-full bg-black/45 text-white
-          translate-y-3 group-hover:translate-y-0
-          transition-transform duration-300 ease-out delay-[40ms]">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            <line x1="11" y1="8" x2="11" y2="14" />
-            <line x1="8" y1="11" x2="14" y2="11" />
-          </svg>
-        </span>
-      </div>
 
       {/* Shine sweep , unchanged */}
       <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-xl">
@@ -680,7 +665,7 @@ const CategorySection = ({
   const handleJump = useCallback((index: number) => {
     setLightboxIndex(index);
   }, []);
-  const handleViewMore = () => setVisibleCount((prev) => Math.min(prev + 15, sectionItems.length));
+  const handleViewMore = () => setVisibleCount((prev) => Math.min(prev + 12, sectionItems.length));
   const hasMoreItems = visibleCount < sectionItems.length;
 
   return (
