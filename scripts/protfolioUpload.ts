@@ -108,6 +108,34 @@ export function usePortfolioUpload() {
           setErrors((prev) => ({ ...prev, [fileName]: error.message })),
       });
 
+      // Persist the storage URLs to Firestore (portfolioIndex/<category>) so the
+      // public site can list them. Storage upload already succeeded — if this
+      // sync fails, surface it instead of pretending the whole flow is done.
+      if (uploaded.length > 0) {
+        try {
+          const res = await fetch("/api/admin/portfolio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              category,
+              urls: uploaded.map((r) => r.url),
+            }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => null);
+            throw new Error(data?.error || `Sync failed (${res.status})`);
+          }
+        } catch (err) {
+          setErrors((prev) => ({
+            ...prev,
+            _firestore: `Files uploaded to storage but Firestore index not updated: ${
+              err instanceof Error ? err.message : String(err)
+            }`,
+          }));
+        }
+      }
+
       setUploading(false);
       return uploaded;
     },
