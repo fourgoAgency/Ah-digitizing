@@ -1,7 +1,7 @@
 // app/admin/portfolio/page.tsx
 "use client";
 
-import { usePortfolioUpload,PortfolioCategory } from "@/scripts/protfolioUpload";
+import { usePortfolioUpload, PortfolioCategory } from "@/scripts/protfolioUpload";
 import { useState } from "react";
 
 export default function PortfolioUploadPage() {
@@ -12,14 +12,13 @@ export default function PortfolioUploadPage() {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     await upload(category, files);
-    e.target.value = ""; // reset input
+    e.target.value = "";
   };
 
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Upload Portfolio Images</h1>
 
-      {/* Category selector */}
       <div className="flex gap-3">
         {(["embroidery", "vector"] as PortfolioCategory[]).map((cat) => (
           <button
@@ -36,7 +35,6 @@ export default function PortfolioUploadPage() {
         ))}
       </div>
 
-      {/* File input — accepts images only, multiple */}
       <input
         type="file"
         accept="image/*"
@@ -46,7 +44,6 @@ export default function PortfolioUploadPage() {
         className="block"
       />
 
-      {/* Per-file progress bars */}
       {Object.entries(progress).map(([name, pct]) => (
         <div key={name} className="space-y-1">
           <p className="text-sm text-gray-600">{name}</p>
@@ -59,14 +56,12 @@ export default function PortfolioUploadPage() {
         </div>
       ))}
 
-      {/* Errors */}
       {Object.entries(errors).map(([name, msg]) => (
         <p key={name} className="text-sm text-red-500">
           {name}: {msg}
         </p>
       ))}
 
-      {/* Success list */}
       {results.length > 0 && (
         <div className="space-y-1">
           <p className="font-medium text-green-600">
