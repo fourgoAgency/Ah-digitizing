@@ -263,17 +263,20 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
     setTimeout(() => { isScrollingRef.current = false; }, 350);
   }, [hasNext, hasPrev, onNext, onPrev]);
 
-  // ── Suppress header z-index while lightbox is open ────────────────────────
+  // ── Suppress header/footer z-index while lightbox is open ─────────────────
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const header = document.querySelector("header") as HTMLElement | null;
     const stickyNav = document.querySelector(".sticky") as HTMLElement | null;
+    const footer = document.querySelector("footer") as HTMLElement | null;
     if (header) header.style.zIndex = "0";
     if (stickyNav) stickyNav.style.zIndex = "0";
+    if (footer) footer.style.zIndex = "0";
     return () => {
       document.body.style.overflow = "";
       if (header) header.style.zIndex = "";
       if (stickyNav) stickyNav.style.zIndex = "";
+      if (footer) footer.style.zIndex = "";
     };
   }, []);
 
@@ -479,7 +482,7 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
   >
     {/* Hover glow border , unchanged */}
     <motion.div
-      className="absolute inset-0 rounded-2xl pointer-events-none z-10"
+      className="absolute inset-0 rounded-2xl pointer-events-none"
       initial={{ opacity: 0 }}
       whileHover={{ opacity: 1 }}
       transition={{ duration: 0.25 }}
@@ -496,7 +499,7 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
                                  • Use `inset-[6px]` for a more padded look
       `overflow-hidden`        → clip the image on hover scale so it doesn't bleed outside
     */}
-    <div className="absolute inset-[2px] overflow-hidden rounded-xl">
+    <div className="absolute inset-[2px] overflow-hidden rounded-xl z-10">
       <Image
         src={item.path}
         fill                   // ← stretches to fill the parent box (the `absolute inset-[2px]` div)
@@ -504,18 +507,20 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         // `object-contain` keeps the full artwork visible, no cropping.
         // The white card background shows through any transparent/white image padding.
-        className="object-contain transition-transform duration-500 group-hover:scale-105"
+        className="object-contain transition-transform duration-500 group-hover:scale-105 z-20"
         unoptimized
       />
 
-      {/* Gradient overlay + magnify icon */}
+      {/* Gradient overlay — sits BEHIND the image now, so it never darkens the artwork */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300
-        flex flex-col items-center justify-end pb-4 gap-2">
-        <span className="text-white/75 text-[14px] font-semibold tracking-widest uppercase
-          flex items-center gap-1
-          translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
-          transition-all duration-300 ease-out delay-[40ms]">
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Magnify icon — above the image so it stays readable */}
+      <div className="absolute inset-x-0 bottom-4 flex justify-center pointer-events-none z-30
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <span className="flex items-center justify-center w-11 h-11 rounded-full bg-black/45 text-white
+          translate-y-3 group-hover:translate-y-0
+          transition-transform duration-300 ease-out delay-[40ms]">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -704,7 +709,6 @@ const CategorySection = ({
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
             />
-            <p className="text-gray-500 mt-2 text-sm">{sectionItems.length} projects</p>
           </motion.div>
 
           <ProductGrid
