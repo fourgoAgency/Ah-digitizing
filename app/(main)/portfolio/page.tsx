@@ -215,7 +215,7 @@ const ThumbButton = ({
       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }}
     />
     <Image src={thumb.path} width={100} height={80} alt={thumb.title}
-      className="w-full h-full object-cover" />
+      className="w-full h-full object-cover" unoptimized />
   </motion.button>
 );
 
@@ -468,6 +468,7 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                     height={1001}
                     alt={item.title}
                     className="w-full h-full object-contain bg-white"
+                    unoptimized
                   />
                 </motion.div>
               </AnimatePresence>
@@ -574,6 +575,7 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
         // `object-contain` keeps the full artwork visible, no cropping.
         // The white card background shows through any transparent/white image padding.
         className="object-contain transition-transform duration-500 group-hover:scale-105 z-20"
+        unoptimized
       />
 
       {/* Gradient overlay — sits BEHIND the image now, so it never darkens the artwork */}

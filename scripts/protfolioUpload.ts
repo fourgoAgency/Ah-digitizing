@@ -35,6 +35,37 @@ export type UploadPortfolioFolderOptions = {
  *
  * @returns Array of { fileName, url } for every successfully uploaded file.
  */
+/**
+ * Downscales and re-encodes an image to WebP before upload. The raw PNGs
+ * coming from the admin portal were ~1-3MB each, which made the public
+ * portfolio grid (60+ images, lazy-loaded straight from Storage) take
+ * minutes to fill. Compressed here they come out at ~50-150KB with no
+ * visible quality loss at display size.
+ */
+async function compressImage(file: File, maxDim = 1280, quality = 0.82): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close?.();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", quality)
+    );
+    if (!blob) return file;
+    const name = file.name.replace(/\.[^.]+$/, "") + ".webp";
+    return new File([blob], name, { type: "image/webp" });
+  } catch {
+    return file; // fall back to the original if compression fails
+  }
+}
+
 export async function uploadPortfolioFolder({
   category,
   files,
@@ -45,11 +76,12 @@ export async function uploadPortfolioFolder({
   if (!files.length) return [];
 
   const uploadFile = (file: File): Promise<UploadResult | null> => {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      const readyFile = await compressImage(file);
       // Prefix with timestamp to avoid collisions on re-uploads
-      const fileName = `${Date.now()}_${file.name}`;
+      const fileName = `${Date.now()}_${readyFile.name}`;
       const storageRef = ref(storage, `${category}/${fileName}`);
-      const task = uploadBytesResumable(storageRef, file);
+      const task = uploadBytesResumable(storageRef, readyFile);
 
       task.on(
         "state_changed",
