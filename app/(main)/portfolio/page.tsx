@@ -512,8 +512,8 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
       />
 
       {/* Gradient overlay — sits BEHIND the image now, so it never darkens the artwork */}
-      {/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Shine sweep , unchanged */}
       <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-xl">
