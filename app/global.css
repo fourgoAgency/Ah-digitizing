@@ -138,6 +138,10 @@
 html, body {
   overscroll-behavior: none;
   scroll-behavior: smooth;
+  /* Clip horizontal overflow from the wide sticky nav instead of showing a
+     scrollbar. `clip` (not `hidden`) avoids creating a scroll container so
+     `position: sticky` keeps working. */
+  overflow-x: clip;
 }
 
 /* Ensure sections are positioned for pinning/scroll triggers */
