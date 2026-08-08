@@ -215,7 +215,7 @@ const ThumbButton = ({
       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }}
     />
     <Image src={thumb.path} width={100} height={80} alt={thumb.title}
-      className="w-full h-full object-cover" unoptimized />
+      className="w-full h-full object-cover" />
   </motion.button>
 );
 
@@ -468,7 +468,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                     height={1001}
                     alt={item.title}
                     className="w-full h-full object-contain bg-white"
-                    unoptimized
                   />
                 </motion.div>
               </AnimatePresence>
@@ -535,7 +534,13 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
     // `bg-white`       → the white canvas lives here so it scales with the card
     // `w-full max-w-[320px]` → still respects the grid column width
     className="group relative rounded-2xl cursor-pointer overflow-hidden w-full max-w-[320px] aspect-square bg-white"
-    variants={fadeUp}
+    initial={{ opacity: 0, y: 28 }}
+    whileInView={{
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: cubicBezier(0.22, 1, 0.36, 1) },
+    }}
+    viewport={{ once: true, amount: 0.2 }}
     whileHover={{ y: -8, scale: 1.03 }}
     whileTap={{ scale: 0.97 }}
     transition={{ type: "spring", stiffness: 280, damping: 22 }}
@@ -569,7 +574,6 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
         // `object-contain` keeps the full artwork visible, no cropping.
         // The white card background shows through any transparent/white image padding.
         className="object-contain transition-transform duration-500 group-hover:scale-105 z-20"
-        unoptimized
       />
 
       {/* Gradient overlay — sits BEHIND the image now, so it never darkens the artwork */}
@@ -601,17 +605,14 @@ const ProductGrid = ({
   return (
     // Single responsive grid: cards flow into 1/2/3 columns based on width.
     // (Chunking into rows of 3 previously caused a 2+1 wrap on 2-col screens.)
-    <motion.div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 justify-items-center"
-      variants={staggerContainer}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.1 }}
-    >
+    // Each card animates itself on its own `whileInView`, so cards added later
+    // (Firestore data arriving after mount, or "View More") always become
+    // visible instead of staying stuck at opacity 0.
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 justify-items-center">
       {visibleItems.map((item, index) => (
         <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(index)} />
       ))}
-    </motion.div>
+    </div>
   );
 };
 
