@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useLayoutEffect, useCallback } from "react";
 import { motion, AnimatePresence, cubicBezier } from "framer-motion";
 import Image from "next/image";
 import { getDocuments } from "../../../lib/firebase";
@@ -63,18 +63,26 @@ const fadeUp = {
 };
 
 // ─── Shared image size constant ───────────────────────────────────────────────
-const IMG_WIDTH = "clamp(360px, min(55vh, calc(100vw - 60px)), 1100px)";
-const IMG_HEIGHT = "clamp(280px, min(45vh, calc(100vw - 160px)), 850px)";
+// Perfect square (width === height). On md+ it's measured dynamically to fill
+// the stage; this clamp is the fallback used below md (and the first paint on
+// desktop before the measurement kicks in):
+//   • vertical  budget  → 100vh minus top bar + thumb strip + breathing room
+//   • horizontal budget → 100vw minus stage padding + a little breathing room
+//     (24px each side on mobile — the old `100vw - 200px` assumed the desktop
+//     side nav buttons and forced the 320px floor onto narrow screens)
+const IMG_SIZE = "clamp(220px, min(calc(100vh - 190px), calc(100vw - 48px)), 1080px)";
 
 // ─── Animated Nav Button ───────────────────────────────────────────────────────
 const NavButton = ({
   direction,
   enabled,
   onClick,
+  heightPx,
 }: {
   direction: "prev" | "next";
   enabled: boolean;
   onClick: () => void;
+  heightPx?: string;
 }) => {
   const isPrev = direction === "prev";
   return (
@@ -82,10 +90,9 @@ const NavButton = ({
       onClick={onClick}
       disabled={!enabled}
       whileTap={enabled ? { scale: 0.93 } : {}}
-      className="relative shrink-0 overflow-hidden rounded-xl flex items-center cursor-pointer justify-center border outline-none"
+      className="relative shrink-0 overflow-hidden rounded-xl flex items-center cursor-pointer justify-center border outline-none w-9 2xl:w-14"
       style={{
-        width: "clamp(36px, 3vw, 50px)",
-        height: IMG_HEIGHT,
+        height: heightPx ?? IMG_SIZE,
         borderColor: enabled ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)",
         background: enabled ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
         cursor: enabled ? "pointer" : "default",
@@ -119,7 +126,7 @@ const NavButton = ({
         }
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+        <svg className="w-[18px] h-[18px] 2xl:w-6 2xl:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
           strokeLinecap="round" strokeLinejoin="round"
           style={{ color: enabled ? "white" : "rgba(255,255,255,0.2)" }}>
           {isPrev ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
@@ -231,6 +238,13 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
   const isScrollingRef = useRef(false);
   const thumbStripRef = useRef<HTMLDivElement>(null);
+  // Refs used to measure the stage so the square image can fill the leftover
+  // height on md+ without touching the top bar / thumbnail strip.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const leftNavRef = useRef<HTMLDivElement>(null);
+  const rightNavRef = useRef<HTMLDivElement>(null);
+  const [imgSizePx, setImgSizePx] = useState<number | null>(null);
 
   useEffect(() => {
     const container = thumbStripRef.current;
@@ -279,6 +293,51 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
       if (footer) footer.style.zIndex = "";
     };
   }, []);
+
+  // ── Fill the stage with the largest square that fits ─────────────────────
+  // On md+ the nav buttons sit at the image's sides, so the square can take
+  // the stage's FULL leftover height. We measure the actual flex space
+  // (between top bar and thumb strip) and subtract the side nav + gaps for
+  // the width budget — min(height, width) keeps it a perfect square while
+  // never overflowing or pushing into the chrome above/below.
+  // Below md the nav buttons drop below the image, so we keep the clamp
+  // fallback (IMG_SIZE) instead of forcing the square to fill the height.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const stage = stageRef.current;
+      const row = rowRef.current;
+      const leftNav = leftNavRef.current;
+      const rightNav = rightNavRef.current;
+      if (!stage || !row) return;
+      // Left/right nav wrappers are `hidden md:flex` → offsetWidth 0 on mobile.
+      if (!leftNav || leftNav.offsetWidth === 0) {
+        setImgSizePx(null);
+        return;
+      }
+      const gap = parseFloat(getComputedStyle(row).columnGap) || 16;
+      // Keep a little breathing room below so the square doesn't touch the thumb strip.
+      const availHeight = stage.clientHeight - 24;
+      const availWidth =
+        row.clientWidth -
+        (leftNav?.offsetWidth ?? 0) -
+        (rightNav?.offsetWidth ?? 0) -
+        gap * 2;
+      setImgSizePx(Math.max(280, Math.min(availHeight, availWidth, 1080)));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (stageRef.current) ro.observe(stageRef.current);
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+    };
+  }, []);
+
+  // Measured px size when available, otherwise the responsive clamp fallback.
+  const imgSize = imgSizePx ? `${imgSizePx}px` : IMG_SIZE;
 
   const progressPct = ((currentIndex + 1) / items.length) * 100;
 
@@ -362,29 +421,31 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
 
         {/* IMAGE STAGE */}
         <div
+          ref={stageRef}
           className="pointer-events-auto flex-1 min-h-0 flex items-center justify-center px-4 md:px-8 gap-3 md:gap-4"
           onClick={(e) => e.stopPropagation()}
           onWheel={handleWheel}
         >
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full justify-center">
+          <div ref={rowRef} className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full justify-center">
 
-            {/* Desktop-only left nav , height tracks image width */}
-            <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
+            {/* Desktop-only left nav , height matches image (square) */}
+            <div ref={leftNavRef} className="hidden md:flex items-stretch" style={{ height: imgSize }}>
               <NavButton
                 direction="prev"
                 enabled={hasPrev}
                 onClick={onPrev}
+                heightPx={imgSize}
               />
             </div>
 
             {/* ── Image container ──
-                width  : IMG_WIDTH (min of vh and available horizontal room)
-                height : IMG_HEIGHT (shorter than width for rectangular look)   */}
+                Perfect square: width === height = imgSize (measured on md+ to
+                fill the leftover stage height; clamp fallback below md). */}
             <div
               className="relative rounded-2xl overflow-hidden shrink-0"
               style={{
-                width: IMG_WIDTH,
-                height: IMG_HEIGHT,
+                width: imgSize,
+                height: imgSize,
                 boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)",
                 // background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%)",
                 background: "white",
@@ -422,9 +483,9 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
                 className={`absolute right-0 top-0 bottom-0 w-1/4 z-10 hidden md:block ${hasNext ? "cursor-pointer" : ""}`} />
             </div>
 
-            {/* Desktop-only right nav , height tracks image height */}
-            <div className="hidden md:flex items-stretch" style={{ height: IMG_HEIGHT }}>
-              <NavButton direction="next" enabled={hasNext} onClick={onNext} />
+            {/* Desktop-only right nav , height matches image (square) */}
+            <div ref={rightNavRef} className="hidden md:flex items-stretch" style={{ height: imgSize }}>
+              <NavButton direction="next" enabled={hasNext} onClick={onNext} heightPx={imgSize} />
             </div>
 
             {/* Mobile nav buttons - below image container on small screens */}
@@ -436,15 +497,15 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           </div>
         </div>
 
-        {/* THUMBNAIL STRIP , shorter height + tighter padding */}
+        {/* THUMBNAIL STRIP , fixed min height so it never gets too thin */}
         <div
-          className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-2 pb-4 hidden md:block"
+          className="pointer-events-auto flex-shrink-0 px-4 md:px-8 pt-2 pb-4 hidden md:flex min-h-[76px] items-center"
           onClick={(e) => e.stopPropagation()}
         >
           <motion.div
             ref={thumbStripRef}
             onWheel={handleWheel}
-            className="flex gap-3 overflow-x-auto px-1 pb-1"
+            className="flex gap-3 overflow-x-auto px-1 pb-1 w-full"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -527,45 +588,30 @@ const PortfolioCard = ({ item, onClick }: { item: PortfolioItem; onClick: () => 
 );
 
 // ─── Product Grid with staggered cards ────────────────────────────────────────
-const chunkArray = <T,>(arr: T[], size: number) =>
-  arr.reduce<T[][]>((acc, _, i) => {
-    if (i % size === 0) acc.push(arr.slice(i, i + size));
-    return acc;
-  }, []);
-
 const ProductGrid = ({
   items,
-  accentColor,
   onCardClick,
   visibleCount,
 }: {
   items: PortfolioItem[];
-  accentColor: string;
   onCardClick: (index: number) => void;
   visibleCount: number;
 }) => {
   const visibleItems = items.slice(0, visibleCount);
-  const rows = chunkArray(visibleItems, 3);
   return (
-    <div className="space-y-8">
-      {rows.map((row, rowIdx) => (
-        <motion.div
-          key={rowIdx}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
-        >
-          {row.map((item, colIdx) => {
-            const globalIndex = rowIdx * 3 + colIdx;
-            return (
-              <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(globalIndex)} />
-            );
-          })}
-        </motion.div>
+    // Single responsive grid: cards flow into 1/2/3 columns based on width.
+    // (Chunking into rows of 3 previously caused a 2+1 wrap on 2-col screens.)
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 justify-items-center"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.1 }}
+    >
+      {visibleItems.map((item, index) => (
+        <PortfolioCard key={item.id} item={item} onClick={() => onCardClick(index)} />
       ))}
-    </div>
+    </motion.div>
   );
 };
 
@@ -698,7 +744,6 @@ const CategorySection = ({
 
           <ProductGrid
             items={sectionItems}
-            accentColor={config.accentColor}
             onCardClick={openLightbox}
             visibleCount={visibleCount}
           />

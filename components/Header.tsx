@@ -43,10 +43,13 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
         font-medium
         text-white
         will-change-transform
+        px-6
+        xl:px-12
       "
       style={{
         borderRadius: isSticky ? 0 : 10,
-        padding: isSticky ? "0.1rem 3rem" : "0rem 3rem",
+        paddingTop: isSticky ? "0.1rem" : "0rem",
+        paddingBottom: isSticky ? "0.1rem" : "0rem",
       }}
     >
 
@@ -61,7 +64,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           duration: 0.35,
           ease: [0.22, 1, 0.36, 1],
         }}
-        className="w-45 shrink-0"
+        className="w-45 shrink-0 hidden xl:block"
       >
         <Link href="/" className="flex items-center gap-1 text-3xl cursor-pointer">
           <p className="font-bold text-black text-4xl">𝓐𝓗</p>
@@ -72,7 +75,7 @@ function DesktopMenu({ isSticky, onCartClick, cartCount }: { isSticky: boolean; 
           </p>
         </Link>
       </motion.div>
-      <div className="flex items-center justify-between gap-8">
+      <div className="flex items-center justify-between gap-4 xl:gap-8">
         <Link className="cursor-pointer" href="/">Home</Link>
 
         {/* SERVICES */}
