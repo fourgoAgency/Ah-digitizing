@@ -370,16 +370,6 @@ const Lightbox = ({ items, currentIndex, onClose, onPrev, onNext, onJump }: Ligh
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 min-w-0">
-            <motion.div
-              className="flex items-center gap-1.5 bg-white/8 border border-white/10 rounded-full px-3 py-1.5 xl:px-4 xl:py-2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.12, duration: 0.28 }}
-            >
-              <span className="text-white text-xs font-bold xl:text-sm tabular-nums">{currentIndex + 1}</span>
-              <span className="text-white/30 text-xs xl:text-sm">/</span>
-              <span className="text-white/40 text-xs tabular-nums xl:text-sm">{items.length}</span>
-            </motion.div>
             <AnimatePresence mode="wait">
               <motion.span
                 key={item.id}
@@ -818,7 +808,7 @@ async function getPortfolioIndex() {
     return (doc.urls || []).map((url, index) => ({
       id: `${doc.id}-${index}`,
       itemId: index + 1,
-      title: `${service} ${index + 1}`,
+      title: service,
       path: url,
       service,
     }));
