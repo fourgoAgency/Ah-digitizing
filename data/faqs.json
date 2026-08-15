@@ -1,11 +1,11 @@
 {
-  "whyChooseUs": "AH Digitizing sets the standard in professional embroidery digitizing and vector conversion. Our designs are 100% manually crafted by skilled experts to ensure unmatched accuracy, smooth stitching, and flawless results. With fast turnaround, competitive pricing, and consistent quality, we help your designs run perfectly on any machine and elevate your brand worldwide.",
+  "whyChooseUs": "AH Digitizing provides professional embroidery digitizing and vector conversion services with a focus on quality and attention to detail. Every design is manually digitized to achieve clean stitching, precise details, and reliable embroidery results. Our experienced digitizers create high-quality embroidery files optimized for different fabrics, garments, and embroidery needs, helping customers worldwide bring their artwork to life.",
 
   "faqs": [
     {
       "id": 1,
       "question": "How Can I Place an Order?",
-      "answer": "Placing your order with AH Digitizing is simple and convenient.",
+      "answer": "You can place an order through our online order form or email by sending your artwork and project details.",
       "steps": [
         "Register on our website",
         "Upload your artwork or design directly through our website",
@@ -15,23 +15,23 @@
     },
     {
       "id": 2,
-      "question": "What File Formats Do You Accept?",
-      "answer": "We accept a wide range of file formats to ensure compatibility with your design needs. Preferred formats include AI, EPS, PDF, SVG, and high-resolution PNG or JPEG files. For embroidery digitizing, please provide clear and detailed artwork to achieve the best results."
+      "question": "What Artwork Can I Submit?",
+      "answer": "We accept common artwork formats such as JPG, PNG, PDF, AI, EPS, and TIFF. If you have another file format or image, please contact us before submitting your order to confirm if we can work with it."
     },
     {
       "id": 3,
-      "question": "How Much Do Your Services Cost?",
-      "answer": "At AH Digitizing, our pricing starts at $9 for embroidery digitizing and $5 for vector conversion. Final costs may vary depending on design complexity, size, and stitch details."
-    },
-    {
-      "id": 4,
-      "question": "What’s your turnaround time?",
-      "answer": "Our standard turnaround time is 4–12 hours. For urgent requests, we can deliver your digitized design within 1–4 hours. Complex designs may take longer."
+      "question": "What Information Should I Provide With My Order?",
+      "answer": "Please provide the design size, artwork, colors, fabric type, required file format, and any special instructions. If you have a reference design, please submit it with your artwork before we start the project."
     },
     {
       "id": 5,
-      "question": "Do you offer discounts for bulk or regular clients?",
-      "answer": "Absolutely! We offer exclusive discounts for returning clients, bulk orders, and embroidery or screen printing businesses. Contact sales for custom pricing."
+      "question": "What Is Your Turnaround Time?",
+      "answer": "Most standard embroidery digitizing and vector orders are completed within 4–12 hours. More complex designs may require additional time. Urgent service may also be available upon request."
+    },
+    {
+      "id": 4,
+      "question": "How Much Does Your Service Cost?",
+      "answer": "Our pricing is affordable and straightforward, with flat-rate pricing available for many services. The final price depends on the design and service required. You can contact us or submit your artwork for a quote.  (Get a free quote)"
     },
     {
       "id": 6,

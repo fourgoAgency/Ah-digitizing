@@ -186,7 +186,7 @@ export default function Pricing({ slug, plans, portfolioItems, loading }: Pricin
                 <button
                   type="button"
                   onClick={() => openPopup(plan.id)}
-                  className={`absolute -left-1.5 cursor-pointer hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${category === "vector" ? "bottom-20" : "top-20"} ${accent.chip}`}
+                  className={`absolute lg:left-0 cursor-pointer hidden -translate-x-3/5 -rotate-90 px-5 py-2 text-[10px] tracking-[0.35em] text-white rounded-t-md w-36 text-center sm:inline-flex ${category === "vector" ? "bottom-20" : "top-20"} ${accent.chip}`}
                 >
                   VIEW SAMPLE
                 </button>

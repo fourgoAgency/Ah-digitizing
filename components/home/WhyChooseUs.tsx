@@ -24,8 +24,8 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2" />
       </svg>
     ),
-    title: "Manual Craftsmanship",
-    description: "100% manually digitized designs by experienced digitizers for precise stitch quality and smooth runs."
+    title: "100% Manual Digitizing",
+    description: "Every design is manually digitized for precise stitch placement, clean details, and professional embroidery results."
   },
   {
     id: 2,
@@ -34,8 +34,8 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12h3l3 8 4-16 3 8h4" />
       </svg>
     ),
-    title: "Fast Turnaround",
-    description: "Standard delivery within 4–12 hours and rush options (1–4 hours) for urgent projects."
+    title: "Embroidery & Vector",
+    description: "Professional embroidery digitizing and vector conversion tailored to your artwork, with precise stitching, clean details, and production-ready results."
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const features = [
       </svg>
     ),
     title: "Formats & Compatibility",
-    description: "We deliver DST, PES, EXP plus vector formats (AI, EPS, SVG) so your designs work across machines and workflows."
+    description: "We provide DST, PES, EXP, and other embroidery formats, plus AI, EPS, SVG and other vector formats upon request for printing and production."
   }
 ];
 
@@ -66,7 +66,7 @@ export default function WhyChooseAndFAQ() {
 
   return (
     <section id="home-quote" className="scroll-mt-32 py-20 bg-[#050A44] text-white relative pb-36">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-11/12 mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Side - Why Choose Us */}
           <div>

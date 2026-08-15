@@ -151,11 +151,11 @@ export default function Banner() {
                         <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">
 
                             <Image
-                                src={currentTextIndex === 0 ? "/home-page/vector.png" : "/home-page/embroidery.png"}
+                                src={currentTextIndex === 0 ? "/home-page/Vector.png" : "/home-page/Embroidery.png"}
                                 alt="Premium Digitizing Product"
                                 width={600}
                                 height={500}
-                                className="w-full h-full object-fill rounded-2xl"
+                                className="w-full h-full object-fill rounded-2xl bg-white"
                             />
                         </div>
                     </div>
