@@ -313,7 +313,7 @@ export default function GetQoutePage() {
         })
       );
 
-      const quoteData = {
+      const quoteData: Record<string, unknown> = {
         fullName: formData.fullName,
         companyName: formData.companyName,
         email: formData.email,
@@ -321,10 +321,6 @@ export default function GetQoutePage() {
         contactNumber: formData.contactNumber,
         orderType: formData.orderType,
         designName: formData.designName,
-        numberOfColors: formData.numberOfColors,
-        unitType: formData.unitType,
-        width: formData.width,
-        height: formData.height,
         additionalNotes: formData.additionalNotes,
         whatsappOptIn: formData.whatsappOptIn,
         files: uploadedFiles,
@@ -333,6 +329,13 @@ export default function GetQoutePage() {
         verifiedAt: new Date().toISOString(),
         status: "pending",
       };
+
+      if (formData.orderType !== "vector") {
+        quoteData.numberOfColors = formData.numberOfColors;
+        quoteData.unitType = formData.unitType;
+        quoteData.width = formData.width;
+        quoteData.height = formData.height;
+      }
 
       await createDocument("quoteRequests", quoteData);
       setShowOtp(false);
@@ -783,18 +786,22 @@ export default function GetQoutePage() {
                       <span className="font-semibold text-gray-800">Design Name:</span>
                       <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.designName)}</span>
                     </p>
-                    <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
-                      <span className="font-semibold text-gray-800">No. of Colors:</span>
-                      <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.numberOfColors)}</span>
-                    </p>
-                    <div className="grid grid-cols-3 gap-1">
-                      <span className="text-sm font-semibold text-gray-800">Unit</span>
-                      <span className="text-sm font-semibold text-gray-800">Width</span>
-                      <span className="text-sm font-semibold text-gray-800">Height</span>
-                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(formData.unitType)}</span>
-                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
-                      <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
-                    </div>
+                    {formData.orderType !== "vector" && (
+                      <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
+                        <span className="font-semibold text-gray-800">No. of Colors:</span>
+                        <span className="min-w-0 truncate text-gray-600">{toDisplay(formData.numberOfColors)}</span>
+                      </p>
+                    )}
+                    {formData.orderType !== "vector" && (
+                      <div className="grid grid-cols-3 gap-1">
+                        <span className="text-sm font-semibold text-gray-800">Unit</span>
+                        <span className="text-sm font-semibold text-gray-800">Width</span>
+                        <span className="text-sm font-semibold text-gray-800">Height</span>
+                        <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(formData.unitType)}</span>
+                        <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
+                        <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
+                      </div>
+                    )}
                     <p className="grid grid-cols-[120px_minmax(0,1fr)] gap-1">
                       <span className="font-semibold text-gray-800">WhatsApp:</span>
                       <span className="min-w-0 truncate text-gray-600">{formData.whatsappOptIn ? "Yes" : "No"}</span>

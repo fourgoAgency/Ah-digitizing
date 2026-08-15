@@ -25,6 +25,7 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
     .join(", ");
   const previewWidth = formData.width?.trim() || (formData.height?.trim() ? "proportional" : "");
   const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "proportional" : "");
+  const isVectorOrder = formData.orderType === "vector";
 
   return (
     <aside className="sticky top-6 self-start">
@@ -60,13 +61,13 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Name:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.fullName)}</span>
             </p>
-            <p  className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Company:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.companyName)}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Contact:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.contactNumber)}</span>
             </p>
-            <p  className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Email:</span> <span className="min-w-0 text-gray-600 truncate">{formData.email}</span>
             </p>
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
@@ -75,41 +76,54 @@ export function GetQuoteLivePreview({ formData, previewFileUrl }: GetQuoteLivePr
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Design Name:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.designName)}</span>
             </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Turnaround:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.turnaroundTime)}</span>
-            </p>
-            <div className="grid grid-cols-3 gap-1">
-              <span className="text-sm font-semibold text-gray-800">Unit</span>
-              <span className="text-sm font-semibold text-gray-800">Width</span>
-              <span className="text-sm font-semibold text-gray-800">Height</span>
-              <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(formData.unitSelect)}</span>
-              <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
-              <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
-            </div>
+            {!isVectorOrder && (
+              <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                <span className="font-semibold text-gray-800">Turnaround:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.turnaroundTime)}</span>
+              </p>
+            )}
+            {!isVectorOrder && (
+              <div className="grid grid-cols-3 gap-1">
+                <span className="text-sm font-semibold text-gray-800">Unit</span>
+                <span className="text-sm font-semibold text-gray-800">Width</span>
+                <span className="text-sm font-semibold text-gray-800">Height</span>
+                <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(formData.unitSelect)}</span>
+                <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewWidth)}</span>
+                <span className="min-w-0 truncate text-sm text-gray-600">{toDisplay(previewHeight)}</span>
+              </div>
+            )}
+            {isVectorOrder && (
+              <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                <span className="font-semibold text-gray-800">Turnaround:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.turnaroundTime)}</span>
+              </p>
+            )}
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Output Formats:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(selectedOutputFormats)}</span>
             </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Fabric:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.fabricType)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Placement:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.placementArea)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Applique:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.appliqueRequired)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Colors:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.colorsName)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">No. of Colors:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.numberOfColors)}</span>
-            </p>
-            <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
-              <span className="font-semibold text-gray-800">Colorway:</span>{" "}
-              <span className="min-w-0 text-gray-600 truncate">
-                {toDisplay(formData.colorwayToUse === "other" ? formData.colorwayToUseOther : formData.colorwayToUse)}
-              </span>
-            </p>
+            {!isVectorOrder && (
+              <>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">Fabric:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.fabricType)}</span>
+                </p>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">Placement:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.placementArea)}</span>
+                </p>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">Applique:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.appliqueRequired)}</span>
+                </p>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">Colors:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.colorsName)}</span>
+                </p>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">No. of Colors:</span> <span className="min-w-0 text-gray-600 truncate">{toDisplay(formData.numberOfColors)}</span>
+                </p>
+                <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
+                  <span className="font-semibold text-gray-800">Colorway:</span>{" "}
+                  <span className="min-w-0 text-gray-600 truncate">
+                    {toDisplay(formData.colorwayToUse === "other" ? formData.colorwayToUseOther : formData.colorwayToUse)}
+                  </span>
+                </p>
+              </>
+            )}
             <p className="grid grid-cols-[110px_minmax(0,1fr)] gap-1">
               <span className="font-semibold text-gray-800">Additional Notes:</span>{" "}
               <span className="min-w-0 overflow-hidden text-ellipsis break-words text-gray-600 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:5]">
