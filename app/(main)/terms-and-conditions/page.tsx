@@ -21,7 +21,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "services",
-    title: "1. Services",
+    title: "Services",
     blocks: [
       {
         type: "paragraph",
@@ -52,7 +52,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "placing-an-order",
-    title: "2. Placing an Order",
+    title: "Placing an Order",
     blocks: [
       {
         type: "paragraph",
@@ -77,7 +77,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "order-form",
-    title: "3. Order Form & Customer Instructions",
+    title: "Order Form & Customer Instructions",
     blocks: [
       {
         type: "paragraph",
@@ -107,7 +107,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "reference-artwork",
-    title: "4. Reference Artwork & Design Requirements",
+    title: "Reference Artwork & Design Requirements",
     blocks: [
       {
         type: "paragraph",
@@ -141,7 +141,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "payment",
-    title: "5. Payment",
+    title: "Payment",
     blocks: [
       {
         type: "paragraph",
@@ -159,7 +159,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "revisions",
-    title: "6. Revisions",
+    title: "Revisions",
     blocks: [
       {
         type: "paragraph",
@@ -194,7 +194,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "design-approval",
-    title: "7. Design Approval",
+    title: "Design Approval",
     blocks: [
       {
         type: "paragraph",
@@ -223,7 +223,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "delivery",
-    title: "8. Delivery & Turnaround Time",
+    title: "Delivery & Turnaround Time",
     blocks: [
       {
         type: "paragraph",
@@ -255,7 +255,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "file-formats",
-    title: "9. File Formats",
+    title: "File Formats",
     blocks: [
       {
         type: "paragraph",
@@ -277,7 +277,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "intellectual-property",
-    title: "10. Customer Artwork & Intellectual Property",
+    title: "Customer Artwork & Intellectual Property",
     blocks: [
       {
         type: "paragraph",
@@ -295,7 +295,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "cancellation",
-    title: "11. Cancellation",
+    title: "Cancellation",
     blocks: [
       {
         type: "paragraph",
@@ -317,7 +317,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "refunds",
-    title: "12. Refunds",
+    title: "Refunds",
     blocks: [
       {
         type: "paragraph",
@@ -351,7 +351,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "free-order-policy",
-    title: "13. Free Order Policy",
+    title: "Free Order Policy",
     blocks: [
       {
         type: "paragraph",
@@ -376,7 +376,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "customer-responsibilities",
-    title: "14. Customer Responsibilities",
+    title: "Customer Responsibilities",
     blocks: [
       {
         type: "paragraph",
@@ -394,7 +394,25 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "payment-terms",
-    title: "15. Payment TermsGarment Damages / Liability",
+    title: "Payment Terms",
+    blocks: [
+      {
+        type: "paragraph",
+        text: "Payment is required according to the price agreed upon for the requested service.",
+      },
+      {
+        type: "paragraph",
+        text: "For standard orders, work may begin after payment and confirmation of the order details.",
+      },
+      {
+        type: "paragraph",
+        text: "If additional work is requested outside the original requirements, an additional charge may apply. We will inform you before proceeding with any additional paid work.",
+      },
+    ],
+  },
+  {
+    id: "garment-damages",
+    title: "Garment Damages / Liability",
     blocks: [
       {
         type: "paragraph",
@@ -404,7 +422,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "confidentiality",
-    title: "16. Confidentiality",
+    title: "Confidentiality",
     blocks: [
       {
         type: "paragraph",
@@ -418,7 +436,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "website-content",
-    title: "17. Website Content & Copyright",
+    title: "Website Content & Copyright",
     blocks: [
       {
         type: "paragraph",
@@ -432,7 +450,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "changes-to-terms",
-    title: "18. Changes to These Terms",
+    title: "Changes to These Terms",
     blocks: [
       {
         type: "paragraph",
@@ -446,7 +464,7 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
   },
   {
     id: "contact-us",
-    title: "19. Contact Us",
+    title: "Contact Us",
     blocks: [
       {
         type: "paragraph",
@@ -459,6 +477,18 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
 export default function TermsAndConditionsPage() {
   return (
     <>
+      {/* Page Header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl" style={{ color: "#0A21C0" }}>
+            AH Digitizing&apos;s Terms & Conditions
+          </h1>
+          <p className="mt-3 text-gray-600 text-lg">
+            Please read carefully before placing your order
+          </p>
+        </div>
+      </div>
+
       {/* ================= TERMS & CONDITIONS ================= */}
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
