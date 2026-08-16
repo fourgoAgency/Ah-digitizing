@@ -283,7 +283,7 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
       className="mb-16">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 pl-4 lg:pl-8">
         {/* Left Side - Heading (Sticky & Top-Aligned) */}
-        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-start mt-5 lg:mb-8">
+        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-start mt-2 mb-8 lg:mb-0">
           <div className="relative">
             <div className="absolute left-0 top-0 w-1 h-20 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-3 pl-5">
