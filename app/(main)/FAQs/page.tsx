@@ -283,7 +283,7 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
       className="mb-16">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 pl-4 lg:pl-8">
         {/* Left Side - Heading (Sticky & Top-Aligned) */}
-        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-start mt-10">
+        <div className="lg:w-1/4 lg:sticky lg:top-32 lg:self-start mt-5 lg:mb-8">
           <div className="relative">
             <div className="absolute left-0 top-0 w-1 h-20 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-3 pl-5">
@@ -387,67 +387,6 @@ export default function FAQPage() {
   const navRef = useRef<HTMLDivElement>(null);
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar */}
-      {/* <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-blue-600 text-white sticky top-0 z-50 shadow-lg overflow-x-hidden ">
-        <div className="max-w-7xl mx-auto px-4 relative">
-          <button
-            onClick={() =>
-              navRef.current?.scrollBy({ left: -150, behavior: "smooth" })
-            }
-            className="
-        absolute left-0 top-1/2 -translate-y-1/2
-        bg-blue-700/80 p-1.5 rounded-full z-20
-        max-[440px]:flex hidden
-      ">
-            <ChevronLeft className="w-5 h-5 text-white" />
-          </button>
-
-          <div
-      ref={navRef}
-      className="
-        flex items-center gap-4 lg:gap-8 py-4
-        overflow-x-auto scroll-smooth
-        justify-center
-        max-[440px]:justify-start
-        px-10
-        mx-auto
-
-        [-ms-overflow-style:none]
-        [scrollbar-width:none]
-        [&::-webkit-scrollbar]:hidden
-      "
-    >
-
-            {faqData.map((section, index) => (
-              <motion.a
-                key={section.id}
-                href={`#${section.id}`}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="text-sm sm:text-base lg:text-lg font-medium whitespace-nowrap hover:text-blue-200 transition-colors">
-                {section.title}
-              </motion.a>
-            ))}
-          </div>
-
-          <button
-            onClick={() =>
-              navRef.current?.scrollBy({ left: 150, behavior: "smooth" })
-            }
-            className="
-        absolute right-0 top-1/2 -translate-y-1/2
-        bg-blue-700/80 p-1.5 rounded-full z-20
-        max-[440px]:flex hidden
-      ">
-            <ChevronRight className="w-5 h-5 text-white" />
-          </button>
-        </div>
-      </motion.nav> */}
 
       {/* FAQ Content */}
       <div className="py-12 lg:py-16">
