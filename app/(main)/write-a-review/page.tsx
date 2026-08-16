@@ -244,7 +244,7 @@ export default function WriteReviewPage() {
                   </label>
                   <div className="relative">
                     {selectedCountry && (
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 z-10 flex items-center">
                         <Image
                           src={selectedCountry.flagUrl}
                           alt={selectedCountry.name}
