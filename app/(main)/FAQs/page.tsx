@@ -30,13 +30,13 @@ const faqData: {
   {
     id: "general-enquiries",
     title: "General Enquiries",
-    subtitle: "About Our Embroidery Digitizing Services",
+    subtitle: "About Our Services & Policies",
     questions: [
       {
         id: 1,
         question: "What's your turnaround time?",
         answer:
-          "Simple designs are typically delivered within 4–12 hours, while more complex designs may take up to 24 hours. For urgent requirements, we offer rush delivery within 2–6 hours and super rush delivery within 1–4 hours, depending on the design's complexity.",
+          "Simple designs are typically delivered within 4–12 hours, while more complex designs may take up to 24 hours. For urgent requirements, we offer rush delivery within 2–6 hours and super rush delivery within 1–4 hours, depending on the design's complexity.\nThe turnaround time for standard, rush, and super rush orders starts after AH Digitizing confirms the order and all required design details have been received.",
         button: { label: "Order Now", href: "/get-quote" },
         note: "For further guidance regarding turnaround time, feel free to contact our team.",
       },
@@ -51,7 +51,7 @@ const faqData: {
         id: 3,
         question: "Do you charge based on stitches or a flat rate?",
         answer:
-          "We offer flat rate pricing. No confusing per-stitch charges. Just simple, straightforward pricing.",
+          "We offer flat-rate pricing, no confusing per-stitch charges. Just simple, straightforward pricing.",
       },
       {
         id: 4,
@@ -71,14 +71,14 @@ const faqData: {
         id: 6,
         question: "Do you offer a free quote?",
         answer:
-          "Yes, we do. Simply share your design details or requirements with us, and we'll provide you with a free quote within 5 minutes—no obligations.",
-        button: { label: "Get Free Quote", href: "/get-free-quote" },
+          "Yes, we do. Simply share your design details or requirements with us, and we'll provide you with a free quote within 5 minutes, with no obligation.",
+        button: { label: "Get a Free Quote", href: "/get-free-quote" },
       },
       {
         id: 7,
         question: "How will I receive my file?",
         answer:
-          "Your file will be delivered via email, or you can create an account on our website to download it directly. Need a different delivery method? Just let us know.",
+          "Your file will be delivered directly via email. Need a different delivery method? Just let us know.",
       },
       {
         id: 8,
@@ -92,7 +92,7 @@ const faqData: {
         question: "Can I get a special discount on a bulk order?",
         answer:
           "Yes, we offer special discounts on bulk orders! Just send us your design files, and we'll provide you with a customized discount quote.",
-        button: { label: "Get Free Quote", href: "/get-free-quote" },
+        button: { label: "Get a Free Quote", href: "/get-free-quote" },
       },
       {
         id: 10,
@@ -106,13 +106,13 @@ const faqData: {
         question: "Do you offer custom design sizes?",
         answer:
           "Yes, we can create your design in any custom size you require. Simply share your preferred dimensions with us, and we'll prepare your design accordingly.",
-        button: { label: "Get Free Quote", href: "/get-free-quote" },
+        button: { label: "Get a Free Quote", href: "/get-free-quote" },
       },
       {
         id: 12,
         question: "Do you keep backups of my design files?",
         answer:
-          "Yes, we keep backups of your design files. Registered users can log in and download their files directly. If you can't find it there, just contact us with your design details, and we'll send it over.",
+          "Yes, we keep backups of your design files. If you can't find your file, just contact us with your design details, and we'll send it over.",
         note: "Still have questions? Reach out to our support team — we're available 24/7 to help.",
       },
       {
@@ -146,87 +146,75 @@ const faqData: {
         question: "Can I get my design digitized from just a screenshot?",
         answer:
           "Yes, we can create your design from a screenshot. Just share it with us.",
-        button: { label: "Get a free quote now", href: "/get-free-quote" },
+        button: { label: "Order Now", href: "/get-quote" },
+      },
+      {
+        id: 18,
+        question: "Is my personal information safe and secure?",
+        answer:
+          "Yes, we take your privacy seriously. Your personal information is used to communicate with you, provide design updates, deliver your completed files, and inform you about new offers and services. We take reasonable security measures to keep your information and data secure.",
       },
     ],
   },
   {
     id: "placing-order",
     title: "Placing An Order",
-    subtitle: "About Our Embroidery Digitizing Services",
+    subtitle: "How to Place & Manage Your Order",
     questions: [
       {
-        id: 18,
+        id: 19,
         question: "How do I place an order for digitizing?",
         answer:
-          "Very simple. Go to the homepage, visit the Services section, and select the service you need. You'll be taken to the order page where you can fill out the order form with your design details and requirements so we can digitize your design exactly the way you want. If you'd like a free quote before placing your order, simply click Get Free Quote and submit your details. We'll get back to you with a quote within 5 minutes.",
-      },
-      {
-        id: 19,
-        question: "Can I place a direct order, or get a quote directly?",
-        answer:
-          "Yes, both options are available! On our website's header, you'll find the Order Now and Get Free Quote buttons. Simply click on either one to place a direct order or get a quote right away.",
+          "Very simple. Go to the homepage, visit the Services section, and select the service you need. You'll be taken to the order page where you can fill out the order form with your design details and requirements so we can digitize your design exactly the way you want. If you'd like a free quote before placing your order, simply click Get a Free Quote and submit your details. We'll get back to you with a quote within 5 minutes.",
       },
       {
         id: 20,
-        question: "Can I place an order via email or any other method?",
+        question: "Can I place a direct order, or get a quote directly?",
         answer:
-          "Yes! In addition to placing your order directly on our website, you can order via email or WhatsApp. Just share your design details and requirements with us, and we'll get started on your order right away.",
-        button: { label: "Email Us", href: "mailto:ahdigitizing@gmail.com" },
+          "Yes, both options are available! On our website's header, you'll find the Order Now and Get a Free Quote buttons. Simply click on either one to place a direct order or get a quote right away.",
       },
       {
         id: 21,
+        question: "Can I place an order via email or any other method?",
+        answer:
+          "Yes! You can place your order via email or WhatsApp. Just share your design details and requirements with us, and we'll get started on your order right away.",
+        button: { label: "Email Us", href: "mailto:ahdigitizing@gmail.com" },
+      },
+      {
+        id: 22,
         question: "How can I track the progress of my order?",
         answer:
-          "Once you place your order, you'll receive a unique tracking ID. You can log in to your account dashboard anytime to view real-time progress, or reach out to us via email or contact our team directly for updates on your design's progress.",
+          "Once you place your order, you'll receive a unique order ID. You can contact us anytime via email or reach out to our team for updates on your design's progress. AH Digitizing will also keep you updated and share progress updates throughout the design process.",
       },
     ],
   },
   {
     id: "registration",
     title: "Registration",
-    subtitle: "About Our Embroidery Digitizing Services",
+    subtitle: "Account & Customer Information",
     questions: [
-      {
-        id: 22,
-        question: "What are the benefits of registering at AH Digitizing?",
-        answer:
-          "Registering with us gives you access to exclusive benefits, including real-time order tracking to monitor your order's progress, easy access to your complete order history, a faster checkout process by skipping repetitive steps on future orders, special member-only discounts, and priority support for quicker responses from our team.",
-      },
       {
         id: 23,
         question: "Can I place an order without registering?",
         answer:
-          "Yes, you can place an order using just your email address — no account creation required. However, registering gives you access to order tracking, order history, and other exclusive benefits.",
-        button: { label: "Email Us", href: "mailto:ahdigitizing@gmail.com" },
-      },
-      {
-        id: 24,
-        question: "Is my personal information safe and secure?",
-        answer:
-          "Yes, we take your privacy seriously. Your personal information is securely stored and never shared with third parties without your consent.",
-      },
-      {
-        id: 25,
-        question: "How do I reset my password?",
-        answer:
-          "Simply click on \"Forgot Password\" on the login page, enter your registered email address, and we'll send you a link to reset your password.",
+          "Yes, you can place an order using just your email address, with no account creation required.",
+        button: { label: "Order Now", href: "/get-quote" },
       },
     ],
   },
   {
     id: "editing",
     title: "Editing",
-    subtitle: "About Our Embroidery Digitizing Services",
+    subtitle: "Design Revisions & Changes",
     questions: [
       {
-        id: 26,
+        id: 24,
         question: "How many revisions do you provide?",
         answer:
           "We provide unlimited revisions until your design is exactly the way you want it, free of charge, with no extra fees.",
       },
       {
-        id: 27,
+        id: 25,
         question: "Do you charge for design editing?",
         answer:
           "No, we don't charge for standard editing. However, if you'd like to add something new to your design, a small additional charge may apply.",
@@ -236,22 +224,22 @@ const faqData: {
   {
     id: "payment",
     title: "Payment",
-    subtitle: "About Our Embroidery Digitizing Services",
+    subtitle: "Payment & Refund Information",
     questions: [
       {
-        id: 28,
+        id: 26,
         question: "What payment methods do you accept?",
         answer:
-          "We accept payments through PayPal and Stripe, so you can pay via PayPal or debit/credit card. If you face any issues with payment, just contact us. We'll help you find an alternative way to pay. All transactions are secure and encrypted.",
+          "We accept payments through PayPal, debit/credit cards, and bank transfer. If you face any issues with payment, just contact us, and we'll help you with an alternative payment method. All online transactions are secure and encrypted.",
       },
       {
-        id: 29,
+        id: 27,
         question: "Do you offer a refund policy?",
         answer:
-          "Yes, we offer a refund if we're unable to adjust the design according to your requirements or fail to deliver the expected quality.",
+          "Yes, we offer a refund if we're unable to meet your requirements or deliver the expected quality. We will make reasonable revisions and corrections to your design until it meets your requirements. If we are still unable to correct the design to your satisfaction, we may issue a refund.",
       },
       {
-        id: 30,
+        id: 28,
         question: "Do I have to pay before digitizing?",
         answer:
           "No, you don't need to pay upfront. Once your design is ready, we'll send you a preview before you make any payment.",
@@ -322,18 +310,17 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className={`group bg-white border rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer
-                    ${isOpen 
-                      ? 'border-blue-300 shadow-lg shadow-blue-100/50 scale-[1.02]' 
+                    ${isOpen
+                      ? 'border-blue-300 shadow-lg shadow-blue-100/50 scale-[1.02]'
                       : 'border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200'
-                    }`}
-                >
+                    }`}>
                   <button
                     onClick={() => toggleItem(item.id)}
                     className="w-full px-6 py-5 flex items-center justify-between text-left transition-colors cursor-pointer">
                     <span className="flex items-center gap-4 flex-1">
                       <span className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 shrink-0
-                        ${isOpen 
-                          ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white rotate-180' 
+                        ${isOpen
+                          ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white rotate-180'
                           : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 group-hover:from-blue-100 group-hover:to-blue-200'
                         }`}>
                         {isOpen ? (
@@ -348,8 +335,8 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
                       </span>
                     </span>
                     <span className={`text-xs font-medium px-3 py-1 rounded-full transition-all duration-300
-                      ${isOpen 
-                        ? 'bg-blue-100 text-blue-600' 
+                      ${isOpen
+                        ? 'bg-blue-100 text-blue-600'
                         : 'bg-gray-100 text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500'
                       }`}>
                       Q{index + 1}
@@ -366,7 +353,7 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
                         className="overflow-hidden">
                         <div className="px-6 pb-5 pt-1 pl-[4.5rem]">
                           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
-                            <p className="text-gray-600 text-base lg:text-[17px] leading-relaxed lg:leading-7">
+                            <p className="text-gray-600 text-base lg:text-[17px] leading-relaxed lg:leading-7 whitespace-pre-line">
                               {renderAnswer(item.answer, item.contactUsLink)}
                             </p>
                             {item.button && (
@@ -420,20 +407,20 @@ export default function FAQPage() {
           </button>
 
           <div
-  ref={navRef}
-  className="
-    flex items-center gap-4 lg:gap-8 py-4
-    overflow-x-auto scroll-smooth
-    justify-center
-    max-[440px]:justify-start
-    px-10
-    mx-auto
+      ref={navRef}
+      className="
+        flex items-center gap-4 lg:gap-8 py-4
+        overflow-x-auto scroll-smooth
+        justify-center
+        max-[440px]:justify-start
+        px-10
+        mx-auto
 
-    [-ms-overflow-style:none]
-    [scrollbar-width:none]
-    [&::-webkit-scrollbar]:hidden
-  "
->
+        [-ms-overflow-style:none]
+        [scrollbar-width:none]
+        [&::-webkit-scrollbar]:hidden
+      "
+    >
 
             {faqData.map((section, index) => (
               <motion.a
