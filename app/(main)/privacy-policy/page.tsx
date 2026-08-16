@@ -181,6 +181,18 @@ const privacyData: Array<{ id: string; title: string | null; blocks: ContentBloc
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Page Header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl" style={{ color: "#0A21C0" }}>
+            AH Digitizing's Privacy Policy
+          </h1>
+          <p className="mt-3 text-gray-600 text-lg">
+            Customer trust is the foundation of our business
+          </p>
+        </div>
+      </div>
+
       {/* Privacy Policy Content */}
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
