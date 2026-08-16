@@ -62,8 +62,8 @@ const ContactFormBlue: React.FC = () => {
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center w-full h-full justify-center gap-8 relative z-10">
 
 
-<div 
-  className="w-full lg:w-[40%] rounded-3xl p-6 shadow-2xl"
+<div
+  className="w-full lg:w-[40%] rounded-3xl my-8 lg:my-0 p-5 sm:p-6 shadow-2xl"
   style={{
     background: 'rgba(255, 255, 255, 0.15)',
     backdropFilter: 'blur(18px)',
