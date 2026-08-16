@@ -481,7 +481,7 @@ export default function TermsAndConditionsPage() {
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl" style={{ color: "#0A21C0" }}>
-            AH Digitizing Terms & Conditions
+            AH Digitizing's Terms & Conditions
           </h1>
           <p className="mt-3 text-gray-600 text-lg">
             Please read carefully before placing your order
