@@ -140,24 +140,6 @@ const termsData: Array<{ id: string; title: string | null; blocks: ContentBlock[
     ],
   },
   {
-    id: "payment",
-    title: "Payment",
-    blocks: [
-      {
-        type: "paragraph",
-        text: "Payment is required according to the price agreed upon for the requested service.",
-      },
-      {
-        type: "paragraph",
-        text: "For standard orders, work may begin after payment and confirmation of the order details.",
-      },
-      {
-        type: "paragraph",
-        text: "If additional work is requested outside the original requirements, an additional charge may apply. We will inform you before proceeding with any additional paid work.",
-      },
-    ],
-  },
-  {
     id: "revisions",
     title: "Revisions",
     blocks: [
