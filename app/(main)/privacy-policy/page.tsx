@@ -1,56 +1,198 @@
 "use client";
 import { motion } from "framer-motion";
-import Image from "next/image";
+
+// Content block types
+type ContentBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] };
 
 // Privacy Policy Data
-const privacyData = [
+const privacyData: Array<{ id: string; title: string | null; blocks: ContentBlock[] }> = [
   {
     id: "intro",
     title: null,
-    content:
-      "Thanks for using the platform of AHDigitizing for acquiring the services of any (or all) of digitization and vectorization. This policy elaborates the ins and outs of our practices, including how and why we collect your information when you acquire our digitizing/vectorizing services. The policy also explains the methods we use to collect your data that is handled for specific purposes. Nevertheless, we would also like to emphasize that we take our customers' privacy policy very seriously. We do not sell, distribute or share our records with anyone, Be that may be an individual or an enterprise.",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "Thank you for choosing AH Digitizing! Customer trust is the foundation of our business. We enforce reasonable security measures to protect your privacy and intellectual property. We are committed to maintaining a secure environment for your business transactions, personal information, artwork, embroidery files, and vector files.",
+      },
+    ],
   },
   {
-    id: "collection",
-    title: "Collection of Information",
-    content:
-      "All the information that is collected through this web portal, is owned and accessible by AHDigitizing only. The only information we make use of or have access is provided to us by the customers (voluntarily) themselves. Either by contacting us directly over the phone, through an email or either by registering at ahdigitizing.com.",
+    id: "data-security",
+    title: "How Do We Secure Your Data?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "Your security is very important to us. Our website may use advanced SSL (Secure Sockets Layer) technology to establish an encrypted connection between your browser and our website server. Information such as your personal details, communication, order information, and digital files is handled with reasonable security precautions.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "We take appropriate measures to help protect your information from unauthorized access, misuse, loss, or disclosure. However, no online system can be guaranteed to be completely secure.",
+      },
+    ],
   },
   {
-    id: "use",
-    title: "Use of Information",
-    content:
-      "We will only use the information provided by you like a call of action for the specific purpose you contact us for. We may further contact you for a follow-up, to inform you about the specials and the latest services either via phone or email. We may also send a monthly newsletter if you have subscribed, unless or until you explicitly asked not to do so. As aforementioned, the information and the data we collect from our customers is not to be sold to any other enterprise or organization. Furthermore, the collected data and information will be utilized for ahdigitizing.net as well.\n\nAll of the collected information including the password that you made for your account will be saved into our database for future references. (The figure rules apply for AHDigitizing.net as well.)",
+    id: "card-details",
+    title: "Do We Collect Card Details or Any Sensitive Financial Data?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "No! AH Digitizing does not intentionally collect or store complete credit or debit card details in our own database.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "For online store orders, payment may be processed through the secure payment options available on our website.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "For custom orders, AH Digitizing may provide payment instructions or account details directly to the customer. Customers can make the payment using the provided details.",
+      },
+    ],
   },
   {
-    id: "rights",
-    title: "Your Rights",
-    content:
-      "You reserve the right to instruct us to provide us with the necessary information we kept within our records. You may further advise any concern or queries about us keeping your data. You may also ask us to delete your personal information from our records and we will comply with your request. Moreover, you may also ask us which contact you any further in the future for marketing purposes or any.",
+    id: "information-collected",
+    title: "What Information Do We Collect?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "We only gather essential information required to fulfill your order, such as:",
+      },
+      {
+        type: "list",
+        items: [
+          "Your Information: Name, email address, phone number, and other contact information you voluntarily provide.",
+          "Project Details: Design dimensions, colors, fabric information, required file formats, and design instructions for embroidery digitizing or vector conversion.",
+          "Artwork & Reference Files: Logos, images, embroidery files, vector files, and reference artwork provided for your project.",
+          "Order Form Information: Details and special instructions submitted through our website order form.",
+        ],
+      },
+    ],
   },
   {
-    id: "updation",
-    title: "Updation of Information",
-    content:
-      "You are requested to make us aware of any personal information, i.e. email address, phone number(s), etc., that needs to be updated, modified, or corrected in our records at your earliest convenience.",
+    id: "information-use",
+    title: "How Do We Use Your Information?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "We use your data to deliver seamless service and maintain professional standards:",
+      },
+      {
+        type: "list",
+        items: [
+          "To process embroidery digitizing and vector art orders and ensure accurate delivery.",
+          "To understand your artwork, reference files, design requirements, and special instructions.",
+          "To send you order confirmations, design previews, final files, invoices, and quality assurance updates.",
+          "To communicate with you regarding your order and provide customer support.",
+          "To personalize your experience and improve our customer support and services.",
+          "To share information about our services, special offers, or updates where appropriate.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text:
+          "AH Digitizing does not sell, rent, or distribute your personal information or customer artwork to other businesses for marketing purposes.",
+      },
+    ],
   },
   {
-    id: "security",
-    title: "Security Precautions",
-    content:
-      "We take special precautions in order to prevent any kind of loss, damage, and modification of your personal and sensitive information, within our records, both offline and online. All the information we collect is archived and stored safely in our secure database servers. All of the information is encrypted to maximize the security of our customers. Furthermore, we will never ask you to disclose your password, except for the log-in purpose. The responsibility of safekeeping the password rests upon you. AHDigitizing is not liable for any loss of data, whether it may be due to a technical error, hack or any other.",
+    id: "cookies",
+    title: "How Do We Use Cookies?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "We use necessary cookies and similar technologies to enhance your browsing experience and analyze website traffic.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "You can control cookie preferences through your browser settings. Disabling cookies will not normally prevent you from successfully placing embroidery digitizing or vector orders, although some website features may be affected.",
+      },
+    ],
   },
   {
-    id: "amendments",
-    title: "Amendments",
-    content:
-      "We reserve the right to, and will, update this policy occasionally, by issuing a newer version on our website in lieu of the changes within the business environment and the organization within. It is recommended that you visit this page from time to time, in order be aware of any and every changes or amendment made to the privacy policy.",
+    id: "artwork-protection",
+    title: "How Do We Protect Your Artwork?",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "We understand that your artwork and embroidery designs are valuable. Customer-provided artwork, reference files, embroidery files, and project information are used primarily for completing the requested service.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "AH Digitizing does not claim ownership of your original artwork and does not knowingly sell or publicly distribute your customer files without permission, except where necessary to provide the requested service or when required by law.",
+      },
+    ],
+  },
+  {
+    id: "privacy-rights",
+    title: "Your Privacy Rights",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "You may contact AH Digitizing if you would like to:",
+      },
+      {
+        type: "list",
+        items: [
+          "Request information about the personal information we hold about you.",
+          "Ask us to correct or update your information.",
+          "Request deletion of certain personal information where applicable.",
+          "Ask us not to contact you for marketing purposes.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text:
+          "We will review and respond to reasonable requests where applicable.",
+      },
+    ],
+  },
+  {
+    id: "note",
+    title: "Note",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "AH Digitizing reserves the right to modify this privacy statement periodically to reflect changes in our services, business practices, or operational requirements. Any changes made will be visible on this page.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "We encourage users to check this page periodically to stay informed.",
+      },
+    ],
   },
 ];
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Page Header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl" style={{ color: "#0A21C0" }}>
+            AH Digitizing&apos;s Privacy Policy
+          </h1>
+          <p className="mt-3 text-gray-600 text-lg">
+            Customer trust is the foundation of our business
+          </p>
+        </div>
+      </div>
+
       {/* Privacy Policy Content */}
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
@@ -64,38 +206,58 @@ export default function PrivacyPolicyPage() {
               className={section.title ? "mb-10" : "mb-6"}
             >
               {section.title && (
-  <div className="mb-4">
-    <div className="inline-block">
-      <motion.h2
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
-        className="text-2xl sm:text-[26px] lg:text-3xl font-bold text-[#0A21C0] mb-2"
-      >
-        {section.title}
-      </motion.h2>
+                <div className="mb-4">
+                  <div className="inline-block">
+                    <motion.h2
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
+                      className="font-bold mb-2 text-2xl sm:text-3xl lg:text-3xl"
+                      style={{ color: "#0A21C0" }}
+                    >
+                      {section.title}
+                    </motion.h2>
 
-      {/* Underline covers 50% of the actual text width */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
-        className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-1/2"
-      />
-    </div>
-  </div>
-)}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.05 + 0.2 }}
-                className="text-gray-700 leading-relaxed text-base lg:text-[17px] whitespace-pre-line"
-              >
-                {section.content}
-              </motion.div>
+                    {/* Underline covers 2/3 of the actual text width */}
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45, delay: index * 0.05 + 0.15, ease: "easeOut" }}
+                      className="h-[2px] bg-[#0A21C0] origin-left rounded-full w-2/3"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                {section.blocks.map((block, blockIndex) => (
+                  <motion.div
+                    key={blockIndex}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.6,
+                      delay: index * 0.05 + blockIndex * 0.04 + 0.2,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {block.type === "paragraph" ? (
+                      <p className="text-gray-700 leading-relaxed text-base lg:text-[17px]">
+                        {block.text}
+                      </p>
+                    ) : (
+                      <ul className="list-disc pl-6 space-y-2 text-gray-700 leading-relaxed text-base lg:text-[17px]">
+                        {block.items.map((item, itemIndex) => (
+                          <li key={itemIndex}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           ))}
         </div>

@@ -387,7 +387,7 @@ export default function Header() {
 
       </header>
 
-      <div className="sticky top-0 z-50 hidden md:flex">
+      <div className="sticky top-0 z-50 hidden md:flex bg-primary">
         <DesktopMenu isSticky={isSticky} onCartClick={openCart} cartCount={cartCount} />
       </div>
     </>
