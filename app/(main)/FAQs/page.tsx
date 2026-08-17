@@ -267,12 +267,7 @@ function renderAnswer(answer: string, contactUsLink?: boolean) {
   );
 }
 
-function FAQSection({ section }: { section: (typeof faqData)[0] }) {
-  const [openItem, setOpenItem] = useState<number | null>(null);
-
-  const toggleItem = (id: number) => {
-    setOpenItem((prev) => (prev === id ? null : id));
-  };
+function FAQSection({ section, openItem, toggleItem }: { section: (typeof faqData)[0]; openItem: number | null; toggleItem: (id: number) => void }) {
 
   return (
     <motion.section
@@ -385,6 +380,12 @@ function FAQSection({ section }: { section: (typeof faqData)[0] }) {
 
 export default function FAQPage() {
   const navRef = useRef<HTMLDivElement>(null);
+  const [openItem, setOpenItem] = useState<number | null>(null);
+
+  const toggleItem = (id: number) => {
+    setOpenItem((prev) => (prev === id ? null : id));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -395,7 +396,7 @@ export default function FAQPage() {
             className="scroll-mt-24 lg:scroll-mt-32"
             key={section.id}
             id={section.id}>
-            <FAQSection section={section} />
+            <FAQSection section={section} openItem={openItem} toggleItem={toggleItem} />
           </div>
         ))}
       </div>
