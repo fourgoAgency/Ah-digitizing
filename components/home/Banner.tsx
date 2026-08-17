@@ -16,7 +16,7 @@ export default function Banner() {
     const imageRef = useRef<HTMLDivElement>(null);
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const h2Ref = useRef<HTMLHeadingElement>(null);
-    const [h2Text, setH2Text] = useState("Raster to Vector");
+    const [h2Text, setH2Text] = useState("Embroidery digitizing");
     const [hoveredButton, setHoveredButton] = useState<'contact' | 'login' | null>(null);
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function Banner() {
             const tl = gsap.timeline();
             tl.to(h2Ref.current, { y: -30, opacity: 0, duration: 0.3, ease: "power2.out" })
               .call(() => {
-                  setH2Text(currentTextIndex === 0 ? "Raster to Vector" : "Embroidery digitizing");
+                  setH2Text(currentTextIndex === 0 ? "Embroidery digitizing" : "Raster to Vector");
               })
               .set(h2Ref.current, { y: 30 })
               .to(h2Ref.current, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
@@ -90,8 +90,8 @@ export default function Banner() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 justify-center items-center min-h-125">
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                            Experience Ultimate Luxury and Wellness with&nbsp; <br/>
+                        <h1 className="text-xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white mb-4 leading-tight">
+                            Precision Embroidery Digitizing-Every Design, Perfectly Stitched <br/>
                             <span className="text-secondary" style={{ WebkitTextStroke: '0.4px white' }}>
                                 <TextType
                                     text={["Ah Digitizing", "Ah Digitizing"]}
@@ -105,7 +105,7 @@ export default function Banner() {
                         </h1>
 
                         <p className="text-white/90 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
-                            Welcome to AH Digitizing, your oasis for premium digitization services. Our mission is to elevate your designs through meticulous attention to detail, transforming your vision into exquisite reality from the very first stitch.
+                            <b>100% Manually Digitized</b>, We turn your logo into a flawless, production-ready Embroidery file with <b>accurate push-pull compensation</b>, clean stitches, zero gaps, and no thread breaks, So it runs perfectly every single time.
                         </p>
 
                         {/* CTA Buttons */}
@@ -151,7 +151,7 @@ export default function Banner() {
                         <div className="w-80 h-80 md:w-105 md:h-105 drop-shadow-2xl">
 
                             <Image
-                                src={currentTextIndex === 0 ? "/home-page/Vector.png" : "/home-page/Embroidery.png"}
+                                src={currentTextIndex === 0 ? "/home-page/Embroidery.png" : "/home-page/Vector.png"}
                                 alt="Premium Digitizing Product"
                                 width={600}
                                 height={500}

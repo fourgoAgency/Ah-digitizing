@@ -76,9 +76,10 @@ export default function FAQs() {
                             className={`overflow-hidden transition-all duration-300 ${openFaq === faq.id ? "max-h-96" : "max-h-0"
                                 }`}
                         >
-                            <div className="px-6 pb-4 text-gray-600">
-                                {faq.answer}
-                            </div>
+                            <div
+                                className="px-6 pb-4 text-gray-600 [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2"
+                                dangerouslySetInnerHTML={{ __html: faq.answer }}
+                            />
                         </motion.div>
                     </motion.div>
                 ))}

@@ -19,6 +19,7 @@ const features = [
   {
     id: 1,
     icon: (
+      
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3v6h6v-6c0-1.657-1.343-3-3-3z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2" />
@@ -132,9 +133,10 @@ export default function WhyChooseAndFAQ() {
                             openFaq === faq.id ? "max-h-96" : "max-h-0"
                         }`}
                     >
-                        <div className="px-6 pb-4 text-gray-600">
-                            {faq.answer}
-                        </div>
+                        <div
+                            className="px-6 pb-4 text-gray-600 [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                        />
                     </div>
                 </div>
             ))}

@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { storage,getDocuments } from "@/lib/firebase";
+
+import { getDocuments } from "@/lib/firebase";
 
 import { Button } from "../ui/button";
 
@@ -19,17 +19,8 @@ type Plan = {
   features: string[];
   popular: boolean;
   service: "Embroidery" | "Vector";
-};
-
-type PortfolioItem = {
-  id: number;
-  src: string;
-  alt: string;
-};
-
-type PortfolioCache = {
-  embroidery: PortfolioItem[];
-  vector: PortfolioItem[];
+  category?: string;
+  previewItems?: string[];
 };
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
@@ -77,25 +68,23 @@ async function fetchPricingFromFirestore() {
 
   const embroidery = allDocs
     .filter((doc) => doc.category === "embroidery")
-    .map(({ category, ...rest }) => rest);
+    .map((doc) => ({
+      ...doc,
+      previewItems: Array.isArray(doc.previewItems) ? doc.previewItems.filter(Boolean) : [],
+    }));
 
   const vector = allDocs
     .filter((doc) => doc.category === "vector")
-    .map(({ category, ...rest }) => rest);
+    .map((doc) => ({
+      ...doc,
+      previewItems: Array.isArray(doc.previewItems) ? doc.previewItems.filter(Boolean) : [],
+    }));
 
   return { embroidery, vector };
 }
 
-async function fetchPortfolioImages(
-  folder: "embroidery" | "vector",
-  limit = 8
-): Promise<PortfolioItem[]> {
-  const folderRef = ref(storage, folder);
-  const result = await listAll(folderRef);
-  const urls = await Promise.all(
-    result.items.slice(0, limit).map((item) => getDownloadURL(item))
-  );
-  return urls.map((src, i) => ({ id: i, src, alt: `${folder} design ${i + 1}` }));
+function buildServicePreviewItems(servicePlans: Array<{ previewItems?: string[] }> = []): string[] {
+  return servicePlans.flatMap((plan) => plan.previewItems ?? []).filter(Boolean);
 }
 
 // ─── PriceCard ─────────────────────────────────────────────────────────────────
@@ -186,10 +175,6 @@ export default function Pricing() {
   } | null>(null);
   const [pricingLoading, setPricingLoading] = useState(true);
 
-  // Portfolio preview state — lazy loaded per service, cached after first load
-  const [portfolioCache, setPortfolioCache] = useState<Partial<PortfolioCache>>({});
-  const [previewLoading, setPreviewLoading] = useState(false);
-
   const [maxPreviewItems, setMaxPreviewItems] = useState(() =>
     typeof window !== "undefined" && window.innerWidth < 1024 ? 4 : 8
   );
@@ -225,6 +210,14 @@ export default function Pricing() {
     return () => media.removeEventListener("change", update);
   }, []);
 
+  const closePopup = () => {
+    setActive(false);
+    window.setTimeout(() => {
+      setOpen(false);
+      setActiveService(null);
+    }, 250);
+  };
+
   // ── Keyboard + scroll lock when modal is open ───────────────────────────────
   useEffect(() => {
     if (!open) return;
@@ -241,46 +234,29 @@ export default function Pricing() {
   // ── Derived plans ───────────────────────────────────────────────────────────
   const plans = useMemo<Plan[]>(() => {
     if (!pricingData) return [];
+
+    const embroideryPlans = [...pricingData.embroidery].sort((a, b) => a.price - b.price);
+    const vectorPlans = [...pricingData.vector].sort((a, b) => a.price - b.price);
+
     return [
-      ...pricingData.embroidery.slice(0, visibleCount).map((p) => ({ ...p, service: "Embroidery" as const })),
-      ...pricingData.vector.slice(0, visibleCount).map((p) => ({ ...p, service: "Vector" as const })),
+      ...embroideryPlans.slice(0, visibleCount).map((p) => ({ ...p, service: "Embroidery" as const })),
+      ...vectorPlans.slice(0, visibleCount).map((p) => ({ ...p, service: "Vector" as const })),
     ];
   }, [pricingData, visibleCount]);
 
-  // ── Preview items from cache ────────────────────────────────────────────────
-  const previewItems = useMemo<PortfolioItem[]>(() => {
-    if (!activeService) return [];
-    const items = portfolioCache[activeService] ?? [];
-    if (!items.length) return [];
-    return Array.from({ length: maxPreviewItems }, (_, i) => items[i % items.length]);
-  }, [activeService, portfolioCache, maxPreviewItems]);
+  // ── Preview items from the pricing collection itself ───────────────────────
+  const previewItems = useMemo(() => {
+    if (!activeService || !pricingData) return [];
 
-  // ── Open popup — lazy-load Storage images for this service if not cached ────
-  const openPopup = async (service: Plan["service"]) => {
+    const servicePlans = activeService === "embroidery" ? pricingData.embroidery : pricingData.vector;
+    return buildServicePreviewItems(servicePlans).slice(0, maxPreviewItems);
+  }, [activeService, pricingData, maxPreviewItems]);
+
+  const openPopup = (service: Plan["service"]) => {
     const key = service.toLowerCase() as "embroidery" | "vector";
     setActiveService(key);
     setOpen(true);
     requestAnimationFrame(() => setActive(true));
-
-    if (!portfolioCache[key]) {
-      setPreviewLoading(true);
-      try {
-        const items = await fetchPortfolioImages(key, maxPreviewItems);
-        setPortfolioCache((prev) => ({ ...prev, [key]: items }));
-      } catch (err) {
-        console.error(`Storage fetch failed for ${key}:`, err);
-      } finally {
-        setPreviewLoading(false);
-      }
-    }
-  };
-
-  const closePopup = () => {
-    setActive(false);
-    window.setTimeout(() => {
-      setOpen(false);
-      setActiveService(null);
-    }, 250);
   };
 
   return (
@@ -348,9 +324,6 @@ export default function Pricing() {
           >
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
-                  {activeService} portfolio
-                </p>
                 <h3 className="mt-2 text-2xl font-semibold text-slate-900">
                   Sample Work Preview
                 </h3>
@@ -366,21 +339,21 @@ export default function Pricing() {
 
             {/* Preview grid */}
             <div className="grid max-h-[70vh] grid-cols-2 gap-4 overflow-auto pr-1 lg:grid-cols-4">
-              {previewLoading
+              {previewItems.length === 0
                 ? Array.from({ length: maxPreviewItems }).map((_, i) => (
                     <div
                       key={i}
                       className="h-44 rounded-2xl bg-slate-200 animate-pulse sm:h-52"
                     />
                   ))
-                : previewItems.map((item, index) => (
+                : previewItems.map((src, index) => (
                     <div
-                      key={`${item.id}-${index}`}
+                      key={`${src}-${index}`}
                       className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
                     >
                       <img
-                        src={item.src}
-                        alt={item.alt}
+                        src={src}
+                        alt={`${activeService} design ${index + 1}`}
                         className="h-44 w-full object-contain transition-transform duration-200 ease-out hover:scale-105 sm:h-52"
                       />
                     </div>
