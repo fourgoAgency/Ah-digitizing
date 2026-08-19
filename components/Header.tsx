@@ -338,16 +338,16 @@ export default function Header() {
       <header className="relative z-[100] border-b border-slate-100 bg-white/95 backdrop-blur">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
         <div className="flex items-center justify-between px-4 pt-4 sm:px-6 lg:px-8">
-          <Link href="/" aria-label="AH Digitizing home" className="shrink-0 flex items-center gap-1">
+          <Link href="/" aria-label="AH Digitizing" className=" flex items-center ">
             <Image
               src={logo}
               alt="AH Digitizing"
               priority
               className="object-contain w-16 sm:w-20 lg:w-40 h-full"
             />
-            <div className="flex flex-col items-center text-black">
-              <p className="font-bold sm:text-lg md:text-xl">Your Design</p>
-              <p className="font-bold sm:text-lg md:text-xl">Our Expertise</p>
+            <div className="flex flex-col items-start text-black">
+              <p className="font-bold sm:text-md md:text-lg">Your Design</p>
+              <p className="font-bold sm:text-md md:text-lg">Our Expertise</p>
             </div>
           </Link>
 
