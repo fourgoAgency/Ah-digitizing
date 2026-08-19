@@ -338,7 +338,7 @@ export default function Header() {
       <header className="relative z-[100] border-b border-slate-100 bg-white/95 backdrop-blur">
         {/* ===== TOP ROW (Logo + Buttons) ===== */}
         <div className="flex items-center justify-between px-4 pt-4 sm:px-6 lg:px-8">
-          <Link href="/" aria-label="AH Digitizing home" className="shrink-0 flex items-center gap-3">
+          <Link href="/" aria-label="AH Digitizing home" className="shrink-0 flex items-center gap-1">
             <Image
               src={logo}
               alt="AH Digitizing"
@@ -363,7 +363,7 @@ export default function Header() {
               onMouseEnter={() => setHoveredButton('free')}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <Link href="/get-free-quote">Get Free Quote</Link>
+              <Link href="/get-free-quote">Get a Free Quote</Link>
             </Button>
 
             <Button

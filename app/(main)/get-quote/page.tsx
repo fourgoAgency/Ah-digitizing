@@ -479,7 +479,7 @@ export default function GetQuotePage() {
     <main className="relative bg-slate-100 px-4 py-14 sm:px-6">
       <section className="relative z-10 mx-auto max-w-7xl">
         <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Request a Custom Quote</h1>
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Order Form</h1>
           <p className="mx-auto mt-3 max-w-2xl text-gray-600">
             Tell us about your custom design project. Upload your files, describe your specifications, and we&apos;ll
             get back to you with a personalized quote.

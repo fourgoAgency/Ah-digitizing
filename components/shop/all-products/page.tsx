@@ -14,7 +14,7 @@ export default function AllProductsPage() {
         <AllProductsCatalog />
         <div className="mt-10 text-center">
           <Link href="/get-quote" className="text-sm font-semibold text-primary cursor-pointer hover:underline">
-            Need custom work? Request a quote
+            Need custom work? Order Now
           </Link>
         </div>
       </section>

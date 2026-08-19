@@ -26,7 +26,7 @@ export default function ShopHero() {
             <Link href="/portfolio">Show Our Work</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full cursor-pointer border-white bg-white/10 px-7 text-white hover:bg-white hover:text-primary">
-            <Link href="/get-quote">Get Custom Quote</Link>
+            <Link href="/get-quote">Order Now</Link>
           </Button>
         </div>
       </div>

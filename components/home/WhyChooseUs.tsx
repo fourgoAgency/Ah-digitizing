@@ -96,7 +96,7 @@ export default function WhyChooseAndFAQ() {
 
             {/* CTA Button */}
             <button onClick={() => router.push('/get-quote')} className="bg-primary hover:bg-blue-700 text-white cursor-pointer px-8 py-3 rounded-full font-semibold transition-colors">
-              Get Quote
+              Order Now
             </button>
           </div>
 
