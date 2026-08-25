@@ -19,6 +19,7 @@ type CategoryDocument = {
   label: string
   image?: string
   order?: number
+  createdAt?: unknown
   subcategories?: SubcategoryDocument[]
 }
 
@@ -242,6 +243,7 @@ export default function CategoriesPage() {
           image: imageUrl,
           order,
           subcategories: existing?.subcategories ?? [],
+          createdAt: existing?.createdAt ?? serverTimestamp(),
           updatedAt: serverTimestamp(),
         })
       } else {

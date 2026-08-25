@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { OrdersSubNav } from "./components/OrdersSubNav";
+import { OrdersToolbar } from "./components/OrdersToolbar";
 
 export default function OrdersLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export default function OrdersLayout({ children }: { children: ReactNode }) {
         </header>
 
         <OrdersSubNav />
+        <OrdersToolbar />
 
         {children}
       </div>

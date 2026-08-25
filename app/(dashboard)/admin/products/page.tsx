@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
 import { collection, onSnapshot, serverTimestamp } from "firebase/firestore"
 import { Download, Edit2, Plus, Search, Trash2 } from "lucide-react"
-import { deleteDocument, firestore, setDocument, updateDocument } from "@/lib/firebase"
+import { deleteDocument, firestore, setDocument, updateDocument, uploadFile } from "@/lib/firebase"
 
 type CategoryDocument = {
   id: string
@@ -34,9 +34,6 @@ type ProductDocument = {
   shortDescription?: string
   description?: string
   price?: number | string
-  discountPrice?: number | string
-  inventory?: number | string
-  color?: string
   rating?: number | string
   votes?: number | string
   turnaround?: string
@@ -47,13 +44,9 @@ type ProductDocument = {
   tags?: string[]
   seoTitle?: string
   seoDescription?: string
-  hasMultipleOptions?: boolean
-  optionName?: string
-  optionValues?: string[]
-  weight?: string
-  country?: string
-  digitalProduct?: boolean
   productType?: ProductType
+  outputFormats?: string[]
+  outputFiles?: string[]
 }
 
 type ProductFormState = {
@@ -66,9 +59,6 @@ type ProductFormState = {
   heroImage: string
   galleryText: string
   price: string
-  discountPrice: string
-  inventory: string
-  color: string
   rating: string
   votes: string
   turnaround: string
@@ -77,13 +67,8 @@ type ProductFormState = {
   tagsText: string
   seoTitle: string
   seoDescription: string
-  hasMultipleOptions: boolean
-  optionName: string
-  optionValuesText: string
-  weight: string
-  country: string
-  digitalProduct: boolean
   productType: ProductType
+  outputFormatsText: string
 }
 
 const pageSize = 10
@@ -98,9 +83,6 @@ const emptyForm: ProductFormState = {
   heroImage: "",
   galleryText: "",
   price: "",
-  discountPrice: "",
-  inventory: "",
-  color: "",
   rating: "",
   votes: "",
   turnaround: "",
@@ -109,13 +91,8 @@ const emptyForm: ProductFormState = {
   tagsText: "",
   seoTitle: "",
   seoDescription: "",
-  hasMultipleOptions: false,
-  optionName: "Size",
-  optionValuesText: "S, M, L, XL",
-  weight: "",
-  country: "",
-  digitalProduct: true,
   productType: "none",
+  outputFormatsText: "",
 }
 
 function asNumber(value: unknown, fallback = 0) {
@@ -171,9 +148,6 @@ function productToForm(product: ProductDocument): ProductFormState {
     heroImage: product.heroImage || "",
     galleryText: Array.isArray(product.gallery) ? product.gallery.join("\n") : "",
     price: product.price === undefined ? "" : String(product.price),
-    discountPrice: product.discountPrice === undefined ? "" : String(product.discountPrice),
-    inventory: product.inventory === undefined ? "" : String(product.inventory),
-    color: product.color || "",
     rating: product.rating === undefined ? "" : String(product.rating),
     votes: product.votes === undefined ? "" : String(product.votes),
     turnaround: product.turnaround || "",
@@ -182,13 +156,8 @@ function productToForm(product: ProductDocument): ProductFormState {
     tagsText: Array.isArray(product.tags) ? product.tags.join(", ") : "",
     seoTitle: product.seoTitle || "",
     seoDescription: product.seoDescription || "",
-    hasMultipleOptions: Boolean(product.hasMultipleOptions),
-    optionName: product.optionName || "Size",
-    optionValuesText: Array.isArray(product.optionValues) ? product.optionValues.join(", ") : "",
-    weight: product.weight || "",
-    country: product.country || "",
-    digitalProduct: product.digitalProduct !== false,
     productType: (product.productType as ProductType) || "none",
+    outputFormatsText: Array.isArray(product.outputFormats) ? product.outputFormats.join(", ") : "",
   }
 }
 
@@ -229,6 +198,9 @@ export default function ProductsPage() {
   const [form, setForm] = useState<ProductFormState>(emptyForm)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([])
+  const [outputFiles, setOutputFiles] = useState<File[]>([])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -313,6 +285,10 @@ export default function ProductsPage() {
     setEditingProduct(null)
     setForm(emptyForm)
     setFormError(null)
+    setImageFile(null)
+    setGalleryFiles([])
+    setOutputFiles([])
+    setOutputFiles([])
   }
 
   function openEditDialog(product: ProductDocument) {
@@ -320,6 +296,8 @@ export default function ProductsPage() {
     setEditingProduct(product)
     setForm(productToForm(product))
     setFormError(null)
+    setImageFile(null)
+    setGalleryFiles([])
   }
 
   function closeDialog() {
@@ -327,6 +305,8 @@ export default function ProductsPage() {
     setEditingProduct(null)
     setForm(emptyForm)
     setFormError(null)
+    setImageFile(null)
+    setGalleryFiles([])
   }
 
   function toggleSelected(id: string) {
@@ -359,14 +339,13 @@ export default function ProductsPage() {
 
   function exportProducts() {
     const csv = [
-      ["Product", "Category", "Price", "Tags", "Status", "Type"].map((item) => `"${item}"`).join(","),
+      ["Product", "Category", "Price", "Tags", "Type"].map((item) => `"${item}"`).join(","),
       ...filteredProducts.map((product) =>
         [
           getProductTitle(product),
           getProductCategoryLabel(product),
           product.price ?? "",
           Array.isArray(product.tags) ? product.tags.join("; ") : "",
-          asNumber(product.inventory) <= 0 ? "Out of Stock" : "In Stock",
           product.productType || "none",
         ]
           .map((item) => `"${String(item).replaceAll('"', '""')}"`)
@@ -412,9 +391,6 @@ export default function ProductsPage() {
         shortDescription: form.shortDescription.trim(),
         description: form.description.trim(),
         price: asNumber(form.price),
-        discountPrice: form.discountPrice ? asNumber(form.discountPrice) : null,
-        inventory: asNumber(form.inventory),
-        color: form.color.trim(),
         rating: form.rating ? asNumber(form.rating) : 0,
         votes: form.votes ? asNumber(form.votes) : 0,
         turnaround: form.turnaround.trim(),
@@ -425,14 +401,27 @@ export default function ProductsPage() {
         tags: splitList(form.tagsText),
         seoTitle: form.seoTitle.trim(),
         seoDescription: form.seoDescription.trim(),
-        hasMultipleOptions: form.hasMultipleOptions,
-        optionName: form.optionName.trim(),
-        optionValues: splitList(form.optionValuesText),
-        weight: form.weight.trim(),
-        country: form.country.trim(),
-        digitalProduct: form.digitalProduct,
         productType: form.productType,
+        outputFormats: splitList(form.outputFormatsText),
+        outputFiles: Array.isArray(editingProduct?.outputFiles) ? editingProduct.outputFiles : [],
         updatedAt: serverTimestamp(),
+      }
+
+      if (imageFile) {
+        payload.heroImage = await uploadFile(imageFile, `products/${slug}/${Date.now()}-${imageFile.name}`)
+      }
+
+      if (galleryFiles.length > 0) {
+        const galleryUrls = await Promise.all(
+          galleryFiles.map((file) => uploadFile(file, `products/${slug}/gallery/${Date.now()}-${file.name}`))
+        )
+        payload.gallery = [...splitList(form.galleryText), ...galleryUrls]
+      }
+
+      if (outputFiles.length > 0) {
+        payload.outputFiles = await Promise.all(
+          outputFiles.map((file) => uploadFile(file, `products/${slug}/output/${Date.now()}-${file.name}`))
+        )
       }
 
       if (editingProduct) {
@@ -542,7 +531,7 @@ export default function ProductsPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[980px] text-left text-sm">
+            <table className="w-full min-w-245 text-left text-sm">
               <thead>
                 <tr className="border-y border-slate-100 text-xs font-medium text-slate-400">
                   <th className="w-10 py-3">
@@ -557,21 +546,18 @@ export default function ProductsPage() {
                   <th className="py-3">Category</th>
                   <th className="py-3">Price</th>
                   <th className="py-3">Tags</th>
-                  <th className="py-3">Status</th>
                   <th className="py-3 text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="py-16 text-center text-sm text-slate-400">
+                    <td colSpan={6} className="py-16 text-center text-sm text-slate-400">
                       Loading products...
                     </td>
                   </tr>
                 ) : visibleProducts.length > 0 ? (
                   visibleProducts.map((product) => {
-                    const isOutOfStock = asNumber(product.inventory) <= 0
-
                     return (
                       <tr key={product.id} className="border-b border-slate-100 text-xs text-slate-700 hover:bg-slate-50/70">
                         <td className="py-3">
@@ -604,15 +590,8 @@ export default function ProductsPage() {
                         </td>
                         <td className="py-3 text-[11px] text-slate-500">{getProductCategoryLabel(product)}</td>
                         <td className="py-3 font-semibold text-slate-800">{formatCurrency(product.price)}</td>
-                        <td className="py-3 max-w-[160px] truncate text-[11px] text-slate-400">
+                        <td className="max-w-40 py-3 truncate text-[11px] text-slate-400">
                           {product.tags?.slice(0, 3).join(", ") || "—"}
-                        </td>
-                        <td className="py-3">
-                          {isOutOfStock ? (
-                            <span className="rounded bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-500">Out of Stock</span>
-                          ) : (
-                            <span className="rounded bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-600">In Stock</span>
-                          )}
                         </td>
                         <td className="py-3 text-right">
                           <div className="flex justify-end gap-2">
@@ -639,7 +618,7 @@ export default function ProductsPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-16 text-center text-sm text-slate-400">
+                    <td colSpan={6} className="py-16 text-center text-sm text-slate-400">
                       No products found.
                     </td>
                   </tr>
@@ -750,121 +729,64 @@ export default function ProductsPage() {
                 <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
                   <h3 className="mb-4 text-sm font-bold text-slate-950">Images</h3>
                   <div className="rounded-md border border-dashed border-slate-200 p-4">
-                    <ProductField label="Main Image URL">
+                    <label className="block">
+                      <span className="mb-1 block text-[11px] font-semibold text-slate-500">Upload Main Image</span>
                       <input
-                        value={form.heroImage}
-                        onChange={(event) => updateForm("heroImage", event.target.value)}
-                        placeholder="/home-page/products picture/1.png"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) => setImageFile(event.target.files?.[0] || null)}
+                        className="block w-full text-xs text-slate-500 file:mr-3 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-blue-600 hover:file:bg-blue-100"
                       />
-                    </ProductField>
-                    <div className="mt-4">
-                      <ProductField label="Gallery URLs">
-                        <textarea
-                          value={form.galleryText}
-                          onChange={(event) => updateForm("galleryText", event.target.value)}
-                          rows={4}
-                          placeholder="One image URL per line"
-                          className="w-full rounded border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500"
-                        />
-                      </ProductField>
-                    </div>
+                      {imageFile ? <span className="mt-1 block text-[11px] text-slate-400">{imageFile.name}</span> : null}
+                    </label>
+                    <label className="mt-4 block">
+                      <span className="mb-1 block text-[11px] font-semibold text-slate-500">Upload Gallery Images</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(event) => setGalleryFiles(Array.from(event.target.files ?? []))}
+                        className="block w-full text-xs text-slate-500 file:mr-3 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-blue-600 hover:file:bg-blue-100"
+                      />
+                      {galleryFiles.length > 0 ? (
+                        <span className="mt-1 block text-[11px] text-slate-400">{galleryFiles.length} image(s) selected</span>
+                      ) : null}
+                    </label>
                   </div>
                 </section>
 
                 <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-                  <h3 className="mb-4 text-sm font-bold text-slate-950">Price</h3>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <h3 className="mb-4 text-sm font-bold text-slate-950">Shop Details</h3>
+                  <div className="grid gap-4">
                     <ProductField label="Product Price">
-                      <input
-                        value={form.price}
-                        onChange={(event) => updateForm("price", event.target.value)}
-                        inputMode="decimal"
-                        placeholder="Enter price"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
+                      <input value={form.price} onChange={(event) => updateForm("price", event.target.value)} inputMode="decimal" placeholder="Enter price" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
                     </ProductField>
-                    <ProductField label="Discount Price">
-                      <input
-                        value={form.discountPrice}
-                        onChange={(event) => updateForm("discountPrice", event.target.value)}
-                        inputMode="decimal"
-                        placeholder="Price at Discount"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
+                    <ProductField label="Rating">
+                      <input value={form.rating} onChange={(event) => updateForm("rating", event.target.value)} inputMode="decimal" placeholder="5.0" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
                     </ProductField>
-                  </div>
-                  <label className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-500">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(form.discountPrice)}
-                      onChange={(event) => updateForm("discountPrice", event.target.checked ? form.price : "")}
-                      className="h-4 w-4 accent-blue-600"
-                    />
-                    Add tax for this product
-                  </label>
-                </section>
-
-                <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-                  <h3 className="mb-4 text-sm font-bold text-slate-950">Different Options</h3>
-                  <label className="mb-4 flex items-center gap-2 text-xs font-medium text-slate-600">
-                    <input
-                      type="checkbox"
-                      checked={form.hasMultipleOptions}
-                      onChange={(event) => updateForm("hasMultipleOptions", event.target.checked)}
-                      className="h-4 w-4 accent-blue-600"
-                    />
-                    This product has multiple options
-                  </label>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <ProductField label="Option Name">
-                      <input
-                        value={form.optionName}
-                        onChange={(event) => updateForm("optionName", event.target.value)}
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
+                    <ProductField label="Votes">
+                      <input value={form.votes} onChange={(event) => updateForm("votes", event.target.value)} inputMode="numeric" placeholder="32" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
                     </ProductField>
-                    <ProductField label="Option Values">
-                      <input
-                        value={form.optionValuesText}
-                        onChange={(event) => updateForm("optionValuesText", event.target.value)}
-                        placeholder="S, M, L, XL"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
+                    <ProductField label="Turnaround">
+                      <input value={form.turnaround} onChange={(event) => updateForm("turnaround", event.target.value)} placeholder="6-10 Hours" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
+                    </ProductField>
+                    <ProductField label="Output Formats">
+                      <input value={form.outputFormatsText} onChange={(event) => updateForm("outputFormatsText", event.target.value)} placeholder="DST, PES, AI, PDF" className="h-10 w-full rounded border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500" />
+                    </ProductField>
+                    <label className="block">
+                      <span className="mb-1 block text-[11px] font-semibold text-slate-500">Upload Output Format Files</span>
+                      <input type="file" multiple onChange={(event) => setOutputFiles(Array.from(event.target.files ?? []))} className="block w-full text-xs text-slate-500 file:mr-3 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-blue-600 hover:file:bg-blue-100" />
+                      {outputFiles.length > 0 ? <span className="mt-1 block text-[11px] text-slate-400">{outputFiles.length} output file(s) selected</span> : null}
+                    </label>
+                    <ProductField label="Revisions">
+                      <input value={form.revisions} onChange={(event) => updateForm("revisions", event.target.value)} placeholder="Unlimited minor revisions" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
+                    </ProductField>
+                    <ProductField label="Total Sold">
+                      <input value={form.totalSold} onChange={(event) => updateForm("totalSold", event.target.value)} inputMode="numeric" className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500" />
                     </ProductField>
                   </div>
                 </section>
 
-                <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-                  <h3 className="mb-4 text-sm font-bold text-slate-950">Shipping</h3>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <ProductField label="Weight">
-                      <input
-                        value={form.weight}
-                        onChange={(event) => updateForm("weight", event.target.value)}
-                        placeholder="Enter Weight"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Country">
-                      <input
-                        value={form.country}
-                        onChange={(event) => updateForm("country", event.target.value)}
-                        placeholder="Select Country"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                  </div>
-                  <label className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-600">
-                    <input
-                      type="checkbox"
-                      checked={form.digitalProduct}
-                      onChange={(event) => updateForm("digitalProduct", event.target.checked)}
-                      className="h-4 w-4 accent-blue-600"
-                    />
-                    This is digital product
-                  </label>
-                </section>
               </div>
 
               <aside className="space-y-5">
@@ -927,71 +849,6 @@ export default function ProductsPage() {
                         </div>
                       )
                     })}
-                  </div>
-                </section>
-
-                {/* Product Data */}
-                <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-                  <h3 className="mb-4 text-sm font-bold text-slate-950">Product Data</h3>
-                  <div className="grid gap-4">
-                    <ProductField label="Inventory">
-                      <input
-                        value={form.inventory}
-                        onChange={(event) => updateForm("inventory", event.target.value)}
-                        inputMode="numeric"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Color">
-                      <input
-                        value={form.color}
-                        onChange={(event) => updateForm("color", event.target.value)}
-                        placeholder="Black"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Rating">
-                      <input
-                        value={form.rating}
-                        onChange={(event) => updateForm("rating", event.target.value)}
-                        inputMode="decimal"
-                        placeholder="5.0"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Votes">
-                      <input
-                        value={form.votes}
-                        onChange={(event) => updateForm("votes", event.target.value)}
-                        inputMode="numeric"
-                        placeholder="32"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Turnaround">
-                      <input
-                        value={form.turnaround}
-                        onChange={(event) => updateForm("turnaround", event.target.value)}
-                        placeholder="6-10 Hours"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Revisions">
-                      <input
-                        value={form.revisions}
-                        onChange={(event) => updateForm("revisions", event.target.value)}
-                        placeholder="Unlimited minor revisions"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
-                    <ProductField label="Total Sold">
-                      <input
-                        value={form.totalSold}
-                        onChange={(event) => updateForm("totalSold", event.target.value)}
-                        inputMode="numeric"
-                        className="h-10 w-full rounded border border-slate-200 px-3 text-sm outline-none focus:border-blue-500"
-                      />
-                    </ProductField>
                   </div>
                 </section>
 

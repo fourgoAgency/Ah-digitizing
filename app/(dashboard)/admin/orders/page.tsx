@@ -1,20 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { collection, onSnapshot, query, serverTimestamp, where } from "firebase/firestore"
-import { Download, Eye, Search, Trash2, X } from "lucide-react"
+import { collection, onSnapshot, serverTimestamp } from "firebase/firestore"
+import { Download, Eye, Trash2, X } from "lucide-react"
 import { deleteDocument, firestore, updateDocument } from "@/lib/firebase"
+import { useSearchParams } from "next/navigation"
 
 type OrderStatus = "Ready" | "Shipped" | "Received"
-type PaymentStatus = "Paid" | "Pending"
-type FilterStatus = "all" | OrderStatus | PaymentStatus
+type PaymentStatus = "Paid" | "Pending" | "Received"
 type OrderDocument = Record<string, unknown> & { id: string }
-
-type Designer = {
-  id: string
-  email: string
-  name: string
-}
 
 type ProductDocument = Record<string, unknown> & {
   id: string
@@ -119,7 +113,13 @@ function getOrderTotal(document: OrderDocument) {
   }, 0)
 }
 
+function normalizeOrderNumber(value: string) {
+  const digits = value.match(/\d+/)?.[0]
+  return digits ? digits.slice(-5).padStart(5, "0") : "00000"
+}
+
 function normalizePaymentStatus(value: string): PaymentStatus {
+  if (value.toLowerCase().includes("receiv")) return "Received"
   return value.toLowerCase().includes("paid") ? "Paid" : "Pending"
 }
 
@@ -146,7 +146,7 @@ function toOrderRow(document: OrderDocument): OrderRow {
 
   return {
     id: document.id,
-    orderNo: getString(document, ["orderNo", "orderNumber", "orderId"], document.id.slice(0, 8).toUpperCase()),
+    orderNo: normalizeOrderNumber(getString(document, ["orderNo", "orderNumber", "orderId"])),
     createdAt,
     customer: getCustomerName(document),
     email: getString(document, ["customerEmail", "email", "deliveryEmail"]),
@@ -168,19 +168,6 @@ function formatDateTime(date: Date | null) {
   }).format(date)
 }
 
-function toDatetimeInputValue(date: Date | null) {
-  if (!date) return ""
-
-  const pad = (value: number) => String(value).padStart(2, "0")
-  const year = date.getFullYear()
-  const month = pad(date.getMonth() + 1)
-  const day = pad(date.getDate())
-  const hours = pad(date.getHours())
-  const minutes = pad(date.getMinutes())
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`
-}
-
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -191,6 +178,7 @@ function formatCurrency(value: number) {
 function statusClass(status: OrderStatus | PaymentStatus) {
   if (status === "Paid") return "bg-emerald-100 text-emerald-600"
   if (status === "Pending") return "bg-slate-100 text-slate-500"
+  if (status === "Received") return "bg-blue-100 text-blue-700"
   if (status === "Ready") return "bg-amber-100 text-amber-700"
   if (status === "Shipped") return "bg-slate-700 text-white"
   return "bg-blue-100 text-blue-700"
@@ -279,10 +267,6 @@ function getItemPrice(item: Record<string, unknown> | null) {
   return 0
 }
 
-function getDesignerName(document: OrderDocument) {
-  return getString(document, ["displayName", "name", "fullName"], getString(document, ["email"], "Designer"))
-}
-
 function DetailField({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
     <div>
@@ -293,20 +277,13 @@ function DetailField({ label, value }: { label: string; value: string | number |
 }
 
 export default function OrdersPage() {
+  const searchParams = useSearchParams()
   const [orders, setOrders] = useState<OrderRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [activeOrder, setActiveOrder] = useState<OrderRow | null>(null)
-  const [designers, setDesigners] = useState<Designer[]>([])
   const [products, setProducts] = useState<ProductDocument[]>([])
-  const [designerError, setDesignerError] = useState<string | null>(null)
-  const [selectedDesignerId, setSelectedDesignerId] = useState("")
-  const [submissionDeadline, setSubmissionDeadline] = useState("")
-  const [assigningDesigner, setAssigningDesigner] = useState(false)
-  const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null)
   const [page, setPage] = useState(1)
 
   useEffect(() => {
@@ -330,33 +307,6 @@ export default function OrdersPage() {
   }, [])
 
   useEffect(() => {
-    const designerQuery = query(collection(firestore, "users"), where("role", "==", "designer"))
-    const unsubscribe = onSnapshot(
-      designerQuery,
-      (snapshot) => {
-        setDesigners(
-          snapshot.docs
-            .map((document) => {
-              const data = { ...document.data(), id: document.id } as OrderDocument
-              return {
-                id: document.id,
-                email: getString(data, ["email"]),
-                name: getDesignerName(data),
-              }
-            })
-            .sort((a, b) => a.name.localeCompare(b.name))
-        )
-        setDesignerError(null)
-      },
-      (snapshotError) => {
-        setDesignerError(snapshotError.message)
-      }
-    )
-
-    return () => unsubscribe()
-  }, [])
-
-  useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(firestore, "products"),
       (snapshot) => {
@@ -368,7 +318,8 @@ export default function OrdersPage() {
   }, [])
 
   const filteredOrders = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
+    const query = (searchParams.get("q") || "").trim().toLowerCase()
+    const filterStatus = searchParams.get("status") || "all"
 
     return orders.filter((order) => {
       const matchesSearch =
@@ -380,7 +331,7 @@ export default function OrdersPage() {
 
       return matchesSearch && matchesFilter
     })
-  }, [filterStatus, orders, searchQuery])
+  }, [orders, searchParams])
 
   const pageCount = Math.max(Math.ceil(filteredOrders.length / pageSize), 1)
   const currentPage = Math.min(page, pageCount)
@@ -426,6 +377,25 @@ export default function OrdersPage() {
     await updateDocument("orders", id, { orderStatus, updatedAt: serverTimestamp() })
   }
 
+  async function updatePaymentStatus(order: OrderRow, paymentStatus: PaymentStatus) {
+    try {
+      await updateDocument("orders", order.id, { paymentStatus, updatedAt: serverTimestamp() })
+      if ((paymentStatus === "Paid" || paymentStatus === "Received") && order.paymentStatus !== paymentStatus) {
+        const response = await fetch("/api/order/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "complete", orderId: order.id }),
+        })
+        if (!response.ok) {
+          const result = await response.json().catch(() => null)
+          throw new Error(result?.error || "Delivery email could not be sent.")
+        }
+      }
+    } catch (paymentError) {
+      setError(paymentError instanceof Error ? paymentError.message : "Unable to update payment status.")
+    }
+  }
+
   async function deleteSelectedOrders() {
     if (selectedIds.length === 0) return
     const confirmed = window.confirm(`Delete ${selectedIds.length} selected order${selectedIds.length === 1 ? "" : "s"}?`)
@@ -436,55 +406,7 @@ export default function OrdersPage() {
   }
 
   function openOrderDetails(order: OrderRow) {
-    const deadline = getDate(order.document.submissionDeadline) || getDate(order.document.deadline)
-
     setActiveOrder(order)
-    setSelectedDesignerId(getString(order.document, ["assignedDesignerId", "designerId"]))
-    setSubmissionDeadline(toDatetimeInputValue(deadline))
-    setAssignmentMessage(null)
-  }
-
-  async function assignOrderToDesigner() {
-    if (!activeOrder || !selectedDesignerId || !submissionDeadline) return
-
-    const designer = designers.find((item) => item.id === selectedDesignerId)
-    if (!designer) return
-
-    setAssigningDesigner(true)
-    setAssignmentMessage(null)
-
-    try {
-      const deadlineDate = new Date(submissionDeadline)
-      await updateDocument("orders", activeOrder.id, {
-        assignedDesignerId: designer.id,
-        assignedDesignerName: designer.name,
-        assignedDesignerEmail: designer.email,
-        assignedAt: serverTimestamp(),
-        submissionDeadline: deadlineDate.toISOString(),
-        updatedAt: serverTimestamp(),
-      })
-
-      setActiveOrder((current) =>
-        current
-          ? {
-              ...current,
-              document: {
-                ...current.document,
-                assignedDesignerId: designer.id,
-                assignedDesignerName: designer.name,
-                assignedDesignerEmail: designer.email,
-                assignedAt: new Date().toISOString(),
-                submissionDeadline: deadlineDate.toISOString(),
-              },
-            }
-          : current
-      )
-      setAssignmentMessage("Order assigned successfully.")
-    } catch (assignmentError) {
-      setAssignmentMessage(assignmentError instanceof Error ? assignmentError.message : "Unable to assign designer.")
-    } finally {
-      setAssigningDesigner(false)
-    }
   }
 
   const activeOrderItems = activeOrder ? getOrderItems(activeOrder.document) : []
@@ -492,15 +414,6 @@ export default function OrdersPage() {
   const paymentTime = activeOrderDocument
     ? getDate(activeOrderDocument.paymentTime) || getDate(activeOrderDocument.paidAt) || getDate(activeOrderDocument.transactionTime)
     : null
-  const assignedAt = activeOrderDocument ? getDate(activeOrderDocument.assignedAt) : null
-  const assignedDesignerName = activeOrderDocument ? getString(activeOrderDocument, ["assignedDesignerName", "designerName"]) : ""
-  const assignedDesignerEmail = activeOrderDocument ? getString(activeOrderDocument, ["assignedDesignerEmail", "designerEmail"]) : ""
-  const selectedDesigner = designers.find((designer) => designer.id === selectedDesignerId)
-  const displayedDesignerName = assignedDesignerName || selectedDesigner?.name || ""
-  const displayedDesignerEmail = assignedDesignerEmail || selectedDesigner?.email || ""
-  const displayedDeadline =
-    (activeOrderDocument ? getDate(activeOrderDocument.submissionDeadline) || getDate(activeOrderDocument.deadline) : null) ||
-    getDate(submissionDeadline)
 
   return (
     <>
@@ -524,38 +437,7 @@ export default function OrdersPage() {
         </header>
 
         <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <select
-                value={filterStatus}
-                onChange={(event) => {
-                  setFilterStatus(event.target.value as FilterStatus)
-                  setPage(1)
-                }}
-                className="h-10 rounded border border-slate-200 bg-white px-3 text-sm text-slate-500 outline-none focus:border-blue-500"
-              >
-                <option value="all">Filter</option>
-                <option value="Paid">Paid</option>
-                <option value="Pending">Pending</option>
-                <option value="Ready">Ready</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Received">Received</option>
-              </select>
-
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
-                <input
-                  value={searchQuery}
-                  onChange={(event) => {
-                    setSearchQuery(event.target.value)
-                    setPage(1)
-                  }}
-                  placeholder="Search..."
-                  className="h-10 w-72 rounded border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
-
+          <div className="mb-5 flex flex-wrap items-center justify-end gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -607,9 +489,7 @@ export default function OrdersPage() {
                       <td className="py-3">{formatDateTime(order.createdAt)}</td>
                       <td className="py-3">{order.customer}</td>
                       <td className="py-3">
-                        <span className={`inline-flex h-6 items-center rounded px-2 text-xs font-semibold ${statusClass(order.paymentStatus)}`}>
-                          {order.paymentStatus}
-                        </span>
+                        <select value={order.paymentStatus} onChange={(event) => updatePaymentStatus(order, event.target.value as PaymentStatus)} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${statusClass(order.paymentStatus)}`}><option value="Pending">Pending</option><option value="Paid">Paid</option><option value="Received">Received</option></select>
                       </td>
                       <td className="py-3">
                         <select
@@ -717,68 +597,6 @@ export default function OrdersPage() {
                 <p className="mt-2 min-h-16 rounded border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-700">
                   {detailValue(getString(activeOrderDocument, ["instructions", "instruction", "notes", "additionalNotes"]))}
                 </p>
-              </section>
-
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
-                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-950">Assign to Designer</h3>
-                    <p className="mt-1 text-xs text-slate-500">Select a designer and set the submission deadline.</p>
-                  </div>
-                  <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-slate-500 ring-1 ring-slate-100">
-                    Assigned: {formatDateTime(assignedAt)}
-                  </span>
-                </div>
-
-                <div className="grid gap-4 lg:grid-cols-[1fr_1fr_auto]">
-                  <label className="block">
-                    <span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Designer</span>
-                    <select
-                      value={selectedDesignerId}
-                      onChange={(event) => setSelectedDesignerId(event.target.value)}
-                      className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"
-                    >
-                      <option value="">Select designer</option>
-                      {designers.map((designer) => (
-                        <option key={designer.id} value={designer.id}>
-                          {designer.name}{designer.email ? ` - ${designer.email}` : ""}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Submission Deadline</span>
-                    <input
-                      type="datetime-local"
-                      value={submissionDeadline}
-                      onChange={(event) => setSubmissionDeadline(event.target.value)}
-                      className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"
-                    />
-                  </label>
-
-                  <button
-                    type="button"
-                    disabled={!selectedDesignerId || !submissionDeadline || assigningDesigner}
-                    onClick={assignOrderToDesigner}
-                    className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]"
-                  >
-                    {assigningDesigner ? "Assigning..." : "Assign"}
-                  </button>
-                </div>
-
-                <div className="mt-4 grid gap-4 md:grid-cols-3">
-                  <DetailField label="Current Designer" value={displayedDesignerName} />
-                  <DetailField label="Designer Email" value={displayedDesignerEmail} />
-                  <DetailField label="Deadline" value={formatDateTime(displayedDeadline)} />
-                </div>
-
-                {designerError ? <p className="mt-3 text-xs font-medium text-rose-500">Designers: {designerError}</p> : null}
-                {assignmentMessage ? (
-                  <p className={`mt-3 text-xs font-semibold ${assignmentMessage.includes("success") ? "text-emerald-600" : "text-rose-500"}`}>
-                    {assignmentMessage}
-                  </p>
-                ) : null}
               </section>
 
               <section className="mt-6">

@@ -43,6 +43,18 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Public checkout uses this document as an atomic order-number counter.
+    match /metadata/orderSequence {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['value'])
+        && request.resource.data.value is int
+        && request.resource.data.value > 0;
+      allow update: if request.resource.data.keys().hasOnly(['value'])
+        && request.resource.data.value is int
+        && request.resource.data.value == resource.data.value + 1;
+      allow delete: if false;
+    }
+
     // Quote form starts public, then finalizes the same pending quote after OTP.
     match /quotes/{quoteId} {
       allow create: if true;

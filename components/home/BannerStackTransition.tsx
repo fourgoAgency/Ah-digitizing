@@ -39,7 +39,7 @@ const transitionWindow = useTransform(
   return (
     <section
       ref={wrapperRef}
-      className="relative h-[300svh] bg-white"
+      className="relative h-[220svh] bg-white"
       style={{
         perspective: "1600px",
       }}

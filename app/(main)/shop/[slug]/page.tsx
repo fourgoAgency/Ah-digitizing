@@ -29,8 +29,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   return {
-    title: `${product.title} | AH Digitizing`,
-    description: product.shortDescription,
+    title: product.seoTitle || `${product.title} | AH Digitizing`,
+    description: product.seoDescription || product.shortDescription,
   };
 }
 
@@ -69,6 +69,16 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </span>
           <h1 className="mt-3 text-3xl font-bold text-gray-900">{product.title}</h1>
           <p className="mt-4 text-gray-600">{product.description}</p>
+          <div className="mt-3 text-sm text-gray-500">
+            Rating: <span className="font-semibold text-gray-900">{product.rating ?? 0}</span> ({product.votes ?? 0} votes)
+          </div>
+
+          {product.seoTitle || product.seoDescription ? (
+            <div className="mt-5 rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
+              {product.seoTitle ? <p className="font-semibold text-gray-900">{product.seoTitle}</p> : null}
+              {product.seoDescription ? <p className="mt-1">{product.seoDescription}</p> : null}
+            </div>
+          ) : null}
 
           <div className="mt-6 text-3xl font-bold text-primary">{formatPrice(product.price)}</div>
 

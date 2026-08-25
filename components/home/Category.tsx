@@ -15,7 +15,13 @@ type ShopCategoryDefinition = {
   slug: string;
   image?: string;
   order?: number;
+  createdAt?: { toMillis?: () => number } | number;
 };
+
+function getCreatedAtMillis(value: ShopCategoryDefinition["createdAt"]) {
+  if (typeof value === "number") return value;
+  return value?.toMillis?.() ?? Number.MAX_SAFE_INTEGER;
+}
 
 const sectionVariants = {
   hidden: {
@@ -57,9 +63,12 @@ export default function ServicesCarousel() {
           ...doc.data(),
         })) as ShopCategoryDefinition[];
 
-        setCategories(
-          data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-        );
+        const legacyCategories = data.filter((category) => !category.createdAt);
+        const timestampedCategories = data
+          .filter((category) => category.createdAt)
+          .sort((a, b) => getCreatedAtMillis(a.createdAt) - getCreatedAtMillis(b.createdAt));
+
+        setCategories([...legacyCategories, ...timestampedCategories].slice(0, 6));
 
         setLoading(false);
       },
@@ -113,7 +122,7 @@ export default function ServicesCarousel() {
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-4 px-4 sm:grid-cols-2 md:px-4 lg:grid-cols-3">
-                  {categories.map((category, index) => (
+                  {categories.slice(0, 6).map((category, index) => (
                     <motion.div
                       key={category.id}
                       custom={index}

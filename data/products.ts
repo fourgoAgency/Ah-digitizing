@@ -32,12 +32,16 @@ export type Product = {
   shortDescription: string;
   description: string;
   price: number;
+  rating?: number;
+  votes?: number;
   turnaround: string;
   revisions: string;
   totalSold: number;
   heroImage: string;
   gallery: string[];
   tags: string[];
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 const portfolioPageImages = Array.from({ length: 10 }, (_, index) => `/new/${index + 1}-Photoroom.png`);

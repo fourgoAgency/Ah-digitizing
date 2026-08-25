@@ -4,7 +4,8 @@ import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { collection, onSnapshot } from "firebase/firestore"
 import { MoreHorizontal, RefreshCw, Settings } from "lucide-react"
-import { firestore } from "@/lib/firebase"
+import { firestore, signOutUser } from "@/lib/firebase"
+import { useRouter } from "next/navigation"
 
 type DashboardDocument = Record<string, unknown> & { id: string }
 type CollectionKey = "orders" | "quotes" | "users" | "products"
@@ -337,6 +338,8 @@ function StatCard({ stat }: { stat: StatCardData }) {
 }
 
 export default function Dashboard() {
+  const router = useRouter()
+  const [manageOpen, setManageOpen] = useState(false)
   const [collections, setCollections] = useState<Record<CollectionKey, DashboardDocument[]>>({
     orders: [],
     quotes: [],
@@ -472,10 +475,19 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold tracking-normal text-slate-950">Dashboard</h1>
             {error ? <p className="mt-1 text-xs font-medium text-rose-500">Firebase: {error}</p> : null}
           </div>
-          <button className="inline-flex h-9 items-center gap-2 rounded border border-blue-100 bg-white px-3 text-sm font-medium text-blue-600 shadow-sm hover:bg-blue-50">
-            {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Settings className="h-4 w-4" />}
-            {loading ? "Syncing" : "Manage"}
-          </button>
+          <div className="relative">
+            <button type="button" onClick={() => setManageOpen((open) => !open)} className="inline-flex h-9 items-center gap-2 rounded border border-blue-100 bg-white px-3 text-sm font-medium text-blue-600 shadow-sm hover:bg-blue-50">
+              {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Settings className="h-4 w-4" />}
+              {loading ? "Syncing" : "Manage"}
+            </button>
+            {manageOpen ? (
+              <div className="absolute right-0 top-11 z-20 min-w-36 rounded border border-slate-200 bg-white p-1 shadow-lg">
+                <button type="button" onClick={async () => { await signOutUser(); router.push("/login") }} className="w-full rounded px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100">
+                  Logout
+                </button>
+              </div>
+            ) : null}
+          </div>
         </header>
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">

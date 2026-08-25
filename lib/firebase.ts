@@ -25,6 +25,7 @@ import {
   setDoc,
   addDoc,
   updateDoc,
+  runTransaction,
   query, 
   where,
 } from 'firebase/firestore';
@@ -53,7 +54,7 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
 
-async function uploadFile(
+export async function uploadFile(
   file: File,
   path: string
 ): Promise<string> {
@@ -128,6 +129,24 @@ async function registerUserToFirestore(email: string, displayName?: string, role
 async function createDocument<T = DocumentData>(collectionName: string, data: T): Promise<string> {
   const documentRef = await addDoc(collection(firestore, collectionName), data as DocumentData);
   return documentRef.id;
+}
+
+async function createNextOrderNumber(): Promise<string> {
+  const sequenceRef = doc(firestore, 'metadata', 'orderSequence');
+  const existingOrders = await getDocs(collection(firestore, 'orders'));
+  const existingOrderNumbers = existingOrders.docs
+    .map((order) => Number(order.data().orderNo))
+    .filter((value) => Number.isInteger(value) && value > 0);
+  const initialValue = Math.max(existingOrders.size, ...existingOrderNumbers, 0);
+  const nextValue = await runTransaction(firestore, async (transaction) => {
+    const sequenceSnapshot = await transaction.get(sequenceRef);
+    const currentValue = sequenceSnapshot.exists() ? Number(sequenceSnapshot.data().value) || 0 : initialValue;
+    const nextSequence = currentValue + 1;
+    transaction.set(sequenceRef, { value: nextSequence }, { merge: true });
+    return nextSequence;
+  });
+
+  return String(nextValue).padStart(5, '0');
 }
 
 async function setDocument<T = DocumentData>(collectionName: string, documentId: string, data: T): Promise<void> {
@@ -273,6 +292,7 @@ export {
   getServerTimestamp,
   getUserByEmail,
   createDocument,
+  createNextOrderNumber,
   setDocument,
   registerUserToFirestore,
   updateDocument,
@@ -287,6 +307,6 @@ export {
   sendUserVerificationEmail,
   updateUserProfile,
   onAuthStateChange,
-  uploadFile,
+  
   deleteFile
 };

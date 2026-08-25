@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import { useCartSidebar } from "@/components/shop/CartSidebarContext";
 import { formatPrice, Product } from "@/data/products";
 
@@ -78,6 +79,11 @@ export default function ProductCard({
               {product.title}
             </h3>
           </Link>
+          <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <span>{product.rating ?? 0}</span>
+            <span>({product.votes ?? 0} votes)</span>
+          </div>
           <div className="mt-3 flex items-end justify-between gap-3">
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
             <Button
@@ -122,6 +128,11 @@ export default function ProductCard({
               {product.title}
             </h3>
           </Link>
+          <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <span>{product.rating ?? 0}</span>
+            <span>({product.votes ?? 0} votes)</span>
+          </div>
           <div className="mt-3 flex items-end justify-between gap-3">
             <p className="text-xl font-bold text-primary">{formatPrice(product.price)}</p>
             <Button asChild className="h-8 rounded-md px-3 text-sm font-semibold hover:bg-white/90 cursor-pointer hover:text-primary hover:border-primary hover:border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">

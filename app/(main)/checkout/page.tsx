@@ -8,6 +8,7 @@ import { useCartSidebar } from "@/components/shop/CartSidebarContext";
 // REUSE: Only import your custom abstractions from firebase.ts
 import {
   createDocument,
+  createNextOrderNumber,
   updateDocument,
   getProductDocument,
   fetchActiveCoupon,
@@ -156,7 +157,7 @@ export default function CheckoutPage() {
         }
       }
 
-      const orderNo = `WS${String(Math.floor(100000 + Math.random() * 900000))}`;
+      const orderNo = await createNextOrderNumber();
       const customerName = `${customerDetails.firstName} ${customerDetails.lastName}`.trim();
 
       // REUSE: Custom update usage handler from firebase.ts
