@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { createQuoteNotification } from '@/lib/notificationHelper';
 
@@ -7,6 +8,7 @@ const createTransport = (host: string, port: string, user: string, pass: string,
   nodemailer.createTransport({
     host,
     port: Number(port),
+    family: 4,
     secure: process.env.SMTP_SECURE === 'true',
     tls: {
       rejectUnauthorized: !allowSelfSigned ? true : false,
@@ -15,7 +17,7 @@ const createTransport = (host: string, port: string, user: string, pass: string,
       user,
       pass,
     },
-  });
+  } as SMTPTransport.Options);
 
 export async function POST(req: Request) {
   try {
@@ -78,10 +80,15 @@ export async function POST(req: Request) {
         await sendMessage(allowSelfSigned);
       } catch (mailError: unknown) {
         const message = mailError instanceof Error ? mailError.message : '';
-        if (!message.toLowerCase().includes('self-signed certificate')) {
-          throw mailError;
+        if (message.toLowerCase().includes('self-signed certificate')) {
+          try {
+            await sendMessage(true);
+          } catch (retryError) {
+            console.error('Quote notification email failed after TLS retry:', retryError);
+          }
+        } else {
+          console.error('Quote notification email failed:', mailError);
         }
-        await sendMessage(true);
       }
     }
 

@@ -1,7 +1,5 @@
 'use client';
 
-import JSZip from 'jszip';
-import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { CheckCircle2, Clock3, Download, Paperclip, UploadCloud } from 'lucide-react';
@@ -12,11 +10,10 @@ type QuoteDoc = Record<string, unknown> & { id: string; source: 'quotes' | 'quot
 
 type AssignedItem = {
   id: string;
+  orderNumber: string;
   source: 'quotes' | 'quoteRequests';
-  title: string;
-  client: string;
-  email: string;
   orderType: string;
+  assignmentType: string;
   status: string;
   assignedAt: Date | null;
   deadline: string;
@@ -56,14 +53,17 @@ function getDate(value: unknown): Date | null {
   return null;
 }
 
-function formatDateTime(date: Date | null) {
-  if (!date) return 'Not set';
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
+function formatDeadline(value: string) {
+  const date = getDate(value);
+  if (!date) return value || 'Not set';
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+    hour: '2-digit',
     minute: '2-digit',
-  }).format(date);
+    hour12: false,
+  }).format(date).replace(',', ' -');
 }
 
 function getSubmissionInfo(document: Record<string, unknown>) {
@@ -86,105 +86,19 @@ type QuoteFileEntry = {
   url: string;
 };
 
-function collectQuoteFiles(document: Record<string, unknown>): QuoteFileEntry[] {
-  const candidateKeys = [
-    'files',
-    'attachments',
-    'uploads',
-    'referenceFiles',
-    'designFiles',
-    'sourceFiles',
-  ];
+function collectAssignmentFiles(document: Record<string, unknown>): QuoteFileEntry[] {
+  const files = document.assignmentFiles;
+  if (!Array.isArray(files)) return [];
 
-  const results: QuoteFileEntry[] = [];
-
-  for (const key of candidateKeys) {
-    const value = document[key];
-    if (!Array.isArray(value)) continue;
-
-    value.forEach((item, index) => {
-      const record = asRecord(item);
-      const url =
-        (typeof item === 'string' ? item : '') ||
-        getString(record ?? {}, ['downloadURL', 'downloadUrl', 'url', 'storageUrl', 'fileUrl', 'path']);
-      if (!url) return;
-
-      const name =
-        getString(record ?? {}, ['name', 'fileName', 'title']) ||
-        `${key}-${index + 1}`;
-
-      results.push({ name, url });
-    });
-  }
-
-  return results;
-}
-
-function isPreviewableImage(url: string) {
-  return /\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i.test(url);
-}
-
-function buildQuoteDetailsText(item: AssignedItem) {
-  const document = item.document;
-  const submission = getSubmissionInfo(document);
-  const files = collectQuoteFiles(document);
-  const fields: Array<[string, string]> = [
-    ['Quote ID', item.id],
-    ['Source', item.source],
-    ['Client', item.client],
-    ['Email', item.email || ''],
-    ['Order type', item.orderType],
-    ['Status', item.status],
-    ['Assigned at', formatDateTime(item.assignedAt)],
-    ['Deadline', item.deadline || 'Not set'],
-    ['Submission URL', submission.url || 'Not submitted'],
-    ['Submission file', submission.fileName || 'Not submitted'],
-    ['Submission time', formatDateTime(submission.submittedAt)],
-    ['Assigned by designer', getString(document, ['assignedDesignerName'], 'Not provided')],
-    ['Assigned designer email', getString(document, ['assignedDesignerEmail'], 'Not provided')],
-  ];
-
-  const extraFields = Object.entries(document)
-    .filter(([key]) => ![
-      'id',
-      'source',
-      'files',
-      'attachments',
-      'uploads',
-      'referenceFiles',
-      'designFiles',
-      'sourceFiles',
-      'designerSubmission',
-      'submission',
-    ].includes(key))
-    .filter(([, value]) => value !== null && value !== undefined && value !== '');
-
-  const lines = [
-    'Designer Quote Details',
-    '======================',
-    '',
-    ...fields.map(([label, value]) => `${label}: ${value}`),
-    '',
-    'Source Files',
-    '============',
-    ...(files.length > 0 ? files.map((file) => `- ${file.name} (${file.url})`) : ['- None found']),
-    '',
-    'Additional Fields',
-    '=================',
-    ...(extraFields.length > 0
-      ? extraFields.map(([key, value]) => `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`)
-      : ['- None']),
-  ];
-
-  return lines.join('\n');
-}
-
-async function fetchFileAsBlob(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`);
-  }
-  return await response.blob();
+  return files.flatMap((item, index) => {
+    const record = asRecord(item);
+    const url = getString(record ?? {}, ['downloadURL', 'downloadUrl', 'url', 'storageUrl', 'fileUrl', 'path']);
+    if (!url) return [];
+    return [{
+      name: getString(record ?? {}, ['name', 'fileName', 'title'], `assignment-file-${index + 1}`),
+      url,
+    }];
+  });
 }
 
 export default function DesignerPage() {
@@ -219,11 +133,10 @@ export default function DesignerPage() {
             const itemId = `${source}:${document.id}`;
             const item: AssignedItem = {
               id: document.id,
+              orderNumber: getString(data, ['orderNumber'], document.id),
               source,
-              title: getString(data, ['subject', 'title', 'orderType', 'serviceType'], 'Assigned quote'),
-              client: getString(data, ['fullName', 'name', 'customerName', 'clientName'], 'Customer'),
-              email: getString(data, ['email', 'customerEmail', 'contactEmail'], ''),
               orderType: getString(data, ['orderType', 'serviceType', 'type'], 'Quote'),
+              assignmentType: getString(data, ['assignmentType'], 'Standard'),
               status: getString(data, ['status'], 'Assigned to Designer'),
               assignedAt: getDate(data.assignedAt),
               deadline: getString(data, ['submissionDeadline', 'deadline'], ''),
@@ -254,8 +167,6 @@ export default function DesignerPage() {
     const pending = total - submitted;
     return { total, submitted, pending };
   }, [assigned]);
-
-  const activeQuoteFiles = useMemo(() => (activeItem ? collectQuoteFiles(activeItem.document) : []), [activeItem]);
 
   async function handleSubmitResult() {
     if (!activeItem || !selectedFile) return;
@@ -302,28 +213,19 @@ export default function DesignerPage() {
     setError(null);
 
     try {
-      const zip = new JSZip();
-      const detailsText = buildQuoteDetailsText(activeItem);
-      zip.file('details.txt', detailsText);
-
-      const sourceFiles = collectQuoteFiles(activeItem.document);
-      if (sourceFiles.length === 0) {
-        zip.file('README.txt', 'No uploaded source files were found for this quote.');
-      } else {
-        const folder = zip.folder('uploaded-files');
-        if (!folder) throw new Error('Unable to create zip folder.');
-
-        for (const file of sourceFiles) {
-          const blob = await fetchFileAsBlob(file.url);
-          folder.file(file.name, blob);
-        }
-      }
-
-      const archive = await zip.generateAsync({ type: 'blob' });
+      const sourceFiles = collectAssignmentFiles(activeItem.document);
+      if (sourceFiles.length === 0) throw new Error('No uploaded assignment file was found for this order.');
+      const response = await fetch('/api/quote/download-zip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: activeItem.orderNumber, files: sourceFiles }),
+      });
+      if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || 'Unable to create ZIP download.');
+      const archive = await response.blob();
       const objectUrl = URL.createObjectURL(archive);
       const anchor = document.createElement('a');
       anchor.href = objectUrl;
-      anchor.download = `${activeItem.id.slice(0, 8).toUpperCase()}-${activeItem.source}-package.zip`;
+      anchor.download = `${activeItem.orderNumber}.zip`;
       anchor.click();
       URL.revokeObjectURL(objectUrl);
     } catch (zipError) {
@@ -375,7 +277,6 @@ export default function DesignerPage() {
               <thead className="bg-slate-50">
                 <tr className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                   <th className="px-5 py-3">Quote</th>
-                  <th className="px-5 py-3">Client</th>
                   <th className="px-5 py-3">Type</th>
                   <th className="px-5 py-3">Deadline</th>
                   <th className="px-5 py-3">Submission</th>
@@ -401,13 +302,9 @@ export default function DesignerPage() {
                     const key = `${item.source}:${item.id}`;
                     return (
                       <tr key={key} className="text-sm text-slate-700">
-                        <td className="px-5 py-4 font-medium text-slate-950">{item.id.slice(0, 8).toUpperCase()}</td>
-                        <td className="px-5 py-4">
-                          <div className="font-medium text-slate-950">{item.client}</div>
-                          <div className="text-xs text-slate-500">{item.email || 'No email provided'}</div>
-                        </td>
+                        <td className="px-5 py-4 font-medium text-slate-950">{item.orderNumber}</td>
                         <td className="px-5 py-4">{item.orderType}</td>
-                        <td className="px-5 py-4">{item.deadline || 'Not set'}</td>
+                        <td className="px-5 py-4">{formatDeadline(item.deadline)}</td>
                         <td className="px-5 py-4">
                           <span
                             className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
@@ -443,10 +340,8 @@ export default function DesignerPage() {
             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Submit result</p>
-                <h3 className="mt-1 text-xl font-bold text-slate-950">{activeItem.title}</h3>
-                <p className="mt-1 text-sm text-slate-600">
-                  Upload the final file for {activeItem.client}. When submitted, this quote will be marked completed.
-                </p>
+                <h3 className="mt-1 text-xl font-bold text-slate-950">Order {activeItem.orderNumber}</h3>
+                <p className="mt-1 text-sm text-slate-600">Upload the final file when the work is complete.</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -473,45 +368,14 @@ export default function DesignerPage() {
 
             <div className="max-h-[calc(90vh-78px)] overflow-y-auto px-5 py-5">
               <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
-                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-950">Quote Detail</h4>
-                    <p className="mt-1 text-xs text-slate-500">This shows the design/job details attached to the assigned quote.</p>
-                  </div>
-                </div>
+                <h4 className="text-sm font-bold text-slate-950">Order Details</h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {detailRows(activeItem.document).map(([label, value]) => (
+                  {detailRows(activeItem).map(([label, value]) => (
                     <div key={label} className="rounded-md border border-slate-200 bg-white px-4 py-3">
                       <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{label}</p>
                       <p className="mt-1 break-words text-sm font-medium text-slate-800">{value}</p>
                     </div>
                   ))}
-                </div>
-              </section>
-
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
-                <h4 className="text-sm font-bold text-slate-950">Files</h4>
-                <div className="mt-3 space-y-2">
-                  {activeQuoteFiles.length > 0 ? activeQuoteFiles.map((file) => (
-                    <div key={`${file.name}-${file.url}`} className="rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="font-medium">{file.name}</span>
-                        <a href={file.url} target="_blank" rel="noreferrer" className="text-xs font-semibold text-blue-600 underline">
-                          Open file
-                        </a>
-                      </div>
-                      {isPreviewableImage(file.url) ? (
-                        <Image
-                          src={file.url}
-                          alt={file.name}
-                          width={800}
-                          height={320}
-                          unoptimized
-                          className="mt-2 h-auto max-h-40 w-full rounded object-contain"
-                        />
-                      ) : null}
-                    </div>
-                  )) : <p className="text-sm text-slate-500">No uploaded source files found.</p>}
                 </div>
               </section>
 
@@ -575,11 +439,11 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
-function detailRows(document: Record<string, unknown>) {
+function detailRows(item: AssignedItem) {
   return [
-    ['Design name', getString(document, ['designName', 'design_name', 'title', 'subject', 'orderType'], 'Not provided')],
-    ['Turnaround time', getString(document, ['turnaroundTime', 'turnaround', 'submissionDeadline', 'deadline'], 'Not provided')],
-    ['Output formats', getString(document, ['outcomeFileType', 'fileType', 'outputType', 'deliverableType', 'formats'], 'Not provided')],
-    ['Additional notes', getString(document, ['additionalNotes', 'notes', 'instructions', 'remarks'], 'Not provided')],
+    ['Order Number', item.orderNumber],
+    ['Order type', item.orderType],
+    ['Submission deadline', formatDeadline(item.deadline)],
+    ['Assignment type', item.assignmentType],
   ];
 }

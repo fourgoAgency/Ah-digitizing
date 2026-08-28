@@ -64,8 +64,9 @@ function getStorageFileUrl(file: unknown) {
   const candidates = [record.downloadURL, record.downloadUrl, record.url, record.storageUrl, record.fileUrl, record.path];
   return (candidates.find((candidate) => typeof candidate === "string" && candidate.trim()) as string | undefined) || "";
 }
+
 function formatInfoValue(key: string, value: unknown) {
-  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt") return formatCreatedAt(getDate(value));
+  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") return String(value);
@@ -83,7 +84,7 @@ function getQuoteType(quote: QuoteDocument) {
 }
 
 function getQuoteInfoEntries(quote: QuoteDocument) {
-  const excludedKeys = ["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "status", "turnaroundTime", "whatsappOptIn", "createdAt", "submittedAt", "assignedAt", "designerSubmission", "designerSubmissionUrl", "designerSubmissionPath", "designerSubmittedAt", "verifiedAt"];
+  const excludedKeys = ["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "status", "turnaroundTime", "whatsappOptIn", "createdAt", "submittedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles", "designerSubmission", "designerSubmissionUrl", "designerSubmissionPath", "designerSubmittedAt", "verifiedAt"];
   return Object.entries(quote)
     .filter(([key, value]) => !excludedKeys.includes(key) && value !== null && value !== undefined && value !== "")
     .sort(([firstKey], [secondKey]) => {
@@ -103,9 +104,8 @@ function downloadQuoteInfo(quote: QuoteDocument) {
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  const customerName = getString(quote, ["fullName", "name"], "quote").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   link.href = url;
-  link.download = `${customerName || "quote"}-info.txt`;
+  link.download = `${quote.orderNumber || quote.id}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -121,9 +121,9 @@ export default function GetFreeQuoteAdminPage() {
   const [selectedDesignerId, setSelectedDesignerId] = useState("");
   const [submissionDeadline, setSubmissionDeadline] = useState("");
   const [assignmentType, setAssignmentType] = useState("Standard");
-  const [selectedSubmissionFile, setSelectedSubmissionFile] = useState<File | null>(null);
-  const [uploadingSubmission, setUploadingSubmission] = useState(false);
+  const [selectedSubmissionFiles, setSelectedSubmissionFiles] = useState<File[]>([]);
   const [assigningDesigner, setAssigningDesigner] = useState(false);
+  const [downloadingZip, setDownloadingZip] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -147,7 +147,7 @@ export default function GetFreeQuoteAdminPage() {
 
   const rows = useMemo(() => quotes.map((quote) => ({
     id: quote.id,
-    orderNo: quote.id.slice(0, 8).toUpperCase(),
+    orderNo: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : quote.id,
     type: getQuoteType(quote),
     createdAt: getDate(quote.submittedAt) || getDate(quote.createdAt),
     customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -165,11 +165,17 @@ export default function GetFreeQuoteAdminPage() {
     try { await updateDoc(doc(firestore, "quoteRequests", id), { status }); } catch (e) { setError(e instanceof Error ? e.message : "Unable to update quote status."); } finally { setUpdatingId(null); }
   }
   async function assignQuoteToDesigner() {
-    if (!activeQuote || !selectedDesignerId || !submissionDeadline) return;
+    if (!activeQuote || !selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0) return;
     const designer = designers.find((item) => item.id === selectedDesignerId);
     if (!designer) return;
     setAssigningDesigner(true); setAssignmentMessage(null);
     try {
+      const assignmentFiles = await Promise.all(selectedSubmissionFiles.map(async (file, index) => {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+        const storagePath = `designer-assignment-files/quoteRequests/${activeQuote.id}/${Date.now()}-${index + 1}-${safeName}`;
+        const downloadURL = await uploadFile(file, storagePath);
+        return { fileName: file.name, name: file.name, storagePath, downloadURL, size: file.size, type: file.type };
+      }));
       await updateDoc(doc(firestore, "quoteRequests", activeQuote.id), {
         assignedDesignerId: designer.id,
         assignedDesignerName: designer.name,
@@ -177,6 +183,18 @@ export default function GetFreeQuoteAdminPage() {
         assignedAt: serverTimestamp(),
         assignmentType,
         submissionDeadline: new Date(submissionDeadline).toISOString(),
+        assignmentFiles,
+        status: "Assigned to Designer",
+      });
+      setActiveQuote({
+        ...activeQuote,
+        assignedDesignerId: designer.id,
+        assignedDesignerName: designer.name,
+        assignedDesignerEmail: designer.email,
+        assignedAt: new Date().toISOString(),
+        assignmentType,
+        submissionDeadline: new Date(submissionDeadline).toISOString(),
+        assignmentFiles,
         status: "Assigned to Designer",
       });
       await fetch("/api/quote/assign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quoteId: activeQuote.id, orderType: getString(activeQuote, ["orderType"], "quote"), designerName: designer.name, designerEmail: designer.email }) });
@@ -184,19 +202,32 @@ export default function GetFreeQuoteAdminPage() {
     } catch (e) { setAssignmentMessage(e instanceof Error ? e.message : "Unable to assign designer."); } finally { setAssigningDesigner(false); }
   }
 
-  async function uploadSubmission() {
-    if (!activeQuote || !selectedSubmissionFile) return;
-    setUploadingSubmission(true); setAssignmentMessage(null);
+
+  async function downloadQuoteFiles(quote: QuoteDocument) {
+    const files = Array.isArray(quote.files) ? quote.files : [];
+    if (files.length === 0) return;
+
+    setDownloadingZip(true);
+    setError(null);
     try {
-      const safeName = selectedSubmissionFile.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
-      const storagePath = `designer-submissions/quoteRequests/${activeQuote.id}/${Date.now()}-${safeName}`;
-      const downloadURL = await uploadFile(selectedSubmissionFile, storagePath);
-      const submittedAt = new Date().toISOString();
-      const submission = { fileName: selectedSubmissionFile.name, storagePath, downloadURL, submittedAt };
-      await updateDoc(doc(firestore, "quoteRequests", activeQuote.id), { designerSubmission: submission, designerSubmissionUrl: downloadURL, designerSubmissionPath: storagePath, designerSubmittedAt: submittedAt, status: "Completed" });
-      setActiveQuote({ ...activeQuote, designerSubmission: submission, designerSubmissionUrl: downloadURL, designerSubmissionPath: storagePath, designerSubmittedAt: submittedAt, status: "Completed" });
-      setSelectedSubmissionFile(null); setAssignmentMessage("File uploaded successfully.");
-    } catch (uploadError) { setAssignmentMessage(uploadError instanceof Error ? uploadError.message : "Unable to upload file."); } finally { setUploadingSubmission(false); }
+      const response = await fetch("/api/quote/download-zip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : quote.id, files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
+      });
+      if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "Unable to create ZIP download.");
+      const archive = await response.blob();
+      const objectUrl = URL.createObjectURL(archive);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = `${quote.id}.zip`;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch (zipError) {
+      setError(zipError instanceof Error ? zipError.message : "Unable to create ZIP download.");
+    } finally {
+      setDownloadingZip(false);
+    }
   }
 
   return (
@@ -224,12 +255,12 @@ export default function GetFreeQuoteAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-6" role="dialog" aria-modal="true">
           <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-md bg-white shadow-xl">
             <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
-              <div><p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p><h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3><p className="mt-1 text-xs font-semibold text-slate-500">Order No: {activeQuote.id.slice(0, 8).toUpperCase()}</p></div>
+              <div><p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p><h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3><p className="mt-1 text-xs font-semibold text-slate-500">Order No: {typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : activeQuote.id}</p></div>
               <button type="button" onClick={() => setActiveQuote(null)} className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"><X className="h-4 w-4" /></button>
             </header>
             <div className="max-h-[calc(90vh-78px)] overflow-y-auto px-5 py-5">
               <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Order Number</p><p className="mt-1 text-sm font-medium text-slate-800">{activeQuote.id.slice(0, 8).toUpperCase()}</p></div>
+                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Order Number</p><p className="mt-1 text-sm font-medium text-slate-800">{typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : activeQuote.id}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Customer Name</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["fullName", "name"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Country</p><p className="mt-1 text-sm font-medium text-slate-800">{getCountryName(getString(activeQuote, ["country"], ""))}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Company</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["companyName", "company"], "Not provided")}</p></div>
@@ -243,14 +274,43 @@ export default function GetFreeQuoteAdminPage() {
                   <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Type</span><select value={assignmentType} onChange={(e) => setAssignmentType(e.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"><option>Standard</option><option>Rush</option><option>Super Rush</option></select></label>
                   <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Designer</span><select value={selectedDesignerId} onChange={(e) => setSelectedDesignerId(e.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"><option value="">Select designer</option>{designers.map((designer) => <option key={designer.id} value={designer.id}>{designer.name}{designer.email ? ` - ${designer.email}` : ""}</option>)}</select></label>
                   <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Submission Deadline</span><input type="datetime-local" value={submissionDeadline} onChange={(e) => setSubmissionDeadline(e.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500" /></label>
-                  <button type="button" disabled={!selectedDesignerId || !submissionDeadline || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">{assigningDesigner ? "Assigning..." : "Assign"}</button>
+                  <button type="button" disabled={!selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0 || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">{assigningDesigner ? "Assigning..." : "Assign"}</button>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><UploadCloud className="h-3.5 w-3.5" /><input type="file" className="sr-only" onChange={(e) => setSelectedSubmissionFile(e.target.files?.[0] ?? null)} />Choose upload file</label>
-                  <span className="max-w-xs truncate text-xs text-slate-500">{selectedSubmissionFile?.name || "No file selected"}</span>
-                  <button type="button" onClick={uploadSubmission} disabled={!selectedSubmissionFile || uploadingSubmission} className="inline-flex items-center gap-2 rounded bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-slate-300"><UploadCloud className="h-3.5 w-3.5" />{uploadingSubmission ? "Uploading..." : "Upload file"}</button>
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><UploadCloud className="h-3.5 w-3.5" /><input type="file" multiple className="sr-only" onChange={(e) => setSelectedSubmissionFiles(Array.from(e.target.files ?? []))} />Choose upload files</label>
+                  <span className="max-w-xs truncate text-xs text-slate-500">{selectedSubmissionFiles.length > 0 ? `${selectedSubmissionFiles.length} file${selectedSubmissionFiles.length === 1 ? "" : "s"} selected` : "No files selected"}</span>
                 </div>
                 {assignmentMessage ? <p className={`mt-3 text-xs font-semibold ${assignmentMessage.includes("success") ? "text-emerald-600" : "text-rose-500"}`}>{assignmentMessage}</p> : null}
+                {activeQuote.assignedDesignerId ? (
+                  <div className="mt-4 grid gap-4 border-t border-slate-200 pt-4 md:grid-cols-2 lg:grid-cols-3">
+                    {[
+                      ["Submission Deadline", activeQuote.submissionDeadline],
+                      ["Assigned At", activeQuote.assignedAt],
+                      ["Assignment Type", activeQuote.assignmentType],
+                      ["Assigned Designer Id", activeQuote.assignedDesignerId],
+                      ["Assigned Designer Name", activeQuote.assignedDesignerName],
+                      ["Assigned Designer Email", activeQuote.assignedDesignerEmail],
+                    ].map(([label, value]) => (
+                      <div key={String(label)}>
+                        <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{String(label)}</p>
+                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(label === "Submission Deadline" ? "submissionDeadline" : label === "Assigned At" ? "assignedAt" : String(label), value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {Array.isArray(activeQuote.assignmentFiles) && activeQuote.assignmentFiles.length > 0 ? (
+                  <div className="mt-4 border-t border-slate-200 pt-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Assigned Files</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {activeQuote.assignmentFiles.map((file, index) => {
+                        const record = asRecord(file);
+                        const url = getStorageFileUrl(file);
+                        const name = typeof record?.name === "string" ? record.name : `File ${index + 1}`;
+                        return url ? <a key={`${name}-${index}`} href={url} target="_blank" rel="noreferrer" className="rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-blue-600 underline">{name}</a> : null;
+                      })}
+                    </div>
+                  </div>
+                ) : null}
               </section>
               <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -259,9 +319,13 @@ export default function GetFreeQuoteAdminPage() {
                     <Download className="h-3.5 w-3.5" />
                     Download TXT
                   </button>
+                  <button type="button" onClick={() => downloadQuoteFiles(activeQuote)} disabled={!Array.isArray(activeQuote.files) || activeQuote.files.length === 0 || downloadingZip} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">
+                    <Download className="h-3.5 w-3.5" />
+                    {downloadingZip ? "Preparing ZIP..." : "Download ZIP"}
+                  </button>
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {Object.entries(activeQuote).filter(([key]) => !["id","fullName","name","country","companyName","company","email","contactNumber","phone","verifiedAt"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
+                  {Object.entries(activeQuote).filter(([key]) => !["id","fullName","name","country","companyName","company","email","contactNumber","phone","verifiedAt","assignedAt","assignmentType","submissionDeadline","assignedDesignerId","assignedDesignerName","assignedDesignerEmail","assignmentFiles"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
                     const firstIndex = quoteInfoOrder.indexOf(firstKey);
                     const secondIndex = quoteInfoOrder.indexOf(secondKey);
                     if (firstIndex === -1 && secondIndex === -1) return 0;
@@ -283,7 +347,7 @@ export default function GetFreeQuoteAdminPage() {
                                 <div key={`${key}-${index}`} className="rounded border border-slate-200 bg-white p-3">
                                   <p className="text-sm font-medium text-slate-800">{label}</p>
                                   {size ? <p className="mt-1 text-xs text-slate-500">{size}</p> : null}
-                                  {fileUrl ? (fileUrl.match(/\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i) ? <img src={fileUrl} alt={label} className="mt-2 max-h-40 w-full rounded object-contain" /> : <a href={fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm text-blue-600 underline">Open file</a>) : <p className="mt-1 text-xs text-slate-500 break-words">{formatInfoValue(key, item)}</p>}
+                                  {fileUrl ? <><a href={fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm text-blue-600 underline">Open file</a>{fileUrl.match(/\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i) ? <img src={fileUrl} alt={label} className="mt-2 max-h-40 w-full rounded object-contain" /> : null}</> : <p className="mt-1 text-xs text-slate-500 break-words">{formatInfoValue(key, item)}</p>}
                                 </div>
                               );
                             })}
@@ -293,24 +357,6 @@ export default function GetFreeQuoteAdminPage() {
                     }
                     return <div key={key}><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{prettifyKey(key)}</p><p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(key, value)}</p></div>;
                   })}
-                </div>
-              </section>
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
-                <h4 className="text-sm font-bold text-slate-950">Files</h4>
-                <div className="mt-3 space-y-2">
-                  {Array.isArray(activeQuote.files) && activeQuote.files.length > 0 ? activeQuote.files.map((file, index) => {
-                    const record = asRecord(file);
-                    const fileUrl = getStorageFileUrl(file);
-                    const label = typeof record?.name === "string" && record.name ? record.name : `File ${index + 1}`;
-                    const size = typeof record?.size === "number" ? formatFileSize(record.size) : "";
-                    return (
-                      <div key={`${index}-${label}`} className="rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
-                        <span className="font-medium">{label}</span>
-                        {size ? <span className="ml-2 text-xs text-slate-500">{size}</span> : null}
-                        {fileUrl ? (fileUrl.match(/\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i) ? <><img src={fileUrl} alt={label} className="mt-2 max-h-40 rounded object-contain" /><a href={fileUrl} download={label} className="mt-2 inline-block text-sm text-green-600 underline">Download</a></> : <div className="mt-2 flex gap-3"><a href={fileUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 underline">Open file</a><a href={fileUrl} download={label} className="text-sm text-green-600 underline">Download</a></div>) : null}
-                      </div>
-                    );
-                  }) : <p className="text-sm text-slate-500">No files uploaded.</p>}
                 </div>
               </section>
             </div>

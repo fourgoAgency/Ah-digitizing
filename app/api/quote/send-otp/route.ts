@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { storeQuoteOtp } from '@/lib/otpCache';
 
 const DEFAULT_OTP_EXPIRE_MS = 5 * 60 * 1000;
@@ -8,6 +9,7 @@ const createTransport = (host: string, port: string, user: string, pass: string,
   nodemailer.createTransport({
     host,
     port: Number(port),
+    family: 4,
     secure: process.env.SMTP_SECURE === 'true',
     tls: {
       rejectUnauthorized: !allowSelfSigned ? true : false,
@@ -16,7 +18,7 @@ const createTransport = (host: string, port: string, user: string, pass: string,
       user,
       pass,
     },
-  });
+  } as SMTPTransport.Options);
 
 export async function POST(req: Request) {
   try {

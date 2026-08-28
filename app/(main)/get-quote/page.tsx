@@ -11,7 +11,7 @@ import {
   quoteFormSchema,
   type QuoteFormState,
 } from "./lib/quote-form";
-import { createDocument, uploadFile } from "@/lib/firebase";
+import { createDocument, createNextQuoteNumber, uploadFile } from "@/lib/firebase";
 
 
 const fieldValidationOrder = [
@@ -397,6 +397,7 @@ export default function GetQuotePage() {
       }
 
       const quoteId = `quote_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const orderNumber = await createNextQuoteNumber('quote');
       const uploadedFiles = await Promise.all(
         pendingQuote.files.map(async (file, index) => {
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -415,6 +416,7 @@ export default function GetQuotePage() {
       // Create verified quote only after OTP success
       const docId = await createDocument("quotes", {
         ...pendingQuote,
+        orderNumber,
         files: uploadedFiles,
         status: "new",
         createdAt: new Date().toISOString(),
@@ -433,7 +435,8 @@ export default function GetQuotePage() {
         }),
       });
       if (!resp.ok) {
-        throw new Error('Failed to create quote notification');
+        const result = await resp.json().catch(() => null);
+        throw new Error(result?.error || 'Failed to create quote notification');
       }
 
 

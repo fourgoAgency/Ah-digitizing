@@ -109,7 +109,7 @@ function getStorageFileUrl(file: unknown) {
 }
 
 function formatInfoValue(key: string, value: unknown) {
-  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt") return formatCreatedAt(getDate(value));
+  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") return String(value);
@@ -144,6 +144,12 @@ function getQuoteInfoEntries(quote: QuoteDocument) {
     "createdAt",
     "submittedAt",
     "assignedAt",
+    "assignmentType",
+    "submissionDeadline",
+    "assignedDesignerId",
+    "assignedDesignerName",
+    "assignedDesignerEmail",
+    "assignmentFiles",
     "designerSubmission",
     "designerSubmissionUrl",
     "designerSubmissionPath",
@@ -170,9 +176,8 @@ function downloadQuoteInfo(quote: QuoteDocument) {
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  const customerName = getString(quote, ["fullName", "name"], "quote").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
   link.href = url;
-  link.download = `${customerName || "quote"}-info.txt`;
+  link.download = `${getString(quote, ["orderNumber"], quote.id)}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -188,9 +193,9 @@ export default function GetQuoteAdminPage() {
   const [selectedDesignerId, setSelectedDesignerId] = useState("");
   const [submissionDeadline, setSubmissionDeadline] = useState("");
   const [assignmentType, setAssignmentType] = useState("Standard");
-  const [selectedSubmissionFile, setSelectedSubmissionFile] = useState<File | null>(null);
-  const [uploadingSubmission, setUploadingSubmission] = useState(false);
+  const [selectedSubmissionFiles, setSelectedSubmissionFiles] = useState<File[]>([]);
   const [assigningDesigner, setAssigningDesigner] = useState(false);
+  const [downloadingZip, setDownloadingZip] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -233,7 +238,7 @@ export default function GetQuoteAdminPage() {
     () =>
       quotes.map((quote) => ({
         id: quote.id,
-        orderNo: quote.id.slice(0, 8).toUpperCase(),
+        orderNo: getString(quote, ["orderNumber"], quote.id),
         type: getQuoteType(quote),
         createdAt: getDate(quote.createdAt) || getDate(quote.submittedAt),
         customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -260,7 +265,7 @@ export default function GetQuoteAdminPage() {
   }
 
   async function assignQuoteToDesigner() {
-    if (!activeQuote || !selectedDesignerId || !submissionDeadline) return;
+    if (!activeQuote || !selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0) return;
     const designer = designers.find((item) => item.id === selectedDesignerId);
     if (!designer) return;
 
@@ -268,6 +273,12 @@ export default function GetQuoteAdminPage() {
     setAssignmentMessage(null);
 
     try {
+      const assignmentFiles = await Promise.all(selectedSubmissionFiles.map(async (file, index) => {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+        const storagePath = `designer-assignment-files/quotes/${activeQuote.id}/${Date.now()}-${index + 1}-${safeName}`;
+        const downloadURL = await uploadFile(file, storagePath);
+        return { fileName: file.name, name: file.name, storagePath, downloadURL, size: file.size, type: file.type };
+      }));
       await updateDoc(doc(firestore, "quotes", activeQuote.id), {
         assignedDesignerId: designer.id,
         assignedDesignerName: designer.name,
@@ -275,6 +286,18 @@ export default function GetQuoteAdminPage() {
         assignedAt: serverTimestamp(),
         assignmentType,
         submissionDeadline: new Date(submissionDeadline).toISOString(),
+        assignmentFiles,
+        status: "Assigned to Designer",
+      });
+      setActiveQuote({
+        ...activeQuote,
+        assignedDesignerId: designer.id,
+        assignedDesignerName: designer.name,
+        assignedDesignerEmail: designer.email,
+        assignedAt: new Date().toISOString(),
+        assignmentType,
+        submissionDeadline: new Date(submissionDeadline).toISOString(),
+        assignmentFiles,
         status: "Assigned to Designer",
       });
       await fetch("/api/quote/assign", {
@@ -295,32 +318,33 @@ export default function GetQuoteAdminPage() {
     }
   }
 
-  async function uploadSubmission() {
-    if (!activeQuote || !selectedSubmissionFile) return;
-    setUploadingSubmission(true);
-    setAssignmentMessage(null);
+  async function downloadQuoteFiles(quote: QuoteDocument) {
+    const files = Array.isArray(quote.files) ? quote.files : [];
+    if (files.length === 0) return;
+
+    setDownloadingZip(true);
+    setError(null);
     try {
-      const safeName = selectedSubmissionFile.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
-      const storagePath = `designer-submissions/quotes/${activeQuote.id}/${Date.now()}-${safeName}`;
-      const downloadURL = await uploadFile(selectedSubmissionFile, storagePath);
-      const submittedAt = new Date().toISOString();
-      const submission = { fileName: selectedSubmissionFile.name, storagePath, downloadURL, submittedAt };
-      await updateDoc(doc(firestore, "quotes", activeQuote.id), {
-        designerSubmission: submission,
-        designerSubmissionUrl: downloadURL,
-        designerSubmissionPath: storagePath,
-        designerSubmittedAt: submittedAt,
-        status: "Completed",
+      const response = await fetch("/api/quote/download-zip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: getString(quote, ["orderNumber"], quote.id), files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
       });
-      setActiveQuote({ ...activeQuote, designerSubmission: submission, designerSubmissionUrl: downloadURL, designerSubmissionPath: storagePath, designerSubmittedAt: submittedAt, status: "Completed" });
-      setSelectedSubmissionFile(null);
-      setAssignmentMessage("File uploaded successfully.");
-    } catch (uploadError) {
-      setAssignmentMessage(uploadError instanceof Error ? uploadError.message : "Unable to upload file.");
+      if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "Unable to create ZIP download.");
+      const archive = await response.blob();
+      const objectUrl = URL.createObjectURL(archive);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = `${quote.id}.zip`;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch (zipError) {
+      setError(zipError instanceof Error ? zipError.message : "Unable to create ZIP download.");
     } finally {
-      setUploadingSubmission(false);
+      setDownloadingZip(false);
     }
   }
+
   const designerSubmission = activeQuote
     ? asRecord(activeQuote.designerSubmission)
     : null;
@@ -344,11 +368,19 @@ export default function GetQuoteAdminPage() {
 
   const isImage = imageTypes.includes(extension);
   const isPdf = pdfTypes.includes(extension);
+  const assignmentDetails: Array<[string, unknown]> = [
+    ["Submission Deadline", activeQuote?.submissionDeadline],
+    ["Assigned At", activeQuote?.assignedAt],
+    ["Assignment Type", activeQuote?.assignmentType],
+    ["Assigned Designer Id", activeQuote?.assignedDesignerId],
+    ["Assigned Designer Name", activeQuote?.assignedDesignerName],
+    ["Assigned Designer Email", activeQuote?.assignedDesignerEmail],
+  ];
   return (
     <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-950">Get Quote Requests</h2>
+          <h2 className="text-lg font-bold text-slate-950">Order Form Requests</h2>
           <p className="text-sm text-slate-500">Submitted embroidery and vector quote requests.</p>
         </div>
         {error ? <p className="text-xs font-medium text-rose-500">Firebase: {error}</p> : null}
@@ -473,22 +505,41 @@ export default function GetQuoteAdminPage() {
                     <span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Submission Deadline</span>
                     <input type="datetime-local" value={submissionDeadline} onChange={(event) => setSubmissionDeadline(event.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500" />
                   </label>
-                  <button type="button" disabled={!selectedDesignerId || !submissionDeadline || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">
+                  <button type="button" disabled={!selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0 || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">
                     {assigningDesigner ? "Assigning..." : "Assign"}
                   </button>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <input type="file" className="sr-only" onChange={(event) => setSelectedSubmissionFile(event.target.files?.[0] ?? null)} />
+                    <input type="file" multiple className="sr-only" onChange={(event) => setSelectedSubmissionFiles(Array.from(event.target.files ?? []))} />
                     Choose upload file
                   </label>
-                  <span className="max-w-xs truncate text-xs text-slate-500">{selectedSubmissionFile?.name || "No file selected"}</span>
-                  <button type="button" onClick={uploadSubmission} disabled={!selectedSubmissionFile || uploadingSubmission} className="inline-flex items-center gap-2 rounded bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-slate-300">
-                    <Download className="h-3.5 w-3.5 rotate-180" />
-                    {uploadingSubmission ? "Uploading..." : "Upload file"}
-                  </button>
+                  <span className="max-w-xs truncate text-xs text-slate-500">{selectedSubmissionFiles.length > 0 ? `${selectedSubmissionFiles.length} file${selectedSubmissionFiles.length === 1 ? "" : "s"} selected` : "No files selected"}</span>
                 </div>
                 {assignmentMessage ? <p className={`mt-3 text-xs font-semibold ${assignmentMessage.includes("success") ? "text-emerald-600" : "text-rose-500"}`}>{assignmentMessage}</p> : null}
+                {activeQuote.assignedDesignerId ? (
+                  <div className="mt-4 grid gap-4 border-t border-slate-200 pt-4 md:grid-cols-2 lg:grid-cols-3">
+                    {assignmentDetails.map(([label, value]) => (
+                      <div key={label}>
+                        <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{label}</p>
+                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(label === "Submission Deadline" ? "submissionDeadline" : label === "Assigned At" ? "assignedAt" : label, value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {Array.isArray(activeQuote.assignmentFiles) && activeQuote.assignmentFiles.length > 0 ? (
+                  <div className="mt-4 border-t border-slate-200 pt-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Assigned Files</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {activeQuote.assignmentFiles.map((file, index) => {
+                        const record = asRecord(file);
+                        const url = getStorageFileUrl(file);
+                        const name = typeof record?.name === "string" ? record.name : `File ${index + 1}`;
+                        return url ? <a key={`${name}-${index}`} href={url} target="_blank" rel="noreferrer" className="rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-blue-600 underline">{name}</a> : null;
+                      })}
+                    </div>
+                  </div>
+                ) : null}
               </section>
 
               {submissionUrl && (
@@ -553,10 +604,16 @@ export default function GetQuoteAdminPage() {
               <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
-                  <button type="button" onClick={() => downloadQuoteInfo(activeQuote)} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <Download className="h-3.5 w-3.5" />
-                    Download TXT
-                  </button>
+                  <div className="">
+                    <button type="button" onClick={() => downloadQuoteInfo(activeQuote)} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                      <Download className="h-3.5 w-3.5" />
+                      Download TXT
+                    </button>
+                    <button type="button" onClick={() => downloadQuoteFiles(activeQuote)} disabled={!Array.isArray(activeQuote.files) || activeQuote.files.length === 0 || downloadingZip} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">
+                      <Download className="h-3.5 w-3.5" />
+                      {downloadingZip ? "Preparing ZIP..." : "Download ZIP"}
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote)
@@ -569,6 +626,13 @@ export default function GetQuoteAdminPage() {
                         "designerSubmissionPath",
                         "designerSubmittedAt",
                         "verifiedAt",
+                        "assignedAt",
+                        "assignmentType",
+                        "submissionDeadline",
+                        "assignedDesignerId",
+                        "assignedDesignerName",
+                        "assignedDesignerEmail",
+                        "assignmentFiles",
                       ].includes(key)
                     ).sort(([firstKey], [secondKey]) => {
                       const firstIndex = quoteInfoOrder.indexOf(firstKey);
@@ -595,7 +659,7 @@ export default function GetQuoteAdminPage() {
                                     {fileUrl ? (
                                       fileUrl.match(/\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i) ? (
                                         // eslint-disable-next-line @next/next/no-img-element
-                                        <img src={fileUrl} alt={label} className="mt-2 max-h-40 w-full rounded object-contain" />
+                                        <><img src={fileUrl} alt={label} className="mt-2 max-h-40 w-full rounded object-contain" /><a href={fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm text-blue-600 underline">Open file</a></>
                                       ) : (
                                         <div className="mt-2 flex gap-3"><a href={fileUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 underline">Open file</a><a href={fileUrl} download={label} className="text-sm text-green-600 underline">Download</a></div>
                                       )

@@ -55,6 +55,23 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Public quote forms use separate monthly counters for regular and free quotes.
+    match /metadata/{sequenceName} {
+      allow read: if true;
+      allow create: if sequenceName in ['quoteSequence', 'freeQuoteSequence']
+        && request.resource.data.keys().hasOnly(['month', 'value'])
+        && request.resource.data.month is string
+        && request.resource.data.value == 1;
+      allow update: if sequenceName in ['quoteSequence', 'freeQuoteSequence']
+        && request.resource.data.keys().hasOnly(['month', 'value'])
+        && request.resource.data.month is string
+        && ((request.resource.data.month == resource.data.month
+          && request.resource.data.value == resource.data.value + 1)
+          || (request.resource.data.month != resource.data.month
+          && request.resource.data.value == 1));
+      allow delete: if false;
+    }
+
     // Quote form starts public, then finalizes the same pending quote after OTP.
     match /quotes/{quoteId} {
       allow create: if true;

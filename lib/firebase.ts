@@ -149,6 +149,19 @@ async function createNextOrderNumber(): Promise<string> {
   return String(nextValue).padStart(5, '0');
 }
 
+async function createNextQuoteNumber(sequenceName: 'quote' | 'freeQuote'): Promise<string> {
+  const response = await fetch('/api/quote/next-number', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sequenceName }),
+  });
+  const result = await response.json().catch(() => null);
+  if (!response.ok || typeof result?.orderNumber !== 'string') {
+    throw new Error(result?.error || 'Unable to generate quote order number.');
+  }
+  return result.orderNumber;
+}
+
 async function setDocument<T = DocumentData>(collectionName: string, documentId: string, data: T): Promise<void> {
   const documentRef = doc(firestore, collectionName, documentId);
   await setDoc(documentRef, data as DocumentData, { merge: true });
@@ -293,6 +306,7 @@ export {
   getUserByEmail,
   createDocument,
   createNextOrderNumber,
+  createNextQuoteNumber,
   setDocument,
   registerUserToFirestore,
   updateDocument,

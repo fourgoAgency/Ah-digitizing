@@ -3,7 +3,7 @@
 import { UploadCloud, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createDocument, uploadFile } from "@/lib/firebase";
+import { createDocument, createNextQuoteNumber, uploadFile } from "@/lib/firebase";
 import { CustomDropdown } from "../get-quote/components/CustomDropdown";
 import { QuoteContactFields } from "../get-quote/components/QuoteContactFields";
 import { countryOptions } from "../get-quote/lib/country-options";
@@ -297,6 +297,7 @@ export default function GetQoutePage() {
       }
 
       const quoteId = `free_quote_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const orderNumber = await createNextQuoteNumber('freeQuote');
       const uploadedFiles = await Promise.all(
         formData.files.map(async (file, index) => {
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
@@ -315,6 +316,7 @@ export default function GetQoutePage() {
 
       const quoteData: Record<string, unknown> = {
         fullName: formData.fullName,
+        orderNumber,
         companyName: formData.companyName,
         email: formData.email,
         country: formData.country,
