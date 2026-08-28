@@ -220,17 +220,12 @@ const ContactInfoWhite: React.FC = () => {
     {
       icon: '📞',
       label: 'Phone',
-      value: '+1 (123) 456-7893'
-    },
-    {
-      icon: '📠',
-      label: 'Fax',
-      value: '(123) 456-6782'
+      value: '+92 300 4264955'
     },
     {
       icon: '📍',
       label: 'Address',
-      value: 'US'
+      value: 'Pakistan'
     }
   ];
 
@@ -241,7 +236,7 @@ const ContactInfoWhite: React.FC = () => {
           Get in touch anytime
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {contactDetails.map((detail, index) => (
             <div key={index} className="text-center">
               <p className="text-gray-500 text-sm font-medium mb-3">{detail.label}</p>
