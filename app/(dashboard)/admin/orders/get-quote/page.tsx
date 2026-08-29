@@ -5,30 +5,28 @@ import { useSearchParams } from "next/navigation";
 import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { Download, Eye, X } from "lucide-react";
 import { firestore, uploadFile } from "@/lib/firebase";
+import { createQuoteText } from "@/lib/quote-text";
 import { countryOptions } from "@/app/(main)/get-quote/lib/country-options";
 
 type QuoteDocument = Record<string, unknown> & { id: string };
 type Designer = { id: string; email: string; name: string };
 
 const quoteInfoOrder = [
-  "files",
-  "orderType",
+  "orderNumber",
+  "createdAt",
+  "status",
   "designName",
   "turnaroundTime",
+  "orderType",
   "unitSelect",
   "width",
   "height",
   "outputFormats",
-  "fabricType",
-  "placementArea",
   "appliqueRequired",
   "colorsName",
   "numberOfColors",
   "colorwayToUse",
   "additionalNotes",
-  "whatsappOptIn",
-  "createdAt",
-  "submittedAt",
 ];
 
 const quoteStatuses = [
@@ -182,33 +180,7 @@ function formatColorsName(value: unknown) {
 }
 
 function downloadQuoteInfo(quote: QuoteDocument) {
-  const entries = getQuoteInfoEntries(quote);
-  const lines: string[] = [];
-  const columnSeparator = "         ";
-
-  for (let i = 0; i < entries.length; i += 3) {
-    const group = entries.slice(i, i + 3);
-    const labels = group.map(([key]) => prettifyKey(key));
-    const values = group.map(([key, value]) =>
-      key === "colorsName" ? formatColorsName(value) : formatInfoValue(key, value)
-    );
-    const valueLines = values.map((value) => value.split(/\r?\n/));
-    const columnWidths = group.map((_, index) =>
-      Math.max(labels[index].length, ...valueLines[index].map((line) => line.length)) + 2
-    );
-    const rowHeight = Math.max(...valueLines.map((value) => value.length));
-
-    lines.push(labels.map((label, index) => label.padEnd(columnWidths[index])).join(columnSeparator));
-    for (let row = 0; row < rowHeight; row += 1) {
-      lines.push(valueLines
-        .map((value, index) => (value[row] || "").padEnd(columnWidths[index]))
-        .join(columnSeparator)
-        .trimEnd());
-    }
-    if (i + 3 < entries.length) lines.push("");
-  }
-
-  const content = lines.join("\n\n");
+  const content = createQuoteText(quote);
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -504,19 +476,17 @@ export default function GetQuoteAdminPage() {
               </button>
             </header>
 
-            <div className="max-h-[calc(90vh-78px)] overflow-y-auto px-5 py-5">
-              <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Order Number</p><p className="mt-1 text-sm font-medium text-slate-800">{activeQuote.id.slice(0, 8).toUpperCase()}</p></div>
+            <div className="flex max-h-[calc(90vh-78px)] flex-col overflow-y-auto px-5 py-5">
+              <section className="order-1 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                <div className="md:col-span-2 lg:col-span-3"><h4 className="text-sm font-bold text-slate-950">Contact Info</h4></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Customer Name</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["fullName", "name"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Country</p><p className="mt-1 text-sm font-medium text-slate-800">{getCountryName(getString(activeQuote, ["country"], ""))}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Company</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["companyName", "company"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Email</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["email"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Contact No</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["contactNumber", "phone"], "Not provided")}</p></div>
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Created At</p><p className="mt-1 text-sm font-medium text-slate-800">{formatCreatedAt(getDate(activeQuote.createdAt) || getDate(activeQuote.submittedAt))}</p></div>
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Type</p><p className="mt-1 text-sm font-medium text-slate-800">{getQuoteType(activeQuote)}</p></div>
               </section>
 
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+              <section className="order-3 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <h4 className="text-sm font-bold text-slate-950">Assign to Designer</h4>
@@ -579,7 +549,7 @@ export default function GetQuoteAdminPage() {
               </section>
 
               {submissionUrl && (
-                <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+                <section className="order-4 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
 
                   <h4 className="text-sm font-bold">
                     Designer Submission
@@ -637,7 +607,7 @@ export default function GetQuoteAdminPage() {
 
                 </section>
               )}
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+              <section className="order-2 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
                   <div className="">
@@ -653,7 +623,7 @@ export default function GetQuoteAdminPage() {
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote)
-                    .filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone"].includes(key))
+                    .filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "fabricType", "placementArea", "outputFormatOther", "colorwayToUseOther"].includes(key))
                     .filter(([, value]) => value !== null && value !== undefined && value !== "")
                     .filter(([key]) =>
                       ![

@@ -5,12 +5,20 @@ import { storeQuoteOtp } from '@/lib/otpCache';
 
 const DEFAULT_OTP_EXPIRE_MS = 5 * 60 * 1000;
 
-const createTransport = (host: string, port: string, user: string, pass: string, allowSelfSigned: boolean) =>
+const createTransport = (
+  host: string,
+  port: number,
+  user: string,
+  pass: string,
+  allowSelfSigned: boolean,
+  secure: boolean,
+) =>
   nodemailer.createTransport({
     host,
-    port: Number(port),
+    port,
     family: 4,
-    secure: process.env.SMTP_SECURE === 'true',
+    secure,
+    requireTLS: !secure,
     tls: {
       rejectUnauthorized: !allowSelfSigned ? true : false,
     },
@@ -43,8 +51,8 @@ export async function POST(req: Request) {
 
     storeQuoteOtp(email, otp, expiresAt);
 
-    const sendMessage = async (allowSelfSigned: boolean) => {
-      const transport = createTransport(smtpHost, smtpPort, smtpUser, smtpPass, allowSelfSigned);
+    const sendMessage = async (allowSelfSigned: boolean, port: number, secure: boolean) => {
+      const transport = createTransport(smtpHost, port, smtpUser, smtpPass, allowSelfSigned, secure);
       await transport.sendMail({
         from: fromAddress,
         to: email,
@@ -55,13 +63,21 @@ export async function POST(req: Request) {
     };
 
     try {
-      await sendMessage(process.env.SMTP_ALLOW_SELF_SIGNED_CERTS === 'true');
+      const configuredPort = Number(smtpPort);
+      const configuredSecure = process.env.SMTP_SECURE === 'true';
+      await sendMessage(process.env.SMTP_ALLOW_SELF_SIGNED_CERTS === 'true', configuredPort, configuredSecure);
     } catch (mailError: unknown) {
       const message = mailError instanceof Error ? mailError.message : '';
-      if (!message.toLowerCase().includes('self-signed certificate')) {
+      const configuredPort = Number(smtpPort);
+      const isConnectionFailure = /ECONNREFUSED|ETIMEDOUT|ESOCKET/i.test(message);
+      const isCertificateFailure = message.toLowerCase().includes('certificate');
+      if (isConnectionFailure && configuredPort === 465) {
+        await sendMessage(true, 587, false);
+      } else if (isCertificateFailure) {
+        await sendMessage(true, configuredPort, process.env.SMTP_SECURE === 'true');
+      } else {
         throw mailError;
       }
-      await sendMessage(true);
     }
 
     return NextResponse.json({ ok: true });
@@ -71,4 +87,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: errorMessage || 'Failed to send OTP.' }, { status: 500 });
   }
 }
-

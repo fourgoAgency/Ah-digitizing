@@ -5,23 +5,28 @@ import { useSearchParams } from "next/navigation";
 import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { Download, Eye, UploadCloud, X } from "lucide-react";
 import { firestore, uploadFile } from "@/lib/firebase";
+import { createQuoteText } from "@/lib/quote-text";
 
 type QuoteDocument = Record<string, unknown> & { id: string };
 type Designer = { id: string; email: string; name: string };
 const countryNames: Record<string, string> = { US: "United States", GB: "United Kingdom", CA: "Canada", AU: "Australia" };
 const quoteStatuses = ["Pending", "Assigned to Designer", "Completed"] as const;
 const quoteInfoOrder = [
-  "files",
-  "orderType",
+  "orderNumber",
+  "createdAt",
+  "status",
   "designName",
-  "numberOfColors",
+  "turnaroundTime",
+  "orderType",
   "unitType",
   "width",
   "height",
+  "outputFormats",
+  "appliqueRequired",
+  "colorsName",
+  "numberOfColors",
+  "colorwayToUse",
   "additionalNotes",
-  "whatsappOptIn",
-  "createdAt",
-  "submittedAt",
 ];
 
 function getString(document: QuoteDocument, keys: string[], fallback = "") {
@@ -110,32 +115,7 @@ function formatColorsName(value: unknown) {
 }
 
 function downloadQuoteInfo(quote: QuoteDocument) {
-  const entries = getQuoteInfoEntries(quote);
-  const lines: string[] = [];
-  const columnSeparator = "    ";
-
-  for (let i = 0; i < entries.length; i += 3) {
-    const group = entries.slice(i, i + 3);
-    const labels = group.map(([key]) => prettifyKey(key));
-    const values = group.map(([key, value]) =>
-      key === "colorsName" ? formatColorsName(value) : formatInfoValue(key, value)
-    );
-    const valueLines = values.map((value) => value.split(/\r?\n/));
-    const columnWidths = group.map((_, index) =>
-      Math.max(labels[index].length, ...valueLines[index].map((line) => line.length)) + 2
-    );
-    const rowHeight = Math.max(...valueLines.map((value) => value.length));
-
-    lines.push(labels.map((label, index) => label.padEnd(columnWidths[index])).join(columnSeparator));
-    for (let row = 0; row < rowHeight; row += 1) {
-      lines.push(valueLines
-        .map((value, index) => (value[row] || "").padEnd(columnWidths[index]))
-        .join(columnSeparator)
-        .trimEnd());
-    }
-    if (i + 3 < entries.length) lines.push("");
-  }
-  const content = lines.join("\n");
+  const content = createQuoteText(quote);
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -293,17 +273,16 @@ export default function GetFreeQuoteAdminPage() {
               <div><p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p><h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3><p className="mt-1 text-xs font-semibold text-slate-500">Order No: {typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : activeQuote.id}</p></div>
               <button type="button" onClick={() => setActiveQuote(null)} className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"><X className="h-4 w-4" /></button>
             </header>
-            <div className="max-h-[calc(90vh-78px)] overflow-y-auto px-5 py-5">
-              <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Order Number</p><p className="mt-1 text-sm font-medium text-slate-800">{typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : activeQuote.id}</p></div>
+            <div className="flex max-h-[calc(90vh-78px)] flex-col overflow-y-auto px-5 py-5">
+              <section className="order-1 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                <div className="md:col-span-2 lg:col-span-3"><h4 className="text-sm font-bold text-slate-950">Contact Info</h4></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Customer Name</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["fullName", "name"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Country</p><p className="mt-1 text-sm font-medium text-slate-800">{getCountryName(getString(activeQuote, ["country"], ""))}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Company</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["companyName", "company"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Email</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["email"], "Not provided")}</p></div>
                 <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Contact No</p><p className="mt-1 text-sm font-medium text-slate-800">{getString(activeQuote, ["contactNumber", "phone"], "Not provided")}</p></div>
-                <div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Created At</p><p className="mt-1 text-sm font-medium text-slate-800">{formatCreatedAt(getDate(activeQuote.submittedAt) || getDate(activeQuote.createdAt))}</p></div><div><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Type</p><p className="mt-1 text-sm font-medium text-slate-800">{getQuoteType(activeQuote)}</p></div>
               </section>
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+              <section className="order-3 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3"><div><h4 className="text-sm font-bold text-slate-950">Assign to Designer</h4><p className="mt-1 text-xs text-slate-500">Select a designer and set the submission deadline.</p></div></div>
                 <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto]">
                   <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Type</span><select value={assignmentType} onChange={(e) => setAssignmentType(e.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"><option>Standard</option><option>Rush</option><option>Super Rush</option></select></label>
@@ -347,7 +326,7 @@ export default function GetFreeQuoteAdminPage() {
                   </div>
                 ) : null}
               </section>
-              <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+              <section className="order-2 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
                   <div className="">
@@ -362,7 +341,7 @@ export default function GetFreeQuoteAdminPage() {
                   </div>
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {Object.entries(activeQuote).filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "verifiedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
+                  {Object.entries(activeQuote).filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "verifiedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles", "outputFormatOther", "colorwayToUseOther"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
                     const firstIndex = quoteInfoOrder.indexOf(firstKey);
                     const secondIndex = quoteInfoOrder.indexOf(secondKey);
                     if (firstIndex === -1 && secondIndex === -1) return 0;

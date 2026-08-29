@@ -16,7 +16,7 @@ import {
 } from "../lib/quote-form";
 import { useSearchParams } from "next/navigation";
 
-const turnaroundOptions = ["12 to 24 hours", "4 to 8 hours", "1 to 4 hours"] as const;
+const turnaroundOptions = ["Standard", "Rush", "Super Rush"] as const;
 const appliqueOptions = ["Yes", "No"] as const;
 const numberOfColorOptions = ["According to Logo"];
 
