@@ -4,5 +4,11 @@
     "location": "nam7",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
-  }
+  },
+  "storage": [
+    {
+      "bucket": "ahdigitizing-storage.appspot.com",
+      "rules": "storage.rules"
+    }
+  ]
 }

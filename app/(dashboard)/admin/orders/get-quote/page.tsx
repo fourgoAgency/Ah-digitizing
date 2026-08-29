@@ -169,10 +169,46 @@ function getQuoteInfoEntries(quote: QuoteDocument) {
     });
 }
 
+function formatColorsName(value: unknown) {
+  const colors = Array.isArray(value)
+    ? value.map((color) => String(color).trim()).filter(Boolean)
+    : String(value ?? "").split(/[,/]/).map((color) => color.trim()).filter(Boolean);
+  if (colors.length <= 1) return colors[0] || "Not provided";
+  const colorLines: string[] = [];
+  for (let index = 0; index < colors.length; index += 3) {
+    colorLines.push(colors.slice(index, index + 3).join(", "));
+  }
+  return colorLines.join("\n");
+}
+
 function downloadQuoteInfo(quote: QuoteDocument) {
-  const content = getQuoteInfoEntries(quote)
-    .map(([key, value]) => `${prettifyKey(key)}: ${formatInfoValue(key, value)}`)
-    .join("\n");
+  const entries = getQuoteInfoEntries(quote);
+  const lines: string[] = [];
+  const columnSeparator = "         ";
+
+  for (let i = 0; i < entries.length; i += 3) {
+    const group = entries.slice(i, i + 3);
+    const labels = group.map(([key]) => prettifyKey(key));
+    const values = group.map(([key, value]) =>
+      key === "colorsName" ? formatColorsName(value) : formatInfoValue(key, value)
+    );
+    const valueLines = values.map((value) => value.split(/\r?\n/));
+    const columnWidths = group.map((_, index) =>
+      Math.max(labels[index].length, ...valueLines[index].map((line) => line.length)) + 2
+    );
+    const rowHeight = Math.max(...valueLines.map((value) => value.length));
+
+    lines.push(labels.map((label, index) => label.padEnd(columnWidths[index])).join(columnSeparator));
+    for (let row = 0; row < rowHeight; row += 1) {
+      lines.push(valueLines
+        .map((value, index) => (value[row] || "").padEnd(columnWidths[index]))
+        .join(columnSeparator)
+        .trimEnd());
+    }
+    if (i + 3 < entries.length) lines.push("");
+  }
+
+  const content = lines.join("\n\n");
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

@@ -1,0 +1,78 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userHasRole(role) {
+      return isSignedIn() &&
+        get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.email in ['admin@ahdigitizing.com', 'fourgo.agency@gmail.com'] ||
+        userHasRole('admin')
+      );
+    }
+
+    function isStaff() {
+      return isAdmin() || userHasRole('designer');
+    }
+
+    // Public access to product and service images
+    match /products/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /services/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /blogs/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Quote files - public read, staff can upload and manage
+    match /quotes/{allFiles=**} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow write, delete: if isStaff();
+    }
+
+    match /orders/{allFiles=**} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow write, delete: if isStaff();
+    }
+
+    // Portfolio/gallery images
+    match /portfolio/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /gallery/{allFiles=**} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // User uploads
+    match /users/{userId}/{allFiles=**} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isStaff());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if isStaff();
+    }
+
+    // Default deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

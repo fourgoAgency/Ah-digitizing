@@ -97,10 +97,45 @@ function getQuoteInfoEntries(quote: QuoteDocument) {
     });
 }
 
+function formatColorsName(value: unknown) {
+  const colors = Array.isArray(value)
+    ? value.map((color) => String(color).trim()).filter(Boolean)
+    : String(value ?? "").split(/[,/]/).map((color) => color.trim()).filter(Boolean);
+  if (colors.length <= 1) return colors[0] || "Not provided";
+  const colorLines: string[] = [];
+  for (let index = 0; index < colors.length; index += 3) {
+    colorLines.push(colors.slice(index, index + 3).join(", "));
+  }
+  return colorLines.join("\n");
+}
+
 function downloadQuoteInfo(quote: QuoteDocument) {
-  const content = getQuoteInfoEntries(quote)
-    .map(([key, value]) => `${prettifyKey(key)}: ${formatInfoValue(key, value)}`)
-    .join("\n");
+  const entries = getQuoteInfoEntries(quote);
+  const lines: string[] = [];
+  const columnSeparator = "    ";
+
+  for (let i = 0; i < entries.length; i += 3) {
+    const group = entries.slice(i, i + 3);
+    const labels = group.map(([key]) => prettifyKey(key));
+    const values = group.map(([key, value]) =>
+      key === "colorsName" ? formatColorsName(value) : formatInfoValue(key, value)
+    );
+    const valueLines = values.map((value) => value.split(/\r?\n/));
+    const columnWidths = group.map((_, index) =>
+      Math.max(labels[index].length, ...valueLines[index].map((line) => line.length)) + 2
+    );
+    const rowHeight = Math.max(...valueLines.map((value) => value.length));
+
+    lines.push(labels.map((label, index) => label.padEnd(columnWidths[index])).join(columnSeparator));
+    for (let row = 0; row < rowHeight; row += 1) {
+      lines.push(valueLines
+        .map((value, index) => (value[row] || "").padEnd(columnWidths[index]))
+        .join(columnSeparator)
+        .trimEnd());
+    }
+    if (i + 3 < entries.length) lines.push("");
+  }
+  const content = lines.join("\n");
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -315,17 +350,19 @@ export default function GetFreeQuoteAdminPage() {
               <section className="mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
-                  <button type="button" onClick={() => downloadQuoteInfo(activeQuote)} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <Download className="h-3.5 w-3.5" />
-                    Download TXT
-                  </button>
-                  <button type="button" onClick={() => downloadQuoteFiles(activeQuote)} disabled={!Array.isArray(activeQuote.files) || activeQuote.files.length === 0 || downloadingZip} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">
-                    <Download className="h-3.5 w-3.5" />
-                    {downloadingZip ? "Preparing ZIP..." : "Download ZIP"}
-                  </button>
+                  <div className="">
+                    <button type="button" onClick={() => downloadQuoteInfo(activeQuote)} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                      <Download className="h-3.5 w-3.5" />
+                      Download TXT
+                    </button>
+                    <button type="button" onClick={() => downloadQuoteFiles(activeQuote)} disabled={!Array.isArray(activeQuote.files) || activeQuote.files.length === 0 || downloadingZip} className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">
+                      <Download className="h-3.5 w-3.5" />
+                      {downloadingZip ? "Preparing ZIP..." : "Download ZIP"}
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {Object.entries(activeQuote).filter(([key]) => !["id","fullName","name","country","companyName","company","email","contactNumber","phone","verifiedAt","assignedAt","assignmentType","submissionDeadline","assignedDesignerId","assignedDesignerName","assignedDesignerEmail","assignmentFiles"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
+                  {Object.entries(activeQuote).filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "verifiedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
                     const firstIndex = quoteInfoOrder.indexOf(firstKey);
                     const secondIndex = quoteInfoOrder.indexOf(secondKey);
                     if (firstIndex === -1 && secondIndex === -1) return 0;
