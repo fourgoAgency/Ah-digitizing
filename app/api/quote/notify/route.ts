@@ -22,12 +22,16 @@ const createTransport = (host: string, port: string, user: string, pass: string,
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { quoteId, email, orderType } = body ?? {};
+    const { quoteId, orderNumber, email, orderType, submissionType = 'quote' } = body ?? {};
     const customerEmail = String(email || '').trim().toLowerCase();
+    const displayOrderNumber = String(orderNumber || '').trim();
+    const isOrderSubmission = submissionType === 'order';
+    const recordLabel = isOrderSubmission ? 'order' : 'quote';
+    const numberLabel = isOrderSubmission ? 'Order No' : 'Quote No';
 
-    if (!quoteId || !customerEmail || !orderType) {
+    if (!quoteId || !displayOrderNumber || !customerEmail || !orderType) {
       return NextResponse.json(
-        { error: 'quoteId, email and orderType are required' },
+        { error: 'quoteId, orderNumber, email and orderType are required' },
         { status: 400 }
       );
     }
@@ -53,12 +57,12 @@ export async function POST(req: Request) {
           await transport.sendMail({
             from: fromAddress,
             to: adminRecipients,
-            subject: 'New quote request received',
-            text: `A new ${orderType} quote request was submitted by ${customerEmail}. Order No: ${quoteId}.`,
+            subject: isOrderSubmission ? 'New order request received' : 'New quote request received',
+            text: `A new ${orderType} ${recordLabel} request was submitted by ${customerEmail}. ${numberLabel}: ${displayOrderNumber}.`,
             html: `
-              <p>A new <strong>${orderType}</strong> quote request was submitted.</p>
+              <p>A new <strong>${orderType}</strong> ${recordLabel} request was submitted.</p>
               <p><strong>Customer email:</strong> ${customerEmail}</p>
-              <p><strong>Order No:</strong> ${quoteId}</p>
+              <p><strong>${numberLabel}:</strong> ${displayOrderNumber}</p>
             `,
           });
         }
@@ -66,12 +70,12 @@ export async function POST(req: Request) {
         await transport.sendMail({
           from: fromAddress,
           to: customerEmail,
-          subject: 'We received your quote request',
-          text: `Thanks for your ${orderType} quote request. We have received your submission and will contact you soon. Your Order No is ${quoteId}.`,
+          subject: isOrderSubmission ? 'We received your order request' : 'We received your quote request',
+          text: `Thanks for your ${orderType} ${recordLabel} request. We have received your submission and will contact you soon. Your ${numberLabel} is ${displayOrderNumber}.`,
           html: `
-            <p>Thanks for your <strong>${orderType}</strong> quote request.</p>
+            <p>Thanks for your <strong>${orderType}</strong> ${recordLabel} request.</p>
             <p>We have received your submission and will contact you soon.</p>
-            <p><strong>Your Order No:</strong> ${quoteId}</p>
+            <p><strong>Your ${numberLabel}:</strong> ${displayOrderNumber}</p>
           `,
         });
       };

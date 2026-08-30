@@ -46,6 +46,25 @@ service firebase.storage {
       allow write, delete: if isStaff();
     }
 
+    // Free quote files are uploaded after OTP verification, before a Firebase
+    // Auth session exists. Keep public uploads limited to new files and 50 MB.
+    match /quoteRequests/{quoteId}/{fileName} {
+      allow read: if true;
+      allow create: if request.resource.size <= 50 * 1024 * 1024
+        && request.resource.contentType != null
+        && !request.resource.contentType.matches('video/.*');
+      allow write, delete: if isStaff();
+    }
+
+    // Assignment and designer delivery files are available only to staff.
+    match /designer-assignment-files/{allFiles=**} {
+      allow read, write, delete: if isStaff();
+    }
+
+    match /designer-submissions/{allFiles=**} {
+      allow read, write, delete: if isStaff();
+    }
+
     match /orders/{allFiles=**} {
       allow read: if true;
       allow create: if isSignedIn();

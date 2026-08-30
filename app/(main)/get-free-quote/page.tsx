@@ -340,6 +340,18 @@ export default function GetQoutePage() {
       }
 
       await createDocument("quoteRequests", quoteData);
+
+      await fetch("/api/quote/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          quoteId,
+          orderNumber,
+          email: formData.email,
+          orderType: formData.orderType,
+          submissionType: "quote",
+        }),
+      });
       setShowOtp(false);
       setShowSuccess(true);
       setFormData(initialGetQouteFormState);

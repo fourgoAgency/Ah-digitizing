@@ -7,6 +7,7 @@ type ActionPayload = {
   designerEmail?: string;
   designerName?: string;
   quoteId?: string;
+  orderNumber?: string;
   orderType?: string;
   submissionUrl?: string;
   submissionFileName?: string;
@@ -53,10 +54,11 @@ export async function POST(req: Request) {
     const body = (await req.json()) as ActionPayload;
     const action = body.action;
     const quoteId = String(body.quoteId || '').trim();
+    const orderNumber = String(body.orderNumber || '').trim();
     const orderType = String(body.orderType || '').trim();
 
-    if (!action || !quoteId || !orderType) {
-      return NextResponse.json({ error: 'action, quoteId and orderType are required.' }, { status: 400 });
+    if (!action || !quoteId || !orderNumber || !orderType) {
+      return NextResponse.json({ error: 'action, quoteId, orderNumber and orderType are required.' }, { status: 400 });
     }
 
     const transport = createTransport();
@@ -79,9 +81,9 @@ export async function POST(req: Request) {
       await transport.sendMail({
         from: fromAddress,
         to: designerEmail,
-        subject: `Changes required for ${orderType} quote ${quoteId}`,
-        text: `Hi ${designerName}, changes are required for quote ${quoteId} (${orderType}). Please review and resubmit.`,
-        html: `<p>Hi <strong>${designerName}</strong>,</p><p>Changes are required for quote <strong>${quoteId}</strong> (${orderType}). Please review and resubmit.</p>`,
+        subject: `Changes required for ${orderType} quote ${orderNumber}`,
+        text: `Hi ${designerName}, changes are required for Order No ${orderNumber} (${orderType}). Please review and resubmit.`,
+        html: `<p>Hi <strong>${designerName}</strong>,</p><p>Changes are required for Order No <strong>${orderNumber}</strong> (${orderType}). Please review and resubmit.</p>`,
       });
 
       return NextResponse.json({ ok: true });
@@ -95,14 +97,14 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'customerEmail and submissionUrl are required for send_to_customer.' }, { status: 400 });
       }
 
-      const attachment = await fetchAttachment(submissionUrl, submissionFileName || `${quoteId}-submission`);
+      const attachment = await fetchAttachment(submissionUrl, submissionFileName || `${orderNumber}-submission`);
 
       await transport.sendMail({
         from: fromAddress,
         to: customerEmail,
         subject: `Your completed ${orderType} file is ready`,
-        text: `Your ${orderType} quote ${quoteId} is completed. Please find the finished file attached.`,
-        html: `<p>Your <strong>${orderType}</strong> quote <strong>${quoteId}</strong> is completed.</p><p>Please find the finished file attached.</p>`,
+        text: `Your ${orderType} quote ${orderNumber} is completed. Please find the finished file attached.`,
+        html: `<p>Your <strong>${orderType}</strong> quote <strong>${orderNumber}</strong> is completed.</p><p>Please find the finished file attached.</p>`,
         attachments: attachment ? [attachment] : [],
       });
 

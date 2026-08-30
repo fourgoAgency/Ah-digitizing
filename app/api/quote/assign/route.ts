@@ -8,10 +8,11 @@ export async function POST(req: Request) {
     const designerName = String(body?.designerName || '').trim();
     const orderType = String(body?.orderType || '').trim();
     const quoteId = String(body?.quoteId || '').trim();
+    const orderNumber = String(body?.orderNumber || '').trim();
 
-    if (!designerEmail || !designerName || !orderType || !quoteId) {
+    if (!designerEmail || !designerName || !orderType || !quoteId || !orderNumber) {
       return NextResponse.json(
-        { error: 'designerEmail, designerName, orderType and quoteId are required.' },
+        { error: 'designerEmail, designerName, orderType, quoteId and orderNumber are required.' },
         { status: 400 }
       );
     }
@@ -46,8 +47,8 @@ export async function POST(req: Request) {
         from: fromAddress,
         to: designerEmail,
         subject: `New quote assigned: ${orderType}`,
-        text: `Hi ${designerName}, a new ${orderType} quote (ID: ${quoteId}) has been assigned to you.`,
-        html: `<p>Hi <strong>${designerName}</strong>,</p><p>A new <strong>${orderType}</strong> quote (<strong>${quoteId}</strong>) has been assigned to you.</p>`,
+        text: `Hi ${designerName}, a new ${orderType} quote (Order No: ${orderNumber}) has been assigned to you.`,
+        html: `<p>Hi <strong>${designerName}</strong>,</p><p>A new <strong>${orderType}</strong> quote (Order No: <strong>${orderNumber}</strong>) has been assigned to you.</p>`,
       });
     };
 

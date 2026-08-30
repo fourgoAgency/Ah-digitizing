@@ -430,8 +430,10 @@ export default function GetQuotePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           quoteId: docId,
+          orderNumber,
           email: pendingQuote.email,
           orderType: pendingQuote.orderType,
+          submissionType: 'order',
         }),
       });
       if (!resp.ok) {

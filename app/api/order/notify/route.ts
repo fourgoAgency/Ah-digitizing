@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       const deliveryEmail = order.deliveryEmail || order.customerEmail || order.email || customerEmail;
       if (!deliveryEmail) return NextResponse.json({ error: 'Delivery email not found.' }, { status: 400 });
       const orderSourceLabel = getOrderSourceLabel(order);
+      const displayOrderNumber = String(order.orderNumber || order.orderNo || '').trim() || 'Not Available';
       await createOrderCompletionNotification(orderId, deliveryEmail);
 
       const smtpHost = process.env.SMTP_HOST;
@@ -74,8 +75,8 @@ export async function POST(req: Request) {
           await transport.sendMail({
             from: fromAddress,
             to: deliveryEmail,
-            subject: `Your order ${order.orderNo || orderId} is completed`,
-            text: `${orderSourceLabel} ${order.orderNo || orderId} is completed.\n\nPlease check the relevant files attached to this email.\n\nOrder items:\n${itemLines.join('\n') || 'No items listed.'}\n\nThank you for your order.`,
+            subject: `Your order ${displayOrderNumber} is completed`,
+            text: `${orderSourceLabel} ${displayOrderNumber} is completed.\n\nPlease check the relevant files attached to this email.\n\nOrder items:\n${itemLines.join('\n') || 'No items listed.'}\n\nThank you for your order.`,
             attachments,
           });
         };

@@ -199,6 +199,7 @@ export default function GetQuoteAdminPage() {
   const [selectedSubmissionFiles, setSelectedSubmissionFiles] = useState<File[]>([]);
   const [assigningDesigner, setAssigningDesigner] = useState(false);
   const [downloadingZip, setDownloadingZip] = useState(false);
+  const [downloadingSubmission, setDownloadingSubmission] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -308,6 +309,7 @@ export default function GetQuoteAdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quoteId: activeQuote.id,
+          orderNumber: getString(activeQuote, ["orderNumber"], "Not Available"),
           orderType: getString(activeQuote, ["orderType"], "quote"),
           designerName: designer.name,
           designerEmail: designer.email,
@@ -346,6 +348,30 @@ export default function GetQuoteAdminPage() {
       setError(zipError instanceof Error ? zipError.message : "Unable to create ZIP download.");
     } finally {
       setDownloadingZip(false);
+    }
+  }
+
+  async function downloadDesignerSubmission() {
+    if (!submissionUrl || downloadingSubmission) return;
+
+    setDownloadingSubmission(true);
+    setError(null);
+    try {
+      const response = await fetch(submissionUrl);
+      if (!response.ok) throw new Error("Unable to download the designer submission.");
+      const fileBlob = await response.blob();
+      const objectUrl = URL.createObjectURL(fileBlob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = submissionFileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (downloadError) {
+      setError(downloadError instanceof Error ? downloadError.message : "Unable to download the designer submission.");
+    } finally {
+      setDownloadingSubmission(false);
     }
   }
 
@@ -463,7 +489,7 @@ export default function GetQuoteAdminPage() {
           <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-md bg-white shadow-xl">
             <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p>
+                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Order Detail</p>
                 <h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3>
                 <p className="mt-1 text-xs font-semibold text-slate-500">Order No: {getString(activeQuote, ["orderNumber"], "Not Available")}</p>
               </div>
@@ -547,13 +573,32 @@ export default function GetQuoteAdminPage() {
               {submissionUrl && (
                 <section className="order-4 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
 
-                  <h4 className="text-sm font-bold">
-                    Designer Submission
-                  </h4>
-
-                  <p className="mt-2 text-sm font-medium">
-                    {submissionFileName}
-                  </p>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-950">Designer Submission</h4>
+                      <p className="mt-1 break-all text-xs text-slate-500">{submissionFileName}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <a
+                        href={submissionUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        Open
+                      </a>
+                      <button
+                        type="button"
+                        onClick={downloadDesignerSubmission}
+                        disabled={downloadingSubmission}
+                        className="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {downloadingSubmission ? "Downloading..." : "Download"}
+                      </button>
+                    </div>
+                  </div>
 
                   {isImage && (
                     <img
@@ -577,29 +622,6 @@ export default function GetQuoteAdminPage() {
                       </p>
                     </div>
                   )}
-
-                  <div className="mt-4 flex gap-3">
-
-                    <a
-                      href={submissionUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded bg-blue-600 px-4 py-2 text-white"
-                    >
-                      Open
-                    </a>
-
-                    <a
-                      href={submissionUrl}
-                      download={submissionFileName}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded bg-green-600 px-4 py-2 text-white"
-                    >
-                      Download
-                    </a>
-
-                  </div>
 
                 </section>
               )}

@@ -212,7 +212,7 @@ export default function GetFreeQuoteAdminPage() {
         assignmentFiles,
         status: "Assigned to Designer",
       });
-      await fetch("/api/quote/assign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quoteId: activeQuote.id, orderType: getString(activeQuote, ["orderType"], "quote"), designerName: designer.name, designerEmail: designer.email }) });
+      await fetch("/api/quote/assign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quoteId: activeQuote.id, orderNumber: getString(activeQuote, ["orderNumber"], "Not Available"), orderType: getString(activeQuote, ["orderType"], "quote"), designerName: designer.name, designerEmail: designer.email }) });
       setAssignmentMessage("Assigned successfully.");
     } catch (e) { setAssignmentMessage(e instanceof Error ? e.message : "Unable to assign designer."); } finally { setAssigningDesigner(false); }
   }
