@@ -852,7 +852,6 @@ export default function GetQoutePage() {
               </button>
             </div>
             <p className="mt-2 text-sm text-gray-600">Enter the 6-digit code sent to your email.</p>
-            <p className="mt-1 text-xs text-gray-400">Use 123456 for now.</p>
             <form className="mt-4 space-y-3" onSubmit={handleOtpSubmit}>
               <input
                 inputMode="numeric"

@@ -106,6 +106,12 @@ function getStorageFileUrl(file: unknown) {
   return (candidates.find((candidate) => typeof candidate === "string" && candidate.trim()) as string | undefined) || "";
 }
 
+function getFileExtension(file: unknown, fileUrl: string) {
+  const record = asRecord(file);
+  const fileName = [record?.name, record?.fileName, fileUrl].find((value) => typeof value === "string" && value.trim()) as string | undefined;
+  return fileName?.split(/[?#]/)[0].split(".").pop()?.toLowerCase() || "";
+}
+
 function formatInfoValue(key: string, value: unknown) {
   if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
@@ -304,7 +310,7 @@ export default function GetQuoteAdminPage() {
         assignmentFiles,
         status: "Assigned to Designer",
       });
-      await fetch("/api/quote/assign", {
+      const assignResponse = await fetch("/api/quote/assign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -313,8 +319,13 @@ export default function GetQuoteAdminPage() {
           orderType: getString(activeQuote, ["orderType"], "quote"),
           designerName: designer.name,
           designerEmail: designer.email,
+          submissionType: "order",
         }),
       });
+      const assignResult = await assignResponse.json().catch(() => null);
+      if (!assignResponse.ok) {
+        throw new Error(assignResult?.error || "Unable to send assignment email.");
+      }
       setAssignmentMessage("Assigned successfully.");
     } catch (assignError) {
       setAssignmentMessage(assignError instanceof Error ? assignError.message : "Unable to assign designer.");
@@ -489,7 +500,7 @@ export default function GetQuoteAdminPage() {
           <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-md bg-white shadow-xl">
             <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Order Detail</p>
+                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p>
                 <h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3>
                 <p className="mt-1 text-xs font-semibold text-slate-500">Order No: {getString(activeQuote, ["orderNumber"], "Not Available")}</p>
               </div>
@@ -639,6 +650,34 @@ export default function GetQuoteAdminPage() {
                     </button>
                   </div>
                 </div>
+                {Array.isArray(activeQuote.files) && activeQuote.files.length > 0 ? (
+                  <div className="mt-4 border-t border-slate-200 pt-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Files</p>
+                    <div className="mt-3 space-y-4">
+                      {activeQuote.files.map((file, index) => {
+                        const record = asRecord(file);
+                        const fileUrl = getStorageFileUrl(file);
+                        const label = typeof record?.name === "string" && record.name ? record.name : `File ${index + 1}`;
+                        const extension = getFileExtension(file, fileUrl);
+                        const isImage = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(extension);
+                        const isPdf = extension === "pdf";
+
+                        return (
+                          <div key={`${label}-${index}`} className="rounded border border-slate-200 bg-white p-3">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                              <p className="break-all text-sm font-medium text-slate-800" title={label}>{label}</p>
+                              {fileUrl ? <a href={fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50">Open</a> : null}
+                            </div>
+                            {fileUrl && isImage ? <img src={fileUrl} alt={label} className="mt-4 max-h-72 rounded border object-contain" /> : null}
+                            {fileUrl && isPdf ? <iframe src={fileUrl} title={label} className="mt-4 h-[500px] w-full rounded border" /> : null}
+                            {fileUrl && !isImage && !isPdf ? <a href={fileUrl} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-blue-600 underline">Open file</a> : null}
+                            {!fileUrl ? <p className="mt-2 text-xs text-slate-500">File URL unavailable.</p> : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote)
                     .filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "fabricType", "placementArea", "outputFormatOther", "colorwayToUseOther"].includes(key))

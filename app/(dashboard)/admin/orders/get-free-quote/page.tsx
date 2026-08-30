@@ -70,6 +70,12 @@ function getStorageFileUrl(file: unknown) {
   return (candidates.find((candidate) => typeof candidate === "string" && candidate.trim()) as string | undefined) || "";
 }
 
+function getFileExtension(file: unknown, fileUrl: string) {
+  const record = asRecord(file);
+  const fileName = [record?.name, record?.fileName, fileUrl].find((value) => typeof value === "string" && value.trim()) as string | undefined;
+  return fileName?.split(/[?#]/)[0].split(".").pop()?.toLowerCase() || "";
+}
+
 function formatInfoValue(key: string, value: unknown) {
   if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
@@ -212,7 +218,9 @@ export default function GetFreeQuoteAdminPage() {
         assignmentFiles,
         status: "Assigned to Designer",
       });
-      await fetch("/api/quote/assign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quoteId: activeQuote.id, orderNumber: getString(activeQuote, ["orderNumber"], "Not Available"), orderType: getString(activeQuote, ["orderType"], "quote"), designerName: designer.name, designerEmail: designer.email }) });
+      const assignResponse = await fetch("/api/quote/assign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quoteId: activeQuote.id, orderNumber: getString(activeQuote, ["orderNumber"], "Not Available"), orderType: getString(activeQuote, ["orderType"], "quote"), designerName: designer.name, designerEmail: designer.email, submissionType: "quote" }) });
+      const assignResult = await assignResponse.json().catch(() => null);
+      if (!assignResponse.ok) throw new Error(assignResult?.error || "Unable to send assignment email.");
       setAssignmentMessage("Assigned successfully.");
     } catch (e) { setAssignmentMessage(e instanceof Error ? e.message : "Unable to assign designer."); } finally { setAssigningDesigner(false); }
   }
@@ -327,6 +335,7 @@ export default function GetFreeQuoteAdminPage() {
                   </div>
                 ) : null}
               </section>
+              
               <section className="order-2 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
@@ -341,6 +350,34 @@ export default function GetFreeQuoteAdminPage() {
                     </button>
                   </div>
                 </div>
+                {Array.isArray(activeQuote.files) && activeQuote.files.length > 0 ? (
+                  <div className="mt-4 border-t border-slate-200 pt-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Files</p>
+                    <div className="mt-3 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                      {activeQuote.files.map((file, index) => {
+                        const record = asRecord(file);
+                        const fileUrl = getStorageFileUrl(file);
+                        const label = typeof record?.name === "string" && record.name ? record.name : `File ${index + 1}`;
+                        const extension = getFileExtension(file, fileUrl);
+                        const isImage = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(extension);
+                        const isPdf = extension === "pdf";
+
+                        return (
+                          <div key={`${label}-${index}`} className="rounded border border-slate-200 bg-white p-3">
+                            <p className="truncate text-sm font-medium text-slate-800" title={label}>{label}</p>
+                            {fileUrl && isImage ? <img src={fileUrl} alt={label} className="mt-3 h-40 w-full rounded border border-slate-100 bg-slate-50 object-contain" /> : null}
+                            {fileUrl && isPdf ? <iframe src={fileUrl} title={label} className="mt-3 h-40 w-full rounded border border-slate-100" /> : null}
+                            {fileUrl ? (
+                              <a href={fileUrl} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-blue-600 underline">
+                                {isImage || isPdf ? "Open preview" : "Open file"}
+                              </a>
+                            ) : <p className="mt-2 text-xs text-slate-500">File URL unavailable.</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote).filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "verifiedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles", "outputFormatOther", "colorwayToUseOther"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
                     const firstIndex = quoteInfoOrder.indexOf(firstKey);
@@ -354,7 +391,7 @@ export default function GetFreeQuoteAdminPage() {
                       return (
                         <div key={key} className="md:col-span-2 lg:col-span-3">
                           <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{prettifyKey(key)}</p>
-                          <div className="mt-2 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                          <div className="mt-2 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                             {value.map((item, index) => {
                               const record = asRecord(item);
                               const fileUrl = getStorageFileUrl(item);
@@ -371,6 +408,7 @@ export default function GetFreeQuoteAdminPage() {
                           </div>
                         </div>
                       );
+                      
                     }
                     return <div key={key}><p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{prettifyKey(key)}</p><p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(key, value)}</p></div>;
                   })}

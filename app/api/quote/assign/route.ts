@@ -9,6 +9,9 @@ export async function POST(req: Request) {
     const orderType = String(body?.orderType || '').trim();
     const quoteId = String(body?.quoteId || '').trim();
     const orderNumber = String(body?.orderNumber || '').trim();
+    const submissionType = body?.submissionType === 'order' ? 'order' : 'quote';
+    const recordLabel = submissionType === 'order' ? 'order' : 'quote';
+    const numberLabel = submissionType === 'order' ? 'Order No' : 'Quote No';
 
     if (!designerEmail || !designerName || !orderType || !quoteId || !orderNumber) {
       return NextResponse.json(
@@ -27,11 +30,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'SMTP email settings are not configured.' }, { status: 500 });
     }
 
-    const createTransport = (allowRelaxedTls: boolean) =>
+    const configuredPort = Number(smtpPort);
+    const configuredSecure = process.env.SMTP_SECURE === 'true';
+
+    const createTransport = (allowRelaxedTls: boolean, port = configuredPort, secure = configuredSecure) =>
       nodemailer.createTransport({
         host: smtpHost,
-        port: Number(smtpPort),
-        secure: process.env.SMTP_SECURE === 'true',
+        port,
+        secure,
+        requireTLS: !secure,
         tls: {
           rejectUnauthorized: allowRelaxedTls ? false : true,
         },
@@ -41,14 +48,14 @@ export async function POST(req: Request) {
         },
       });
 
-    const sendMessage = async (allowRelaxedTls: boolean) => {
-      const transport = createTransport(allowRelaxedTls);
+    const sendMessage = async (allowRelaxedTls: boolean, port = configuredPort, secure = configuredSecure) => {
+      const transport = createTransport(allowRelaxedTls, port, secure);
       await transport.sendMail({
         from: fromAddress,
         to: designerEmail,
-        subject: `New quote assigned: ${orderType}`,
-        text: `Hi ${designerName}, a new ${orderType} quote (Order No: ${orderNumber}) has been assigned to you.`,
-        html: `<p>Hi <strong>${designerName}</strong>,</p><p>A new <strong>${orderType}</strong> quote (Order No: <strong>${orderNumber}</strong>) has been assigned to you.</p>`,
+        subject: `New ${recordLabel} assigned: ${orderType}`,
+        text: `Hi ${designerName}, a new ${orderType} ${recordLabel} (${numberLabel}: ${orderNumber}) has been assigned to you.`,
+        html: `<p>Hi <strong>${designerName}</strong>,</p><p>A new <strong>${orderType}</strong> ${recordLabel} (${numberLabel}: <strong>${orderNumber}</strong>) has been assigned to you.</p>`,
       });
     };
 
@@ -56,8 +63,15 @@ export async function POST(req: Request) {
       await sendMessage(process.env.SMTP_ALLOW_SELF_SIGNED_CERTS === 'true');
     } catch (mailError: unknown) {
       const message = mailError instanceof Error ? mailError.message : '';
-      if (!message.toLowerCase().includes('self-signed certificate')) throw mailError;
-      await sendMessage(true);
+      const isConnectionFailure = /ECONNREFUSED|ETIMEDOUT|ESOCKET/i.test(message);
+      const isCertificateFailure = message.toLowerCase().includes('certificate');
+      if (isConnectionFailure && configuredPort === 465) {
+        await sendMessage(true, 587, false);
+      } else if (isCertificateFailure) {
+        await sendMessage(true);
+      } else {
+        throw mailError;
+      }
     }
 
     return NextResponse.json({ ok: true });
