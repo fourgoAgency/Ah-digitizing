@@ -74,8 +74,8 @@ const getFirstErrorField = (errors: Record<string, string>) => {
 const toDisplay = (value?: string) =>
   value
     ?.trim()
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .split(/[\s_-]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
     .join(" ") ?? "Not set";
 
 const getCountryName = (countryCode?: string) => {

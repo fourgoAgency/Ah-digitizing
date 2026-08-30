@@ -4,6 +4,14 @@ import { createOrderNotification, createDesignerAssignmentNotification, createOr
 import nodemailer from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
+function getOrderSourceLabel(order: Record<string, unknown>, fallback = 'Shop Order') {
+  const source = String(order.source || order.orderSource || order.orderType || '').trim().toLowerCase();
+  if (source.includes('free')) return 'Free Quote';
+  if (source.includes('quote')) return 'Custom Order';
+  if (source.includes('custom')) return 'Custom Order';
+  return fallback;
+}
+
 export async function POST(req: Request) {
   try {
     if (!adminFirestore) {
@@ -33,6 +41,7 @@ export async function POST(req: Request) {
       const order = orderSnapshot.data() || {};
       const deliveryEmail = order.deliveryEmail || order.customerEmail || order.email || customerEmail;
       if (!deliveryEmail) return NextResponse.json({ error: 'Delivery email not found.' }, { status: 400 });
+      const orderSourceLabel = getOrderSourceLabel(order);
       await createOrderCompletionNotification(orderId, deliveryEmail);
 
       const smtpHost = process.env.SMTP_HOST;
@@ -66,7 +75,7 @@ export async function POST(req: Request) {
             from: fromAddress,
             to: deliveryEmail,
             subject: `Your order ${order.orderNo || orderId} is completed`,
-            text: `Your order ${order.orderNo || orderId} is completed.\n\nPlease check the relevant files attached to this email.\n\nOrder items:\n${itemLines.join('\n') || 'No items listed.'}\n\nThank you for your order.`,
+            text: `${orderSourceLabel} ${order.orderNo || orderId} is completed.\n\nPlease check the relevant files attached to this email.\n\nOrder items:\n${itemLines.join('\n') || 'No items listed.'}\n\nThank you for your order.`,
             attachments,
           });
         };

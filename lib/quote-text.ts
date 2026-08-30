@@ -10,10 +10,21 @@ function firstValue(quote: QuoteRecord, keys: string[]) {
 }
 
 function textValue(value: unknown) {
-  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean).join(", ") || "Not provided";
+  const toTitleCase = (input: string) =>
+    input
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+
+  if (Array.isArray(value)) {
+    return value.map((item) => toTitleCase(String(item))).filter(Boolean).join(", ") || "Not Provided";
+  }
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") return String(value);
-  if (typeof value === "string") return value.trim() || "Not provided";
+  if (typeof value === "string") return toTitleCase(value) || "Not Provided";
   if (value && typeof value === "object") {
     const record = value as { toDate?: () => Date };
     if (typeof record.toDate === "function") {
@@ -31,22 +42,23 @@ function textValue(value: unknown) {
     }
     return JSON.stringify(value);
   }
-  return "Not provided";
+  return "Not Provided";
 }
 
 function formatColors(value: unknown) {
   const colors = Array.isArray(value)
     ? value.map((color) => String(color).trim()).filter(Boolean)
     : String(value ?? "").split(/[,/]/).map((color) => color.trim()).filter(Boolean);
-  return colors.join(", ") || "Not provided";
+  return colors.map((color) => color.split(/\s+/).map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()).join(" ")).join(", ") || "Not Provided";
 }
 
 function formatSize(quote: QuoteRecord) {
   const widthValue = firstValue(quote, ["width"]);
   const heightValue = firstValue(quote, ["height"]);
+  const unit = firstValue(quote, ["unitSelect", "unitType"]) || "inches";
   const width = textValue(widthValue);
   const height = textValue(heightValue === 0 || heightValue === "0" ? widthValue : heightValue);
-  return `(Width) ${width} * (Height)${height} Inches`;
+  return `(Width) ${width} * (Height) ${height} ${unit}`;
 }
 
 function combineValues(quote: QuoteRecord, keys: string[]) {
@@ -65,7 +77,7 @@ export function createQuoteText(quote: QuoteRecord) {
     if (value !== undefined) rows.push([`${label}:`, formatter(value)]);
   };
 
-  addRow("Design ID", ["designId", "orderNumber", "id"]);
+  addRow("Order ID", ["orderId", "orderNumber", "designId", "id"], (value) => textValue(value).toUpperCase());
   addRow("Order Type", ["orderType"]);
   addRow("Design Name", ["designName"]);
   const outputFormats = combineValues(quote, ["outputFormats", "outputFormatOther"]);

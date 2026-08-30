@@ -477,6 +477,7 @@ export default function TermsAndConditionsPage() {
           {termsData.map((section, index) => (
             <motion.div
               key={section.id}
+              id={section.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}

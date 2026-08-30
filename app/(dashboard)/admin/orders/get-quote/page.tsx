@@ -171,12 +171,7 @@ function formatColorsName(value: unknown) {
   const colors = Array.isArray(value)
     ? value.map((color) => String(color).trim()).filter(Boolean)
     : String(value ?? "").split(/[,/]/).map((color) => color.trim()).filter(Boolean);
-  if (colors.length <= 1) return colors[0] || "Not provided";
-  const colorLines: string[] = [];
-  for (let index = 0; index < colors.length; index += 3) {
-    colorLines.push(colors.slice(index, index + 3).join(", "));
-  }
-  return colorLines.join("\n");
+  return colors.join(", ") || "Not provided";
 }
 
 function downloadQuoteInfo(quote: QuoteDocument) {
@@ -185,7 +180,7 @@ function downloadQuoteInfo(quote: QuoteDocument) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${getString(quote, ["orderNumber"], quote.id)}.txt`;
+  link.download = `${getString(quote, ["orderNumber"], "quote")}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -246,7 +241,7 @@ export default function GetQuoteAdminPage() {
     () =>
       quotes.map((quote) => ({
         id: quote.id,
-        orderNo: getString(quote, ["orderNumber"], quote.id),
+        orderNo: getString(quote, ["orderNumber"], "Not Available"),
         type: getQuoteType(quote),
         createdAt: getDate(quote.createdAt) || getDate(quote.submittedAt),
         customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -329,6 +324,7 @@ export default function GetQuoteAdminPage() {
   async function downloadQuoteFiles(quote: QuoteDocument) {
     const files = Array.isArray(quote.files) ? quote.files : [];
     if (files.length === 0) return;
+    const orderNumber = getString(quote, ["orderNumber"], "quote");
 
     setDownloadingZip(true);
     setError(null);
@@ -336,14 +332,14 @@ export default function GetQuoteAdminPage() {
       const response = await fetch("/api/quote/download-zip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: getString(quote, ["orderNumber"], quote.id), files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
+        body: JSON.stringify({ orderNumber, files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
       });
       if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "Unable to create ZIP download.");
       const archive = await response.blob();
       const objectUrl = URL.createObjectURL(archive);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = `${quote.id}.zip`;
+      link.download = `${orderNumber}.zip`;
       link.click();
       URL.revokeObjectURL(objectUrl);
     } catch (zipError) {
@@ -469,7 +465,7 @@ export default function GetQuoteAdminPage() {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p>
                 <h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3>
-                <p className="mt-1 text-xs font-semibold text-slate-500">Order No: {activeQuote.id.slice(0, 8).toUpperCase()}</p>
+                <p className="mt-1 text-xs font-semibold text-slate-500">Order No: {getString(activeQuote, ["orderNumber"], "Not Available")}</p>
               </div>
               <button type="button" onClick={() => setActiveQuote(null)} className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50">
                 <X className="h-4 w-4" />
@@ -652,29 +648,13 @@ export default function GetQuoteAdminPage() {
                         return (
                           <div key={key} className="md:col-span-2 lg:col-span-3">
                             <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{prettifyKey(key)}</p>
-                            <div className="mt-2 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                              {value.map((item, index) => {
+                            <div className="mt-2 rounded border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                              <span className="font-medium text-slate-800">{value.map((item, index) => {
                                 const record = asRecord(item);
                                 const fileUrl = getStorageFileUrl(item);
                                 const label = typeof record?.name === "string" && record.name ? record.name : `${prettifyKey(key)} ${index + 1}`;
-                                const size = typeof record?.size === "number" ? formatFileSize(record.size) : "";
-                                return (
-                                  <div key={`${key}-${index}`} className="rounded border border-slate-200 bg-white p-3">
-                                    <p className="text-sm font-medium text-slate-800">{label}</p>
-                                    {size ? <p className="mt-1 text-xs text-slate-500">{size}</p> : null}
-                                    {fileUrl ? (
-                                      fileUrl.match(/\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i) ? (
-                                        // eslint-disable-next-line @next/next/no-img-element
-                                        <><img src={fileUrl} alt={label} className="mt-2 max-h-40 w-full rounded object-contain" /><a href={fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm text-blue-600 underline">Open file</a></>
-                                      ) : (
-                                        <div className="mt-2 flex gap-3"><a href={fileUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 underline">Open file</a><a href={fileUrl} download={label} className="text-sm text-green-600 underline">Download</a></div>
-                                      )
-                                    ) : (
-                                      <p className="mt-1 text-xs text-slate-500 break-words">{formatInfoValue(key, item)}</p>
-                                    )}
-                                  </div>
-                                );
-                              })}
+                                return fileUrl ? label : formatInfoValue(key, item);
+                              }).filter(Boolean).join(", ")}</span>
                             </div>
                           </div>
                         );

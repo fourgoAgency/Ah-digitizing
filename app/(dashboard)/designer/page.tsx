@@ -133,7 +133,7 @@ export default function DesignerPage() {
             const itemId = `${source}:${document.id}`;
             const item: AssignedItem = {
               id: document.id,
-              orderNumber: getString(data, ['orderNumber'], document.id),
+              orderNumber: getString(data, ['orderNumber'], 'Not Available'),
               source,
               orderType: getString(data, ['orderType', 'serviceType', 'type'], 'Quote'),
               assignmentType: getString(data, ['assignmentType'], 'Standard'),
@@ -218,7 +218,7 @@ export default function DesignerPage() {
       const response = await fetch('/api/quote/download-zip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId: activeItem.orderNumber, files: sourceFiles }),
+        body: JSON.stringify({ orderNumber: activeItem.orderNumber, files: sourceFiles }),
       });
       if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || 'Unable to create ZIP download.');
       const archive = await response.blob();

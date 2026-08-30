@@ -16,6 +16,13 @@ import {
 } from "@/lib/firebase";
 
 type PaymentMethod = "card" | "paypal";
+type AppliedCoupon = {
+  id: string;
+  code: string;
+  discountValue: string | number;
+  type: "percentage" | "fixed";
+  usage?: string | number;
+} | null;
 
 export default function CheckoutPage() {
   const { items, clearCart } = useCartSidebar();
@@ -24,7 +31,7 @@ export default function CheckoutPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<any | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
 
   // SECURE: Track verified server prices
@@ -110,7 +117,7 @@ export default function CheckoutPage() {
 
       setAppliedCoupon(couponData);
       setCouponError(null);
-    } catch (error) {
+    } catch {
       setCouponError("Error checking coupon. Please try again.");
     }
   }
@@ -195,7 +202,8 @@ export default function CheckoutPage() {
             event: "order_placed",
             orderId,
             customerEmail: customerDetails.email,
-            orderType: paymentMethod,
+            orderType: "shop",
+            paymentMethod,
           }),
         });
       } catch {

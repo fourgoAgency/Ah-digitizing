@@ -95,7 +95,7 @@ export function CustomDropdown({
       </button>
 
       {open && !disabled && (
-        <ul className="absolute left-0 top-full z-120 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <ul className="absolute left-0 top-full z-120 mt-1 max-h-80 w-full overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg">
           {filteredOptions.map((option) => (
             <li key={option}>
               <button

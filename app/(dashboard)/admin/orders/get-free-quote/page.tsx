@@ -120,7 +120,7 @@ function downloadQuoteInfo(quote: QuoteDocument) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${quote.orderNumber || quote.id}.txt`;
+  link.download = `${quote.orderNumber || "quote"}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -162,7 +162,7 @@ export default function GetFreeQuoteAdminPage() {
 
   const rows = useMemo(() => quotes.map((quote) => ({
     id: quote.id,
-    orderNo: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : quote.id,
+    orderNo: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : "Not Available",
     type: getQuoteType(quote),
     createdAt: getDate(quote.submittedAt) || getDate(quote.createdAt),
     customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -221,6 +221,7 @@ export default function GetFreeQuoteAdminPage() {
   async function downloadQuoteFiles(quote: QuoteDocument) {
     const files = Array.isArray(quote.files) ? quote.files : [];
     if (files.length === 0) return;
+    const orderNumber = typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : "quote";
 
     setDownloadingZip(true);
     setError(null);
@@ -228,14 +229,14 @@ export default function GetFreeQuoteAdminPage() {
       const response = await fetch("/api/quote/download-zip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : quote.id, files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
+        body: JSON.stringify({ orderNumber, files: files.map((file) => ({ name: asRecord(file)?.name || asRecord(file)?.fileName, url: getStorageFileUrl(file) })) }),
       });
       if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "Unable to create ZIP download.");
       const archive = await response.blob();
       const objectUrl = URL.createObjectURL(archive);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = `${quote.id}.zip`;
+      link.download = `${orderNumber}.zip`;
       link.click();
       URL.revokeObjectURL(objectUrl);
     } catch (zipError) {
@@ -270,7 +271,7 @@ export default function GetFreeQuoteAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-6" role="dialog" aria-modal="true">
           <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-md bg-white shadow-xl">
             <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
-              <div><p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p><h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3><p className="mt-1 text-xs font-semibold text-slate-500">Order No: {typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : activeQuote.id}</p></div>
+      <div><p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p><h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3><p className="mt-1 text-xs font-semibold text-slate-500">Order No: {typeof activeQuote.orderNumber === "string" && activeQuote.orderNumber ? activeQuote.orderNumber : "Not Available"}</p></div>
               <button type="button" onClick={() => setActiveQuote(null)} className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"><X className="h-4 w-4" /></button>
             </header>
             <div className="flex max-h-[calc(90vh-78px)] flex-col overflow-y-auto px-5 py-5">

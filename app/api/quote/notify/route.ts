@@ -54,11 +54,11 @@ export async function POST(req: Request) {
             from: fromAddress,
             to: adminRecipients,
             subject: 'New quote request received',
-            text: `A new ${orderType} quote request was submitted by ${customerEmail}. Quote ID: ${quoteId}.`,
+            text: `A new ${orderType} quote request was submitted by ${customerEmail}. Order No: ${quoteId}.`,
             html: `
               <p>A new <strong>${orderType}</strong> quote request was submitted.</p>
               <p><strong>Customer email:</strong> ${customerEmail}</p>
-              <p><strong>Quote ID:</strong> ${quoteId}</p>
+              <p><strong>Order No:</strong> ${quoteId}</p>
             `,
           });
         }
@@ -67,11 +67,11 @@ export async function POST(req: Request) {
           from: fromAddress,
           to: customerEmail,
           subject: 'We received your quote request',
-          text: `Thanks for your ${orderType} quote request. We have received your submission and will contact you soon. Your quote ID is ${quoteId}.`,
+          text: `Thanks for your ${orderType} quote request. We have received your submission and will contact you soon. Your Order No is ${quoteId}.`,
           html: `
             <p>Thanks for your <strong>${orderType}</strong> quote request.</p>
             <p>We have received your submission and will contact you soon.</p>
-            <p><strong>Your quote ID:</strong> ${quoteId}</p>
+            <p><strong>Your Order No:</strong> ${quoteId}</p>
           `,
         });
       };
@@ -98,4 +98,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-

@@ -39,10 +39,13 @@ export async function POST(request: Request) {
     }
 
     const archive = await zip.generateAsync({ type: 'arraybuffer' });
+    const orderNumber = String(body?.orderNumber || 'quote')
+      .replace(/[\\/:*?"<>|\r\n]+/g, '-')
+      .trim() || 'quote';
     return new Response(archive, {
       headers: {
         'Content-Type': 'application/zip',
-        'Content-Disposition': `attachment; filename="${String(body?.orderId || 'quote')}.zip"`,
+        'Content-Disposition': `attachment; filename="${orderNumber}.zip"`,
       },
     });
   } catch (error) {

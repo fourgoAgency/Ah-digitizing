@@ -340,7 +340,7 @@ const selectedOutputFormatLookup = useMemo(
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="relative z-30 overflow-visible rounded-lg border border-gray-200 bg-white">
         <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Design Specifications</h2>
         <div className="space-y-4 p-5">
           <div>
@@ -659,7 +659,7 @@ const selectedOutputFormatLookup = useMemo(
                     id="additional-notes"
                     name="additionalNotes"
                     className="input h-24 resize-none"
-                    placeholder="Additional notes or instructions for your quote (optional)"
+                    placeholder="Additional notes or instructions for your order (optional)"
                     value={formData.additionalNotes || ""}
                     onChange={onFieldChangeAction}
                   />
@@ -768,7 +768,7 @@ const selectedOutputFormatLookup = useMemo(
                   id="additional-notes"
                   name="additionalNotes"
                   className="input h-24 resize-none"
-                  placeholder="Additional notes or instructions for your quote (optional)"
+                  placeholder="Additional notes or instructions for your order (optional)"
                   value={formData.additionalNotes || ""}
                   onChange={onFieldChangeAction}
                 />
@@ -832,8 +832,8 @@ const selectedOutputFormatLookup = useMemo(
             <h3 className="font-semibold">Note:</h3>
             <p className="text-sm text-gray-600">
               Have a sample or old design you like? Upload it so we can follow the same style and direction.{" "}
-              <Link href="/privacy-policy#file-validation" className="font-semibold text-primary cursor-pointer underline">
-                Learn more about uploading files
+              <Link href="/terms-and-conditions" className="font-semibold text-primary cursor-pointer underline">
+                Learn more about terms & conditions
               </Link>
               .
             </p>
@@ -854,7 +854,7 @@ const selectedOutputFormatLookup = useMemo(
               onChange={onFieldChangeAction}
               required
             />
-            I would like to receive updates and discuss my quote via WhatsApp.
+            I would like to receive updates and discuss my order via WhatsApp.
           </label>
         </div>
       </div>
@@ -869,7 +869,7 @@ const selectedOutputFormatLookup = useMemo(
       )}
 
       <button type="submit" className="btn cursor-pointer">
-        Submit Quote
+        Submit Order
       </button>
 
       {firstErrorMessage && (
