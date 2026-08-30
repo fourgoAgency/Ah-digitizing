@@ -263,7 +263,7 @@ async function getProductDocument<T = DocumentData>(productId: string): Promise<
 }
 
 
-async function fetchActiveCoupon(code: string): Promise<DocumentData | null> {
+async function fetchActiveCoupon<T = DocumentData>(code: string): Promise<(T & { id: string }) | null> {
   if (!code || !code.trim()) return null;
   
   const couponsRef = collection(firestore, 'coupons');
@@ -286,7 +286,7 @@ async function fetchActiveCoupon(code: string): Promise<DocumentData | null> {
   return {
     id: docSnap.id,
     ...data,
-  };
+  } as T & { id: string };
 }
 
 

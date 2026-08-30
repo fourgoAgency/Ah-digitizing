@@ -23,6 +23,7 @@ type AppliedCoupon = {
   type: "percentage" | "fixed";
   usage?: string | number;
 } | null;
+type CouponData = Exclude<AppliedCoupon, null>;
 
 export default function CheckoutPage() {
   const { items, clearCart } = useCartSidebar();
@@ -88,7 +89,7 @@ export default function CheckoutPage() {
 
   const total = useMemo(() => {
     if (!appliedCoupon) return subtotal;
-    const discountVal = parseFloat(appliedCoupon.discountValue) || 0;
+    const discountVal = parseFloat(String(appliedCoupon.discountValue)) || 0;
     if (appliedCoupon.type === "percentage") {
       return Math.max(0, subtotal - (subtotal * discountVal) / 100);
     } else {
@@ -107,7 +108,7 @@ export default function CheckoutPage() {
     setCouponError(null);
 
     try {
-      const couponData = await fetchActiveCoupon(couponCode.trim());
+      const couponData = await fetchActiveCoupon<CouponData>(couponCode.trim());
 
       if (!couponData) {
         setCouponError("Invalid or expired coupon code.");
@@ -156,7 +157,7 @@ export default function CheckoutPage() {
       let finalTotal = finalSubtotal;
 
       if (appliedCoupon) {
-        const discountVal = parseFloat(appliedCoupon.discountValue) || 0;
+        const discountVal = parseFloat(String(appliedCoupon.discountValue)) || 0;
         if (appliedCoupon.type === "percentage") {
           finalTotal = Math.max(0, finalSubtotal - (finalSubtotal * discountVal) / 100);
         } else {
@@ -169,7 +170,7 @@ export default function CheckoutPage() {
 
       // REUSE: Custom update usage handler from firebase.ts
       if (appliedCoupon) {
-        const currentUsage = parseInt(appliedCoupon.usage) || 0;
+        const currentUsage = parseInt(String(appliedCoupon.usage ?? 0), 10) || 0;
         await updateDocument("coupons", appliedCoupon.id, {
           usage: currentUsage + 1,
         });
@@ -493,7 +494,7 @@ export default function CheckoutPage() {
                         <span>
                           -{appliedCoupon.type === "percentage"
                             ? `${appliedCoupon.discountValue}%`
-                            : formatPrice(parseFloat(appliedCoupon.discountValue))}
+                            : formatPrice(parseFloat(String(appliedCoupon.discountValue)) || 0)}
                         </span>
                       </div>
                     )}
