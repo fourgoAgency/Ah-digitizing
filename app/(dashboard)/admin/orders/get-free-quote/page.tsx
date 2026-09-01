@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
-import { Download, Eye, UploadCloud, X } from "lucide-react";
-import { firestore, uploadFile } from "@/lib/firebase";
+import { Download, Eye, Trash2, UploadCloud, X } from "lucide-react";
+import { deleteDocument, firestore, uploadFile } from "@/lib/firebase";
 import { createQuoteText } from "@/lib/quote-text";
 
 type QuoteDocument = Record<string, unknown> & { id: string };
@@ -48,7 +48,7 @@ function getDate(value: unknown) {
 }
 function formatCreatedAt(date: Date | null) {
   if (!date) return "Unknown";
-  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date).replace(",", " -");
+  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "numeric", minute: "2-digit", hour12: true }).format(date).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase()).replace(",", " -");
 }
 function getCountryName(value: unknown) {
   const raw = typeof value === "string" ? value.trim() : "";
@@ -137,7 +137,9 @@ export default function GetFreeQuoteAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeQuote, setActiveQuote] = useState<QuoteDocument | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [designers, setDesigners] = useState<Designer[]>([]);
   const [selectedDesignerId, setSelectedDesignerId] = useState("");
   const [submissionDeadline, setSubmissionDeadline] = useState("");
@@ -181,9 +183,40 @@ export default function GetFreeQuoteAdminPage() {
     return (!search || row.id.toLowerCase().includes(search) || row.orderNo.toLowerCase().includes(search) || row.customer.toLowerCase().includes(search)) && (status === "all" || row.status.toLowerCase() === status.toLowerCase());
   }), [quotes, searchParams]);
 
+  const visibleIds = rows.map((row) => row.id);
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id));
+
+  function toggleSelected(id: string) {
+    setSelectedIds((current) => (current.includes(id) ? current.filter((selectedId) => selectedId !== id) : [...current, id]));
+  }
+
+  function toggleAllVisible() {
+    setSelectedIds((current) => {
+      if (allVisibleSelected) return current.filter((id) => !visibleIds.includes(id));
+      return [...current, ...visibleIds.filter((id) => !current.includes(id))];
+    });
+  }
+
   async function updateQuoteStatus(id: string, status: string) {
     setUpdatingId(id);
     try { await updateDoc(doc(firestore, "quoteRequests", id), { status }); } catch (e) { setError(e instanceof Error ? e.message : "Unable to update quote status."); } finally { setUpdatingId(null); }
+  }
+
+  async function deleteSelectedQuotes() {
+    if (selectedIds.length === 0) return;
+    if (!window.confirm(`Delete ${selectedIds.length} selected free quote request${selectedIds.length === 1 ? "" : "s"}?`)) return;
+
+    setDeletingId("selected");
+    setError(null);
+    try {
+      await Promise.all(selectedIds.map((id) => deleteDocument("quoteRequests", id)));
+      if (activeQuote && selectedIds.includes(activeQuote.id)) setActiveQuote(null);
+      setSelectedIds([]);
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Unable to delete free quote request.");
+    } finally {
+      setDeletingId(null);
+    }
   }
   async function assignQuoteToDesigner() {
     if (!activeQuote || !selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0) return;
@@ -256,14 +289,19 @@ export default function GetFreeQuoteAdminPage() {
 
   return (
     <section className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-100">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-bold text-slate-950">Get Free Quote Requests</h2><p className="text-sm text-slate-500">Submitted free quote requests from the public form.</p></div>{error ? <p className="text-xs font-medium text-rose-500">Firebase: {error}</p> : null}</div>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-bold text-slate-950">Quote Requests</h2><p className="text-sm text-slate-500">Submitted free quote requests from the public form.</p></div>{error ? <p className="text-xs font-medium text-rose-500">Firebase: {error}</p> : null}</div>
+      <div className="mb-5 flex flex-wrap items-center justify-end gap-3">
+        <button type="button" disabled={selectedIds.length === 0 || deletingId === "selected"} onClick={deleteSelectedQuotes} className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-blue-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="Delete selected free quote requests">
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[980px] text-left text-sm">
-          <thead><tr className="border-y border-slate-100 text-xs font-medium text-slate-400"><th className="w-10 py-3" /><th className="py-3">Order</th><th className="py-3">Date</th><th className="py-3">Customer</th><th className="py-3">Type</th><th className="py-3">Order Status</th><th className="py-3 text-right">Action</th></tr></thead>
+          <thead><tr className="border-y border-slate-100 text-xs font-medium text-slate-400"><th className="w-10 py-3"><input type="checkbox" checked={allVisibleSelected} onChange={toggleAllVisible} className="h-4 w-4 rounded border-slate-300 accent-blue-600" /></th><th className="py-3">Quote</th><th className="py-3">Date</th><th className="py-3">Customer</th><th className="py-3">Type</th><th className="py-3">Quote Status</th><th className="py-3 text-right">Action</th></tr></thead>
           <tbody>
             {loading ? <tr><td colSpan={7} className="py-16 text-center text-sm text-slate-400">Loading free quote requests...</td></tr> : rows.length > 0 ? rows.map((row) => (
               <tr key={row.id} className="border-b border-slate-100 text-xs text-slate-700 hover:bg-slate-50/70">
-                <td className="py-3" />
+                <td className="py-3"><input type="checkbox" checked={selectedIds.includes(row.id)} onChange={() => toggleSelected(row.id)} className="h-4 w-4 rounded border-slate-300 accent-blue-600" /></td>
                 <td className="py-3 font-semibold text-slate-800">{row.orderNo}</td>
                 <td className="py-3">{formatCreatedAt(row.createdAt)}</td>
                 <td className="py-3"><div className="font-medium text-slate-800">{row.customer}</div><div className="text-[11px] text-slate-500">{row.email}</div></td><td className="py-3 font-medium text-slate-700">{row.type}</td>

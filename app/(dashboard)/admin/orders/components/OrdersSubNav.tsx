@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/admin/orders", label: "Shop Orders" },
   { href: "/admin/orders/get-quote", label: "Order Form" },
-  { href: "/admin/orders/get-free-quote", label: "Get a Free Quote" },
+  { href: "/admin/orders/get-free-quote", label: "Quote Requests" },
 ] as const;
 
 export function OrdersSubNav() {

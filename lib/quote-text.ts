@@ -45,6 +45,26 @@ function textValue(value: unknown) {
   return "Not Provided";
 }
 
+function formatDateTime(value: unknown) {
+  let date: Date | null = null;
+  if (value instanceof Date) date = value;
+  else if (typeof value === "string" || typeof value === "number") date = new Date(value);
+  else if (value && typeof value === "object") {
+    const record = value as { toDate?: () => Date };
+    if (typeof record.toDate === "function") date = record.toDate();
+  }
+
+  if (!date || Number.isNaN(date.getTime())) return textValue(value);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase());
+}
+
 function formatColors(value: unknown) {
   const colors = Array.isArray(value)
     ? value.map((color) => String(color).trim()).filter(Boolean)
@@ -76,9 +96,11 @@ export function createQuoteText(quote: QuoteRecord) {
     const value = firstValue(quote, keys);
     if (value !== undefined) rows.push([`${label}:`, formatter(value)]);
   };
-
+  
+  addRow("Date and Time", ["createdAt"], formatDateTime);
   addRow("Order ID", ["orderId", "orderNumber", "designId", "id"], (value) => textValue(value).toUpperCase());
   addRow("Order Type", ["orderType"]);
+  addRow("Turn Around Time", ["turnaroundTime"]);
   addRow("Design Name", ["designName"]);
   const outputFormats = combineValues(quote, ["outputFormats", "outputFormatOther"]);
   if (outputFormats) rows.push(["Output Formats:", formatColors(outputFormats)]);
@@ -96,7 +118,6 @@ export function createQuoteText(quote: QuoteRecord) {
   }
   addRow("Applique Required", ["appliqueRequired"]);
   addRow("Customer Comments", ["additionalNotes"]);
-  addRow("Turn Around Time", ["turnaroundTime"]);
 
   const labelWidth = Math.max(...rows.map(([label]) => label.length)) + 5;
   return rows.map(([label, value]) => `${label.padEnd(labelWidth)}${value}`).join("\n\n") + "\n";

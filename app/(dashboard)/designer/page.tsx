@@ -60,10 +60,10 @@ function formatDeadline(value: string) {
     day: '2-digit',
     month: '2-digit',
     year: '2-digit',
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
-    hour12: false,
-  }).format(date).replace(',', ' -');
+    hour12: true,
+  }).format(date).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase()).replace(',', ' -');
 }
 
 function getSubmissionInfo(document: Record<string, unknown>) {

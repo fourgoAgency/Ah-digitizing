@@ -114,7 +114,10 @@ function formatDate(date: Date | null) {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  }).format(date)
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase())
 }
 
 function isRecent(date: Date | null, days: number, referenceDate: Date) {
@@ -410,7 +413,7 @@ export default function Dashboard() {
     const chartLabels = Array.from({ length: 12 }, (_, index) => {
       const date = new Date(syncedAt)
       date.setHours(date.getHours() - (11 - index), 0, 0, 0)
-      return date.toLocaleTimeString("en-US", { hour: "numeric", hour12: true }).toLowerCase().replace(" ", "")
+      return date.toLocaleTimeString("en-US", { hour: "numeric", hour12: true }).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase())
     })
 
     return {

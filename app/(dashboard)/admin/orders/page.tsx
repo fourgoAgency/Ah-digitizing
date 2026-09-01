@@ -165,7 +165,8 @@ function formatDateTime(date: Date | null) {
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-  }).format(date)
+    hour12: true,
+  }).format(date).replace(/\b(am|pm)\b/gi, (part) => part.toUpperCase())
 }
 
 function formatCurrency(value: number) {
