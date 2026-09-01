@@ -69,6 +69,7 @@ function Input({
     <input
       className="w-full rounded-lg border border-border bg-muted/30 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
       type={type}
+      autoComplete={type === "password" ? "current-password" : type === "email" ? "email" : "name"}
       placeholder={placeholder}
       value={value}
       onChange={(event) => onChange(event.target.value)}
