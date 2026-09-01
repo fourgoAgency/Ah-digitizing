@@ -31,7 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // check session cookie for custom user
     (async () => {
       try {
-        const res = await fetch('/api/auth/session');
+        const res = await fetch('/api/auth/session', {
+          cache: 'no-store',
+          credentials: 'include',
+        });
         const j = await res.json();
         if (j?.authenticated && j.user) {
           setCustomUser(j.user);

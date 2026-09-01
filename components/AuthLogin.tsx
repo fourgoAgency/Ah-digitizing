@@ -121,6 +121,23 @@ export default function AuthSlider() {
     resetFeedback();
     setLoading(true);
     try {
+      // Custom accounts include designers and should not trigger Firebase Auth errors.
+      const customResponse = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const customResult = await parseJsonResponse(customResponse);
+      if (customResponse.ok) {
+        if (customResult.role === 'designer') router.push('/designer');
+        else router.push('/');
+        return;
+      }
+      if (customResponse.status !== 404) {
+        setError(customResult?.error || 'Login failed');
+        return;
+      }
+
       // Try admin Firebase Auth sign-in first
       try {
         const adminUser = await signInWithEmailPassword(email, password);
