@@ -26,8 +26,6 @@ import {
   addDoc,
   updateDoc,
   runTransaction,
-  query, 
-  where,
 } from 'firebase/firestore';
 import { serverTimestamp } from 'firebase/firestore';
 import {
@@ -204,7 +202,6 @@ async function signUpWithEmailPassword(email: string, password: string): Promise
   } catch (err) {
     // swallow — user was created in Auth; Firestore write failure shouldn't block signup flow here
     // caller can update Firestore record later
-    // eslint-disable-next-line no-console
     console.error('Failed to create Firestore user document:', err);
   }
 
@@ -265,28 +262,37 @@ async function getProductDocument<T = DocumentData>(productId: string): Promise<
 
 async function fetchActiveCoupon<T = DocumentData>(code: string): Promise<(T & { id: string }) | null> {
   if (!code || !code.trim()) return null;
-  
-  const couponsRef = collection(firestore, 'coupons');
-  const querySnapshot = await getDocs(
-    query(couponsRef, where('code', '==', code.trim()))
-  );
 
-  if (querySnapshot.empty) return null;
+  const response = await fetch('/api/coupons/validate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: code.trim() }),
+  });
+  const result = await response.json().catch(() => null);
 
-  const docSnap = querySnapshot.docs[0];
-  const data = docSnap.data();
-
-  if (data.isActive === false) return null;
-
-  if (data.expiryDate) {
-    const expiry = data.expiryDate.toDate();
-    if (new Date() > expiry) return null;
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(result?.error || 'Unable to validate coupon.');
   }
 
-  return {
-    id: docSnap.id,
-    ...data,
-  } as T & { id: string };
+  return result?.coupon ? (result.coupon as T & { id: string }) : null;
+}
+
+async function redeemCoupon(couponId: string): Promise<void> {
+  if (!couponId) return;
+
+  const response = await fetch('/api/coupons/redeem', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ couponId }),
+  });
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(result?.error || 'Unable to redeem coupon.');
+  }
 }
 
 
@@ -301,7 +307,8 @@ export {
   getDocuments,
   getDocument,
   getProductDocument, 
-  fetchActiveCoupon,   
+  fetchActiveCoupon,
+  redeemCoupon,
   getServerTimestamp,
   getUserByEmail,
   createDocument,

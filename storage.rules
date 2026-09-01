@@ -82,6 +82,16 @@ service firebase.storage {
       allow write: if isStaff();
     }
 
+    match /embroidery/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vector/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // User uploads
     match /users/{userId}/{allFiles=**} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isStaff());

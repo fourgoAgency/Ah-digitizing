@@ -9,9 +9,9 @@ import { useCartSidebar } from "@/components/shop/CartSidebarContext";
 import {
   createDocument,
   createNextOrderNumber,
-  updateDocument,
   getProductDocument,
   fetchActiveCoupon,
+  redeemCoupon,
   getServerTimestamp
 } from "@/lib/firebase";
 
@@ -170,10 +170,7 @@ export default function CheckoutPage() {
 
       // REUSE: Custom update usage handler from firebase.ts
       if (appliedCoupon) {
-        const currentUsage = parseInt(String(appliedCoupon.usage ?? 0), 10) || 0;
-        await updateDocument("coupons", appliedCoupon.id, {
-          usage: currentUsage + 1,
-        });
+        await redeemCoupon(appliedCoupon.id);
       }
 
       // REUSE: Create database records securely via helper
