@@ -844,7 +844,7 @@ const selectedOutputFormatLookup = useMemo(
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Continue via WhatsApp? *</h2>
+        <h2 className="border-b border-gray-200 px-5 py-4 text-xl font-semibold text-primary">Continue via WhatsApp? (Optional)</h2>
         <div className="p-5">
           <label className="inline-flex items-center gap-2 text-sm text-gray-700">
             <input

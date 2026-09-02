@@ -100,13 +100,6 @@ export const getQouteFormSchema = z
       }
     }
 
-    if (!data.whatsappOptIn) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["whatsappOptIn"],
-        message: "Please enable WhatsApp to continue.",
-      });
-    }
   });
 
 export type GetQouteFormState = z.infer<typeof getQouteFormSchema>;

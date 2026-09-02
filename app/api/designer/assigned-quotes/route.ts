@@ -38,7 +38,11 @@ export async function GET(req: NextRequest) {
 
     // Deduplicate by ID
     const seen = new Set<string>();
-    const assigned = [];
+    const assigned: Array<{
+      id: string;
+      source: 'quotes' | 'quoteRequests';
+      [key: string]: unknown;
+    }> = [];
 
     [quotesByIdSnap, quotesByEmailSnap].forEach((snap) => {
       snap.docs.forEach((doc) => {
