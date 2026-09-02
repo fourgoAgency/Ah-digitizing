@@ -113,7 +113,7 @@ export const quoteFormSchema = z
     colorwayToUse: z.string().optional(),
     colorwayToUseOther: z.string().optional(),
     additionalNotes: z.string().optional(),
-    whatsappOptIn: z.boolean(),
+    whatsappOptIn: z.boolean().optional(),
     files: z
       .array(z.instanceof(File))
       .min(1, "Please upload one file.")

@@ -19,15 +19,22 @@ export const getQouteFormSchema = z
     orderType: z
       .enum(["", "embroidery", "vector"])
       .refine((value) => value !== "", "Order type is required."),
-    designName: z.string().trim().min(1, "Design name is required."),
-    numberOfColors: z.string().trim().min(1, "Number of colors is required."),
-    unitType: z
-      .enum(["", "inches", "centimeter", "millimeter"])
-      .refine((value) => value !== "", "Unit type is required."),
+    designName: z.string().optional(),
+    turnaroundTime: z.string().optional(),
+    fabricType: z.string().optional(),
+    placementArea: z.string().optional(),
+    outputFormatOther: z.string().optional(),
+    outputFormats: z.array(z.string()),
+    numberOfColors: z.string().optional(),
+    unitType: z.string().optional(),
     width: z.string().optional(),
     height: z.string().optional(),
+    appliqueRequired: z.string().optional(),
+    colorsName: z.string().optional(),
+    colorwayToUse: z.string().optional(),
+    colorwayToUseOther: z.string().optional(),
     additionalNotes: z.string().optional(),
-    whatsappOptIn: z.boolean(),
+    whatsappOptIn: z.boolean().optional(),
     files: z
       .array(z.instanceof(File))
       .min(1, "Please upload one file.")
@@ -52,44 +59,45 @@ export const getQouteFormSchema = z
       }
     }
 
-    const hasWidth = Boolean(data.width?.trim());
-    const hasHeight = Boolean(data.height?.trim());
-    if (!hasWidth && !hasHeight) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["width"],
-        message: "Either width or height is required.",
-      });
-      ctx.addIssue({
-        code: "custom",
-        path: ["height"],
-        message: "Either width or height is required.",
-      });
-    }
-    if (hasWidth && !/^\d+(\.\d+)?$/.test((data.width ?? "").trim())) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["width"],
-        message: "Width must be a number.",
-      });
-    }
-    if (hasHeight && !/^\d+(\.\d+)?$/.test((data.height ?? "").trim())) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["height"],
-        message: "Height must be a number.",
-      });
-    }
+    if (data.orderType === "embroidery" || data.orderType === "vector") {
+      if (!data.designName?.trim()) {
+      ctx.addIssue({ code: "custom", path: ["designName"], message: "Design name is required." });
+      }
+      if (data.orderType === "vector") {
+        if (!data.turnaroundTime) {
+          ctx.addIssue({ code: "custom", path: ["turnaroundTime"], message: "Turnaround time is required." });
+        }
+        if (data.outputFormats.length === 0) {
+          ctx.addIssue({ code: "custom", path: ["outputFormats"], message: "Select at least one required file format." });
+        }
+        if (data.outputFormats.includes("other") && !data.outputFormatOther?.trim()) {
+          ctx.addIssue({ code: "custom", path: ["outputFormatOther"], message: "Please enter the output format." });
+        }
+      }
 
-    const normalizedNumberOfColors = data.numberOfColors.trim().toLowerCase();
-    const isAccordingToLogo = normalizedNumberOfColors === "according to logo";
-    const isNumeric = /^\d+$/.test(data.numberOfColors.trim());
-    if (!isAccordingToLogo && !isNumeric) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["numberOfColors"],
-        message: "Use a number or select 'According to Logo'.",
-      });
+      if (data.orderType === "embroidery") {
+      if (!data.numberOfColors?.trim()) {
+        ctx.addIssue({ code: "custom", path: ["numberOfColors"], message: "Number of colors is required." });
+      } else {
+        const normalizedNumberOfColors = data.numberOfColors.trim().toLowerCase();
+        if (normalizedNumberOfColors !== "according to logo" && !/^\d+$/.test(data.numberOfColors.trim())) {
+          ctx.addIssue({ code: "custom", path: ["numberOfColors"], message: "Use a number or select 'According to Logo'." });
+        }
+      }
+      if (!data.unitType) ctx.addIssue({ code: "custom", path: ["unitType"], message: "Unit type is required." });
+      const hasWidth = Boolean(data.width?.trim());
+      const hasHeight = Boolean(data.height?.trim());
+      if (!hasWidth && !hasHeight) {
+        ctx.addIssue({ code: "custom", path: ["width"], message: "Either width or height is required." });
+        ctx.addIssue({ code: "custom", path: ["height"], message: "Either width or height is required." });
+      }
+      if (hasWidth && !/^\d+(\.\d+)?$/.test((data.width ?? "").trim())) {
+        ctx.addIssue({ code: "custom", path: ["width"], message: "Width must be a number." });
+      }
+      if (hasHeight && !/^\d+(\.\d+)?$/.test((data.height ?? "").trim())) {
+        ctx.addIssue({ code: "custom", path: ["height"], message: "Height must be a number." });
+      }
+      }
     }
 
     if (!data.whatsappOptIn) {
@@ -111,10 +119,19 @@ export const initialGetQouteFormState: GetQouteFormState = {
   country: "",
   orderType: "",
   designName: "",
+  turnaroundTime: "",
+  fabricType: "",
+  placementArea: "",
+  outputFormatOther: "",
+  outputFormats: [],
   numberOfColors: "",
   unitType: "",
   width: "",
   height: "",
+  appliqueRequired: "",
+  colorsName: "",
+  colorwayToUse: "",
+  colorwayToUseOther: "",
   additionalNotes: "",
   whatsappOptIn: false,
   files: [],

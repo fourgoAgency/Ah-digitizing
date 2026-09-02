@@ -16,6 +16,7 @@ import {
   isAllowedUploadFile,
   MAX_FILE_SIZE_BYTES,
   MAX_FILES_COUNT,
+  vectorOutputFormats,
 } from "../get-quote/lib/quote-form";
 import GetQuoteSearchParams from "./component/GetQouteParams";
 
@@ -37,6 +38,7 @@ const fieldValidationOrder = [
 ] as const;
 
 const numberOfColorOptions = ["According to Logo"];
+const turnaroundOptions = ["Standard", "Rush", "Super Rush"];
 
 const focusInvalidField = (field: string) => {
   if (typeof document === "undefined") return; // ✅ moved here, before the object literal
@@ -117,7 +119,26 @@ export default function GetQoutePage() {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      ...(name === "orderType" && value === "vector"
+        ? {
+            orderType: value,
+            fabricType: "",
+            placementArea: "",
+            numberOfColors: "",
+            unitType: "",
+            turnaroundTime: "",
+            outputFormats: [],
+            outputFormatOther: "",
+            width: "",
+            height: "",
+            appliqueRequired: "",
+            colorsName: "",
+            colorwayToUse: "",
+            colorwayToUseOther: "",
+          }
+        : name === "orderType" && value === "embroidery"
+          ? { orderType: value }
+          : { [name]: type === "checkbox" ? checked : value }),
     }));
     setErrors((prev) => {
       const next = { ...prev };
@@ -127,10 +148,23 @@ export default function GetQoutePage() {
     setSubmitMessage("");
   };
 
+  const handleOutputFormatToggle = (format: string) => {
+    setFormData((prev) => {
+      const outputFormatsNext = prev.outputFormats.includes(format)
+        ? prev.outputFormats.filter((item) => item !== format)
+        : [...prev.outputFormats, format];
+      return {
+        ...prev,
+        outputFormats: outputFormatsNext,
+        outputFormatOther: outputFormatsNext.includes("other") ? prev.outputFormatOther : "",
+      };
+    });
+    setErrors((prev) => ({ ...prev, outputFormats: "", outputFormatOther: "" }));
+    setSubmitMessage("");
+  };
+
   const emitFieldChange = (name: keyof GetQouteFormState, value: string) => {
-    handleFieldChange({
-      target: { name, value, type: "text" },
-    } as React.ChangeEvent<HTMLInputElement>);
+    handleFieldChange({ target: { name, value, type: "text" } } as React.ChangeEvent<HTMLInputElement>);
   };
 
   const handleContactValuesChange = useCallback(({ country, phone }: { country: string; phone: string }) => {
@@ -323,6 +357,19 @@ export default function GetQoutePage() {
         contactNumber: formData.contactNumber,
         orderType: formData.orderType,
         designName: formData.designName,
+        turnaroundTime: formData.turnaroundTime,
+        fabricType: formData.fabricType,
+        placementArea: formData.placementArea,
+        outputFormats: formData.outputFormats,
+        outputFormatOther: formData.outputFormatOther,
+        numberOfColors: formData.numberOfColors,
+        unitType: formData.unitType,
+        width: formData.width,
+        height: formData.height,
+        appliqueRequired: formData.appliqueRequired,
+        colorsName: formData.colorsName,
+        colorwayToUse: formData.colorwayToUse,
+        colorwayToUseOther: formData.colorwayToUseOther,
         additionalNotes: formData.additionalNotes,
         whatsappOptIn: formData.whatsappOptIn,
         files: uploadedFiles,
@@ -372,8 +419,8 @@ export default function GetQoutePage() {
   const previewHeight = formData.height?.trim() || (formData.width?.trim() ? "proportional" : "");
   const hasDesignSpecSelection = Boolean(
     formData.orderType ||
-    formData.designName.trim() ||
-    formData.numberOfColors.trim() ||
+    formData.designName?.trim() ||
+    formData.numberOfColors?.trim() ||
     formData.unitType ||
     formData.width?.trim() ||
     formData.height?.trim() ||
@@ -536,7 +583,7 @@ export default function GetQoutePage() {
                   {errors.orderType && <p className="mt-1 text-sm text-red-600">{errors.orderType}</p>}
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {formData.orderType === "embroidery" && <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="design-name" className="mb-1 block text-sm font-semibold text-gray-700">
                       Design Name *
@@ -561,7 +608,7 @@ export default function GetQoutePage() {
                       id="number-of-colors"
                       placeholder="Select or type number of color"
                       options={numberOfColorOptions}
-                      value={formData.numberOfColors}
+                      value={formData.numberOfColors ?? ""}
                       onSelectAction={(selected) => emitFieldChange("numberOfColors", selected)}
                     />
                     {errors.numberOfColors && <p className="mt-1 text-sm text-red-600">{errors.numberOfColors}</p>}
@@ -645,7 +692,14 @@ export default function GetQoutePage() {
                       onChange={handleFieldChange}
                     />
                   </div>
-                </div>
+                </div>}
+
+                {formData.orderType === "vector" && <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div><label htmlFor="vector-design-name" className="mb-1 block text-sm font-semibold text-gray-700">Design Name *</label><input id="vector-design-name" name="designName" className="input" placeholder="Enter design name" value={formData.designName} onChange={handleFieldChange} required />{errors.designName && <p className="mt-1 text-sm text-red-600">{errors.designName}</p>}</div>
+                  <div><label htmlFor="vector-turnaround-time" className="mb-1 block text-sm font-semibold text-gray-700">Turnaround Time *</label><CustomDropdown id="vector-turnaround-time" placeholder="Select turnaround" options={turnaroundOptions} value={formData.turnaroundTime ?? ""} allowTyping={false} onSelectAction={(selected) => emitFieldChange("turnaroundTime", selected)} />{errors.turnaroundTime && <p className="mt-1 text-sm text-red-600">{errors.turnaroundTime}</p>}</div>
+                  <div className="sm:col-span-2"><label className="mb-2 block text-sm font-semibold text-gray-700">Required File Formats *</label><div className="flex flex-wrap gap-2">{vectorOutputFormats.map((format) => <button key={format} type="button" className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${formData.outputFormats.includes(format) ? "border-primary bg-primary text-white" : "border-gray-300 bg-white text-gray-700"}`} onClick={() => handleOutputFormatToggle(format)}>{format}</button>)}<button type="button" className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${formData.outputFormats.includes("other") ? "border-primary bg-primary text-white" : "border-gray-300 bg-white text-gray-700"}`} onClick={() => handleOutputFormatToggle("other")}>OTHER</button></div>{formData.outputFormats.includes("other") && <input name="outputFormatOther" className="input mt-2" placeholder="Enter output format" value={formData.outputFormatOther ?? ""} onChange={handleFieldChange} />}{errors.outputFormats && <p className="mt-1 text-sm text-red-600">{errors.outputFormats}</p>}{errors.outputFormatOther && <p className="mt-1 text-sm text-red-600">{errors.outputFormatOther}</p>}</div>
+                  <div className="sm:col-span-2"><label htmlFor="vector-additional-notes" className="mb-1 block text-sm font-semibold text-gray-700">Additional Notes</label><textarea id="vector-additional-notes" name="additionalNotes" className="input h-24 resize-none" placeholder="Additional notes or instructions for your quote (optional)" value={formData.additionalNotes || ""} onChange={handleFieldChange} /></div>
+                </div>}
               </div>
             </div>
 
@@ -722,7 +776,6 @@ export default function GetQoutePage() {
                     name="whatsappOptIn"
                     checked={formData.whatsappOptIn}
                     onChange={handleFieldChange}
-                    required
                   />
                   I would like to receive updates and discuss my quote via WhatsApp.
                 </label>

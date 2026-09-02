@@ -2,7 +2,6 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChange } from '@/lib/firebase';
 import Sidebar from '@/components/(dashboard)/Sidebar';
 
 
@@ -12,18 +11,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChange((user) => {
-      if (user) {
-        setIsAuthenticated(true);
-        setLoading(false);
-      } else {
+    async function checkAdminSession() {
+      try {
+        const res = await fetch('/api/auth/session', {
+          cache: 'no-store',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        
+        // Check for admin session or custom admin user
+        if (data?.authenticated && data?.user?.role === 'admin') {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          router.push('/login');
+        }
+      } catch (err) {
         setIsAuthenticated(false);
-        setLoading(false);
         router.push('/login');
+      } finally {
+        setLoading(false);
       }
-    });
+    }
 
-    return () => unsubscribe();
+    checkAdminSession();
   }, [router]);
 
   if (loading) {

@@ -130,6 +130,7 @@ export default function AuthSlider() {
       const customResult = await parseJsonResponse(customResponse);
       if (customResponse.ok) {
         if (customResult.role === 'designer') router.push('/designer');
+        else if (customResult.role === 'admin') router.push('/admin');
         else router.push('/');
         return;
       }
@@ -177,6 +178,7 @@ export default function AuthSlider() {
       } else {
         // redirect based on role
         if (j.role === 'designer') router.push('/designer');
+        else if (j.role === 'admin') router.push('/admin');
         else router.push('/');
       }
     } catch (err) {

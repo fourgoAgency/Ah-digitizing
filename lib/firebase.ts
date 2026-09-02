@@ -79,6 +79,26 @@ linkedInProvider.addScope('r_liteprofile');
 linkedInProvider.addScope('r_emailaddress');
 
 async function getDocuments<T = DocumentData>(collectionName: string): Promise<Array<T & { id: string }>> {
+  // For admin collections, try API endpoint first (supports custom JWT admins)
+  const adminCollections = ['orders', 'quotes', 'quoteRequests', 'users', 'products', 'blogs', 'category', 'coupons', 'contactMessages', 'notifications', 'reviews', 'testimonials', 'pricing', 'portfolioIndex'];
+  
+  if (adminCollections.includes(collectionName)) {
+    try {
+      const res = await fetch(`/api/admin/collections?collection=${collectionName}`, {
+        cache: 'no-store',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const { documents } = await res.json();
+        return documents as Array<T & { id: string }>;
+      }
+    } catch (apiErr) {
+      // Fall through to client-side Firestore if API fails
+      console.debug(`API fetch failed for ${collectionName}, trying Firestore:`, apiErr);
+    }
+  }
+  
+  // Fallback to client-side Firestore (works for Firebase Auth users)
   const querySnapshot = await getDocs(collection(firestore, collectionName));
   return querySnapshot.docs.map((document) => ({
     id: document.id,

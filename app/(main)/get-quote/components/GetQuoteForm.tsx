@@ -852,7 +852,6 @@ const selectedOutputFormatLookup = useMemo(
               name="whatsappOptIn"
               checked={formData.whatsappOptIn}
               onChange={onFieldChangeAction}
-              required
             />
             I would like to receive updates and discuss my order via WhatsApp.
           </label>

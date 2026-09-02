@@ -17,10 +17,21 @@ function verifyToken(token?: string | null) {
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Protect admin routes: require admin_session cookie
+  // Protect admin routes: require admin_session cookie OR session cookie with role 'admin'
   if (pathname.startsWith('/admin')) {
-    const token = req.cookies.get('admin_session')?.value || null;
-    const admin = verifyToken(token);
+    // Check admin_session cookie (Firebase Auth admin)
+    let token = req.cookies.get('admin_session')?.value || null;
+    let admin = verifyToken(token);
+    
+    // If no admin_session, check session cookie for custom admin
+    if (!admin) {
+      token = req.cookies.get('session')?.value || null;
+      const payload = verifyToken(token) as { role?: string } | null;
+      if (payload?.role === 'admin') {
+        admin = payload;
+      }
+    }
+    
     if (!admin) {
       const url = req.nextUrl.clone();
       url.pathname = '/login';

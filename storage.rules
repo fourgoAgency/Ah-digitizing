@@ -39,6 +39,16 @@ service firebase.storage {
       allow write: if isAdmin();
     }
 
+    match /categories/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /testimonials/{allFiles=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Quote files - public read, staff can upload and manage
     match /quotes/{allFiles=**} {
       allow read: if true;

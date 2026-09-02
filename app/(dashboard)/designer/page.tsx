@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { CheckCircle2, Clock3, Download, Paperclip, UploadCloud } from 'lucide-react';
+import { CheckCircle2, Clock3, Download, UploadCloud } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
 import { firestore, uploadFile, updateDocument } from '@/lib/firebase';
 
@@ -115,48 +114,41 @@ export default function DesignerPage() {
   useEffect(() => {
     if (!customUser?.id && !customUser?.email) return;
 
-    const listeners = [
-      { source: 'quotes' as const, query: query(collection(firestore, 'quotes'), where('assignedDesignerId', '==', customUser.id)) },
-      { source: 'quoteRequests' as const, query: query(collection(firestore, 'quoteRequests'), where('assignedDesignerId', '==', customUser.id)) },
-      { source: 'quotes' as const, query: query(collection(firestore, 'quotes'), where('assignedDesignerEmail', '==', customUser.email)) },
-      { source: 'quoteRequests' as const, query: query(collection(firestore, 'quoteRequests'), where('assignedDesignerEmail', '==', customUser.email)) },
-    ];
+    async function fetchAssignedQuotes() {
+      try {
+        const res = await fetch('/api/designer/assigned-quotes', {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Failed to fetch assigned quotes');
+        const { assigned } = await res.json();
+        
+        const items: AssignedItem[] = assigned.map((doc: any) => ({
+          id: doc.id,
+          orderNumber: getString(doc, ['orderNumber'], 'Not Available'),
+          source: doc.source as 'quotes' | 'quoteRequests',
+          orderType: getString(doc, ['orderType', 'serviceType', 'type'], 'Quote'),
+          assignmentType: getString(doc, ['assignmentType'], 'Standard'),
+          status: getString(doc, ['status'], 'Assigned to Designer'),
+          assignedAt: getDate(doc.assignedAt),
+          deadline: getString(doc, ['submissionDeadline', 'deadline'], ''),
+          document: { ...doc, source: doc.source } as QuoteDoc,
+        }));
+        
+        setAssigned(items.sort((a, b) => (b.assignedAt?.getTime() || 0) - (a.assignedAt?.getTime() || 0)));
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load assigned quotes');
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    const seen = new Map<string, AssignedItem>();
-
-    const unsubscribeFns = listeners.map(({ source, query: assignedQuery }) =>
-      onSnapshot(
-        assignedQuery,
-        (snapshot) => {
-          snapshot.docs.forEach((document) => {
-            const data = { ...document.data(), id: document.id } as Record<string, unknown>;
-            const itemId = `${source}:${document.id}`;
-            const item: AssignedItem = {
-              id: document.id,
-              orderNumber: getString(data, ['orderNumber'], 'Not Available'),
-              source,
-              orderType: getString(data, ['orderType', 'serviceType', 'type'], 'Quote'),
-              assignmentType: getString(data, ['assignmentType'], 'Standard'),
-              status: getString(data, ['status'], 'Assigned to Designer'),
-              assignedAt: getDate(data.assignedAt),
-              deadline: getString(data, ['submissionDeadline', 'deadline'], ''),
-              document: { ...data, source } as QuoteDoc,
-            };
-            seen.set(itemId, item);
-          });
-          setAssigned(Array.from(seen.values()).sort((a, b) => (b.assignedAt?.getTime() || 0) - (a.assignedAt?.getTime() || 0)));
-          setLoading(false);
-        },
-        (snapshotError) => {
-          setError(snapshotError.message);
-          setLoading(false);
-        }
-      )
-    );
-
-    return () => {
-      unsubscribeFns.forEach((unsubscribe) => unsubscribe());
-    };
+    fetchAssignedQuotes();
+    
+    // Poll for updates every 10 seconds
+    const interval = setInterval(fetchAssignedQuotes, 10000);
+    
+    return () => clearInterval(interval);
   }, [customUser?.email, customUser?.id]);
 
   const activeItem = useMemo(() => selectedItem, [selectedItem]);
@@ -340,7 +332,7 @@ export default function DesignerPage() {
             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Submit result</p>
-                <h3 className="mt-1 text-xl font-bold text-slate-950">Order {activeItem.orderNumber}</h3>
+                <h3 className="mt-1 text-xl font-bold text-slate-950">Order No: {activeItem.orderNumber}</h3>
                 <p className="mt-1 text-sm text-slate-600">Upload the final file when the work is complete.</p>
               </div>
               <div className="flex items-center gap-2">
@@ -359,9 +351,9 @@ export default function DesignerPage() {
                     setSelectedItem(null);
                     setSelectedFile(null);
                   }}
-                  className="rounded-full border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
+                  className="rounded-full border border-slate-200 p-2 px-3 text-slate-500 transition hover:bg-slate-50"
                 >
-                  <Paperclip className="h-4 w-4 rotate-45" />
+                  X
                 </button>
               </div>
             </div>

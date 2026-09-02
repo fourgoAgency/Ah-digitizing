@@ -24,6 +24,10 @@ service cloud.firestore {
       return isAdmin() || hasRole('designer');
     }
 
+    function isPublicSequence(sequenceName) {
+      return sequenceName in ['orderSequence', 'quoteSequence', 'freeQuoteSequence'];
+    }
+
     function quoteCanBeFinalized() {
       return resource.data.status == 'pending_verification'
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['files', 'status', 'submittedAt'])
@@ -57,7 +61,7 @@ service cloud.firestore {
 
     // Public quote forms use separate monthly counters for regular and free quotes.
     match /metadata/{sequenceName} {
-      allow read: if true;
+      allow read: if isPublicSequence(sequenceName);
       allow create: if sequenceName in ['quoteSequence', 'freeQuoteSequence']
         && request.resource.data.keys().hasOnly(['month', 'value'])
         && request.resource.data.month is string
@@ -119,6 +123,15 @@ service cloud.firestore {
 
     match /coupons/{couponId} {
       allow read, write: if isAdmin();
+    }
+
+    match /contactMessages/{messageId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /notifications/{notificationId} {
