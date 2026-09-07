@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signInWithCustomToken,
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
@@ -233,6 +234,11 @@ async function signInWithEmailPassword(email: string, password: string): Promise
   return userCredential.user;
 }
 
+async function signInWithFirebaseCustomToken(token: string): Promise<User> {
+  const userCredential = await signInWithCustomToken(auth, token);
+  return userCredential.user;
+}
+
 async function signOutUser(): Promise<void> {
   await signOut(auth);
 }
@@ -339,6 +345,7 @@ export {
   updateDocument,
   deleteDocument,
   signUpWithEmailPassword,
+  signInWithFirebaseCustomToken,
   signInWithEmailPassword,
   signInWithGoogle,
   signInWithFacebook,

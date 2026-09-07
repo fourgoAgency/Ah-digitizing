@@ -17,7 +17,7 @@ export default function Banner() {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const h2Ref = useRef<HTMLHeadingElement>(null);
     const [h2Text, setH2Text] = useState("Embroidery digitizing");
-    const [hoveredButton, setHoveredButton] = useState<'contact' | 'login' | null>(null);
+    const [hoveredButton, setHoveredButton] = useState<'contact' | 'get-quote' | null>(null);
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -115,7 +115,7 @@ export default function Banner() {
                                 className={`border shadow-xl cursor-pointer rounded-full px-10 transition-all duration-200 bg-transparent ${
                                     hoveredButton === 'contact'
                                         ? 'bg-secondary text-white border-secondary'
-                                        : hoveredButton === 'login'
+                                        : hoveredButton === 'get-quote'
                                         ? 'bg-white text-secondary border-white'
                                         : 'border-white text-white'
                                 }`}
@@ -127,16 +127,16 @@ export default function Banner() {
                             <Button
                                 asChild
                                 className={`border shadow-xl cursor-pointer rounded-full px-10 transition-all duration-200 ${
-                                    hoveredButton === 'login'
+                                    hoveredButton === 'get-quote'
                                         ? 'bg-white text-white border-white'
                                         : hoveredButton === 'contact'
                                         ? 'bg-white text-secondary border-white'
                                         : 'bg-white text-primary border-white'
                                 }`}
-                                onMouseEnter={() => setHoveredButton('login')}
+                                onMouseEnter={() => setHoveredButton('get-quote')}
                                 onMouseLeave={() => setHoveredButton(null)}
                             >
-                                <Link href="/login">Login</Link>
+                                <Link href="/get-quote">Order</Link>
                             </Button>
                         </div>
 

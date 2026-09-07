@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { FaFacebookF, FaGithub, FaGoogle, FaLinkedinIn } from "react-icons/fa";
 import {
   signInWithEmailPassword,
-  signInWithFirebaseCustomToken,
   sendPasswordReset,
   signInWithGoogle,
   signInWithFacebook,
@@ -96,6 +95,8 @@ function FeedbackMessage({ type, message }: { type: 'error' | 'success'; message
 
 export default function AuthSlider() {
   const router = useRouter();
+  const [isSignup, setIsSignup] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -128,34 +129,8 @@ export default function AuthSlider() {
       });
       const customResult = await parseJsonResponse(customResponse);
       if (customResponse.ok) {
-        if (customResult.role === 'admin') {
-          // Firestore rules need a Firebase Auth user, not only the custom JWT cookie.
-          try {
-            const adminUser = customResult.firebaseToken
-              ? await signInWithFirebaseCustomToken(customResult.firebaseToken)
-              : await signInWithEmailPassword(email, password);
-            const idToken = await adminUser.getIdToken();
-            const adminSessionResponse = await fetch('/api/auth/admin-session', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ idToken }),
-            });
-
-            if (!adminSessionResponse.ok) {
-              const adminSessionResult = await parseJsonResponse(adminSessionResponse);
-              setError(adminSessionResult?.error || 'Unable to create admin session.');
-              return;
-            }
-
-            router.push('/admin');
-            return;
-          } catch {
-            setError('Admin login requires a valid Firebase account with the same email and password.');
-            return;
-          }
-        }
-
         if (customResult.role === 'designer') router.push('/designer');
+        else if (customResult.role === 'admin') router.push('/admin');
         else router.push('/');
         return;
       }
@@ -213,6 +188,31 @@ export default function AuthSlider() {
     }
   };
 
+  const handleSignUp = async () => {
+    resetFeedback();
+    setLoading(true);
+
+    try {
+      // Register user in Firestore via server endpoint (hashing done server-side)
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role: 'user' }),
+      });
+      const j = await parseJsonResponse(res);
+      if (!res.ok) {
+        setError(j?.error || 'Unable to create account');
+      } else {
+        setMessage('Account created. Please sign in.');
+        setIsSignup(false);
+      }
+    } catch (err) {
+      setError((err as Error).message || "Unable to create an account.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleResetPassword = async () => {
     resetFeedback();
     if (!email) {
@@ -243,7 +243,7 @@ export default function AuthSlider() {
         body: JSON.stringify({ idToken }),
       });
       if (r.ok) {
-        router.push('/admin');
+        router.push('/');
         return;
       }
       const errorJson = await parseJsonResponse(r);
@@ -267,7 +267,7 @@ export default function AuthSlider() {
         body: JSON.stringify({ idToken }),
       });
       if (r.ok) {
-        router.push('/admin');
+        router.push('/');
         return;
       }
       const errorJson = await parseJsonResponse(r);
@@ -291,7 +291,7 @@ export default function AuthSlider() {
         body: JSON.stringify({ idToken }),
       });
       if (r.ok) {
-        router.push('/admin');
+        router.push('/');
         return;
       }
       const errorJson = await parseJsonResponse(r);
@@ -303,15 +303,30 @@ export default function AuthSlider() {
     }
   };
 
+  // Social sign-ins are considered admin flows; they redirect to admin dashboard on success.
+
   const handleSubmitSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await handleSignIn();
   };
 
+  const handleSubmitSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await handleSignUp();
+  };
+
   return (
     <section className="font-inter flex min-h-screen w-full items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md overflow-hidden rounded-[26px] bg-background shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-border">
-        <div className="flex py-10 items-center justify-center bg-background px-6  sm:px-10">
+      <div className="w-full max-w-4xl overflow-hidden rounded-[26px] bg-background shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-border">
+        <div className="relative hidden h-155 md:block">
+          <div className="absolute inset-0 overflow-hidden">
+            <div
+              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-all duration-700 ease-out will-change-transform ${
+                isSignup
+                  ? "translate-x-full opacity-0 pointer-events-none"
+                  : "translate-x-0 opacity-100 pointer-events-auto"
+              }`}
+            >
               <form className="w-full max-w-sm space-y-5" onSubmit={handleSubmitSignIn}>
                 <h2 className="text-center text-4xl font-bold tracking-tight text-foreground">Sign In</h2>
                 {error ? <FeedbackMessage type="error" message={error} /> : null}
@@ -339,6 +354,153 @@ export default function AuthSlider() {
                   {loading ? "Signing In..." : "Sign In"}
                 </button>
               </form>
+            </div>
+
+            <div
+              className={`absolute left-0 top-0 flex h-full w-1/2 items-center justify-center bg-background px-10 transition-all duration-700 ease-out will-change-transform backface-hidden transform-[translateZ(0)] ${
+                isSignup
+                  ? "translate-x-full opacity-100 pointer-events-auto"
+                  : "translate-x-[200%] opacity-0 pointer-events-none"
+              }`}
+            >
+              {/* <form className="w-full max-w-sm space-y-5" onSubmit={handleSubmitSignUp}>
+                <h2 className="text-center text-4xl font-bold tracking-tight text-foreground">Sign Up</h2>
+                {error ? <FeedbackMessage type="error" message={error} /> : null}
+                {message ? <FeedbackMessage type="success" message={message} /> : null}
+                <SocialButtons
+                  onGoogle={handleGoogleSignIn}
+                  onFacebook={handleFacebookSignIn}
+                  onLinkedIn={handleLinkedInSignIn}
+                  disabled={loading}
+                />
+                <Input placeholder="Enter Name" value={name} onChange={setName} />
+                <Input type="email" placeholder="Enter E-mail" value={email} onChange={setEmail} />
+                <Input type="password" placeholder="Enter Password" value={password} onChange={setPassword} />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="mx-auto block w-40 rounded-xl bg-primary py-3 cursor-pointer text-base font-bold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? "Signing Up..." : "Sign Up"}
+                </button>
+              </form> */}
+            </div>
+          </div>
+
+          <div
+            className={`absolute left-1/2 top-0 z-30 h-full w-1/2 overflow-hidden transition-transform duration-700 ease-out will-change-transform ${
+              isSignup ? "-translate-x-full" : "translate-x-0"
+            }`}
+          >
+            <div
+              className={`absolute -left-full top-0 flex h-full w-[200%] transition-transform duration-700 ease-out will-change-transform ${
+                isSignup ? "translate-x-1/2" : "translate-x-0"
+              }`}
+            >
+              <div className="flex h-full w-1/2 items-center justify-center bg-primary px-10 text-primary-foreground">
+                <div className="space-y-6 text-center">
+                  <h3 className="text-5xl font-bold">Welcome to AH Digitizing</h3>
+                  <p className="text-lg text-primary-foreground/95">Sign in now and enjoy our site</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsSignup(false)}
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base cursor-pointer font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
+                  >
+                    Sign In
+                  </button>
+                </div>
+              </div>
+
+              {/* <div className="flex h-full w-1/2 items-center justify-center bg-primary px-10 text-primary-foreground">
+                <div className="space-y-6 text-center">
+                  <h3 className="text-5xl font-bold">Hello</h3>
+                  <p className="text-lg text-primary-foreground/95">Sign up now and enjoy our products</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsSignup(true)}
+                    className="rounded-xl border-2 border-primary-foreground px-14 py-3 text-base cursor-pointer font-bold uppercase transition hover:bg-primary-foreground hover:text-primary"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              </div> */}
+            </div>
+          </div>
+        </div>
+
+        <div className="block bg-background p-6 md:hidden">
+          <div className="mb-6 grid grid-cols-2 overflow-hidden rounded-full border border-border">
+            <button
+              type="button"
+              onClick={() => setIsSignup(false)}
+              className={`py-2 text-sm font-semibold transition cursor-pointer ${
+                !isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsSignup(true)}
+              className={`py-2 text-sm font-semibold cursor-pointer transition ${
+                isSignup ? "bg-primary text-primary-foreground" : "bg-background text-foreground"
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          {!isSignup ? (
+            <form className="space-y-4" onSubmit={handleSubmitSignIn}>
+              <h2 className="text-center text-3xl font-bold text-foreground">Sign In</h2>
+              {error ? <FeedbackMessage type="error" message={error} /> : null}
+              {message ? <FeedbackMessage type="success" message={message} /> : null}
+              <SocialButtons
+                onGoogle={handleGoogleSignIn}
+                onFacebook={handleFacebookSignIn}
+                onLinkedIn={handleLinkedInSignIn}
+                disabled={loading}
+              />
+              <Input type="email" placeholder="Enter E-mail" value={email} onChange={setEmail} />
+              <Input type="password" placeholder="Enter Password" value={password} onChange={setPassword} />
+              <button
+                className="block w-full text-center text-base text-foreground/80 transition hover:text-primary"
+                type="button"
+                onClick={handleResetPassword}
+              >
+                Forget Password?
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="mx-auto block w-40 rounded-xl cursor-pointer bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? "Signing In..." : "Sign In"}
+              </button>
+            </form>
+          ) : (null
+            // <form className="space-y-4" onSubmit={handleSubmitSignUp}>
+            //   <h2 className="text-center text-3xl font-bold text-foreground">Sign Up</h2>
+            //   {error ? <FeedbackMessage type="error" message={error} /> : null}
+            //   {message ? <FeedbackMessage type="success" message={message} /> : null}
+            //   <SocialButtons
+            //     onGoogle={handleGoogleSignIn}
+            //     onFacebook={handleFacebookSignIn}
+            //     onLinkedIn={handleLinkedInSignIn}
+            //     disabled={loading}
+            //   />
+            //   <Input placeholder="Enter Name" value={name} onChange={setName} />
+            //   <Input type="email" placeholder="Enter E-mail" value={email} onChange={setEmail} />
+            //   <Input type="password" placeholder="Enter Password" value={password} onChange={setPassword} />
+            //   <button
+            //     type="submit"
+            //     disabled={loading}
+            //     className="mx-auto block w-40 cursor-pointer rounded-xl bg-primary py-3 text-base font-bold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+            //   >
+            //     {loading ? "Signing Up..." : "Sign Up"}
+            //   </button>
+            // </form>
+          )}
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { adminFirestore, emailToId } from '@/lib/firebaseAdmin';
+import { adminAuth, adminFirestore, emailToId } from '@/lib/firebaseAdmin';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me';
 
@@ -25,6 +25,27 @@ export async function handleCustomLogin(req: Request) {
     const match = await bcrypt.compare(password, hashed);
     if (!match) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
+    let firebaseToken: string | undefined;
+    if ((data.role || 'user') === 'admin') {
+      if (!adminAuth) return NextResponse.json({ error: 'Firebase Admin SDK is not configured' }, { status: 500 });
+
+      let firebaseUser;
+      try {
+        firebaseUser = await adminAuth.getUserByEmail(email.toLowerCase());
+      } catch (error: unknown) {
+        const authError = error as { code?: string };
+        if (authError.code !== 'auth/user-not-found') throw error;
+        firebaseUser = await adminAuth.createUser({
+          email: email.toLowerCase(),
+          password,
+        });
+      }
+
+      firebaseToken = await adminAuth.createCustomToken(firebaseUser.uid, {
+        admin: true,
+      });
+    }
+
     if ((data.role || 'user') === 'user') {
       await adminFirestore.doc(`users/${id}`).set(
         {
@@ -40,7 +61,13 @@ export async function handleCustomLogin(req: Request) {
     const payload = { email: data.email, role: data.role || 'user', id };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 
-    const res = NextResponse.json({ ok: true, role: payload.role, id: payload.id, email: payload.email });
+    const res = NextResponse.json({
+      ok: true,
+      role: payload.role,
+      id: payload.id,
+      email: payload.email,
+      ...(firebaseToken ? { firebaseToken } : {}),
+    });
     res.cookies.set('session', token, {
       httpOnly: true,
       sameSite: 'lax',

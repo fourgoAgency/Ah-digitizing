@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { collection, deleteField, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { Download, Eye, Trash2, X } from "lucide-react";
 import { deleteDocument, firestore, uploadFile } from "@/lib/firebase";
 import { createQuoteText } from "@/lib/quote-text";
@@ -32,9 +32,35 @@ const quoteInfoOrder = [
 const quoteStatuses = [
   "Pending",
   "Assigned to Designer",
-  "Submitted",
+  "Edit",
   "Completed"
 ] as const;
+
+const statusOrder: Record<string, number> = {
+  pending: 0,
+  "assigned to designer": 1,
+  completed: 2,
+};
+
+function getStatusPriority(status: string) {
+  const normalized = status.trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+  const statusKey = Object.keys(statusOrder).find((key) => normalized === key || normalized.startsWith(`${key} `));
+  return statusKey ? statusOrder[statusKey] : Object.keys(statusOrder).length;
+}
+
+function getStatusLabel(status: string) {
+  const normalized = status.trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+  if (normalized.includes("completed")) return "Completed";
+  if (normalized.includes("assigned")) return "Assigned to Designer";
+  return "Pending";
+}
+
+function getTurnaroundPriority(type: string) {
+  const normalized = type.toLowerCase();
+  if (normalized.includes("super rush")) return 0;
+  if (normalized.includes("rush")) return 1;
+  return 2;
+}
 
 function getString(document: QuoteDocument, keys: string[], fallback = "") {
   for (const key of keys) {
@@ -206,6 +232,7 @@ export default function GetQuoteAdminPage() {
   const [assignmentType, setAssignmentType] = useState("Standard");
   const [selectedSubmissionFiles, setSelectedSubmissionFiles] = useState<File[]>([]);
   const [assigningDesigner, setAssigningDesigner] = useState(false);
+  const [cancelingAssignment, setCancelingAssignment] = useState(false);
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [downloadingSubmission, setDownloadingSubmission] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
@@ -255,12 +282,18 @@ export default function GetQuoteAdminPage() {
         createdAt: getDate(quote.createdAt) || getDate(quote.submittedAt),
         customer: getString(quote, ["fullName", "name"], "Customer"),
         email: getString(quote, ["email"]),
-        status: getString(quote, ["status"], "Pending"),
+        status: getStatusLabel(getString(quote, ["status"], "Pending")),
         document: quote,
       })).filter((row) => {
         const search = (searchParams.get("q") || "").trim().toLowerCase();
         const status = searchParams.get("status") || "all";
         return (!search || row.id.toLowerCase().includes(search) || row.orderNo.toLowerCase().includes(search) || row.customer.toLowerCase().includes(search)) && (status === "all" || row.status.toLowerCase() === status.toLowerCase());
+      }).sort((first, second) => {
+        const statusDifference = getStatusPriority(first.status) - getStatusPriority(second.status);
+        if (statusDifference !== 0) return statusDifference;
+        const turnaroundDifference = getTurnaroundPriority(first.type) - getTurnaroundPriority(second.type);
+        if (turnaroundDifference !== 0) return turnaroundDifference;
+        return (second.createdAt?.getTime() || 0) - (first.createdAt?.getTime() || 0);
       }),
     [quotes, searchParams]
   );
@@ -367,6 +400,53 @@ export default function GetQuoteAdminPage() {
     }
   }
 
+  async function cancelAssignment() {
+    if (!activeQuote?.assignedDesignerId) return;
+    setCancelingAssignment(true);
+    setAssignmentMessage(null);
+
+    try {
+      await updateDoc(doc(firestore, "quotes", activeQuote.id), {
+        assignedDesignerId: deleteField(),
+        assignedDesignerName: deleteField(),
+        assignedDesignerEmail: deleteField(),
+        assignedAt: deleteField(),
+        assignmentFiles: deleteField(),
+        submissionDeadline: deleteField(),
+        designerSubmission: deleteField(),
+        designerSubmissionUrl: deleteField(),
+        designerSubmissionPath: deleteField(),
+        designerSubmittedAt: deleteField(),
+        status: "Pending",
+      });
+      setActiveQuote({ ...activeQuote, status: "Pending", assignedDesignerId: undefined });
+      setAssignmentMessage("Assignment cancelled.");
+    } catch (error) {
+      setAssignmentMessage(error instanceof Error ? error.message : "Unable to cancel assignment.");
+    } finally {
+      setCancelingAssignment(false);
+    }
+  }
+
+  async function requestEdit() {
+    if (!activeQuote?.assignedDesignerId) return;
+    const editRequest = window.prompt("What changes should the designer make?", getString(activeQuote, ["editRequest", "adminEditRequest"]));
+    if (editRequest === null) return;
+
+    setAssignmentMessage(null);
+    try {
+      await updateDoc(doc(firestore, "quotes", activeQuote.id), {
+        status: "Edit",
+        editRequest: editRequest.trim(),
+        editRequestedAt: serverTimestamp(),
+      });
+      setActiveQuote({ ...activeQuote, status: "Edit", editRequest: editRequest.trim() });
+      setAssignmentMessage("Edit request sent to the designer.");
+    } catch (error) {
+      setAssignmentMessage(error instanceof Error ? error.message : "Unable to request edits.");
+    }
+  }
+
   async function downloadQuoteFiles(quote: QuoteDocument) {
     const files = Array.isArray(quote.files) ? quote.files : [];
     if (files.length === 0) return;
@@ -445,7 +525,7 @@ export default function GetQuoteAdminPage() {
   const assignmentDetails: Array<[string, unknown]> = [
     ["Submission Deadline", activeQuote?.submissionDeadline],
     ["Assigned At", activeQuote?.assignedAt],
-    ["Assignment Type", activeQuote?.assignmentType],
+    ["Turn Around Time", activeQuote?.assignmentType],
     ["Assigned Designer Id", activeQuote?.assignedDesignerId],
     ["Assigned Designer Name", activeQuote?.assignedDesignerName],
     ["Assigned Designer Email", activeQuote?.assignedDesignerEmail],
@@ -475,7 +555,7 @@ export default function GetQuoteAdminPage() {
               <th className="py-3">Order</th>
               <th className="py-3">Date</th>
               <th className="py-3">Customer</th>
-              <th className="py-3">Type</th>
+              <th className="py-3">Turn Around Time</th>
               <th className="py-3">Order Status</th>
               <th className="py-3 text-right">Action</th>
             </tr>
@@ -569,7 +649,7 @@ export default function GetQuoteAdminPage() {
                   </div>
                 </div>
                 <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto]">
-                  <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Type</span><select value={assignmentType} onChange={(event) => setAssignmentType(event.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"><option>Standard</option><option>Rush</option><option>Super Rush</option></select></label>
+                  <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Turn Around Time</span><select value={assignmentType} onChange={(event) => setAssignmentType(event.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500"><option>Standard</option><option>Rush</option><option>Super Rush</option></select></label>
                   <label className="block">
                     <span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Designer</span>
                     <select value={selectedDesignerId} onChange={(event) => setSelectedDesignerId(event.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500">
@@ -589,6 +669,16 @@ export default function GetQuoteAdminPage() {
                   <button type="button" disabled={!selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0 || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">
                     {assigningDesigner ? "Assigning..." : "Assign"}
                   </button>
+                  {activeQuote.assignedDesignerId && activeQuote.status !== "Completed" ? (
+                    <button type="button" disabled={cancelingAssignment} onClick={cancelAssignment} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 lg:mt-[19px]">
+                      {cancelingAssignment ? "Cancelling..." : "Cancel Assignment"}
+                    </button>
+                  ) : null}
+                  {activeQuote.assignedDesignerId && String(activeQuote.status || "").toLowerCase().includes("completed") ? (
+                    <button type="button" onClick={requestEdit} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-amber-200 bg-white px-4 text-sm font-semibold text-amber-700 hover:bg-amber-50 lg:mt-[19px]">
+                      Request Edit
+                    </button>
+                  ) : null}
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">

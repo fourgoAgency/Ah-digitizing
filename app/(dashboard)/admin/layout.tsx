@@ -3,7 +3,31 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/(dashboard)/Sidebar';
+import { AuthProvider, useAuth } from '@/context/AuthProvider';
 
+function AdminFirebaseGate({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const { adminUser, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !adminUser) {
+      router.push('/login');
+    }
+  }, [adminUser, loading, router]);
+
+  if (loading || !adminUser) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+          <p className="text-foreground">Connecting to Firebase...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -53,11 +77,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <>
-      <div className="flex min-h-[calc(100vh-64px)]">
-        <Sidebar />
-        <main className="flex-1">{children}</main>
-      </div>
-    </>
+    <AuthProvider>
+      <AdminFirebaseGate>
+        <div className="flex min-h-[calc(100vh-64px)]">
+          <Sidebar />
+          <main className="flex-1">{children}</main>
+        </div>
+      </AdminFirebaseGate>
+    </AuthProvider>
   );
 }

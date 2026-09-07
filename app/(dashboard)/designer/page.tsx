@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Clock3, Download, UploadCloud } from 'lucide-react';
+import { Check, CheckCircle2, ChevronDown, Clock3, Download, RotateCcw, UploadCloud } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
 import { firestore, uploadFile, updateDocument } from '@/lib/firebase';
 
@@ -19,6 +19,70 @@ type AssignedItem = {
   document: QuoteDoc;
 };
 
+type FilterOption = { value: string; label: string };
+type CompletedBreakdown = {
+  orderTypes: { Embroidery: number; Vector: number; Quote: number };
+  turnaround: { Standard: number; Rush: number; 'Super Rush': number };
+};
+
+function FilterDropdown({
+  label,
+  value,
+  options,
+  open,
+  onToggle,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: FilterOption[];
+  open: boolean;
+  onToggle: () => void;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="relative min-w-40">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={onToggle}
+        className={`flex w-full items-center justify-between gap-3 rounded-lg px-2 py-1 text-left transition ${
+          open ? 'bg-slate-100 text-slate-950' : 'hover:bg-slate-100/80'
+        }`}
+      >
+        <span>{label}</span>
+        <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open ? (
+        <div className="absolute left-0 top-[calc(100%+8px)] z-50 min-w-48 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 text-left normal-case tracking-normal shadow-xl ring-1 ring-slate-950/5" role="listbox">
+          {options.map((option) => {
+            const selected = value === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={selected}
+                onClick={() => {
+                  onChange(option.value);
+                }}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  selected ? 'bg-slate-100 text-slate-950' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                }`}
+              >
+                {option.label}
+                {selected ? <Check className="h-4 w-4 text-slate-900" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
 }
@@ -29,6 +93,22 @@ function getString(document: Record<string, unknown>, keys: string[], fallback =
     if (typeof value === 'string' && value.trim()) return value.trim();
   }
   return fallback;
+}
+
+function getTurnaroundPriority(value: string) {
+  const normalized = value.toLowerCase();
+  if (normalized.includes('super rush')) return 0;
+  if (normalized.includes('rush')) return 1;
+  return 2;
+}
+
+function getOrderType(value: unknown, source: AssignedItem['source']) {
+  if (source === 'quoteRequests') return 'Quote';
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized.includes('embroidery')) return 'Embroidery';
+  if (normalized.includes('vector')) return 'Vector';
+  if (normalized.includes('quote')) return 'Quote';
+  return normalized ? normalized.charAt(0).toUpperCase() + normalized.slice(1) : 'Quote';
 }
 
 function getDate(value: unknown): Date | null {
@@ -49,12 +129,20 @@ function getDate(value: unknown): Date | null {
     return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
   }
 
+  // Firestore Timestamps become plain objects when returned through the API.
+  const seconds = record?._seconds ?? record?.seconds;
+  const nanoseconds = record?._nanoseconds ?? record?.nanoseconds ?? 0;
+  if (typeof seconds === 'number' && typeof nanoseconds === 'number') {
+    const date = new Date(seconds * 1000 + nanoseconds / 1_000_000);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
   return null;
 }
 
-function formatDeadline(value: string) {
+function formatDeadline(value: string | Date) {
   const date = getDate(value);
-  if (!date) return value || 'Not set';
+  if (!date) return typeof value === 'string' && value ? value : 'Not set';
   return new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -103,6 +191,11 @@ function collectAssignmentFiles(document: Record<string, unknown>): QuoteFileEnt
 export default function DesignerPage() {
   const { customUser } = useAuth();
   const [assigned, setAssigned] = useState<AssignedItem[]>([]);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [completedBreakdown, setCompletedBreakdown] = useState<CompletedBreakdown>({
+    orderTypes: { Embroidery: 0, Vector: 0, Quote: 0 },
+    turnaround: { Standard: 0, Rush: 0, 'Super Rush': 0 },
+  });
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<AssignedItem | null>(null);
@@ -110,6 +203,9 @@ export default function DesignerPage() {
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [orderTypeFilter, setOrderTypeFilter] = useState('');
+  const [turnaroundFilter, setTurnaroundFilter] = useState('');
+  const [openFilter, setOpenFilter] = useState<'orderType' | 'turnaround' | null>(null);
 
   useEffect(() => {
     if (!customUser?.id && !customUser?.email) return;
@@ -120,13 +216,13 @@ export default function DesignerPage() {
           credentials: 'include',
         });
         if (!res.ok) throw new Error('Failed to fetch assigned quotes');
-        const { assigned } = await res.json();
+        const { assigned, completedCount: completedAssignments = 0, completedBreakdown: savedBreakdown } = await res.json();
         
         const items: AssignedItem[] = assigned.map((doc: any) => ({
           id: doc.id,
           orderNumber: getString(doc, ['orderNumber'], 'Not Available'),
           source: doc.source as 'quotes' | 'quoteRequests',
-          orderType: getString(doc, ['orderType', 'serviceType', 'type'], 'Quote'),
+          orderType: getOrderType(getString(doc, ['orderType', 'serviceType', 'type'], 'Quote'), doc.source as AssignedItem['source']),
           assignmentType: getString(doc, ['assignmentType'], 'Standard'),
           status: getString(doc, ['status'], 'Assigned to Designer'),
           assignedAt: getDate(doc.assignedAt),
@@ -134,7 +230,13 @@ export default function DesignerPage() {
           document: { ...doc, source: doc.source } as QuoteDoc,
         }));
         
-        setAssigned(items.sort((a, b) => (b.assignedAt?.getTime() || 0) - (a.assignedAt?.getTime() || 0)));
+        setAssigned(items.sort((a, b) => {
+          const turnaroundDifference = getTurnaroundPriority(a.assignmentType) - getTurnaroundPriority(b.assignmentType);
+          if (turnaroundDifference !== 0) return turnaroundDifference;
+          return (b.assignedAt?.getTime() || 0) - (a.assignedAt?.getTime() || 0);
+        }));
+        setCompletedCount(Number(completedAssignments) || 0);
+        if (savedBreakdown) setCompletedBreakdown(savedBreakdown);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load assigned quotes');
@@ -153,12 +255,30 @@ export default function DesignerPage() {
 
   const activeItem = useMemo(() => selectedItem, [selectedItem]);
 
+  const filteredAssigned = useMemo(
+    () => assigned.filter((item) => {
+      const matchesOrderType = !orderTypeFilter || item.orderType.toLowerCase() === orderTypeFilter;
+      const matchesTurnaround = !turnaroundFilter || item.assignmentType.toLowerCase() === turnaroundFilter;
+      return matchesOrderType && matchesTurnaround;
+    }),
+    [assigned, orderTypeFilter, turnaroundFilter]
+  );
+
   const stats = useMemo(() => {
-    const total = assigned.length;
-    const submitted = assigned.filter((item) => getSubmissionInfo(item.document).url).length;
-    const pending = total - submitted;
-    return { total, submitted, pending };
-  }, [assigned]);
+    const isEditItem = (item: AssignedItem) => item.status.toLowerCase().includes('edit') || item.status.toLowerCase().includes('change');
+    const activeSubmitted = assigned.filter((item) => !isEditItem(item) && getSubmissionInfo(item.document).url).length;
+    const total = assigned.length + completedCount;
+    const submitted = completedCount + activeSubmitted;
+    const pending = assigned.filter((item) => !isEditItem(item) && !getSubmissionInfo(item.document).url).length;
+    const edit = assigned.filter(isEditItem).length;
+    const embroidery = assigned.filter((item) => item.orderType === 'Embroidery').length + completedBreakdown.orderTypes.Embroidery;
+    const vector = assigned.filter((item) => item.orderType === 'Vector').length + completedBreakdown.orderTypes.Vector;
+    const quote = assigned.filter((item) => item.orderType === 'Quote').length + completedBreakdown.orderTypes.Quote;
+    const standard = assigned.filter((item) => item.assignmentType.toLowerCase() === 'standard').length + completedBreakdown.turnaround.Standard;
+    const rush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'rush').length + completedBreakdown.turnaround.Rush;
+    const superRush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'super rush').length + completedBreakdown.turnaround['Super Rush'];
+    return { total, submitted, pending, edit, embroidery, vector, quote, standard, rush, superRush };
+  }, [assigned, completedCount, completedBreakdown]);
 
   async function handleSubmitResult() {
     if (!activeItem || !selectedFile) return;
@@ -188,6 +308,8 @@ export default function DesignerPage() {
         status: 'Completed',
       });
 
+      setAssigned((current) => current.filter((item) => !(item.id === activeItem.id && item.source === activeItem.source)));
+      setCompletedCount((current) => current + 1);
       setMessage('Submission uploaded successfully.');
       setSelectedItem(null);
       setSelectedFile(null);
@@ -230,27 +352,35 @@ export default function DesignerPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Designer workspace</p>
             <h1 className="mt-1 text-2xl font-bold text-slate-950">Assigned quotes</h1>
             <p className="mt-1 text-sm text-slate-600">Upload the finished artwork or embroidery file when you are done.</p>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <Stat label="Assigned" value={stats.total} />
-            <Stat label="Submitted" value={stats.submitted} />
-            <Stat label="Pending" value={stats.pending} />
-          </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {error ? (
           <div className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>
         ) : null}
         {message ? (
           <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{message}</div>
         ) : null}
+
+        <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-5 2xl:grid-cols-10">
+          <Stat label="Assigned" value={stats.total} />
+          <Stat label="Submitted" value={stats.submitted} />
+          <Stat label="Pending" value={stats.pending} />
+          <Stat label="Edit" value={stats.edit} />
+          <Stat label="Embroidery" value={stats.embroidery} />
+          <Stat label="Vector" value={stats.vector} />
+          <Stat label="Quote" value={stats.quote} />
+          <Stat label="Standard" value={stats.standard} />
+          <Stat label="Rush" value={stats.rush} />
+          <Stat label="Super Rush" value={stats.superRush} />
+        </div>
 
         <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
@@ -260,7 +390,20 @@ export default function DesignerPage() {
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <Clock3 className="h-4 w-4" />
-              {loading ? 'Loading...' : `${assigned.length} item${assigned.length === 1 ? '' : 's'}`}
+              {loading ? 'Loading...' : `${filteredAssigned.length} item${filteredAssigned.length === 1 ? '' : 's'}`}
+              {orderTypeFilter || turnaroundFilter ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderTypeFilter('');
+                    setTurnaroundFilter('');
+                  }}
+                  className="ml-2 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Reset filters
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -268,10 +411,43 @@ export default function DesignerPage() {
             <table className="min-w-full divide-y divide-slate-200 text-left">
               <thead className="bg-slate-50">
                 <tr className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <th className="px-5 py-3">Quote</th>
-                  <th className="px-5 py-3">Type</th>
+                  <th className="px-5 py-3">Order No</th>
+                  <th className="px-5 py-3">
+                    <FilterDropdown
+                      label="Order Type"
+                      value={orderTypeFilter}
+                      open={openFilter === 'orderType'}
+                      onToggle={() => setOpenFilter(openFilter === 'orderType' ? null : 'orderType')}
+                      onChange={(value) => {
+                        setOrderTypeFilter(value);
+                        setOpenFilter(null);
+                      }}
+                      options={[
+                        { value: 'embroidery', label: 'Embroidery' },
+                        { value: 'vector', label: 'Vector' },
+                        { value: 'quote', label: 'Quote' },
+                      ]}
+                    />
+                  </th>
+                  <th className="px-5 py-3">Assign Date &amp; Time</th>
+                  <th className="px-5 py-3">
+                    <FilterDropdown
+                      label="Turn Around Time"
+                      value={turnaroundFilter}
+                      open={openFilter === 'turnaround'}
+                      onToggle={() => setOpenFilter(openFilter === 'turnaround' ? null : 'turnaround')}
+                      onChange={(value) => {
+                        setTurnaroundFilter(value);
+                        setOpenFilter(null);
+                      }}
+                      options={[
+                        { value: 'super rush', label: 'Super Rush' },
+                        { value: 'rush', label: 'Rush' },
+                        { value: 'standard', label: 'Standard' },
+                      ]}
+                    />
+                  </th>
                   <th className="px-5 py-3">Deadline</th>
-                  <th className="px-5 py-3">Submission</th>
                   <th className="px-5 py-3 text-right">Action</th>
                 </tr>
               </thead>
@@ -282,30 +458,22 @@ export default function DesignerPage() {
                       Loading assigned quotes...
                     </td>
                   </tr>
-                ) : assigned.length === 0 ? (
+                ) : filteredAssigned.length === 0 ? (
                   <tr>
                     <td className="px-5 py-16 text-center text-sm text-slate-500" colSpan={6}>
-                      No assigned quotes yet.
+                      No assigned orders match these filters.
                     </td>
                   </tr>
                 ) : (
-                  assigned.map((item) => {
-                    const submission = getSubmissionInfo(item.document);
+                  filteredAssigned.map((item) => {
                     const key = `${item.source}:${item.id}`;
                     return (
                       <tr key={key} className="text-sm text-slate-700">
                         <td className="px-5 py-4 font-medium text-slate-950">{item.orderNumber}</td>
                         <td className="px-5 py-4">{item.orderType}</td>
+                        <td className="px-5 py-4">{item.assignedAt ? formatDeadline(item.assignedAt) : 'Not set'}</td>
+                        <td className="px-5 py-4">{item.assignmentType}</td>
                         <td className="px-5 py-4">{formatDeadline(item.deadline)}</td>
-                        <td className="px-5 py-4">
-                          <span
-                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                              submission.url ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                            }`}
-                          >
-                            {submission.url ? 'Submitted' : 'Waiting for upload'}
-                          </span>
-                        </td>
                         <td className="px-5 py-4 text-right">
                           <button
                             type="button"
@@ -334,6 +502,11 @@ export default function DesignerPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Submit result</p>
                 <h3 className="mt-1 text-xl font-bold text-slate-950">Order No: {activeItem.orderNumber}</h3>
                 <p className="mt-1 text-sm text-slate-600">Upload the final file when the work is complete.</p>
+                {activeItem.status.toLowerCase().includes('edit') || activeItem.status.toLowerCase().includes('change') ? (
+                  <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
+                    Changes requested: {getString(activeItem.document, ['editRequest', 'adminEditRequest'], 'Please review and update the submitted work.')}
+                  </p>
+                ) : null}
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -435,7 +608,8 @@ function detailRows(item: AssignedItem) {
   return [
     ['Order Number', item.orderNumber],
     ['Order type', item.orderType],
+    ['Assign Date & Time', item.assignedAt ? formatDeadline(item.assignedAt) : 'Not set'],
     ['Submission deadline', formatDeadline(item.deadline)],
-    ['Assignment type', item.assignmentType],
+    ['Turn Around Time', item.assignmentType],
   ];
 }

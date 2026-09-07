@@ -43,12 +43,41 @@ export async function GET(req: NextRequest) {
       source: 'quotes' | 'quoteRequests';
       [key: string]: unknown;
     }> = [];
+    let completedCount = 0;
+    const completedBreakdown = {
+      orderTypes: { Embroidery: 0, Vector: 0, Quote: 0 },
+      turnaround: { Standard: 0, Rush: 0, 'Super Rush': 0 },
+    };
+
+    const getCompletedOrderType = (data: Record<string, unknown>, source: 'quotes' | 'quoteRequests') => {
+      if (source === 'quoteRequests') return 'Quote' as const;
+      const value = String(data.orderType || data.serviceType || data.type || '').toLowerCase();
+      if (value.includes('embroidery')) return 'Embroidery' as const;
+      if (value.includes('vector')) return 'Vector' as const;
+      return 'Quote' as const;
+    };
+
+    const getCompletedTurnaround = (data: Record<string, unknown>) => {
+      const value = String(data.assignmentType || data.turnaroundTime || '').toLowerCase();
+      if (value.includes('super rush')) return 'Super Rush' as const;
+      if (value.includes('rush')) return 'Rush' as const;
+      return 'Standard' as const;
+    };
+
+    const isCompleted = (data: Record<string, unknown>) =>
+      String(data.status || '').trim().toLowerCase().includes('completed');
 
     [quotesByIdSnap, quotesByEmailSnap].forEach((snap) => {
       snap.docs.forEach((doc) => {
         if (!seen.has(doc.id)) {
           seen.add(doc.id);
-          assigned.push({ id: doc.id, source: 'quotes', ...doc.data() });
+          const data = doc.data();
+          if (isCompleted(data)) {
+            completedCount += 1;
+            completedBreakdown.orderTypes[getCompletedOrderType(data, 'quotes')] += 1;
+            completedBreakdown.turnaround[getCompletedTurnaround(data)] += 1;
+          }
+          else assigned.push({ id: doc.id, source: 'quotes', ...data });
         }
       });
     });
@@ -57,12 +86,18 @@ export async function GET(req: NextRequest) {
       snap.docs.forEach((doc) => {
         if (!seen.has(doc.id)) {
           seen.add(doc.id);
-          assigned.push({ id: doc.id, source: 'quoteRequests', ...doc.data() });
+          const data = doc.data();
+          if (isCompleted(data)) {
+            completedCount += 1;
+            completedBreakdown.orderTypes[getCompletedOrderType(data, 'quoteRequests')] += 1;
+            completedBreakdown.turnaround[getCompletedTurnaround(data)] += 1;
+          }
+          else assigned.push({ id: doc.id, source: 'quoteRequests', ...data });
         }
       });
     });
 
-    return NextResponse.json({ assigned });
+    return NextResponse.json({ assigned, completedCount, completedBreakdown });
   } catch (err: unknown) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : String(err) },
