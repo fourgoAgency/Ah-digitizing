@@ -139,7 +139,13 @@ function getFileExtension(file: unknown, fileUrl: string) {
 }
 
 function formatInfoValue(key: string, value: unknown) {
-  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
+  if (
+    key === "createdAt"
+    || key === "submittedAt"
+    || key === "assignedAt"
+    || key === "submissionDeadline"
+    || key === "designerSubmittedAt"
+  ) return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") return String(value);
@@ -278,6 +284,7 @@ export default function GetQuoteAdminPage() {
       quotes.map((quote) => ({
         id: quote.id,
         orderNo: getString(quote, ["orderNumber"], "Not Available"),
+        turnaround: getString(quote, ["turnaroundTime", "assignmentType", "type"], "Standard"),
         type: getQuoteType(quote),
         createdAt: getDate(quote.createdAt) || getDate(quote.submittedAt),
         customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -525,6 +532,7 @@ export default function GetQuoteAdminPage() {
   const assignmentDetails: Array<[string, unknown]> = [
     ["Submission Deadline", activeQuote?.submissionDeadline],
     ["Assigned At", activeQuote?.assignedAt],
+    ["Designer Submitted At", activeQuote?.designerSubmittedAt],
     ["Turn Around Time", activeQuote?.assignmentType],
     ["Assigned Designer Id", activeQuote?.assignedDesignerId],
     ["Assigned Designer Name", activeQuote?.assignedDesignerName],
@@ -579,7 +587,7 @@ export default function GetQuoteAdminPage() {
                     <div className="font-medium text-slate-800">{row.customer}</div>
                     <div className="text-[11px] text-slate-500">{row.email}</div>
                   </td>
-                  <td className="py-3 font-medium text-slate-700">{row.type}</td>
+                  <td className="py-3 font-medium text-slate-700">{row.turnaround}</td>
                   <td className="py-3">
                     <select
                       value={quoteStatuses.find((status) => status.toLowerCase() === row.status.toLowerCase()) ?? "Pending"}
@@ -693,7 +701,16 @@ export default function GetQuoteAdminPage() {
                     {assignmentDetails.map(([label, value]) => (
                       <div key={label}>
                         <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{label}</p>
-                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(label === "Submission Deadline" ? "submissionDeadline" : label === "Assigned At" ? "assignedAt" : label, value)}</p>
+                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(
+                          label === "Submission Deadline"
+                            ? "submissionDeadline"
+                            : label === "Assigned At"
+                              ? "assignedAt"
+                              : label === "Designer Submitted At"
+                                ? "designerSubmittedAt"
+                                : label,
+                          value,
+                        )}</p>
                       </div>
                     ))}
                   </div>
@@ -812,24 +829,38 @@ export default function GetQuoteAdminPage() {
                 ) : null}
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {Object.entries(activeQuote)
-                    .filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "fabricType", "placementArea", "outputFormatOther", "colorwayToUseOther"].includes(key))
+                    .filter(([key]) => ![
+                      "id",
+                      "fullName",
+                      "name",
+                      "country",
+                      "companyName",
+                      "company",
+                      "email",
+                      "contactNumber",
+                      "phone",
+                      "files",
+                      "submittedAt",
+                      "whatsappOptIn",
+                      "fabricType",
+                      "placementArea",
+                      "outputFormatOther",
+                      "colorwayToUseOther",
+                      "designerSubmission",
+                      "designerSubmissionUrl",
+                      "designerSubmissionPath",
+                      "designerSubmittedAt",
+                      "verifiedAt",
+                      "assignedAt",
+                      "assignmentType",
+                      "submissionDeadline",
+                      "assignedDesignerId",
+                      "assignedDesignerName",
+                      "assignedDesignerEmail",
+                      "assignmentFiles",
+                    ].includes(key))
                     .filter(([, value]) => value !== null && value !== undefined && value !== "")
-                    .filter(([key]) =>
-                      ![
-                        "designerSubmission",
-                        "designerSubmissionUrl",
-                        "designerSubmissionPath",
-                        "designerSubmittedAt",
-                        "verifiedAt",
-                        "assignedAt",
-                        "assignmentType",
-                        "submissionDeadline",
-                        "assignedDesignerId",
-                        "assignedDesignerName",
-                        "assignedDesignerEmail",
-                        "assignmentFiles",
-                      ].includes(key)
-                    ).sort(([firstKey], [secondKey]) => {
+                    .sort(([firstKey], [secondKey]) => {
                       const firstIndex = quoteInfoOrder.indexOf(firstKey);
                       const secondIndex = quoteInfoOrder.indexOf(secondKey);
                       if (firstIndex === -1 && secondIndex === -1) return 0;

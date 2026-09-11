@@ -1,10 +1,5 @@
-const orders = [
-  { id: 'ORD-1042', client: 'Acme Sports', type: 'Logo digitizing', status: 'In progress', due: 'Today' },
-  { id: 'ORD-1043', client: 'North Peak', type: 'Jacket back', status: 'Review needed', due: 'Jul 28' },
-  { id: 'ORD-1044', client: 'Stitch House', type: 'Cap embroidery', status: 'Queued', due: 'Jul 29' },
-];
 
-export default function AssignedOrderTable() {
+export default function AssignedOrderTable(orders: { id: string; client: string; type: string; status: string; due: string }[]) {
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-200 px-5 py-4">

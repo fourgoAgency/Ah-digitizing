@@ -3,9 +3,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Check, CheckCircle2, ChevronDown, Clock3, Download, RotateCcw, UploadCloud } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
-import { firestore, uploadFile, updateDocument } from '@/lib/firebase';
+import { uploadFile, updateDocument } from '@/lib/firebase';
 
 type QuoteDoc = Record<string, unknown> & { id: string; source: 'quotes' | 'quoteRequests' };
+
+type AssignedApiDoc = Record<string, unknown> & {
+  id: string;
+  source: 'quotes' | 'quoteRequests';
+};
 
 type AssignedItem = {
   id: string;
@@ -41,7 +46,7 @@ function FilterDropdown({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="relative min-w-40">
+    <div className="relative min-w-40 scale-z-100">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -188,6 +193,8 @@ function collectAssignmentFiles(document: Record<string, unknown>): QuoteFileEnt
   });
 }
 
+const DESIGNER_ASSIGNMENT_READ_KEY = 'designer-assigned-read-items';
+
 export default function DesignerPage() {
   const { customUser } = useAuth();
   const [assigned, setAssigned] = useState<AssignedItem[]>([]);
@@ -206,6 +213,7 @@ export default function DesignerPage() {
   const [orderTypeFilter, setOrderTypeFilter] = useState('');
   const [turnaroundFilter, setTurnaroundFilter] = useState('');
   const [openFilter, setOpenFilter] = useState<'orderType' | 'turnaround' | null>(null);
+  const [newlyAssignedIds, setNewlyAssignedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!customUser?.id && !customUser?.email) return;
@@ -217,11 +225,11 @@ export default function DesignerPage() {
         });
         if (!res.ok) throw new Error('Failed to fetch assigned quotes');
         const { assigned, completedCount: completedAssignments = 0, completedBreakdown: savedBreakdown } = await res.json();
-        
-        const items: AssignedItem[] = assigned.map((doc: any) => ({
+
+        const items: AssignedItem[] = assigned.map((doc: AssignedApiDoc) => ({
           id: doc.id,
           orderNumber: getString(doc, ['orderNumber'], 'Not Available'),
-          source: doc.source as 'quotes' | 'quoteRequests',
+          source: doc.source,
           orderType: getOrderType(getString(doc, ['orderType', 'serviceType', 'type'], 'Quote'), doc.source as AssignedItem['source']),
           assignmentType: getString(doc, ['assignmentType'], 'Standard'),
           status: getString(doc, ['status'], 'Assigned to Designer'),
@@ -229,12 +237,23 @@ export default function DesignerPage() {
           deadline: getString(doc, ['submissionDeadline', 'deadline'], ''),
           document: { ...doc, source: doc.source } as QuoteDoc,
         }));
-        
-        setAssigned(items.sort((a, b) => {
+
+        const sortedItems = items.sort((a, b) => {
           const turnaroundDifference = getTurnaroundPriority(a.assignmentType) - getTurnaroundPriority(b.assignmentType);
           if (turnaroundDifference !== 0) return turnaroundDifference;
           return (b.assignedAt?.getTime() || 0) - (a.assignedAt?.getTime() || 0);
-        }));
+        });
+
+        if (typeof window !== 'undefined') {
+          const readAssignments = new Set<string>(JSON.parse(localStorage.getItem(DESIGNER_ASSIGNMENT_READ_KEY) ?? '[]'));
+          const currentAssignments = sortedItems.map((item) => `${item.source}:${item.id}`);
+          const unreadAssignments = currentAssignments.filter((assignmentKey) => !readAssignments.has(assignmentKey));
+
+          setNewlyAssignedIds(new Set(unreadAssignments));
+          localStorage.setItem(DESIGNER_ASSIGNMENT_READ_KEY, JSON.stringify(Array.from(readAssignments)));
+        }
+
+        setAssigned(sortedItems);
         setCompletedCount(Number(completedAssignments) || 0);
         if (savedBreakdown) setCompletedBreakdown(savedBreakdown);
         setError(null);
@@ -246,10 +265,9 @@ export default function DesignerPage() {
     }
 
     fetchAssignedQuotes();
-    
-    // Poll for updates every 10 seconds
+
     const interval = setInterval(fetchAssignedQuotes, 10000);
-    
+
     return () => clearInterval(interval);
   }, [customUser?.email, customUser?.id]);
 
@@ -267,17 +285,15 @@ export default function DesignerPage() {
   const stats = useMemo(() => {
     const isEditItem = (item: AssignedItem) => item.status.toLowerCase().includes('edit') || item.status.toLowerCase().includes('change');
     const activeSubmitted = assigned.filter((item) => !isEditItem(item) && getSubmissionInfo(item.document).url).length;
-    const total = assigned.length + completedCount;
-    const submitted = completedCount + activeSubmitted;
     const pending = assigned.filter((item) => !isEditItem(item) && !getSubmissionInfo(item.document).url).length;
-    const edit = assigned.filter(isEditItem).length;
     const embroidery = assigned.filter((item) => item.orderType === 'Embroidery').length + completedBreakdown.orderTypes.Embroidery;
     const vector = assigned.filter((item) => item.orderType === 'Vector').length + completedBreakdown.orderTypes.Vector;
     const quote = assigned.filter((item) => item.orderType === 'Quote').length + completedBreakdown.orderTypes.Quote;
+    const edit = assigned.filter(isEditItem).length;
     const standard = assigned.filter((item) => item.assignmentType.toLowerCase() === 'standard').length + completedBreakdown.turnaround.Standard;
     const rush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'rush').length + completedBreakdown.turnaround.Rush;
     const superRush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'super rush').length + completedBreakdown.turnaround['Super Rush'];
-    return { total, submitted, pending, edit, embroidery, vector, quote, standard, rush, superRush };
+    return { pending, edit, embroidery, vector, quote, standard, rush, superRush };
   }, [assigned, completedCount, completedBreakdown]);
 
   async function handleSubmitResult() {
@@ -310,6 +326,11 @@ export default function DesignerPage() {
 
       setAssigned((current) => current.filter((item) => !(item.id === activeItem.id && item.source === activeItem.source)));
       setCompletedCount((current) => current + 1);
+      setNewlyAssignedIds((current) => {
+        const next = new Set(current);
+        next.delete(`${activeItem.source}:${activeItem.id}`);
+        return next;
+      });
       setMessage('Submission uploaded successfully.');
       setSelectedItem(null);
       setSelectedFile(null);
@@ -370,13 +391,11 @@ export default function DesignerPage() {
         ) : null}
 
         <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-5 2xl:grid-cols-10">
-          <Stat label="Assigned" value={stats.total} />
-          <Stat label="Submitted" value={stats.submitted} />
-          <Stat label="Pending" value={stats.pending} />
-          <Stat label="Edit" value={stats.edit} />
+          <Stat label="Assigned" value={stats.pending} />
           <Stat label="Embroidery" value={stats.embroidery} />
           <Stat label="Vector" value={stats.vector} />
           <Stat label="Quote" value={stats.quote} />
+          <Stat label="Edit" value={stats.edit} />
           <Stat label="Standard" value={stats.standard} />
           <Stat label="Rush" value={stats.rush} />
           <Stat label="Super Rush" value={stats.superRush} />
@@ -467,17 +486,34 @@ export default function DesignerPage() {
                 ) : (
                   filteredAssigned.map((item) => {
                     const key = `${item.source}:${item.id}`;
+                    const isNewlyAssigned = newlyAssignedIds.has(key);
+
                     return (
-                      <tr key={key} className="text-sm text-slate-700">
-                        <td className="px-5 py-4 font-medium text-slate-950">{item.orderNumber}</td>
-                        <td className="px-5 py-4">{item.orderType}</td>
-                        <td className="px-5 py-4">{item.assignedAt ? formatDeadline(item.assignedAt) : 'Not set'}</td>
-                        <td className="px-5 py-4">{item.assignmentType}</td>
-                        <td className="px-5 py-4">{formatDeadline(item.deadline)}</td>
+                      <tr
+                        key={key}
+                        className={`text-sm transition-colors ${isNewlyAssigned ? 'bg-primary/10 ring-1 ring-primary/20 text-slate-900' : 'bg-white text-slate-700'}`}
+                      >
+                        <td className={`px-5 py-4 font-bold ${isNewlyAssigned ? 'text-slate-950' : 'font-medium text-slate-950'}`}>{item.orderNumber}</td>
+                        <td className={`px-5 py-4 ${isNewlyAssigned ? 'font-bold text-slate-900' : ''}`}>{item.orderType}</td>
+                        <td className={`px-5 py-4 ${isNewlyAssigned ? 'font-bold text-slate-900' : ''}`}>{item.assignedAt ? formatDeadline(item.assignedAt) : 'Not set'}</td>
+                        <td className={`px-5 py-4 ${isNewlyAssigned ? 'font-bold text-slate-900' : ''}`}>{item.assignmentType}</td>
+                        <td className={`px-5 py-4 ${isNewlyAssigned ? 'font-bold text-slate-900' : ''}`}>{formatDeadline(item.deadline)}</td>
                         <td className="px-5 py-4 text-right">
                           <button
                             type="button"
-                            onClick={() => setSelectedItem(item)}
+                            onClick={() => {
+                              setNewlyAssignedIds((current) => {
+                                const next = new Set(current);
+                                next.delete(key);
+                                return next;
+                              });
+                              if (typeof window !== 'undefined') {
+                                const readAssignments = new Set<string>(JSON.parse(localStorage.getItem(DESIGNER_ASSIGNMENT_READ_KEY) ?? '[]'));
+                                readAssignments.add(key);
+                                localStorage.setItem(DESIGNER_ASSIGNMENT_READ_KEY, JSON.stringify(Array.from(readAssignments)));
+                              }
+                              setSelectedItem(item);
+                            }}
                             className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-700"
                           >
                             <UploadCloud className="h-4 w-4" />
@@ -604,6 +640,24 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
+function formatOutputFormat(value: unknown) {
+  if (Array.isArray(value)) {
+    const formatted = value
+      .map((entry) => (typeof entry === 'string' ? entry.trim() : String(entry ?? '').trim()))
+      .filter(Boolean);
+    return formatted.length > 0 ? formatted.join(', ') : 'Not provided';
+  }
+
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  if (value && typeof value === 'object') {
+    const record = asRecord(value);
+    const nested = record ? getString(record, ['name', 'label', 'value', 'format'], 'Not provided') : 'Not provided';
+    return nested;
+  }
+
+  return 'Not provided';
+}
+
 function detailRows(item: AssignedItem) {
   return [
     ['Order Number', item.orderNumber],
@@ -611,5 +665,6 @@ function detailRows(item: AssignedItem) {
     ['Assign Date & Time', item.assignedAt ? formatDeadline(item.assignedAt) : 'Not set'],
     ['Submission deadline', formatDeadline(item.deadline)],
     ['Turn Around Time', item.assignmentType],
+    ['Output format', formatOutputFormat(item.document.outputFormats ?? item.document.outputFormat ?? item.document.format ?? item.document.outputFormatOther ?? item.document.outputFormatsOther)],
   ];
 }

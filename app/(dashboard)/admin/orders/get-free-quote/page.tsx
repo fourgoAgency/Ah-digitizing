@@ -102,7 +102,13 @@ function getFileExtension(file: unknown, fileUrl: string) {
 }
 
 function formatInfoValue(key: string, value: unknown) {
-  if (key === "createdAt" || key === "submittedAt" || key === "assignedAt" || key === "submissionDeadline") return formatCreatedAt(getDate(value));
+  if (
+    key === "createdAt"
+    || key === "submittedAt"
+    || key === "assignedAt"
+    || key === "submissionDeadline"
+    || key === "designerSubmittedAt"
+  ) return formatCreatedAt(getDate(value));
   if (key === "country") return getCountryName(value);
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") return String(value);
@@ -173,6 +179,7 @@ export default function GetFreeQuoteAdminPage() {
   const [assigningDesigner, setAssigningDesigner] = useState(false);
   const [cancelingAssignment, setCancelingAssignment] = useState(false);
   const [downloadingZip, setDownloadingZip] = useState(false);
+  const [downloadingSubmission, setDownloadingSubmission] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -197,6 +204,7 @@ export default function GetFreeQuoteAdminPage() {
   const rows = useMemo(() => quotes.map((quote) => ({
     id: quote.id,
     orderNo: typeof quote.orderNumber === "string" && quote.orderNumber ? quote.orderNumber : "Not Available",
+    turnaround: getString(quote, ["turnaroundTime", "assignmentType", "type"], "Standard"),
     type: getQuoteType(quote),
     createdAt: getDate(quote.submittedAt) || getDate(quote.createdAt),
     customer: getString(quote, ["fullName", "name"], "Customer"),
@@ -214,6 +222,22 @@ export default function GetFreeQuoteAdminPage() {
     if (turnaroundDifference !== 0) return turnaroundDifference;
     return (second.createdAt?.getTime() || 0) - (first.createdAt?.getTime() || 0);
   }), [quotes, searchParams]);
+
+  const designerSubmission = activeQuote ? asRecord(activeQuote.designerSubmission) : null;
+  const submissionUrl =
+    activeQuote && typeof activeQuote.designerSubmissionUrl === "string"
+      ? activeQuote.designerSubmissionUrl
+      : typeof designerSubmission?.downloadURL === "string"
+        ? designerSubmission.downloadURL
+        : "";
+
+  const submissionFileName =
+    typeof designerSubmission?.fileName === "string"
+      ? designerSubmission.fileName
+      : "submission";
+  const extension = submissionFileName.split(".").pop()?.toLowerCase() ?? "";
+  const isImage = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(extension);
+  const isPdf = extension === "pdf";
 
   const visibleIds = rows.map((row) => row.id);
   const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id));
@@ -337,6 +361,29 @@ export default function GetFreeQuoteAdminPage() {
     }
   }
 
+  async function downloadDesignerSubmission() {
+    if (!submissionUrl || downloadingSubmission) return;
+
+    setDownloadingSubmission(true);
+    setError(null);
+    try {
+      const response = await fetch(submissionUrl);
+      if (!response.ok) throw new Error("Unable to download the designer submission.");
+      const fileBlob = await response.blob();
+      const objectUrl = URL.createObjectURL(fileBlob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = submissionFileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (downloadError) {
+      setError(downloadError instanceof Error ? downloadError.message : "Unable to download the designer submission.");
+    } finally {
+      setDownloadingSubmission(false);
+    }
+  }
 
   async function downloadQuoteFiles(quote: QuoteDocument) {
     const files = Array.isArray(quote.files) ? quote.files : [];
@@ -383,7 +430,7 @@ export default function GetFreeQuoteAdminPage() {
                 <td className="py-3"><input type="checkbox" checked={selectedIds.includes(row.id)} onChange={() => toggleSelected(row.id)} className="h-4 w-4 rounded border-slate-300 accent-blue-600" /></td>
                 <td className="py-3 font-semibold text-slate-800">{row.orderNo}</td>
                 <td className="py-3">{formatCreatedAt(row.createdAt)}</td>
-                <td className="py-3"><div className="font-medium text-slate-800">{row.customer}</div><div className="text-[11px] text-slate-500">{row.email}</div></td><td className="py-3 font-medium text-slate-700">{row.type}</td>
+                <td className="py-3"><div className="font-medium text-slate-800">{row.customer}</div><div className="text-[11px] text-slate-500">{row.email}</div></td><td className="py-3 font-medium text-slate-700">{row.turnaround}</td>
                 <td className="py-3"><select value={quoteStatuses.find((s) => s.toLowerCase() === row.status.toLowerCase()) ?? "Pending"} onChange={(e) => updateQuoteStatus(row.id, e.target.value)} disabled={updatingId === row.id} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}>{quoteStatuses.map((s) => <option key={s} value={s}>{s}</option>)}</select></td>
                 <td className="py-3 text-right"><button type="button" onClick={() => setActiveQuote(row.document)} className="inline-flex h-8 items-center gap-2 rounded border border-slate-200 bg-white px-3 text-xs font-semibold text-blue-600 hover:bg-blue-50"><Eye className="h-3.5 w-3.5" />View detail</button></td>
               </tr>
@@ -428,6 +475,7 @@ export default function GetFreeQuoteAdminPage() {
                     {[
                       ["Submission Deadline", activeQuote.submissionDeadline],
                       ["Assigned At", activeQuote.assignedAt],
+                      ["Designer Submitted At", activeQuote.designerSubmittedAt],
                       ["Turn Around Time", activeQuote.assignmentType],
                       ["Assigned Designer Id", activeQuote.assignedDesignerId],
                       ["Assigned Designer Name", activeQuote.assignedDesignerName],
@@ -435,7 +483,16 @@ export default function GetFreeQuoteAdminPage() {
                     ].map(([label, value]) => (
                       <div key={String(label)}>
                         <p className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">{String(label)}</p>
-                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(label === "Submission Deadline" ? "submissionDeadline" : label === "Assigned At" ? "assignedAt" : String(label), value)}</p>
+                        <p className="mt-1 break-words text-sm font-medium text-slate-800">{formatInfoValue(
+                          label === "Submission Deadline"
+                            ? "submissionDeadline"
+                            : label === "Assigned At"
+                              ? "assignedAt"
+                              : label === "Designer Submitted At"
+                                ? "designerSubmittedAt"
+                                : String(label),
+                          value,
+                        )}</p>
                       </div>
                     ))}
                   </div>
@@ -454,7 +511,52 @@ export default function GetFreeQuoteAdminPage() {
                   </div>
                 ) : null}
               </section>
-              
+
+              {submissionUrl ? (
+                <section className="order-4 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-950">Designer Submission</h4>
+                      <p className="mt-1 break-all text-xs text-slate-500">{submissionFileName}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <a
+                        href={submissionUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        Open
+                      </a>
+                      <button
+                        type="button"
+                        onClick={downloadDesignerSubmission}
+                        disabled={downloadingSubmission}
+                        className="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {downloadingSubmission ? "Downloading..." : "Download"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {isImage ? (
+                    <img src={submissionUrl} alt={submissionFileName} className="mt-4 max-h-72 rounded border object-contain" />
+                  ) : null}
+
+                  {isPdf ? (
+                    <iframe src={submissionUrl} className="mt-4 h-[500px] w-full rounded border" title={submissionFileName} />
+                  ) : null}
+
+                  {!isImage && !isPdf ? (
+                    <div className="mt-4 rounded border bg-white p-8 text-center">
+                      <p className="font-semibold text-slate-700">Preview is not available for this file type.</p>
+                    </div>
+                  ) : null}
+                </section>
+              ) : null}
+
               <section className="order-2 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h4 className="text-sm font-bold text-slate-950">Quote Info</h4>
@@ -498,7 +600,34 @@ export default function GetFreeQuoteAdminPage() {
                   </div>
                 ) : null}
                 <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {Object.entries(activeQuote).filter(([key]) => !["id", "fullName", "name", "country", "companyName", "company", "email", "contactNumber", "phone", "files", "submittedAt", "whatsappOptIn", "verifiedAt", "assignedAt", "assignmentType", "submissionDeadline", "assignedDesignerId", "assignedDesignerName", "assignedDesignerEmail", "assignmentFiles", "outputFormatOther", "colorwayToUseOther"].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
+                  {Object.entries(activeQuote).filter(([key]) => ![
+                    "id",
+                    "fullName",
+                    "name",
+                    "country",
+                    "companyName",
+                    "company",
+                    "email",
+                    "contactNumber",
+                    "phone",
+                    "files",
+                    "submittedAt",
+                    "whatsappOptIn",
+                    "verifiedAt",
+                    "assignedAt",
+                    "assignmentType",
+                    "submissionDeadline",
+                    "assignedDesignerId",
+                    "assignedDesignerName",
+                    "assignedDesignerEmail",
+                    "assignmentFiles",
+                    "designerSubmission",
+                    "designerSubmissionUrl",
+                    "designerSubmissionPath",
+                    "designerSubmittedAt",
+                    "outputFormatOther",
+                    "colorwayToUseOther",
+                  ].includes(key)).filter(([, value]) => value !== null && value !== undefined && value !== "").sort(([firstKey], [secondKey]) => {
                     const firstIndex = quoteInfoOrder.indexOf(firstKey);
                     const secondIndex = quoteInfoOrder.indexOf(secondKey);
                     if (firstIndex === -1 && secondIndex === -1) return 0;

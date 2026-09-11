@@ -34,6 +34,25 @@ service cloud.firestore {
         && request.resource.data.status == 'new';
     }
 
+    function isAssignedDesigner() {
+      return signedIn() && (
+        request.auth.uid == resource.data.assignedDesignerId
+        || request.auth.token.email == resource.data.assignedDesignerEmail
+      );
+    }
+
+    function designerSubmissionUpdateAllowed() {
+      return isAssignedDesigner()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'designerSubmission',
+          'designerSubmissionUrl',
+          'designerSubmissionPath',
+          'designerSubmittedAt',
+          'status'
+        ])
+        && request.resource.data.status == 'Completed';
+    }
+
     // users collection: allow read to owner and staff; writes via server/admin only
     match /users/{userId} {
       allow read: if signedIn() && (request.auth.uid == userId || isStaff());
@@ -80,14 +99,16 @@ service cloud.firestore {
     match /quotes/{quoteId} {
       allow create: if true;
       allow read: if isStaff();
-      allow update: if isAdmin() || quoteCanBeFinalized();
+      allow update: if isAdmin() || quoteCanBeFinalized() || designerSubmissionUpdateAllowed();
       allow delete: if isAdmin();
     }
 
     // Free-quote form writes standalone quote requests.
     match /quoteRequests/{quoteRequestId} {
       allow create: if true;
-      allow read, update, delete: if isStaff();
+      allow read: if isStaff();
+      allow update: if isAdmin() || designerSubmissionUpdateAllowed();
+      allow delete: if isAdmin();
     }
 
     // Dashboard data and admin notification bell.
