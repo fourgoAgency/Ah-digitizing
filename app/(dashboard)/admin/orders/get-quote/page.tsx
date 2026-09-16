@@ -138,6 +138,32 @@ function getFileExtension(file: unknown, fileUrl: string) {
   return fileName?.split(/[?#]/)[0].split(".").pop()?.toLowerCase() || "";
 }
 
+function getDesignerSubmissionFiles(quote: QuoteDocument | null): Array<{ fileName: string; url: string }> {
+  if (!quote) return [];
+
+  const filesArray = Array.isArray(quote.designerSubmissionFiles) ? quote.designerSubmissionFiles : [];
+  if (filesArray.length > 0) {
+    return filesArray.flatMap((file, index) => {
+      const url = getStorageFileUrl(file);
+      if (!url) return [];
+      const record = asRecord(file);
+      const fileName = typeof record?.fileName === "string" && record.fileName ? record.fileName : typeof record?.name === "string" && record.name ? record.name : `File ${index + 1}`;
+      return [{ fileName, url }];
+    });
+  }
+
+  const legacyRecord = asRecord(quote.designerSubmission);
+  const legacyUrl = typeof quote.designerSubmissionUrl === "string" && quote.designerSubmissionUrl
+    ? quote.designerSubmissionUrl
+    : typeof legacyRecord?.downloadURL === "string"
+      ? legacyRecord.downloadURL
+      : "";
+  if (!legacyUrl) return [];
+
+  const legacyFileName = typeof legacyRecord?.fileName === "string" && legacyRecord.fileName ? legacyRecord.fileName : "submission";
+  return [{ fileName: legacyFileName, url: legacyUrl }];
+}
+
 function formatInfoValue(key: string, value: unknown) {
   if (
     key === "createdAt"
@@ -189,6 +215,7 @@ function getQuoteInfoEntries(quote: QuoteDocument) {
     "designerSubmission",
     "designerSubmissionUrl",
     "designerSubmissionPath",
+    "designerSubmissionFiles",
     "designerSubmittedAt",
     "verifiedAt",
   ];
@@ -242,6 +269,14 @@ export default function GetQuoteAdminPage() {
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [downloadingSubmission, setDownloadingSubmission] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSelectedDesignerId("");
+    setSubmissionDeadline("");
+    setAssignmentType("Standard");
+    setSelectedSubmissionFiles([]);
+    setAssignmentMessage(null);
+  }, [activeQuote?.id]);
 
   useEffect(() => {
     const q = query(collection(firestore, "quotes"), orderBy("createdAt", "desc"));
@@ -423,6 +458,7 @@ export default function GetQuoteAdminPage() {
         designerSubmission: deleteField(),
         designerSubmissionUrl: deleteField(),
         designerSubmissionPath: deleteField(),
+        designerSubmissionFiles: deleteField(),
         designerSubmittedAt: deleteField(),
         status: "Pending",
       });
@@ -482,19 +518,19 @@ export default function GetQuoteAdminPage() {
     }
   }
 
-  async function downloadDesignerSubmission() {
-    if (!submissionUrl || downloadingSubmission) return;
+  async function downloadDesignerSubmission(url: string, fileName: string) {
+    if (!url || downloadingSubmission) return;
 
     setDownloadingSubmission(true);
     setError(null);
     try {
-      const response = await fetch(submissionUrl);
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Unable to download the designer submission.");
       const fileBlob = await response.blob();
       const objectUrl = URL.createObjectURL(fileBlob);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = submissionFileName;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -506,29 +542,9 @@ export default function GetQuoteAdminPage() {
     }
   }
 
-  const designerSubmission = activeQuote
-    ? asRecord(activeQuote.designerSubmission)
-    : null;
-
-  const submissionUrl =
-    activeQuote &&
-      typeof activeQuote.designerSubmissionUrl === "string"
-      ? activeQuote.designerSubmissionUrl
-      : typeof designerSubmission?.downloadURL === "string"
-        ? designerSubmission.downloadURL
-        : "";
-
-  const submissionFileName =
-    typeof designerSubmission?.fileName === "string"
-      ? designerSubmission.fileName
-      : "submission";
-  const extension = submissionFileName.split(".").pop()?.toLowerCase() ?? "";
-
+  const submissionFiles = getDesignerSubmissionFiles(activeQuote);
   const imageTypes = ["png", "jpg", "jpeg", "gif", "webp"];
   const pdfTypes = ["pdf"];
-
-  const isImage = imageTypes.includes(extension);
-  const isPdf = pdfTypes.includes(extension);
   const assignmentDetails: Array<[string, unknown]> = [
     ["Submission Deadline", activeQuote?.submissionDeadline],
     ["Assigned At", activeQuote?.assignedAt],
@@ -730,59 +746,68 @@ export default function GetQuoteAdminPage() {
                 ) : null}
               </section>
 
-              {submissionUrl && (
+              {submissionFiles.length > 0 && (
                 <section className="order-4 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
+                  <h4 className="text-sm font-bold text-slate-950">
+                    Designer Submission{submissionFiles.length > 1 ? `s (${submissionFiles.length})` : ""}
+                  </h4>
+                  <div className="mt-3 space-y-4">
+                    {submissionFiles.map((file, index) => {
+                      const extension = file.fileName.split(".").pop()?.toLowerCase() ?? "";
+                      const isImage = imageTypes.includes(extension);
+                      const isPdf = pdfTypes.includes(extension);
+                      return (
+                        <div key={`${file.fileName}-${index}`} className="rounded-md border border-slate-200 bg-white p-3">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <p className="break-all text-xs font-semibold text-slate-700">{file.fileName}</p>
+                            <div className="flex flex-wrap gap-2">
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                Open
+                              </a>
+                              <button
+                                type="button"
+                                onClick={() => downloadDesignerSubmission(file.url, file.fileName)}
+                                disabled={downloadingSubmission}
+                                className="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                                {downloadingSubmission ? "Downloading..." : "Download"}
+                              </button>
+                            </div>
+                          </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-950">Designer Submission</h4>
-                      <p className="mt-1 break-all text-xs text-slate-500">{submissionFileName}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <a
-                        href={submissionUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50"
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                        Open
-                      </a>
-                      <button
-                        type="button"
-                        onClick={downloadDesignerSubmission}
-                        disabled={downloadingSubmission}
-                        className="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        {downloadingSubmission ? "Downloading..." : "Download"}
-                      </button>
-                    </div>
+                          {isImage && (
+                            <img
+                              src={file.url}
+                              alt={file.fileName}
+                              className="mt-3 max-h-72 rounded border object-contain"
+                            />
+                          )}
+
+                          {isPdf && (
+                            <iframe
+                              src={file.url}
+                              className="mt-3 h-[500px] w-full rounded border"
+                            />
+                          )}
+
+                          {!isImage && !isPdf && (
+                            <div className="mt-3 rounded border bg-slate-50 p-6 text-center">
+                              <p className="text-xs font-semibold text-slate-600">
+                                Preview is not available for this file type.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  {isImage && (
-                    <img
-                      src={submissionUrl}
-                      alt={submissionFileName}
-                      className="mt-4 max-h-72 rounded border object-contain"
-                    />
-                  )}
-
-                  {isPdf && (
-                    <iframe
-                      src={submissionUrl}
-                      className="mt-4 h-[500px] w-full rounded border"
-                    />
-                  )}
-
-                  {!isImage && !isPdf && (
-                    <div className="mt-4 rounded border bg-white p-8 text-center">
-                      <p className="font-semibold">
-                        Preview is not available for this file type.
-                      </p>
-                    </div>
-                  )}
-
                 </section>
               )}
               <section className="order-2 mt-6 rounded-md border border-slate-100 bg-slate-50 p-4">
@@ -849,6 +874,7 @@ export default function GetQuoteAdminPage() {
                       "designerSubmission",
                       "designerSubmissionUrl",
                       "designerSubmissionPath",
+                      "designerSubmissionFiles",
                       "designerSubmittedAt",
                       "verifiedAt",
                       "assignedAt",

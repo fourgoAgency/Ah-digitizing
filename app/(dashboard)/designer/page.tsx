@@ -160,15 +160,18 @@ function formatDeadline(value: string | Date) {
 
 function getSubmissionInfo(document: Record<string, unknown>) {
   const submission = asRecord(document.designerSubmission) ?? asRecord(document.submission) ?? null;
+  const filesArray = Array.isArray(document.designerSubmissionFiles) ? document.designerSubmissionFiles : [];
+  const firstFile = filesArray.length > 0 ? asRecord(filesArray[0]) : null;
   const directUrl = getString(document, ['designerSubmissionUrl', 'submissionUrl', 'resultUrl', 'downloadURL', 'downloadUrl']);
   const directPath = getString(document, ['designerSubmissionPath', 'submissionPath', 'resultPath', 'storagePath']);
   const fileName = getString(document, ['designerSubmissionName', 'submissionName', 'resultName']);
 
   return {
     submission,
-    url: directUrl || getString(submission ?? {}, ['downloadURL', 'downloadUrl', 'url', 'fileUrl', 'storageUrl']),
-    path: directPath || getString(submission ?? {}, ['storagePath', 'path']),
-    fileName: fileName || getString(submission ?? {}, ['name', 'fileName', 'title']),
+    fileCount: filesArray.length,
+    url: directUrl || getString(firstFile ?? {}, ['downloadURL', 'downloadUrl', 'url', 'fileUrl', 'storageUrl']) || getString(submission ?? {}, ['downloadURL', 'downloadUrl', 'url', 'fileUrl', 'storageUrl']),
+    path: directPath || getString(firstFile ?? {}, ['storagePath', 'path']) || getString(submission ?? {}, ['storagePath', 'path']),
+    fileName: fileName || getString(firstFile ?? {}, ['fileName', 'name', 'title']) || getString(submission ?? {}, ['name', 'fileName', 'title']),
     submittedAt: getDate(document.designerSubmittedAt) || getDate(document.submittedAt) || getDate(submission?.submittedAt),
   };
 }
@@ -206,7 +209,7 @@ export default function DesignerPage() {
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<AssignedItem | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -297,29 +300,40 @@ export default function DesignerPage() {
   }, [assigned, completedCount, completedBreakdown]);
 
   async function handleSubmitResult() {
-    if (!activeItem || !selectedFile) return;
+    if (!activeItem || selectedFiles.length === 0) return;
 
     setUploadingId(activeItem.source + ':' + activeItem.id);
     setError(null);
     setMessage(null);
 
     try {
-      const safeName = selectedFile.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
-      const storagePath = `designer-submissions/${activeItem.source}/${activeItem.id}/${Date.now()}-${safeName}`;
-      const downloadURL = await uploadFile(selectedFile, storagePath);
       const submittedAt = new Date().toISOString();
+      const submissionFiles = await Promise.all(selectedFiles.map(async (file, index) => {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+        const storagePath = `designer-submissions/${activeItem.source}/${activeItem.id}/${Date.now()}-${index + 1}-${safeName}`;
+        const downloadURL = await uploadFile(file, storagePath);
+        return {
+          fileName: file.name,
+          storagePath,
+          downloadURL,
+          size: file.size,
+          type: file.type,
+        };
+      }));
+      const [firstFile] = submissionFiles;
 
       await updateDocument(activeItem.source, activeItem.id, {
         designerSubmission: {
-          fileName: selectedFile.name,
-          storagePath,
-          downloadURL,
+          fileName: firstFile.fileName,
+          storagePath: firstFile.storagePath,
+          downloadURL: firstFile.downloadURL,
           submittedAt,
           submittedById: customUser?.id || null,
           submittedByEmail: customUser?.email || null,
         },
-        designerSubmissionUrl: downloadURL,
-        designerSubmissionPath: storagePath,
+        designerSubmissionFiles: submissionFiles,
+        designerSubmissionUrl: firstFile.downloadURL,
+        designerSubmissionPath: firstFile.storagePath,
         designerSubmittedAt: submittedAt,
         status: 'Completed',
       });
@@ -333,7 +347,7 @@ export default function DesignerPage() {
       });
       setMessage('Submission uploaded successfully.');
       setSelectedItem(null);
-      setSelectedFile(null);
+      setSelectedFiles([]);
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : 'Unable to upload submission.');
     } finally {
@@ -558,7 +572,7 @@ export default function DesignerPage() {
                   type="button"
                   onClick={() => {
                     setSelectedItem(null);
-                    setSelectedFile(null);
+                    setSelectedFiles([]);
                   }}
                   className="rounded-full border border-slate-200 p-2 px-3 text-slate-500 transition hover:bg-slate-50"
                 >
@@ -583,22 +597,36 @@ export default function DesignerPage() {
               <label className="block rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
                 <input
                   type="file"
+                  multiple
                   className="hidden"
-                  onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
+                  onChange={(event) => setSelectedFiles(Array.from(event.target.files ?? []))}
                 />
                 <UploadCloud className="mx-auto h-8 w-8 text-slate-500" />
                 <p className="mt-3 text-sm font-medium text-slate-900">
-                  {selectedFile ? selectedFile.name : 'Click to choose a file to upload'}
+                  {selectedFiles.length > 0 ? `${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'} selected` : 'Click to choose files to upload'}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">PDF, ZIP, PNG, AI, DST, PES, or any final deliverable file.</p>
+                <p className="mt-1 text-xs text-slate-500">PDF, ZIP, PNG, AI, DST, PES, or any final deliverable file. You can select multiple files.</p>
               </label>
 
-              {selectedFile ? (
-                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium">{selectedFile.name}</span>
-                    <span className="text-xs text-slate-500">{Math.ceil(selectedFile.size / 1024)} KB</span>
-                  </div>
+              {selectedFiles.length > 0 ? (
+                <div className="space-y-2">
+                  {selectedFiles.map((file, index) => (
+                    <div key={`${file.name}-${index}`} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium">{file.name}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-slate-500">{Math.ceil(file.size / 1024)} KB</span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFiles((current) => current.filter((_, currentIndex) => currentIndex !== index))}
+                            className="text-xs font-semibold text-rose-500 hover:text-rose-600"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : null}
 
@@ -607,7 +635,7 @@ export default function DesignerPage() {
                   type="button"
                   onClick={() => {
                     setSelectedItem(null);
-                    setSelectedFile(null);
+                    setSelectedFiles([]);
                   }}
                   className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 >
@@ -615,7 +643,7 @@ export default function DesignerPage() {
                 </button>
                 <button
                   type="button"
-                  disabled={!selectedFile || uploadingId === `${activeItem.source}:${activeItem.id}`}
+                  disabled={selectedFiles.length === 0 || uploadingId === `${activeItem.source}:${activeItem.id}`}
                   onClick={handleSubmitResult}
                   className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
