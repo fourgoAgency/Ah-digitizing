@@ -47,10 +47,11 @@ service cloud.firestore {
           'designerSubmission',
           'designerSubmissionUrl',
           'designerSubmissionPath',
+          'designerSubmissionFiles',
           'designerSubmittedAt',
           'status'
         ])
-        && request.resource.data.status == 'Completed';
+        && request.resource.data.status == 'Received';
     }
 
     // users collection: allow read to owner and staff; writes via server/admin only

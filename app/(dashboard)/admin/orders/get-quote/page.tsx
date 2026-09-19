@@ -32,6 +32,7 @@ const quoteInfoOrder = [
 const quoteStatuses = [
   "Pending",
   "Assigned to Designer",
+  "Received",
   "Edit",
   "Completed"
 ] as const;
@@ -39,7 +40,8 @@ const quoteStatuses = [
 const statusOrder: Record<string, number> = {
   pending: 0,
   "assigned to designer": 1,
-  completed: 2,
+  received: 2,
+  completed: 3,
 };
 
 function getStatusPriority(status: string) {
@@ -51,6 +53,7 @@ function getStatusPriority(status: string) {
 function getStatusLabel(status: string) {
   const normalized = status.trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
   if (normalized.includes("completed")) return "Completed";
+  if (normalized.includes("received")) return "Received";
   if (normalized.includes("assigned")) return "Assigned to Designer";
   return "Pending";
 }
@@ -609,7 +612,7 @@ export default function GetQuoteAdminPage() {
                       value={quoteStatuses.find((status) => status.toLowerCase() === row.status.toLowerCase()) ?? "Pending"}
                       onChange={(event) => updateQuoteStatus(row.id, event.target.value)}
                       disabled={updatingId === row.id}
-                      className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}
+                      className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" :row.status.toLowerCase().includes("received") ? "bg-blue-200 text-blue-900": row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}
                     >
                       {quoteStatuses.map((status) => (
                         <option key={status} value={status}>
@@ -646,7 +649,7 @@ export default function GetQuoteAdminPage() {
           <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-md bg-white shadow-xl">
             <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Quote Detail</p>
+                <p className="text-xs font-semibold uppercase tracking-normal text-slate-400">Order Detail</p>
                 <h3 className="mt-1 text-xl font-bold text-slate-950">{getString(activeQuote, ["fullName", "name"], "Customer")}</h3>
                 <p className="mt-1 text-xs font-semibold text-slate-500">Order No: {getString(activeQuote, ["orderNumber"], "Not Available")}</p>
               </div>
@@ -698,7 +701,7 @@ export default function GetQuoteAdminPage() {
                       {cancelingAssignment ? "Cancelling..." : "Cancel Assignment"}
                     </button>
                   ) : null}
-                  {activeQuote.assignedDesignerId && String(activeQuote.status || "").toLowerCase().includes("completed") ? (
+                  {activeQuote.assignedDesignerId && (String(activeQuote.status || "").toLowerCase().includes("completed") || String(activeQuote.status || "").toLowerCase().includes("received")) ? (
                     <button type="button" onClick={requestEdit} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-amber-200 bg-white px-4 text-sm font-semibold text-amber-700 hover:bg-amber-50 lg:mt-[19px]">
                       Request Edit
                     </button>

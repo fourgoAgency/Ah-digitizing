@@ -335,7 +335,7 @@ export default function DesignerPage() {
         designerSubmissionUrl: firstFile.downloadURL,
         designerSubmissionPath: firstFile.storagePath,
         designerSubmittedAt: submittedAt,
-        status: 'Completed',
+        status: 'Received',
       });
 
       setAssigned((current) => current.filter((item) => !(item.id === activeItem.id && item.source === activeItem.source)));

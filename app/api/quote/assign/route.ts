@@ -20,18 +20,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const fromAddress = process.env.EMAIL_FROM || smtpUser;
+    const smtpHost = process.env.DESIGNER_SMTP_HOST || process.env.SMTP_HOST;
+    const smtpPort = process.env.DESIGNER_SMTP_PORT || process.env.SMTP_PORT;
+    const smtpUser = process.env.DESIGNER_SMTP_USER;
+    const smtpPass = process.env.DESIGNER_SMTP_PASS;
+    const fromAddress = process.env.DESIGNER_EMAIL_FROM || smtpUser;
 
     if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !fromAddress) {
-      return NextResponse.json({ error: 'SMTP email settings are not configured.' }, { status: 500 });
+      return NextResponse.json({ error: 'Designer SMTP email settings are not configured.' }, { status: 500 });
     }
 
     const configuredPort = Number(smtpPort);
-    const configuredSecure = process.env.SMTP_SECURE === 'true';
+    const configuredSecure = (process.env.DESIGNER_SMTP_SECURE ?? process.env.SMTP_SECURE) === 'true';
 
     const createTransport = (allowRelaxedTls: boolean, port = configuredPort, secure = configuredSecure) =>
       nodemailer.createTransport({

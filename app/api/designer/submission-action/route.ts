@@ -14,10 +14,10 @@ type ActionPayload = {
 };
 
 function createTransport() {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
+  const smtpHost = process.env.DESIGNER_SMTP_HOST || process.env.SMTP_HOST;
+  const smtpPort = process.env.DESIGNER_SMTP_PORT || process.env.SMTP_PORT;
+  const smtpUser = process.env.DESIGNER_SMTP_USER;
+  const smtpPass = process.env.DESIGNER_SMTP_PASS;
 
   if (!smtpHost || !smtpPort || !smtpUser || !smtpPass) {
     return null;
@@ -26,7 +26,7 @@ function createTransport() {
   return nodemailer.createTransport({
     host: smtpHost,
     port: Number(smtpPort),
-    secure: process.env.SMTP_SECURE === 'true',
+    secure: (process.env.DESIGNER_SMTP_SECURE ?? process.env.SMTP_SECURE) === 'true',
     tls: {
       rejectUnauthorized: process.env.SMTP_ALLOW_SELF_SIGNED_CERTS === 'true' ? false : true,
     },
@@ -63,12 +63,12 @@ export async function POST(req: Request) {
 
     const transport = createTransport();
     if (!transport) {
-      return NextResponse.json({ error: 'SMTP email settings are not configured.' }, { status: 500 });
+      return NextResponse.json({ error: 'Designer SMTP email settings are not configured.' }, { status: 500 });
     }
 
-    const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_USER;
+    const fromAddress = process.env.DESIGNER_EMAIL_FROM || process.env.DESIGNER_SMTP_USER;
     if (!fromAddress) {
-      return NextResponse.json({ error: 'EMAIL_FROM is not configured.' }, { status: 500 });
+      return NextResponse.json({ error: 'DESIGNER_EMAIL_FROM is not configured.' }, { status: 500 });
     }
 
     if (action === 'need_changes') {

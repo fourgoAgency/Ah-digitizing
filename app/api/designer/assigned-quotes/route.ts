@@ -64,8 +64,10 @@ export async function GET(req: NextRequest) {
       return 'Standard' as const;
     };
 
-    const isCompleted = (data: Record<string, unknown>) =>
-      String(data.status || '').trim().toLowerCase().includes('completed');
+    const isCompleted = (data: Record<string, unknown>) => {
+      const status = String(data.status || '').trim().toLowerCase();
+      return status.includes('completed') || status.includes('received');
+    };
 
     [quotesByIdSnap, quotesByEmailSnap].forEach((snap) => {
       snap.docs.forEach((doc) => {

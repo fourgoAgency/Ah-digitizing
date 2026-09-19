@@ -10,11 +10,12 @@ import { createQuoteText } from "@/lib/quote-text";
 type QuoteDocument = Record<string, unknown> & { id: string };
 type Designer = { id: string; email: string; name: string };
 const countryNames: Record<string, string> = { US: "United States", GB: "United Kingdom", CA: "Canada", AU: "Australia" };
-const quoteStatuses = ["Pending", "Assigned to Designer", "Edit", "Completed"] as const;
+const quoteStatuses = ["Pending", "Assigned to Designer", "Received", "Edit", "Completed"] as const;
 const statusOrder: Record<string, number> = {
   pending: 0,
   "assigned to designer": 1,
-  completed: 2,
+  received: 2,
+  completed: 3,
 };
 
 function getStatusPriority(status: string) {
@@ -26,6 +27,7 @@ function getStatusPriority(status: string) {
 function getStatusLabel(status: string) {
   const normalized = status.trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
   if (normalized.includes("completed")) return "Completed";
+  if (normalized.includes("received")) return "Received";
   if (normalized.includes("assigned")) return "Assigned to Designer";
   return "Pending";
 }
@@ -454,7 +456,7 @@ export default function GetFreeQuoteAdminPage() {
                 <td className="py-3 font-semibold text-slate-800">{row.orderNo}</td>
                 <td className="py-3">{formatCreatedAt(row.createdAt)}</td>
                 <td className="py-3"><div className="font-medium text-slate-800">{row.customer}</div><div className="text-[11px] text-slate-500">{row.email}</div></td><td className="py-3 font-medium text-slate-700">{row.turnaround}</td>
-                <td className="py-3"><select value={quoteStatuses.find((s) => s.toLowerCase() === row.status.toLowerCase()) ?? "Pending"} onChange={(e) => updateQuoteStatus(row.id, e.target.value)} disabled={updatingId === row.id} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}>{quoteStatuses.map((s) => <option key={s} value={s}>{s}</option>)}</select></td>
+                <td className="py-3"><select value={quoteStatuses.find((s) => s.toLowerCase() === row.status.toLowerCase()) ?? "Pending"} onChange={(e) => updateQuoteStatus(row.id, e.target.value)} disabled={updatingId === row.id} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("received") ? "bg-blue-200 text-blue-900" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}>{quoteStatuses.map((s) => <option key={s} value={s}>{s}</option>)}</select></td>
                 <td className="py-3 text-right"><button type="button" onClick={() => setActiveQuote(row.document)} className="inline-flex h-8 items-center gap-2 rounded border border-slate-200 bg-white px-3 text-xs font-semibold text-blue-600 hover:bg-blue-50"><Eye className="h-3.5 w-3.5" />View detail</button></td>
               </tr>
             )) : <tr><td colSpan={7} className="py-16 text-center text-sm text-slate-400">No free quote requests found.</td></tr>}
@@ -486,7 +488,7 @@ export default function GetFreeQuoteAdminPage() {
                   <label className="block"><span className="text-[11px] font-semibold uppercase tracking-normal text-slate-400">Submission Deadline</span><input type="datetime-local" value={submissionDeadline} onChange={(e) => setSubmissionDeadline(e.target.value)} className="mt-1 h-10 w-full rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-500" /></label>
                   <button type="button" disabled={!selectedDesignerId || !submissionDeadline || selectedSubmissionFiles.length === 0 || assigningDesigner} onClick={assignQuoteToDesigner} className="mt-5 inline-flex h-10 items-center justify-center rounded bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 lg:mt-[19px]">{assigningDesigner ? "Assigning..." : "Assign"}</button>
                   {activeQuote.assignedDesignerId && activeQuote.status !== "Completed" ? <button type="button" disabled={cancelingAssignment} onClick={cancelAssignment} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 lg:mt-[19px]">{cancelingAssignment ? "Cancelling..." : "Cancel Assignment"}</button> : null}
-                  {activeQuote.assignedDesignerId && String(activeQuote.status || "").toLowerCase().includes("completed") ? <button type="button" onClick={requestEdit} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-amber-200 bg-white px-4 text-sm font-semibold text-amber-700 hover:bg-amber-50 lg:mt-[19px]">Request Edit</button> : null}
+                  {activeQuote.assignedDesignerId && (String(activeQuote.status || "").toLowerCase().includes("completed") || String(activeQuote.status || "").toLowerCase().includes("received")) ? <button type="button" onClick={requestEdit} className="mt-5 inline-flex h-10 items-center justify-center rounded border border-amber-200 bg-white px-4 text-sm font-semibold text-amber-700 hover:bg-amber-50 lg:mt-[19px]">Request Edit</button> : null}
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><UploadCloud className="h-3.5 w-3.5" /><input type="file" multiple className="sr-only" onChange={(e) => setSelectedSubmissionFiles(Array.from(e.target.files ?? []))} />Choose upload files</label>
