@@ -242,6 +242,20 @@ function formatColorsName(value: unknown) {
   return colors.join(", ") || "Not provided";
 }
 
+const ADMIN_SUBMISSION_READ_KEY = "admin-designer-submission-read-items";
+const ADMIN_NEW_ORDER_READ_KEY = "admin-new-order-read-items";
+
+function readStoredSet(key: string) {
+  const stored = localStorage.getItem(key);
+  return stored === null ? null : new Set<string>(JSON.parse(stored));
+}
+
+function addToStoredSet(key: string, value: string) {
+  const current = readStoredSet(key) ?? new Set<string>();
+  current.add(value);
+  localStorage.setItem(key, JSON.stringify(Array.from(current)));
+}
+
 function downloadQuoteInfo(quote: QuoteDocument) {
   const content = createQuoteText(quote);
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -272,6 +286,8 @@ export default function GetQuoteAdminPage() {
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [downloadingSubmission, setDownloadingSubmission] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState<string | null>(null);
+  const [unreadSubmissionIds, setUnreadSubmissionIds] = useState<Set<string>>(new Set());
+  const [unreadOrderIds, setUnreadOrderIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setSelectedDesignerId("");
@@ -286,8 +302,27 @@ export default function GetQuoteAdminPage() {
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        setQuotes(snapshot.docs.map((document) => ({ ...document.data(), id: document.id })));
+        const docs = snapshot.docs.map((document) => ({ ...document.data(), id: document.id }));
+        setQuotes(docs);
         setLoading(false);
+
+        if (typeof window !== "undefined") {
+          const readSubmissions = readStoredSet(ADMIN_SUBMISSION_READ_KEY) ?? new Set<string>();
+          const receivedKeys = docs
+            .filter((quoteDoc) => getStatusLabel(getString(quoteDoc as QuoteDocument, ["status"], "Pending")) === "Received")
+            .map((quoteDoc) => `quotes:${quoteDoc.id}`);
+          setUnreadSubmissionIds(new Set(receivedKeys.filter((key) => !readSubmissions.has(key))));
+
+          const orderKeys = docs.map((quoteDoc) => `quotes:${quoteDoc.id}`);
+          const readOrders = readStoredSet(ADMIN_NEW_ORDER_READ_KEY);
+          if (readOrders === null) {
+            // First visit: treat existing orders as already seen so only new ones get flagged.
+            localStorage.setItem(ADMIN_NEW_ORDER_READ_KEY, JSON.stringify(orderKeys));
+            setUnreadOrderIds(new Set());
+          } else {
+            setUnreadOrderIds(new Set(orderKeys.filter((key) => !readOrders.has(key))));
+          }
+        }
       },
       (snapshotError) => {
         setError(snapshotError.message);
@@ -332,7 +367,8 @@ export default function GetQuoteAdminPage() {
       })).filter((row) => {
         const search = (searchParams.get("q") || "").trim().toLowerCase();
         const status = searchParams.get("status") || "all";
-        return (!search || row.id.toLowerCase().includes(search) || row.orderNo.toLowerCase().includes(search) || row.customer.toLowerCase().includes(search)) && (status === "all" || row.status.toLowerCase() === status.toLowerCase());
+        const turnaround = searchParams.get("turnaround") || "all";
+        return (!search || row.id.toLowerCase().includes(search) || row.orderNo.toLowerCase().includes(search) || row.customer.toLowerCase().includes(search)) && (status === "all" || row.status.toLowerCase() === status.toLowerCase()) && (turnaround === "all" || row.type === turnaround);
       }).sort((first, second) => {
         const statusDifference = getStatusPriority(first.status) - getStatusPriority(second.status);
         if (statusDifference !== 0) return statusDifference;
@@ -595,15 +631,22 @@ export default function GetQuoteAdminPage() {
                 </td>
               </tr>
             ) : rows.length > 0 ? (
-              rows.map((row) => (
-                <tr key={row.id} className="border-b border-slate-100 text-xs text-slate-700 hover:bg-slate-50/70">
+              rows.map((row) => {
+                const submissionKey = `quotes:${row.id}`;
+                const isUnreadOrder = unreadOrderIds.has(submissionKey);
+                const isUnreadSubmission = isUnreadOrder || unreadSubmissionIds.has(submissionKey);
+                return (
+                <tr key={row.id} className={`border-b border-slate-100 text-xs transition-colors ${isUnreadSubmission ? "bg-primary/10 ring-1 ring-primary/20 text-slate-900" : "text-slate-700 hover:bg-slate-50/70"}`}>
                   <td className="py-3">
                     <input type="checkbox" checked={selectedIds.includes(row.id)} onChange={() => toggleSelected(row.id)} className="h-4 w-4 rounded border-slate-300 accent-blue-600" />
                   </td>
-                  <td className="py-3 font-semibold text-slate-800">{row.orderNo}</td>
+                  <td className={`py-3 font-semibold ${isUnreadSubmission ? "text-slate-950" : "text-slate-800"}`}>
+                    {row.orderNo}
+                    {isUnreadSubmission ? <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">New</span> : null}
+                  </td>
                   <td className="py-3">{formatCreatedAt(row.createdAt)}</td>
                   <td className="py-3">
-                    <div className="font-medium text-slate-800">{row.customer}</div>
+                    <div className={`font-medium ${isUnreadSubmission ? "text-slate-950" : "text-slate-800"}`}>{row.customer}</div>
                     <div className="text-[11px] text-slate-500">{row.email}</div>
                   </td>
                   <td className="py-3 font-medium text-slate-700">{row.turnaround}</td>
@@ -624,7 +667,20 @@ export default function GetQuoteAdminPage() {
                   <td className="py-3 text-right">
                     <button
                       type="button"
-                      onClick={() => setActiveQuote(row.document)}
+                      onClick={() => {
+                        setActiveQuote(row.document);
+                        if (isUnreadSubmission && typeof window !== "undefined") {
+                          const removeKey = (current: Set<string>) => {
+                            const next = new Set(current);
+                            next.delete(submissionKey);
+                            return next;
+                          };
+                          setUnreadSubmissionIds(removeKey);
+                          setUnreadOrderIds(removeKey);
+                          if (row.status === "Received") addToStoredSet(ADMIN_SUBMISSION_READ_KEY, submissionKey);
+                          addToStoredSet(ADMIN_NEW_ORDER_READ_KEY, submissionKey);
+                        }
+                      }}
                       className="inline-flex h-8 items-center gap-2 rounded border border-slate-200 bg-white px-3 text-xs font-semibold text-blue-600 hover:bg-blue-50"
                     >
                       <Eye className="h-3.5 w-3.5" />
@@ -632,7 +688,8 @@ export default function GetQuoteAdminPage() {
                     </button>
                   </td>
                 </tr>
-              ))
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={7} className="py-16 text-center text-sm text-slate-400">
@@ -713,6 +770,13 @@ export default function GetQuoteAdminPage() {
                     Choose upload file
                   </label>
                   <span className="max-w-xs truncate text-xs text-slate-500">{selectedSubmissionFiles.length > 0 ? `${selectedSubmissionFiles.length} file${selectedSubmissionFiles.length === 1 ? "" : "s"} selected` : "No files selected"}</span>
+                  {selectedSubmissionFiles.length > 0 ? (
+                    <div className="flex w-full flex-wrap gap-2">
+                      {selectedSubmissionFiles.map((file, index) => (
+                        <span key={`${file.name}-${index}`} className="max-w-xs truncate rounded border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700" title={file.name}>{file.name}</span>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
                 {assignmentMessage ? <p className={`mt-3 text-xs font-semibold ${assignmentMessage.includes("success") ? "text-emerald-600" : "text-rose-500"}`}>{assignmentMessage}</p> : null}
                 {activeQuote.assignedDesignerId ? (

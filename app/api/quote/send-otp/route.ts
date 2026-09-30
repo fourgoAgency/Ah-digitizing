@@ -57,8 +57,8 @@ export async function POST(req: Request) {
         from: fromAddress,
         to: email,
         subject: 'Your AH Digitizing quote verification code',
-        text: `Your OTP code is ${otp}. It expires in 5 minutes.`,
-        html: `<p>Your OTP code is <strong>${otp}</strong>.</p><p>It expires in 5 minutes.</p>`,
+        text: `Your OTP code is ${otp} It expires in 5 minutes.`,
+        html: `<p>Your OTP code is <strong>${otp}</strong></p><p>It expires in 5 minutes.</p>`,
       });
     };
 

@@ -5,6 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const filterOptions = ["all", "Paid", "Pending", "Ready", "Shipped", "Received", "Assigned to Designer", "Completed"] as const;
+const turnaroundOptions = ["all", "Standard", "Rush", "Super Rush"] as const;
+const turnaroundFilterPaths = ["/admin/orders/get-quote", "/admin/orders/get-free-quote"];
 
 export function OrdersToolbar() {
   const pathname = usePathname();
@@ -24,6 +26,11 @@ export function OrdersToolbar() {
       <select value={searchParams.get("status") || "all"} onChange={(event) => updateQuery("status", event.target.value)} className="h-10 rounded border border-slate-200 bg-white px-3 text-sm text-slate-500 outline-none focus:border-blue-500">
         {filterOptions.map((option) => <option key={option} value={option}>{option === "all" ? "Filter" : option}</option>)}
       </select>
+      {turnaroundFilterPaths.includes(pathname) ? (
+        <select value={searchParams.get("turnaround") || "all"} onChange={(event) => updateQuery("turnaround", event.target.value)} className="h-10 rounded border border-slate-200 bg-white px-3 text-sm text-slate-500 outline-none focus:border-blue-500">
+          {turnaroundOptions.map((option) => <option key={option} value={option}>{option === "all" ? "Turnaround" : option}</option>)}
+        </select>
+      ) : null}
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
         <input value={value} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") updateQuery("q", value.trim()); }} placeholder="Search order ID or customer..." className="h-10 w-80 max-w-full rounded border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 outline-none focus:border-blue-500" />

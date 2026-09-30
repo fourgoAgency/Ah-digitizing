@@ -9,7 +9,7 @@ import AnimatedSectionHeading from "./AnimatedSectionHeading";
 type Testimonial = {
   id: number;
   name: string;
-  role: string;
+  country: string;
   rating: number;
   text: string;
   avatar: string;
@@ -61,7 +61,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         <div className="absolute left-0 top-[38px] h-10 w-5 rounded-bl-[20px] bg-[#2a5492]" />
         <div className="relative rounded-tl-[26px] rounded-tr-[26px] rounded-br-[26px] bg-[#2f5fa7] px-10 py-3 shadow-lg">
           <p className="text-sm font-semibold text-white">{t.name}</p>
-          <p className="text-xs text-white/80">{t.role}</p>
+          <p className="text-xs text-white/80">{t.country}</p>
         </div>
       </div>
 

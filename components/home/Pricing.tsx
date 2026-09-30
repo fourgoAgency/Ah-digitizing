@@ -27,12 +27,16 @@ type Plan = {
 
 const accents = [
   {
-    chip: "bg-gradient-to-b from-blue-400 to-blue-800",
+    chip: "bg-gradient-to-b from-sky-400 to-blue-500",
+    button: "bg-sky-500 hover:bg-sky-600",
+  },
+  {
+    chip: "bg-gradient-to-b from-blue-400 to-blue-700",
     button: "bg-blue-500 hover:bg-blue-600",
   },
   {
-    chip: "bg-gradient-to-b from-sky-400 to-blue-500",
-    button: "bg-sky-500 hover:bg-sky-600",
+    chip: "bg-gradient-to-b from-blue-500 to-blue-900",
+    button: "bg-blue-600 hover:bg-blue-700",
   },
   {
     chip: "bg-gradient-to-b from-primary to-secondary",

@@ -6,6 +6,7 @@ const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
 let adminAuth: admin.auth.Auth | null = null;
 let adminFirestore: admin.firestore.Firestore | null = null;
+let adminStorageBucket: ReturnType<admin.storage.Storage['bucket']> | null = null;
 
 if (!admin.apps.length) {
   if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
@@ -18,6 +19,7 @@ if (!admin.apps.length) {
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey,
       }),
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || process.env.FIREBASE_STORAGE_BUCKET,
     });
   }
 }
@@ -25,9 +27,10 @@ if (!admin.apps.length) {
 if (admin.apps.length) {
   adminAuth = admin.auth();
   adminFirestore = admin.firestore();
+  adminStorageBucket = admin.storage().bucket();
 }
 
-export { adminAuth, adminFirestore };
+export { adminAuth, adminFirestore, adminStorageBucket };
 export async function getServerDocuments<T = any>(collectionName: string): Promise<Array<T & { id: string }>> {
   // Check if adminFirestore is initialized, otherwise throw a clear error or return empty array
   if (!adminFirestore) {

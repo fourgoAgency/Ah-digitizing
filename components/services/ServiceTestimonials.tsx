@@ -15,6 +15,7 @@ type Testimonial = {
   text: string;
   avatar: string;
   service: "embroidery" | "vector" | "both";
+  subService?: string;
 };
 
 type ServiceTestimonialsProps = {
@@ -156,6 +157,11 @@ export default function ServiceTestimonials({ service }: ServiceTestimonialsProp
                       variants={panelVariants}
                       className="flex-1 bg-blue-800 bg-opacity-90 rounded-r-xl p-8 shadow-inner h-80 md:h-96"
                     >
+                      {t.subService && (
+                        <span className="inline-block mb-4 rounded-full bg-blue-700 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
+                          {t.subService}
+                        </span>
+                      )}
                       <p className="text-base lg:text-lg leading-relaxed mb-6">{t.text}</p>
                       <div className="mt-6">
                         <div className="font-semibold text-white">{t.name}</div>

@@ -28,6 +28,12 @@ type OrderRow = {
 
 const orderStatuses: OrderStatus[] = ["Ready", "Shipped", "Received"]
 const pageSize = 14
+const ADMIN_SHOP_ORDER_READ_KEY = "admin-shop-order-read-items"
+
+function readStoredSet(key: string) {
+  const stored = localStorage.getItem(key)
+  return stored === null ? null : new Set<string>(JSON.parse(stored))
+}
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null
@@ -286,17 +292,29 @@ export default function OrdersPage() {
   const [activeOrder, setActiveOrder] = useState<OrderRow | null>(null)
   const [products, setProducts] = useState<ProductDocument[]>([])
   const [page, setPage] = useState(1)
+  const [unreadOrderIds, setUnreadOrderIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(firestore, "orders"),
       (snapshot) => {
-        setOrders(
-          snapshot.docs
-            .map((document) => toOrderRow({ ...document.data(), id: document.id }))
-            .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
-        )
+        const rows = snapshot.docs
+          .map((document) => toOrderRow({ ...document.data(), id: document.id }))
+          .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
+        setOrders(rows)
         setLoading(false)
+
+        if (typeof window !== "undefined") {
+          const orderIds = rows.map((row) => row.id)
+          const readOrders = readStoredSet(ADMIN_SHOP_ORDER_READ_KEY)
+          if (readOrders === null) {
+            // First visit: treat existing orders as already seen so only new ones get flagged.
+            localStorage.setItem(ADMIN_SHOP_ORDER_READ_KEY, JSON.stringify(orderIds))
+            setUnreadOrderIds(new Set())
+          } else {
+            setUnreadOrderIds(new Set(orderIds.filter((id) => !readOrders.has(id))))
+          }
+        }
       },
       (snapshotError) => {
         setError(snapshotError.message)
@@ -408,6 +426,16 @@ export default function OrdersPage() {
 
   function openOrderDetails(order: OrderRow) {
     setActiveOrder(order)
+    if (!unreadOrderIds.has(order.id)) return
+
+    setUnreadOrderIds((current) => {
+      const next = new Set(current)
+      next.delete(order.id)
+      return next
+    })
+    const readOrders = readStoredSet(ADMIN_SHOP_ORDER_READ_KEY) ?? new Set<string>()
+    readOrders.add(order.id)
+    localStorage.setItem(ADMIN_SHOP_ORDER_READ_KEY, JSON.stringify(Array.from(readOrders)))
   }
 
   const activeOrderItems = activeOrder ? getOrderItems(activeOrder.document) : []
@@ -476,8 +504,10 @@ export default function OrdersPage() {
                     </td>
                   </tr>
                 ) : visibleOrders.length > 0 ? (
-                  visibleOrders.map((order) => (
-                    <tr key={order.id} className="border-b border-slate-100 text-xs text-slate-700 hover:bg-slate-50/70">
+                  visibleOrders.map((order) => {
+                    const isUnread = unreadOrderIds.has(order.id)
+                    return (
+                    <tr key={order.id} className={`border-b border-slate-100 text-xs transition-colors ${isUnread ? "bg-primary/10 ring-1 ring-primary/20 text-slate-900" : "text-slate-700 hover:bg-slate-50/70"}`}>
                       <td className="py-3">
                         <input
                           type="checkbox"
@@ -486,9 +516,12 @@ export default function OrdersPage() {
                           className="h-4 w-4 rounded border-slate-300 accent-blue-600"
                         />
                       </td>
-                      <td className="py-3 font-semibold text-slate-800">{order.orderNo}</td>
+                      <td className={`py-3 font-semibold ${isUnread ? "text-slate-950" : "text-slate-800"}`}>
+                        {order.orderNo}
+                        {isUnread ? <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">New</span> : null}
+                      </td>
                       <td className="py-3">{formatDateTime(order.createdAt)}</td>
-                      <td className="py-3">{order.customer}</td>
+                      <td className={`py-3 ${isUnread ? "font-medium text-slate-950" : ""}`}>{order.customer}</td>
                       <td className="py-3">
                         <select value={order.paymentStatus} onChange={(event) => updatePaymentStatus(order, event.target.value as PaymentStatus)} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${statusClass(order.paymentStatus)}`}><option value="Pending">Pending</option><option value="Paid">Paid</option><option value="Received">Received</option></select>
                       </td>
@@ -517,7 +550,8 @@ export default function OrdersPage() {
                         </button>
                       </td>
                     </tr>
-                  ))
+                    )
+                  })
                 ) : (
                   <tr>
                     <td colSpan={8} className="py-16 text-center text-sm text-slate-400">

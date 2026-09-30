@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Check, CheckCircle2, ChevronDown, Clock3, Download, RotateCcw, UploadCloud } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
-import { uploadFile, updateDocument } from '@/lib/firebase';
 
 type QuoteDoc = Record<string, unknown> & { id: string; source: 'quotes' | 'quoteRequests' };
 
@@ -307,36 +306,18 @@ export default function DesignerPage() {
     setMessage(null);
 
     try {
-      const submittedAt = new Date().toISOString();
-      const submissionFiles = await Promise.all(selectedFiles.map(async (file, index) => {
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
-        const storagePath = `designer-submissions/${activeItem.source}/${activeItem.id}/${Date.now()}-${index + 1}-${safeName}`;
-        const downloadURL = await uploadFile(file, storagePath);
-        return {
-          fileName: file.name,
-          storagePath,
-          downloadURL,
-          size: file.size,
-          type: file.type,
-        };
-      }));
-      const [firstFile] = submissionFiles;
+      const formData = new FormData();
+      formData.set('source', activeItem.source);
+      formData.set('id', activeItem.id);
+      selectedFiles.forEach((file) => formData.append('files', file));
 
-      await updateDocument(activeItem.source, activeItem.id, {
-        designerSubmission: {
-          fileName: firstFile.fileName,
-          storagePath: firstFile.storagePath,
-          downloadURL: firstFile.downloadURL,
-          submittedAt,
-          submittedById: customUser?.id || null,
-          submittedByEmail: customUser?.email || null,
-        },
-        designerSubmissionFiles: submissionFiles,
-        designerSubmissionUrl: firstFile.downloadURL,
-        designerSubmissionPath: firstFile.storagePath,
-        designerSubmittedAt: submittedAt,
-        status: 'Received',
+      const res = await fetch('/api/designer/submit-result', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
       });
+      const result = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(result?.error || 'Unable to upload submission.');
 
       setAssigned((current) => current.filter((item) => !(item.id === activeItem.id && item.source === activeItem.source)));
       setCompletedCount((current) => current + 1);
