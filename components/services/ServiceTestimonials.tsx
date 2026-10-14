@@ -150,7 +150,7 @@ export default function ServiceTestimonials({ service }: ServiceTestimonialsProp
                       variants={imageVariants}
                       className="shrink-0 w-64 h-80 md:w-80 md:h-96 overflow-hidden shadow-xl rounded-l-xl bg-white"
                     >
-                      <Image width={150} height={250} src={t.avatar} alt={t.name} className="w-full h-full object-fill" />
+                      <Image width={150} height={250} src={t.avatar} alt={t.name} className="w-full h-full object-fill" unoptimized />
                     </motion.div>
 
                     <motion.div
@@ -158,9 +158,9 @@ export default function ServiceTestimonials({ service }: ServiceTestimonialsProp
                       className="flex-1 bg-blue-800 bg-opacity-90 rounded-r-xl p-8 shadow-inner h-80 md:h-96"
                     >
                       {t.subService && (
-                        <span className="inline-block mb-4 rounded-full bg-blue-700 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
+                        <h3 className="mb-4 text-xl lg:text-2xl font-bold text-white">
                           {t.subService}
-                        </span>
+                        </h3>
                       )}
                       <p className="text-base lg:text-lg leading-relaxed mb-6">{t.text}</p>
                       <div className="mt-6">

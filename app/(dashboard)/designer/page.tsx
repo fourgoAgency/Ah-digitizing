@@ -286,17 +286,19 @@ export default function DesignerPage() {
 
   const stats = useMemo(() => {
     const isEditItem = (item: AssignedItem) => item.status.toLowerCase().includes('edit') || item.status.toLowerCase().includes('change');
-    const activeSubmitted = assigned.filter((item) => !isEditItem(item) && getSubmissionInfo(item.document).url).length;
-    const pending = assigned.filter((item) => !isEditItem(item) && !getSubmissionInfo(item.document).url).length;
-    const embroidery = assigned.filter((item) => item.orderType === 'Embroidery').length + completedBreakdown.orderTypes.Embroidery;
-    const vector = assigned.filter((item) => item.orderType === 'Vector').length + completedBreakdown.orderTypes.Vector;
-    const quote = assigned.filter((item) => item.orderType === 'Quote').length + completedBreakdown.orderTypes.Quote;
-    const edit = assigned.filter(isEditItem).length;
-    const standard = assigned.filter((item) => item.assignmentType.toLowerCase() === 'standard').length + completedBreakdown.turnaround.Standard;
-    const rush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'rush').length + completedBreakdown.turnaround.Rush;
-    const superRush = assigned.filter((item) => item.assignmentType.toLowerCase() === 'super rush').length + completedBreakdown.turnaround['Super Rush'];
+    const isAssignedItem = (item: AssignedItem) => item.status.toLowerCase().includes('assigned');
+    // Only work that is currently with this designer counts: "Assigned to Designer" or "Edit".
+    const active = assigned.filter((item) => isAssignedItem(item) || isEditItem(item));
+    const pending = active.filter(isAssignedItem).length;
+    const edit = active.filter(isEditItem).length;
+    const embroidery = active.filter((item) => item.orderType === 'Embroidery').length;
+    const vector = active.filter((item) => item.orderType === 'Vector').length;
+    const quote = active.filter((item) => item.orderType === 'Quote').length;
+    const standard = active.filter((item) => item.assignmentType.toLowerCase() === 'standard').length;
+    const rush = active.filter((item) => item.assignmentType.toLowerCase() === 'rush').length;
+    const superRush = active.filter((item) => item.assignmentType.toLowerCase() === 'super rush').length;
     return { pending, edit, embroidery, vector, quote, standard, rush, superRush };
-  }, [assigned, completedCount, completedBreakdown]);
+  }, [assigned]);
 
   async function handleSubmitResult() {
     if (!activeItem || selectedFiles.length === 0) return;

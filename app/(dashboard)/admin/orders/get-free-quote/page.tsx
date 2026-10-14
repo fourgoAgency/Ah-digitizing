@@ -12,10 +12,11 @@ type Designer = { id: string; email: string; name: string };
 const countryNames: Record<string, string> = { US: "United States", GB: "United Kingdom", CA: "Canada", AU: "Australia" };
 const quoteStatuses = ["Pending", "Assigned to Designer", "Received", "Edit", "Completed"] as const;
 const statusOrder: Record<string, number> = {
-  pending: 0,
-  "assigned to designer": 1,
-  received: 2,
-  completed: 3,
+  received: 0,
+  pending: 1,
+  "assigned to designer": 2,
+  edit: 3,
+  completed: 4,
 };
 
 function getStatusPriority(status: string) {
@@ -29,6 +30,7 @@ function getStatusLabel(status: string) {
   if (normalized.includes("completed")) return "Completed";
   if (normalized.includes("received")) return "Received";
   if (normalized.includes("assigned")) return "Assigned to Designer";
+  if (normalized.includes("edit")) return "Edit";
   return "Pending";
 }
 
@@ -144,12 +146,11 @@ function formatInfoValue(key: string, value: unknown) {
   return value ? JSON.stringify(value) : "Not provided";
 }
 
+// The customer's chosen turnaround wins; the admin's assignment type is only a fallback for older records.
 function getQuoteType(quote: QuoteDocument) {
-  const savedType = getString(quote, ["assignmentType", "type"]);
-  if (["Standard", "Rush", "Super Rush"].includes(savedType)) return savedType;
-  const turnaround = getString(quote, ["turnaroundTime"]).toLowerCase();
-  if (turnaround.includes("1 to 4")) return "Super Rush";
-  if (turnaround.includes("4 to 8")) return "Rush";
+  const turnaround = getString(quote, ["turnaroundTime", "assignmentType", "type"]).toLowerCase();
+  if (turnaround.includes("super rush") || turnaround.includes("1 to 4")) return "Super Rush";
+  if (turnaround.includes("rush") || turnaround.includes("4 to 8")) return "Rush";
   return "Standard";
 }
 
@@ -472,7 +473,7 @@ export default function GetFreeQuoteAdminPage() {
                 <td className={`py-3 font-semibold ${isUnreadSubmission ? "text-slate-950" : "text-slate-800"}`}>{row.orderNo}{isUnreadSubmission ? <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">New</span> : null}</td>
                 <td className="py-3">{formatCreatedAt(row.createdAt)}</td>
                 <td className="py-3"><div className={`font-medium ${isUnreadSubmission ? "text-slate-950" : "text-slate-800"}`}>{row.customer}</div><div className="text-[11px] text-slate-500">{row.email}</div></td><td className="py-3 font-medium text-slate-700">{row.turnaround}</td>
-                <td className="py-3"><select value={quoteStatuses.find((s) => s.toLowerCase() === row.status.toLowerCase()) ?? "Pending"} onChange={(e) => updateQuoteStatus(row.id, e.target.value)} disabled={updatingId === row.id} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("received") ? "bg-blue-200 text-blue-900" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-500"}`}>{quoteStatuses.map((s) => <option key={s} value={s}>{s}</option>)}</select></td>
+                <td className="py-3"><select value={quoteStatuses.find((s) => s.toLowerCase() === row.status.toLowerCase()) ?? "Pending"} onChange={(e) => updateQuoteStatus(row.id, e.target.value)} disabled={updatingId === row.id} className={`h-6 rounded px-2 text-xs font-semibold outline-none ${row.status.toLowerCase().includes("assigned") ? "bg-blue-100 text-blue-700" : row.status.toLowerCase().includes("received") ? "bg-blue-200 text-blue-900" : row.status.toLowerCase().includes("completed") ? "bg-emerald-100 text-emerald-600" : row.status === "Edit" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-500"}`}>{quoteStatuses.map((s) => <option key={s} value={s}>{s}</option>)}</select></td>
                 <td className="py-3 text-right"><button type="button" onClick={() => {
                   setActiveQuote(row.document);
                   if (isUnreadSubmission && typeof window !== "undefined") {

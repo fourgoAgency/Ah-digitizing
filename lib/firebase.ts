@@ -81,8 +81,8 @@ linkedInProvider.addScope('r_emailaddress');
 
 async function getDocuments<T = DocumentData>(collectionName: string): Promise<Array<T & { id: string }>> {
   // For admin collections, try API endpoint first (supports custom JWT admins)
-  const adminCollections = ['orders', 'quotes', 'quoteRequests', 'users', 'products', 'blogs', 'category', 'coupons', 'contactMessages', 'notifications', 'reviews', 'testimonials', 'pricing', 'portfolioIndex'];
-  
+  const adminCollections = ['orders', 'quotes', 'quoteRequests', 'users', 'products', 'blogs', 'category', 'coupons', 'contactMessages', 'notifications', 'reviews', 'portfolioIndex'];
+
   if (adminCollections.includes(collectionName)) {
     try {
       const res = await fetch(`/api/admin/collections?collection=${collectionName}`, {

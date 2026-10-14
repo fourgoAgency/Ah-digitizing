@@ -26,8 +26,8 @@ export async function POST(request: Request) {
     const nextValue = await adminFirestore.runTransaction(async (transaction) => {
       const snapshot = await transaction.get(sequenceRef);
       const data = snapshot.exists ? snapshot.data() || {} : {};
-      const currentValue = data.month === month ? Number(data.value) || 0 : 0;
-      const value = currentValue + 1;
+      // The counter keeps running across months (e.g. ORSEP0001 -> OROCT0002); only the month prefix changes.
+      const value = (Number(data.value) || 0) + 1;
       transaction.set(sequenceRef, { month, value }, { merge: true });
       return value;
     });

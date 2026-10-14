@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
+import nodemailer from 'nodemailer';
 import { adminFirestore, adminStorageBucket } from '@/lib/firebaseAdmin';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me';
+const ADMIN_NOTIFICATION_EMAIL = 'ahdigitizing@gmail.com';
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 function verifySessionToken(token?: string | null) {
@@ -14,6 +16,57 @@ function verifySessionToken(token?: string | null) {
   } catch {
     return null;
   }
+}
+
+async function notifyAdminOfSubmission({
+  orderNumber,
+  orderType,
+  designerName,
+  designerEmail,
+  files,
+}: {
+  orderNumber: string;
+  orderType: string;
+  designerName: string;
+  designerEmail: string;
+  files: Array<{ fileName: string; downloadURL: string }>;
+}) {
+  const smtpHost = process.env.DESIGNER_SMTP_HOST || process.env.SMTP_HOST;
+  const smtpPort = process.env.DESIGNER_SMTP_PORT || process.env.SMTP_PORT;
+  const smtpUser = process.env.DESIGNER_SMTP_USER || process.env.SMTP_USER;
+  const smtpPass = process.env.DESIGNER_SMTP_PASS || process.env.SMTP_PASS;
+  const fromAddress = process.env.DESIGNER_EMAIL_FROM || process.env.EMAIL_FROM || smtpUser;
+
+  if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !fromAddress) {
+    throw new Error('SMTP email settings are not configured.');
+  }
+
+  const secure = (process.env.DESIGNER_SMTP_SECURE ?? process.env.SMTP_SECURE) === 'true';
+  const transport = nodemailer.createTransport({
+    host: smtpHost,
+    port: Number(smtpPort),
+    secure,
+    requireTLS: !secure,
+    tls: { rejectUnauthorized: process.env.SMTP_ALLOW_SELF_SIGNED_CERTS !== 'true' },
+    auth: { user: smtpUser, pass: smtpPass },
+  });
+
+  const fileListText = files.map((file) => `- ${file.fileName}: ${file.downloadURL}`).join('\n');
+  const fileListHtml = files
+    .map((file) => `<li><a href="${file.downloadURL}">${escapeHtml(file.fileName)}</a></li>`)
+    .join('');
+
+  await transport.sendMail({
+    from: fromAddress,
+    to: ADMIN_NOTIFICATION_EMAIL,
+    subject: `Design submitted: ${orderNumber} (${orderType})`,
+    text: `${designerName}${designerEmail ? ` (${designerEmail})` : ''} has submitted the design for ${orderType} Order No ${orderNumber}.\n\nFiles:\n${fileListText}`,
+    html: `<p><strong>${escapeHtml(designerName)}</strong>${designerEmail ? ` (${escapeHtml(designerEmail)})` : ''} has submitted the design for <strong>${escapeHtml(orderType)}</strong> Order No <strong>${escapeHtml(orderNumber)}</strong>.</p><p>Files:</p><ul>${fileListHtml}</ul>`,
+  });
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] as string);
 }
 
 export async function POST(req: NextRequest) {
@@ -109,6 +162,19 @@ export async function POST(req: NextRequest) {
       designerSubmittedAt: submittedAt,
       status: 'Received',
     });
+
+    try {
+      await notifyAdminOfSubmission({
+        orderNumber: String(docData.orderNumber || id),
+        orderType: source === 'quoteRequests' ? 'Quote' : String(docData.orderType || 'Order'),
+        designerName: String(docData.assignedDesignerName || payload.email || 'Designer'),
+        designerEmail: payload.email || String(docData.assignedDesignerEmail || ''),
+        files: submissionFiles,
+      });
+    } catch (mailError) {
+      // The upload already succeeded; a mail failure should not make the designer resubmit.
+      console.error('Designer submission admin email error:', mailError);
+    }
 
     return NextResponse.json({ ok: true, files: submissionFiles });
   } catch (err: unknown) {

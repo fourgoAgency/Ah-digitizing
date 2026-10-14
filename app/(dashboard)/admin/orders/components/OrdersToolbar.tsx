@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-const filterOptions = ["all", "Paid", "Pending", "Ready", "Shipped", "Received", "Assigned to Designer", "Completed"] as const;
+const filterOptions = ["all", "Paid", "Pending", "Ready", "Shipped", "Received", "Assigned to Designer", "Edit", "Completed"] as const;
 const turnaroundOptions = ["all", "Standard", "Rush", "Super Rush"] as const;
 const turnaroundFilterPaths = ["/admin/orders/get-quote", "/admin/orders/get-free-quote"];
 

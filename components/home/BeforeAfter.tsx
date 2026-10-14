@@ -97,9 +97,12 @@ export default function BeforeAfterGrid() {
 
   return (
     <section className="max-w-fit mx-auto px-4 py-16">
-      <AnimatedSectionHeading className="mb-12 text-center text-4xl font-bold lg:text-5xl fade-in-up">
+      <AnimatedSectionHeading className="mb-4 text-center text-4xl font-bold lg:text-5xl fade-in-up">
         Before & After
       </AnimatedSectionHeading>
+      <p className="mx-auto mb-12 max-w-2xl text-center text-base text-gray-600 lg:text-lg">
+        From Design to Stitch Precision, You Can See Quality You Can Trust
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
         {items.map((item, i) => (
           <Card key={i} before={item.before} after={item.after} />
