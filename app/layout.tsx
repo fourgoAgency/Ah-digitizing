@@ -2,8 +2,16 @@ import type { Metadata } from "next";
 import "./global.css";
 
 export const metadata: Metadata = {
-  title: "AhDigitizing",
-  description: "A digital art portfolio showcasing stunning creations.",
+  metadataBase: new URL("https://ah-digitizing.vercel.app"),
+  title: {
+    default: "Embroidery Digitizing & Vector Art | AH Digitizing",
+    template: "%s | AH Digitizing",
+  },
+  description:
+    "Professional embroidery digitizing and raster to vector conversion, manually prepared for clean stitching and production-ready results.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({
