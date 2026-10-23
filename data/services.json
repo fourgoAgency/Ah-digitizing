@@ -144,31 +144,31 @@
       "examples": [
         {
           "id": 1,
-          "title": "Logo Refinement",
-          "description": "Transforming pixelated company logos into a clean, scalable vector format suitable for all branding needs.",
-          "beforeImage": "/home-page/3_before.png",
-          "afterImage": "/home-page/3_after.png"
+          "title": "Raster to Vector Conversion Services",
+          "description": "Converting raster images into sharp, high-quality vector graphics with clean lines and precise details for professional use.",
+          "beforeImage": "/services/Untitled design (1)/1-Raster.png",
+          "afterImage": "/services/Untitled design (1)/1-vector.png"
         },
         {
           "id": 2,
-          "title": "Intricate Illustration Cleanup",
-          "description": "Converting a hand-drawn or scanned illustration into a sharp vector graphic, preserving all artistic nuances.",
-          "beforeImage": "/home-page/1_before.png",
-          "afterImage": "/home-page/1_after.png"
+          "title": "Screen Printing",
+          "description": "Preparing accurate color separations for smooth printing, consistent ink coverage, and high-quality screen printing results. ",
+          "beforeImage": "/services/Untitled design (1)/2-Screen Printing.png",
+          "afterImage": "/services/Untitled design (1)/2-Screen Printing 2.png"
         },
         {
           "id": 3,
-          "title": "Product Image Enhancement",
-          "description": "Perfecting product images for e-commerce by converting them to vector, ensuring high-quality display at any size.",
-          "beforeImage": "/home-page/2_before.png",
-          "afterImage": "/home-page/2_after.png"
+          "title": "Custom Vector Line Art",
+          "description": "Transforming artwork into precise vector line drawings with clean contours and refined details for versatile professional applications. ",
+          "beforeImage": "/services/Untitled design (1)/3-Line Art.png",
+          "afterImage": "/services/Untitled design (1)/3-Line Art 2.png"
         },
         {
           "id": 4,
-          "title": "Detailed Artwork Conversion",
-          "description": "Bringing old or complex artwork to life in a scalable vector format, ideal for large-scale prints and digital applications.",
-          "beforeImage": "/home-page/4_before.png",
-          "afterImage": "/home-page/4_after.png"
+          "title": "Color Separations",
+          "description": "Achieve precise color separation for sharp, vibrant, and consistent print results with professional-quality accuracy.",
+          "beforeImage": "/services/Untitled design (1)/4-Color Separation.png",
+          "afterImage": "/services/Untitled design (1)/4-Color Separation 2.png"
         }
       ]
     },
