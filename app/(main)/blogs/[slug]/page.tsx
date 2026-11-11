@@ -9,10 +9,11 @@ type BlogPost = {
   slug: string;
   title: string;
   description: string;
-  content: string[];
+  content: string;
   date: string;
   image: string;
   category: "Embroidery" | "Vector" | "Reviews";
+  isPublished?: boolean;
 };
 
 export const dynamic = "force-dynamic";
@@ -39,7 +40,17 @@ export async function generateStaticParams() {
 
   return [];
 }
+function normalizeContent(content: unknown): string {
+  if (typeof content === "string") {
+    return content
+  }
 
+  if (Array.isArray(content)) {
+    return content.join("\n")
+  }
+
+  return ""
+}
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug?: string }> }) {
   const { slug } = await params;
 
@@ -52,27 +63,22 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
   try {
     if (adminFirestore) {
-      const postQuery = await adminFirestore
-        .collection("blogs")
-        .where("slug", "==", slug)
-        .where("isPublished", "==", true)
-        .limit(1)
-        .get();
+      const snapshot = await adminFirestore.collection("blogs").get();
+      allPosts = snapshot.docs
+        .map((d) => {
+          const data = d.data()
 
-      if (!postQuery.empty) {
-        const doc = postQuery.docs[0];
-        const data = doc.data() as Omit<BlogPost, "id">;
-        post = { ...data, id: doc.id };
-      }
+          return {
+            ...data,
+            id: d.id,
+            content: normalizeContent(data.content),
+          } as BlogPost
+        })
+        // Older blog documents may not have isPublished. The blog index treats
+        // those as published, so the detail route should use the same rule.
+        .filter((item) => item.isPublished !== false);
 
-      const snapshot = await adminFirestore
-        .collection("blogs")
-        .where("isPublished", "==", true)
-        .get();
-      allPosts = snapshot.docs.map((d) => {
-        const data = d.data() as Omit<BlogPost, "id">;
-        return { ...data, id: d.id };
-      });
+      post = allPosts.find((item) => item.slug === slug);
     }
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -89,7 +95,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <main className="bg-[#f3f4f6] py-10 sm:py-12 2xl:py-16 4k:py-24">
-      <article className="mx-auto w-full max-w-245 px-4 sm:px-6 lg:px-8 2xl:max-w-300 4k:max-w-[1500px]">
+      <article className="w-full px-4 sm:px-6 lg:px-8 ">
         <Link
           href="/blogs"
           className="inline-flex rounded-md border cursor-pointer border-[#dfe3ea] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:text-primary"
@@ -123,16 +129,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               {post.description}
             </p>
 
-            <div className="mt-6 space-y-5">
-              {post.content.map((paragraph, index) => (
-                <p
-                  key={`${post.id}-paragraph-${index + 1}`}
-                  className="text-[15px] leading-7 text-slate-700 2xl:text-lg 2xl:leading-8"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <div
+              className="ql-editor blog-content max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: post.content,
+              }}
+            />
 
             <div className="mt-10 flex flex-col gap-3 border-t border-[#e7ebf0] pt-6 sm:flex-row sm:items-center sm:justify-between">
               {previousPost ? (

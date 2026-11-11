@@ -14,7 +14,7 @@ type BlogDocument = {
   author?: string
   category?: string
   description?: string
-  content?: string
+  content?: string | string[]
   image?: string
   isPublished?: boolean
   createdAt?: string | { toDate?: () => Date }
@@ -50,20 +50,21 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "")
 }
 
-function toParagraphs(content: string) {
-  return content
-    .split(/\n+/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-}
-
 function blogToForm(blog: BlogDocument): BlogFormState {
+  let content = ""
+
+  if (typeof blog.content === "string") {
+    content = blog.content
+  } else if (Array.isArray(blog.content)) {
+    content = blog.content.join("\n")
+  }
+
   return {
     title: blog.title || "",
     slug: blog.slug || "",
     author: blog.author || "Admin",
     description: blog.description || "",
-    content: typeof blog.content === "string" ? blog.content : "",
+    content,
     category: blog.category || "",
     image: blog.image || "",
     isPublished: blog.isPublished !== false,
@@ -188,7 +189,7 @@ export default function BlogAdminPage() {
       slug,
       author: form.author.trim() || "Admin",
       description: form.description.trim(),
-      content: toParagraphs(form.content),
+      content: form.content,
       category: form.category.trim(),
       image: form.image.trim(),
       isPublished: form.isPublished,

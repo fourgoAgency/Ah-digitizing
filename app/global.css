@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "react-phone-number-input/style.css";
+@import "react-quill-new/dist/quill.snow.css";
 
 @theme inline {
   --color-background: var(--background);
@@ -423,4 +424,84 @@ textarea:focus-visible {
   .btn {
     @apply w-full bg-primary text-white py-3 rounded font-semibold hover:bg-primary/90 transition;
   }
+}
+
+/* Blog content list rendering */
+
+.blog-content.ql-editor {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  padding: 24px;
+  line-height: 1.7;
+}
+
+/* Quill's live HTML carries data-list metadata. Older saved content was
+   serialized as plain semantic ol/ul markup, so use those tags for markers. */
+.blog-content ol {
+  margin: 0.5rem 0;
+  padding-left: 2rem;
+  list-style: decimal outside !important;
+  list-style-position: outside !important;
+}
+
+.blog-content ol ol {
+  list-style-type: lower-alpha !important;
+  padding-left: 1.5rem;
+}
+
+.blog-content ol ol ol {
+  list-style-type: lower-roman !important;
+  padding-left: 1.5rem;
+}
+
+/* Legacy Quill HTML can wrap a plain introductory line in a third-level list
+   before the following lettered items. Keep that line unnumbered. */
+.blog-content ol ol ol > li:not([data-list]) {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.blog-content ul {
+  margin: 0.5rem 0;
+  padding-left: 2rem;
+  list-style: disc outside !important;
+  list-style-position: outside !important;
+}
+
+.blog-content ol > li:not([data-list]),
+.blog-content ul > li {
+  display: list-item !important;
+  list-style-type: inherit !important;
+  list-style-position: outside !important;
+  padding-left: 0 !important;
+  position: static;
+}
+
+.blog-content ol > li[data-list] {
+  padding-left: 1.5em !important;
+}
+
+.blog-content li[data-list="bullet"] > .ql-ui::before {
+  content: "\2022" !important;
+  display: inline-block !important;
+  margin-left: -1.5em !important;
+  margin-right: 0.3em !important;
+  text-align: right;
+  width: 1.2em;
+}
+
+.blog-content li[data-list="ordered"] > .ql-ui::before {
+  display: inline-block !important;
+  margin-left: -1.5em !important;
+  margin-right: 0.3em !important;
+  text-align: right;
+  width: 1.2em;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3 {
+  margin: 1rem 0 0.5rem;
+  font-weight: 700;
 }

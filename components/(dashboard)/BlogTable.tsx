@@ -9,7 +9,7 @@ type BlogDocument = {
   author?: string
   category?: string
   description?: string
-  content?: string
+  content?: string | string[]
   image?: string
   isPublished?: boolean
   createdAt?: string | { toDate?: () => Date }

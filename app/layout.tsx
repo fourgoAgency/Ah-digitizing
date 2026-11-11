@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./global.css";
+import "react-quill-new/dist/quill.snow.css"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ah-digitizing.vercel.app"),

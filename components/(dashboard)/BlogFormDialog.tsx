@@ -1,8 +1,9 @@
 "use client"
 
-import { FormEvent } from "react"
-import { X } from "lucide-react"
-
+import { FormEvent, useRef, useState } from "react"
+import { ImagePlus, UploadCloud, X } from "lucide-react"
+import { uploadFile } from "@/lib/firebase"
+import RichTextEditor from "./RichTextEditor"
 type BlogFormState = {
   title: string
   slug: string
@@ -50,6 +51,31 @@ export default function BlogFormDialog({
   saving,
   error,
 }: BlogFormDialogProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadingMedia, setUploadingMedia] = useState(false)
+  const [mediaError, setMediaError] = useState<string | null>(null)
+
+  async function handleMediaUpload(file?: File) {
+    if (!file) return
+    if (!file.type.startsWith("image/")) {
+      setMediaError("Choose an image file to upload.")
+      return
+    }
+
+    setUploadingMedia(true)
+    setMediaError(null)
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-")
+      const imageUrl = await uploadFile(file, `blogs/media/${Date.now()}-${safeName}`)
+      onChange("image", imageUrl)
+    } catch (uploadError) {
+      setMediaError(uploadError instanceof Error ? uploadError.message : "Unable to upload image.")
+    } finally {
+      setUploadingMedia(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   if (!open) return null
 
   return (
@@ -132,23 +158,38 @@ export default function BlogFormDialog({
             </Field>
 
             <Field label="Content">
-              <textarea
-                rows={6}
+              <RichTextEditor
                 value={form.content}
-                onChange={(event) => onChange("content", event.target.value)}
-                className="min-h-[12rem] max-h-[18rem] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:bg-white"
-                placeholder="Write one paragraph per line"
+                onChange={(value) => onChange("content", value)}
               />
             </Field>
 
-            <Field label="Image URL">
+            <div>
+              <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Blog media</span>
               <input
-                value={form.image}
-                onChange={(event) => onChange("image", event.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:bg-white"
-                placeholder="/home-page/embroidery.png"
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(event) => void handleMediaUpload(event.target.files?.[0])}
               />
-            </Field>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  disabled={uploadingMedia || saving}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {uploadingMedia ? <UploadCloud className="h-4 w-4 animate-pulse" /> : <ImagePlus className="h-4 w-4" />}
+                  {uploadingMedia ? "Uploading..." : form.image ? "Replace media" : "Upload media"}
+                </button>
+                {form.image ? <span className="text-xs text-emerald-700">Media uploaded</span> : <span className="text-xs text-slate-500">Upload a cover image to Firebase Storage.</span>}
+              </div>
+              {mediaError ? <p className="mt-2 text-sm text-rose-600">{mediaError}</p> : null}
+              {form.image ? (
+                <img src={form.image} alt="Blog media preview" className="mt-3 h-28 w-44 rounded-xl border border-slate-200 object-cover" />
+              ) : null}
+            </div>
 
             <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
               <input
@@ -170,7 +211,7 @@ export default function BlogFormDialog({
               </button>
               <button
                 type="submit"
-                disabled={saving}
+                disabled={saving || uploadingMedia}
                 className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {saving ? "Saving..." : form.title ? "Save changes" : "Create post"}
