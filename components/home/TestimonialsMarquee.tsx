@@ -108,10 +108,11 @@ export default function TestimonialsMarquee() {
       <div className="mx-auto max-w-full px-4">
         <div className="mb-8 text-center sm:mb-10">
           <AnimatedSectionHeading className="text-4xl font-bold text-gray-900 sm:text-5xl">
-            Testimonials
+            What Our Clients Say
           </AnimatedSectionHeading>
           <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600 sm:text-base">
-            Real client feedback moving across the page. Hover or hold the strip to pause and read.
+            Read genuine customer feedback and discover why clients trust AH Digitizing for professional digitizing and vector artwork services.
+
           </p>
         </div>
 

@@ -4,6 +4,8 @@ import HeroSection from "@/components/about/HeroSection";
 import OurStorySection from "@/components/about/OurStorySection";
 import MissionValuesSection from "@/components/about/MissionValuesSection";
 import ServicesSection from "@/components/about/ServicesSection";
+import WhyChooseUsSection from "@/components/about/WhyChooseUsSection";
+
 import JourneySection from "@/components/about/JourneySection";
 import TestimonialsSection from "@/components/home/TestimonialsMarquee";
 
@@ -37,10 +39,11 @@ export default function DigitizingLandingPage() {
     <div className="min-h-screen bg-gray-50" suppressHydrationWarning>
       <HeroSection />
       <OurStorySection />
-      <MissionValuesSection values={values} />
+      {/* <MissionValuesSection values={values} /> */}
       <ServicesSection />
-      <JourneySection timeline={timeline} />
-      <TestimonialsSection />
+      <WhyChooseUsSection />
+      {/* <JourneySection timeline={timeline} /> */}
+      {/* <TestimonialsSection /> */}
     </div>
   );
 

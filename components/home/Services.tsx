@@ -63,7 +63,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
             inTransition ? "mb-2 text-3xl sm:text-4xl" : "mb-10 text-5xl fade-in-up"
           )}
         >
-          Services we Offered
+          Explore Our Digitizing Services
         </h1>
         <p
           className={cn(
@@ -71,7 +71,7 @@ export default function ServicesCarousel({ inTransition = false }: { inTransitio
             inTransition ? "mt-1 max-w-2xl text-sm sm:text-base" : "mt-3 max-w-3xl text-base sm:text-lg"
           )}
         >
-          Swipe through our core services and open the category that fits your next digitizing, vector, or custom artwork job.
+          Discover our embroidery digitizing, vector conversion, and custom artwork services for your next project.
         </p>
       </div>
 

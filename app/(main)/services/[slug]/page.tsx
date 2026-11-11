@@ -23,15 +23,19 @@ type ServiceData = {
       afterImage: string;
       placementArea?: string;
     }[];
-quoteParam:string;
+    quoteParam: string;
   };
   testimonials: {
-    id: number;
-    name: string;
-    country: string;
-    text: string;
-    image: string;
-  }[];
+    title: string;
+    description: string;
+    items: {
+      id: number;
+      name: string;
+      country: string;
+      text: string;
+      image: string;
+    }[];
+  };
   pricing: {
     serviceKey: "embroidery" | "vector";
     serviceLabel: "Embroidery" | "Vector";

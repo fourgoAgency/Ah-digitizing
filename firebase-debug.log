@@ -1,0 +1,88 @@
+[debug] [2026-10-30T11:49:31.543Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.551Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.553Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.564Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.564Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.720Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.721Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.722Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.724Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.724Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.730Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.731Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.732Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.733Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.734Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.739Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.740Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.740Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.740Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.741Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.746Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.747Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.747Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.747Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.748Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.750Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.751Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.751Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.752Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.752Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.756Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.756Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.757Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.757Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.757Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:31.760Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.760Z] Checked if tokens are valid: false, expires at: 1793024130574
+[debug] [2026-10-30T11:49:31.760Z] > refreshing access token with scopes: []
+[debug] [2026-10-30T11:49:31.761Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-30T11:49:31.761Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.166Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.167Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.186Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/ [none]
+[debug] [2026-10-30T11:49:32.187Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/ x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.205Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.205Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.219Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasedataconnect.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.219Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.224Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.224Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.238Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseapphosting.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.238Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseapphosting.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.251Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.252Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.266Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseremoteconfig.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.266Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseremoteconfig.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.271Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.271Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.284Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/fcm.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.284Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/fcm.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.288Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.289Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.302Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/identitytoolkit.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.302Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/identitytoolkit.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.306Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.306Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.321Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasecrashlytics.googleapis.com [none]
+[debug] [2026-10-30T11:49:32.321Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasecrashlytics.googleapis.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:32.327Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-30T11:49:32.327Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-30T11:49:32.342Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseio.com [none]
+[debug] [2026-10-30T11:49:32.342Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseio.com x-goog-quota-user=projects/ah-digitizing
+[debug] [2026-10-30T11:49:33.815Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseio.com 403
+[debug] [2026-10-30T11:49:33.815Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseio.com [omitted]
+[debug] [2026-10-30T11:49:33.863Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseapphosting.googleapis.com 403
+[debug] [2026-10-30T11:49:33.863Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseapphosting.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.954Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseremoteconfig.googleapis.com 403
+[debug] [2026-10-30T11:49:33.954Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebaseremoteconfig.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.966Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/fcm.googleapis.com 403
+[debug] [2026-10-30T11:49:33.966Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/fcm.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.968Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/identitytoolkit.googleapis.com 403
+[debug] [2026-10-30T11:49:33.968Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/identitytoolkit.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.969Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasecrashlytics.googleapis.com 403
+[debug] [2026-10-30T11:49:33.969Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasecrashlytics.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.970Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasedataconnect.googleapis.com 403
+[debug] [2026-10-30T11:49:33.970Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2026-10-30T11:49:33.971Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/ 403
+[debug] [2026-10-30T11:49:33.971Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ah-digitizing/services/ [omitted]

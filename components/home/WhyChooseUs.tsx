@@ -72,7 +72,7 @@ export default function WhyChooseAndFAQ() {
           {/* Left Side - Why Choose Us */}
           <div>
             <AnimatedSectionHeading className="mb-6 text-4xl font-bold">
-              Why Choose Us
+              Why Choose AH Digitizing?
             </AnimatedSectionHeading>
             <p className="text-gray-300 mb-8 leading-relaxed">
               {whyText}

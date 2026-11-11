@@ -79,10 +79,10 @@ export default function ShowcaseGallery() {
       <div className="max-w-7xl 4k:max-w-[1800px] mx-auto px-4 4k:px-16">
         <div className="text-center mb-10 sm:mb-12">
           <AnimatedSectionHeading className="mb-4 text-3xl font-bold sm:text-4xl lg:text-5xl 4k:text-6xl">
-            Showcasing Our Crafts
+            Our Work, Your Inspiration
           </AnimatedSectionHeading>
           <p className="text-sm sm:text-base lg:text-lg 4k:text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore our recent embroidery and vector design work.
+            Browse our latest embroidery digitizing projects, logo designs, and vector artwork to see the quality of our work.
           </p>
         </div>
 

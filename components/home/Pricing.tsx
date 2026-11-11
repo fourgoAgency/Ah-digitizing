@@ -279,10 +279,10 @@ export default function Pricing() {
             className="text-center"
           >
             <h2 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Pricing
+              Simple and Transparent Pricing
             </h2>
             <p className="mx-auto my-4 max-w-2xl text-sm text-slate-600 sm:text-base">
-              Straightforward embroidery and vector pricing built for quick decisions.
+              Explore our competitive pricing for embroidery digitizing and vector artwork services, with clear options to help you choose the right solution.
             </p>
           </motion.div>
         </motion.div>

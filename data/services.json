@@ -2,129 +2,133 @@
   "embroidery": {
     "slug": "embroidery",
     "hero": {
-      "title": "Transform Your Designs into Perfect Embroidery",
-      "description": "Achieve exceptional stitch quality and precision with our expert embroidery digitizing services. Perfect for logos, apparel, patches, and creative designs of any complexity.",
+      "title": "Turn Your Artwork into Exceptional Embroidery",
+      "description": "Bring your logos and creative designs to life with expert embroidery digitizing services. Get carefully digitized, machine-ready files for shirts, apparel, caps, jackets, patches, uniforms, and more.",
       "quoteParam": "embroidery"
     },
     "transformation": {
-      "title": "See the Transformation",
-      "description": "Witness the dramatic improvement in quality and detail our skilled digitizers bring to every design.",
+      "title": "See the Difference Professional Digitizing Makes",
+      "description": "Explore our before-and-after examples to see how skilled embroidery digitizing transforms artwork into carefully planned stitch designs.",
       "examples": [
         {
           "id": 1,
           "title": "Logo Embroidery Digitizing",
-          "description": "Turn your logo into a clean, machine-ready embroidery file with accurate stitching, sharp details, and professional results.",
+          "description": "Convert your logo into a machine-ready embroidery file with precise stitch placement, clean details, and professional design quality for branding and apparel.",
           "beforeImage": "/services/logo 1.png",
           "afterImage": "/services/logo 2.png",
-          "placementArea":"Logo"
+          "placementArea": "Logo"
         },
         {
           "id": 2,
           "title": "Left Chest Logo Digitizing",
-          "description": "Create neat left chest embroidery designs with balanced density and clear lettering for polos, shirts, uniforms, and workwear.",
+          "description": "Get clean, balanced left chest embroidery for polo shirts, uniforms, workwear, and corporate apparel, with clear lettering and carefully planned stitch density.",
           "beforeImage": "/services/left chest 1.png",
           "afterImage": "/services/Left chest 2.png",
-          "placementArea":"Left Chest Logo"
+          "placementArea": "Left Chest Logo"
         },
         {
           "id": 3,
-          "title": "Cap & Hat Digitizing",
-          "description": "Get cap and hat embroidery files digitized with proper underlay, stitch direction, and compensation for smooth results on curved surfaces.",
+          "title": "Cap & Hat Embroidery Digitizing",
+          "description": "Get custom cap and hat digitizing with suitable underlay, stitch direction, and pull compensation for embroidery on curved surfaces.",
           "beforeImage": "/services/2 Cap Before.png",
           "afterImage": "/services/hat.png",
-          "placementArea":"Cap & Hat"
+          "placementArea": "Cap & Hat"
         },
         {
           "id": 4,
-          "title": "Visor Digitizing",
-          "description": "Get visor embroidery files with precise stitch placement and proper underlay for clean lettering and smooth results on curved visor surfaces.",
+          "title": "Visor Embroidery Digitizing",
+          "description": "Create machine-ready visor embroidery designs with planned stitch placement, suitable underlay, and clear lettering for curved visor surfaces.",
           "beforeImage": "/services/visor 1.png",
           "afterImage": "/services/visor 2.png",
-          "placementArea":"Visor"
+          "placementArea": "Visor"
         },
         {
           "id": 5,
-          "title": "3D Puff Digitizing",
-          "description": "Add a raised effect to your designs with 3D puff digitizing, using foam and precise stitch placement to create bold, textured embroidery.",
+          "title": "3D Puff Embroidery Digitizing",
+          "description": "Give your designs a raised, dimensional look with 3D puff digitizing. Carefully planned stitches help secure embroidery foam and create bold lettering for caps and other suitable items.",
           "beforeImage": "/services/3D PUFF Before.png",
           "afterImage": "/services/3D puff.png",
-          "placementArea":"3D Puff"
+          "placementArea": "3D Puff"
         },
         {
-          "id": 6, 
+          "id": 6,
           "title": "Patch Embroidery Digitizing",
-          "description": "Prepare durable patch embroidery files with clean borders, strong stitching, and precise details for badges, emblems, and custom patches.",
+          "description": "Prepare custom patch and badge designs with clean borders, well-planned stitches, and defined details for emblems, uniforms, and branded merchandise.",
           "beforeImage": "/services/Patch 1.png",
           "afterImage": "/services/Patch 2.png",
-          "placementArea":"Patch"
+          "placementArea": "Patch"
         },
         {
           "id": 7,
-          "title": "Applique Design Digitizing",
-          "description": "Bring applique designs to life with accurate placement lines, tack-down stitches, and finishing details for a clean fabric finish.",
+          "title": "Applique Embroidery Digitizing",
+          "description": "Create attractive appliqué embroidery with accurate fabric placement lines, tack-down stitches, and finishing details for neat, well-defined designs.",
           "beforeImage": "/services/applique 1.png",
           "afterImage": "/services/applique 2.png",
-          "placementArea":"Applique"
+          "placementArea": "Applique"
         },
         {
           "id": 8,
           "title": "Outline / Line Art Embroidery Digitizing",
-          "description": "Convert artwork into crisp outline embroidery files with smooth contours and well-planned stitches for simple, detailed designs.",
+          "description": "Turn artwork into clean outline embroidery with smooth contours and carefully planned running stitches,and precise satin stitches for designs.",
           "beforeImage": "/services/outline.png",
           "afterImage": "/services/OUTLINE.svg",
-          "placementArea":"Outline / Line Art"
+          "placementArea": "Outline / Line Art"
         },
         {
           "id": 9,
-          "title": "Jacket Back Digitizing",
-          "description": "Handle large jacket back embroidery designs with careful stitch planning, proper sequencing, and clear details for impressive results.",
+          "title": "Jacket Back Embroidery Digitizing",
+          "description": "Prepare large jacket back designs with thoughtful stitch sequencing, balanced density, and clear details for bold embroidery on jackets and outerwear.",
           "beforeImage": "/services/jacket back 1.png",
           "afterImage": "/services/jacket back 2.png",
-          "placementArea":"Jacket Back"
+          "placementArea": "Jacket Back"
         },
         {
           "id": 10,
-          "title": "NGS Wings XP",
-          "description": "Receive professionally digitized NGS files for Wings XP, prepared with accurate stitch settings for reliable machine embroidery.",
+          "title": "NGS File Digitizing for Wings XP",
+          "description": "Get custom embroidery digitizing for supported Wings XP workflows, with stitch settings and file preparation suited to your design and production requirements.",
           "beforeImage": "/services/ngs 1.png",
           "afterImage": "/services/ngs 2.png",
-          "outputFormat":"NGS"
+          "outputFormat": "NGS"
         },
         {
           "id": 11,
-          "title": "PXF Pulse",
-          "description": "Access custom PXF embroidery files for Tajima Pulse, created with precise stitch placement and settings suited to your design.",
+          "title": "PXF File Digitizing for Pulse",
+          "description": "Get custom PXF embroidery files for compatible Tajima Pulse workflows, with carefully planned stitches and design settings for your embroidery project.",
           "beforeImage": "/services/pxf 1.png",
           "afterImage": "/services/pxf 2.png",
-          "outputFormat":"PXF"
+          "outputFormat": "PXF"
         },
         {
           "id": 12,
-          "title": "Custom Digitizing (Any Design You Need)",
-          "description": "Share your artwork or idea and get custom embroidery digitizing tailored to your design, fabric, machine, and project requirements.",
+          "title": "Custom Embroidery Digitizing for Any Design",
+          "description": "Have a unique design in mind? Share your artwork, logo, or concept, and we will prepare a custom embroidery file based on your design, fabric, machine, and intended application.",
           "beforeImage": "/services/custom 1.png",
           "afterImage": "/services/custom 2.png",
-          "placementArea":"Customized"
+          "placementArea": "Customized"
         }
       ],
-      "quoteParam":"embroidery"
+      "quoteParam": "embroidery"
     },
-    "testimonials": [
-      {
-        "id": 1,
-        "name": "Anna Fernandez",
-        "country": "USA",
-        "text": "The ring itself is stunning, with a beautiful design that catches the light and sparkles from every angle. The quality of the materials used is evident, as the ring feels substantial and durable. The gemstone is exquisite, with a vibrant color and exceptional clarity.",
-        "image": "/home-page/embroidery.png"
-      },
-      {
-        "id": 2,
-        "name": "Mark Johnson",
-        "country": "UK",
-        "text": "Outstanding service -- fast turnaround and precise digitizing. Our embroidered logos look crisp across every garment.",
-        "image": "/home-page/embroidery.png"
-      }
-    ],
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "description": "Every project is an opportunity to earn our customers' trust. Read their feedback to learn about their experience with AH Digitizing and our embroidery digitizing services.",
+      "items": [
+        {
+          "id": 1,
+          "name": "Anna Fernandez",
+          "country": "USA",
+          "text": "The ring itself is stunning, with a beautiful design that catches the light and sparkles from every angle. The quality of the materials used is evident, as the ring feels substantial and durable. The gemstone is exquisite, with a vibrant color and exceptional clarity.",
+          "image": "/home-page/embroidery.png"
+        },
+        {
+          "id": 2,
+          "name": "Mark Johnson",
+          "country": "UK",
+          "text": "Outstanding service -- fast turnaround and precise digitizing. Our embroidered logos look crisp across every garment.",
+          "image": "/home-page/embroidery.png"
+        }
+      ]
+    },
     "pricing": {
       "serviceKey": "embroidery",
       "serviceLabel": "Embroidery"
@@ -133,14 +137,14 @@
   "raster-to-vector": {
     "slug": "raster-to-vector",
     "hero": {
-      "title": "Transform Your Raster Images into Scalable Vectors",
-      "description": "Convert your raster graphics into high-quality, scalable vector files. Perfect for logos, illustrations, and designs that need to be resized without losing quality.",
+      "title": "Professional Raster to Vector Conversion Services",
+      "description": "Convert pixelated images into clean, scalable vector artwork with AH Digitizing. Our vector conversion services help prepare logos, illustrations, product graphics, and custom artwork for printing, branding, and digital use. Get sharp lines, clean edges, and consistent quality at any size.",
       "quoteParam": "vector"
     },
     "transformation": {
-      "title": "See the Transformation: Raster to Vector Examples",
-      "quoteParam":"vector",
-      "description": "Witness the dramatic improvement in quality and detail our skilled digitizers bring to every image.",
+      "title": "See the Difference with Raster to Vector Conversion",
+      "quoteParam": "vector",
+      "description": "Compare the original images with their vector versions to see how careful artwork conversion improves clarity, edges, and overall appearance.",
       "examples": [
         {
           "id": 1,
@@ -172,22 +176,26 @@
         }
       ]
     },
-    "testimonials": [
-      {
-        "id": 1,
-        "name": "Sarah Lee",
-        "country": "USA",
-        "text": "The vector conversion was flawless. Our logo now scales perfectly across all our marketing materials without any pixelation. Highly recommend their service!",
-        "image": "/home-page/portfolio-vector/1st.jpg"
-      },
-      {
-        "id": 2,
-        "name": "Mike Chen",
-        "country": "Canada",
-        "text": "Fast turnaround and excellent quality. The vector files are clean and editable. Saved us a lot of time and hassle in our design process.",
-        "image": "/home-page/portfolio-vector/2nd.jpg"
-      }
-    ],
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "description": "We take pride in delivering high-quality vector conversion services. Read our customers' feedback to learn about their experience with AH Digitizing and our raster to vector conversion services.",
+      "items": [
+        {
+          "id": 1,
+          "name": "Sarah Lee",
+          "country": "USA",
+          "text": "The vector conversion was flawless. Our logo now scales perfectly across all our marketing materials without any pixelation. Highly recommend their service!",
+          "image": "/home-page/portfolio-vector/1st.jpg"
+        },
+        {
+          "id": 2,
+          "name": "Mike Chen",
+          "country": "Canada",
+          "text": "Fast turnaround and excellent quality. The vector files are clean and editable. Saved us a lot of time and hassle in our design process.",
+          "image": "/home-page/portfolio-vector/2nd.jpg"
+        }
+      ]
+    },
     "pricing": {
       "serviceKey": "vector",
       "serviceLabel": "Vector"

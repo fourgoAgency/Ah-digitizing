@@ -24,7 +24,7 @@ const services = [
   {
     id: "embroidery",
     title: "Embroidery Digitizing",
-    desc: "Transform your designs into high-quality embroidery files with precision and detail, tailored for all fabric types.",
+    desc: " We convert business logos, brand artwork, and custom designs into embroidery files for uniforms, shirts, workwear, and promotional apparel.",
     icon: (
       <svg className="w-12 h-12 text-[#0A21C0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -32,9 +32,9 @@ const services = [
     ),
   },
   {
-    id: "vector",
-    title: "Raster to Vector",
-    desc: "Convert any low-resolution image into a crisp, scalable vector format, perfect for printing and branding.",
+    id: "3d-puff",
+    title: "3D Puff and Cap Digitizing",
+    desc: "We prepare embroidery designs for structured caps, hats, and raised 3D puff embroidery, with attention to stitch direction and design structure.",
     icon: (
       <svg className="w-12 h-12 text-[#0A21C0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -43,14 +43,24 @@ const services = [
   },
   {
     id: "custom",
-    title: "Custom Design",
-    desc: "Bring your unique ideas to life with bespoke design solutions tailored to your brand and creative requirements.",
+    title: "Custom Patch and Appliqué Digitizing",
+    desc: "We create digitized designs for custom patches, badges, appliqué garments, and decorative embroidery projects.",
     icon: (
       <svg className="w-12 h-12 text-[#0A21C0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
       </svg>
     ),
   },
+  {
+    id:"vector",
+    title: "Vector Artwork Conversion",
+    desc: "We convert images and logos into clean, scalable vector artwork for printing, branding, and other production applications.",
+    icon: (
+      <svg className="w-12 h-12 text-[#0A21C0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      </svg>
+    ),
+  }
 ];
 
 export default function ServicesSection() {
@@ -64,13 +74,16 @@ export default function ServicesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-16"
+          className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-4"
         >
-          Our Services: Digital Art Solutions
+          Our Embroidery Digitizing Services
         </motion.h2>
+        <p className="text-gray-600 text-center max-w-2xl mx-auto mb-16">
+          We offer custom embroidery digitizing solutions for different garments, logos, and embroidery applications. Each design is prepared according to its specific requirements.
+        </p>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-2 2xl:grid-cols-4 gap-8 lg:gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.id}
@@ -85,7 +98,7 @@ export default function ServicesSection() {
               variants={cardVariants}
               whileHover="hover"
               animate="rest"
-              className="bg-white rounded-lg p-8 text-center cursor-pointer"
+              className="bg-white rounded-lg p-8 text-center"
             >
               {/* Icon */}
               <div className="flex justify-center mb-4">
@@ -99,9 +112,6 @@ export default function ServicesSection() {
 
               <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">{service.desc}</p>
-              <button className="text-[#0A21C0] font-semibold text-sm cursor-pointer hover:text-blue-700">
-                Learn More
-              </button>
 
               {/* Bottom accent line */}
               <motion.div

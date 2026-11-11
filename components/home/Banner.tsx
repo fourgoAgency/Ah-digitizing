@@ -91,7 +91,7 @@ export default function Banner() {
                     {/* Left Content */}
                     <div ref={contentRef} className="flex flex-col justify-center">
                         <h1 className="text-xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white mb-4 leading-tight">
-                            Precision Embroidery Digitizing-Every Design, Perfectly Stitched <br/>
+                            Accurate Stitching Starts with Quality Digitizing <br/>
                             <span className="text-secondary" style={{ WebkitTextStroke: '0.4px white' }}>
                                 <TextType
                                     text={["Ah Digitizing", "Ah Digitizing"]}
@@ -105,7 +105,7 @@ export default function Banner() {
                         </h1>
 
                         <p className="text-white/90 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
-                            <b>100% Manually Digitized</b>, We turn your logo into a flawless, production-ready Embroidery file with <b>accurate push-pull compensation</b>, clean stitches, zero gaps, and no thread breaks, So it runs perfectly every single time.
+                            <b>100% Manually Digitized for Accurate, Production-Ready Results.</b> Bring your designs to life with expert embroidery digitizing, flawless stitch detail, and precision-crafted files made for outstanding results. 
                         </p>
 
                         {/* CTA Buttons */}

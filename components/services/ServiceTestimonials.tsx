@@ -111,10 +111,10 @@ export default function ServiceTestimonials({ service }: ServiceTestimonialsProp
         {/* Heading */}
         <div className="lg:col-span-1 text-left px-4">
           <AnimatedSectionHeading className="text-4xl lg:text-5xl font-bold mb-4">
-            From the people
+            What Our Customers Say
           </AnimatedSectionHeading>
           <p className="text-sm lg:text-base text-blue-100 max-w-md">
-            We love hearing from our customers! You&apos;re the reason we&apos;re here and the reason we do what we do.
+           Every project is an opportunity to earn our customers' trust. Read their feedback to learn about their experience with AH Digitizing and our embroidery digitizing services.
           </p>
         </div>
 
